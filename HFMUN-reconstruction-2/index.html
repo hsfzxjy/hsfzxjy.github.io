@@ -1,0 +1,173 @@
+<a id="rocket" href="#top" class="show"></a><html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/><meta content="telephone=no" name="format-detection"/><meta name="description"/><title>【HFMUN重构系列】2. 用户系统 | thoughts of hsfzxjy</title><link rel="stylesheet" type="text/css" href="/css/normalize.css"/><link rel="stylesheet" type="text/css" href="/css/pure-min.css"/><link rel="stylesheet" type="text/css" href="/css/grids-responsive-min.css"/><link rel="stylesheet" type="text/css" href="/css/style.css"/><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"/><link rel="alternate" type="application/atom+xml" href="/atom.xml"/></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">【HFMUN重构系列】2. 用户系统</h1><a id="logo" href="/">thoughts of hsfzxjy</a><p class="description"></p><iframe src="https://ghbtns.com/github-btn.html?user=hsfzxjy&amp;type=follow&amp;count=true" frameborder="0" scrolling="0" width="170px" height="20px" class="github-btn"></iframe></div><div id="nav-menu"><a href="/" class="current"><i class="icon-home"> 首页</i></a><a href="/categories/编程/"><i class="icon-code"> 码海拾贝</i></a><a href="/categories/杂感/"><i class="icon-life"> 五味杂感</i></a><a href="/about/"><i class="icon-about"> 我</i></a><a href="/aggr/"><i class="icon-history"> 索引</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post post-page"><h1 class="post-title">【HFMUN重构系列】2. 用户系统</h1><div class="post-meta">2015年01月28日 | <span class="categories">分类于<a href="/categories/编程/">编程</a></span></div><span data-thread-key="/HFMUN-reconstruction-2/" class="ds-thread-count"></span><div class="post-content"><blockquote>
+<p>现在，我比任何时候都要有主见。</p>
+</blockquote>
+<p>这是这次重构过程中我最想说的一句话了。</p>
+<p>毋庸置疑，Django是一个十分优秀的Web框架：高效的开发模式，完备的应用集成，以及最重要的一点——具有完全自由的扩展能力——这是Django的灵魂所在。但是无知，通常会束缚了一个人的探索欲望与创新能力，让其变得胆怯、变得懒惰。一年前我的遭遇就很好地印证了这一点。</p>
+<p>对于一个网站而言，用户永远是最重要的元素。没有了用户，网站做得再好也只能被放在角落腐烂，与死尸无异。这样看来，打造一个完美的用户系统就显得十分必要了。</p>
+<p>Django为我们提供了一个优秀的用户系统，它位于<code>django.contrib.auth</code>——想必Djangoers都对它很熟悉了。<code>auth</code>应用是专门为用户管理打造的一个应用，它提供了以下功能：</p>
+<ul>
+<li>一个用户模型（User）。这是<code>auth</code>框架的核心所在，用于存储用户信息，包括 用户名、密码、邮箱等内容。该模型可被替换也可被拓展，具有良好的可塑性。</li>
+<li>一个权限系统（Permission）。这部分为实现访问控制提供了可能。一个<code>Permission</code>对应一个关于<code>Model</code>的操作，默认有<code>add</code>、<code>change</code>、<code>delete</code>三种。值得一提的是，在版本<code>1.7</code>之前，Django并不提供更改默认权限的能力，即每个<code>Model</code>都会固定拥有以上三种权限。我个人觉得这种做法不太好，并不是所有的模型都需要这种功能划分。更何况权限限制被应用在Django的每一个角落，如果想让一个模型完全开放，就要多敲许多不必要的代码。如今Django1.7改进了这一点，这使得模型更加简洁了。</li>
+<li>用户分组的功能（Groups）。一个<code>Group</code>可以拥有多个<code>Permission</code>，一个用户可以选择加入一个<code>Group</code>，并会自动拥有还<code>Group</code>的权限。这一设计简化了用户管理的操作，同时也让用户系统的更有层次。</li>
+</ul>
+<p>在这里，我想说的是关于扩展<code>User</code>模型的一些技巧。</p>
+<p>一年之前，由于对Django的不了解，我不敢对它的内部实现大动干戈。而事实上，没有什么东西是绝对完美的，即便是集众智于一身的开源框架也是如此。诚然，<code>auth</code>框架是不错，但在某些特定的应用场景，它便显得心有余而力不足了。因此，我希望能在<code>User</code>模型上附带一些额外的信息。</p>
+<p>百度一下，我找到了一个被广为流传的方法：<code>Profile</code>模式。也就是说，额外定义一个<code>Profile</code>模型和<code>User</code>模型建立一一对应的关系，用于储存额外信息。我清楚地记得，几乎是每一篇博客都在介绍这种方法，于是乎我毫不犹豫地就采纳了。现在想一想，这其实是一个十分糟糕的方案。它有如下缺点：</p>
+<ul>
+<li><strong>操作麻烦。</strong>每次访问额外信息，都要先询问是否存在<code>Profile</code>对象，如果不存在得先创建。然后再调用<code>user_object.profile</code>来访问信息。同时，这种方案对表单不友好，因为用户信息是被分开储存在两个表中的。</li>
+<li><strong>效率低下。</strong>每次访问额外信息，先是用<code>IF EXISTS</code>判断是否存在，再用<code>INNER JOIN</code>将主信息和次信息从数据库中取出，一共需要两条SQL语句。更何况，<code>INNER JOIN</code>指令是公认的效率低下的指令。</li>
+</ul>
+<p>因此，在这次重构中我采用了一种截然不同的做法：直接重写<code>User</code>模型。这里的灵感来自<a href="https://docs.djangoproject.com/en/1.7/topics/auth/customizing/#auth-custom-user" target="_blank" rel="external">Django官方文档</a>：</p>
+<blockquote>
+<p>Some kinds of projects may have authentication requirements for which Django’s built-in User model is not always appropriate. For instance, on some sites it makes more sense to use an email address as your identification token instead of a username.</p>
+<p>Django allows you to override the default User model by providing a value for the AUTH_USER_MODEL setting that references a custom model:</p>
+<pre><code>AUTH_USER_MODEL = &apos;myapp.MyUser&apos;
+</code></pre></blockquote>
+<p>听起来不错，既方便实现起来又简单。于是我重写了我的<code>accounts</code>应用：</p>
+<pre><code>#encoding=utf8
+&quot;&quot;&quot;
+    事实上这里许多实现都模仿自`django.contrib.auth.models.User`，毕竟我只是要存储一些额外信息而已。
+&quot;&quot;&quot;
+from django.core import validators
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
+from django.db import models
+
+class UserManager(BaseUserManager):
+
+    def _create_user(self, username, password,
+                     is_staff, is_superuser, **extra_fields):
+        &quot;&quot;&quot;
+        Creates and saves a User with the given username, email and password.
+        &quot;&quot;&quot;
+        now = timezone.now()
+        if not username:
+            raise ValueError(&apos;The given username must be set&apos;)
+        user = self.model(username=username,
+                          is_staff=is_staff, is_active=True,
+                          is_superuser=is_superuser, last_login=now,
+                          date_joined=now, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, username, password=None, **extra_fields):
+        return self._create_user(username, password, False, False,
+                                 **extra_fields)
+
+    def create_superuser(self, username, password, **extra_fields):
+        return self._create_user(username, password, True, True,
+                                 **extra_fields)
+
+# 这里的`AbstractBaseUser`是用户模型的基类，由于原生的`User`模型中有一些字段并不是我想要的，因此我需要从上一个抽象类继承。
+class User(AbstractBaseUser, PermissionsMixin):
+
+    username = models.CharField(_(&apos;username&apos;), max_length=30, unique=True,
+        help_text=_(&apos;Required. 30 characters or fewer. Letters, digits and &apos;
+                    &apos;@/./+/-/_ only.&apos;),
+        validators=[
+            validators.RegexValidator(r&apos;^[\w.@+-]+$&apos;, _(&apos;Enter a valid username.&apos;), &apos;invalid&apos;)
+        ])
+
+    # 用户描述
+    description = models.TextField()
+
+    # 昵称
+    nickname = models.CharField(_(&apos;nickname&apos;),
+        max_length=30, unique=True,
+        help_text=_(&apos;Required. 30 characters or fewer.&apos;),
+        )
+
+    # 好友关系
+    friends = models.ManyToManyField(
+        &apos;self&apos;,
+        verbose_name=_(&apos;friends&apos;),
+        blank=True,
+        related_name=&apos;+&apos;
+        )
+
+    #================以下是原有的字段==================
+    is_staff = models.BooleanField(_(&apos;staff status&apos;), default=False,
+        help_text=_(&apos;Designates whether the user can log into this admin &apos;
+                    &apos;site.&apos;))
+    is_active = models.BooleanField(_(&apos;active&apos;), default=True,
+        help_text=_(&apos;Designates whether this user should be treated as &apos;
+                    &apos;active. Unselect this instead of deleteing accounts.&apos;))
+    date_joined = models.DateTimeField(_(&apos;date joined&apos;), auto_now_add=True)
+
+    USERNAME_FIELD = &apos;username&apos;
+    objects = UserManager()
+
+    class Meta:
+        verbose_name = _(&apos;user&apos;)
+        verbose_name_plural = _(&apos;users&apos;)
+
+    def get_full_name(self):
+        return self.nickname
+
+    def get_short_name(self):
+        return self.nickname
+</code></pre><p>以及<code>settings.py</code>文件：</p>
+<pre><code>#...
+AUTH_USER_MODEL = &apos;accounts.User&apos;
+#...
+</code></pre><p>为了让admin框架同步支持我们的新<code>User</code>模型，还需要对<code>admin.py</code>以及<code>forms.py</code>进行相应的修改，实际上就是把新加入的字段写进相应的类即可，在这里我就不贴代码了。</p>
+<p>做完这一切，一个念头忽然从我脑海中闪过：对于一些第三方应用，如果它们直接引用了<code>django.contrib.auth.models.User</code>，那该怎么办呢？我的<code>User</code>模型会生效吗？</p>
+<p>这让我感到不安，因为重构的一大原则便是：不得改变外部接口的调用情况。如果这一改动使得整个网站都崩溃了，那就得不偿失了。可庆幸的是，这样的事情并没有发生。</p>
+<p>这不禁让我感到好奇：django是怎么做到这一点的？</p>
+<p>翻看<code>django.contrib.auth.models</code>，我发现了如下一句代码：</p>
+<pre><code>class User(AbstractUser):
+    &quot;&quot;&quot;
+    Users within the Django authentication system are represented by this
+    model.
+
+    Username, password and email are required. Other fields are optional.
+    &quot;&quot;&quot;
+    class Meta(AbstractUser.Meta):
+        swappable = &apos;AUTH_USER_MODEL&apos;
+</code></pre><p>查找<a href="https://docs.djangoproject.com/en/1.8/ref/models/fields/#django.db.models.ForeignKey.swappable" target="_blank" rel="external">Django文档</a>，原来这是Django1.7的一个新特性：</p>
+<blockquote>
+<p><strong>ForeignKey.swappable</strong></p>
+<p>Controls the migration framework’s reaction if this ForeignKey is pointing at a swappable model. If it is True - the default - then if the ForeignKey is pointing at a model which matches the current value of settings.AUTH_USER_MODEL (or another swappable model setting) the relationship will be stored in the migration using a reference to the setting, not to the model directly.</p>
+<p>You only want to override this to be False if you are sure your model should always point towards the swapped-in model - for example, if it is a profile model designed specifically for your custom user model.</p>
+<p>Setting it to False does not mean you can reference a swappable model even if it is swapped out - False just means that the migrations made with this ForeignKey will always reference the exact model you specify (so it will fail hard if the user tries to run with a User model you don’t support, for example).</p>
+<p>If in doubt, leave it to its default of True.</p>
+</blockquote>
+<p>这个特性可以使指向这个模型的ForeignKey自动被替换成<code>Meta.swappable</code>的内容，实现模型的可替换能力。这是一个巧妙的设计。</p>
+<p>重构后的<code>accounts</code>应用，逻辑变得更加清晰，也使我不再纠结于冗长的恼人的<code>Profile</code>调用。</p>
+<p>这，是一个美妙的起点。</p>
+</div><div class="tags"><a href="/tags/HFMUN重构系列/">HFMUN重构系列</a></div><div class="post-content"><blockquote><b class="pay">觉得文章不错？那就赞赏一下吧 :-)</b><br/><img src="/assets/wxqrcode.jpg" class="pay"/></blockquote></div><div class="post-nav"><a href="/kill-processes-under-ubuntu/" class="pre"><i class="icon-previous">ubuntu杀死进程</i></a><a href="/HFMUN-reconstruction-1/" class="next">【HFMUN重构系列】1. Django1.7<i class="icon-next"></i></a></div><div data-thread-key="/HFMUN-reconstruction-2/" data-title="【HFMUN重构系列】2. 用户系统" data-url="http://hsfzxjy.github.io//HFMUN-reconstruction-2/" class="ds-share flat"><div class="ds-share-inline"><ul class="ds-share-icons-16"><li data-toggle="ds-share-icons-more"><a href="javascript:void(0);" class="ds-more">分享到：</a></li><li><a href="javascript:void(0);" data-service="weibo" class="ds-weibo">微博</a></li><li><a href="javascript:void(0);" data-service="wechat" class="ds-wechat">微信</a></li></ul><div class="ds-share-icons-more"></div></div></div><div data-thread-key="/HFMUN-reconstruction-2/" data-title="【HFMUN重构系列】2. 用户系统" data-url="http://hsfzxjy.github.io//HFMUN-reconstruction-2/" data-author-key="1" class="ds-thread"></div></div></div></div><div class="pure-u-1-4"><div id="sidebar"><div class="widget"><div id="search"><form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="hidden" name="sitesearch" value="http://hsfzxjy.github.io"></form></div></div><div class="widget"><div class="widget-title">导航<ul><li><a href="/archives/"> <i class="icon-archives"> 归档</i></a></li><li><a href="/works/"> <i class="icon-works"> 个人作品</i></a></li><li><a href="/atom.xml"> <i class="icon-rss"> 订阅</i></a></li></ul></div></div><div class="widget"><div class="widget-title">分类</div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/学习/">学习</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数学/">数学</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂感/">杂感</a><span class="category-list-count">13</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编程/">编程</a><span class="category-list-count">41</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/转载文章/">转载文章</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/随手记/">随手记</a><span class="category-list-count">12</span></li></ul></div><div class="widget"><div class="widget-title">标签</div><div class="tagcloud"><a href="/tags/安全/" style="font-size: 15px;">安全</a> <a href="/tags/Delphi/" style="font-size: 15px;">Delphi</a> <a href="/tags/win32/" style="font-size: 15px;">win32</a> <a href="/tags/不经意间的感动/" style="font-size: 15px;">不经意间的感动</a> <a href="/tags/游记/" style="font-size: 15px;">游记</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/浮点数/" style="font-size: 15px;">浮点数</a> <a href="/tags/信息学竞赛/" style="font-size: 15px;">信息学竞赛</a> <a href="/tags/编程/" style="font-size: 15px;">编程</a> <a href="/tags/UVa/" style="font-size: 15px;">UVa</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/剪枝/" style="font-size: 15px;">剪枝</a> <a href="/tags/搜索/" style="font-size: 15px;">搜索</a> <a href="/tags/数学/" style="font-size: 15px;">数学</a> <a href="/tags/数论/" style="font-size: 15px;">数论</a> <a href="/tags/Pascal/" style="font-size: 15px;">Pascal</a> <a href="/tags/Sublime/" style="font-size: 15px;">Sublime</a> <a href="/tags/数列/" style="font-size: 15px;">数列</a> <a href="/tags/高精度/" style="font-size: 15px;">高精度</a> <a href="/tags/最小生成树/" style="font-size: 15px;">最小生成树</a> <a href="/tags/归并排序/" style="font-size: 15px;">归并排序</a> <a href="/tags/逆序对/" style="font-size: 15px;">逆序对</a> <a href="/tags/LCA/" style="font-size: 15px;">LCA</a> <a href="/tags/树状数组/" style="font-size: 15px;">树状数组</a> <a href="/tags/北大金秋营/" style="font-size: 15px;">北大金秋营</a> <a href="/tags/NOIP2014/" style="font-size: 15px;">NOIP2014</a> <a href="/tags/MySql/" style="font-size: 15px;">MySql</a> <a href="/tags/化学/" style="font-size: 15px;">化学</a> <a href="/tags/百题大过关/" style="font-size: 15px;">百题大过关</a> <a href="/tags/逆袭/" style="font-size: 15px;">逆袭</a> <a href="/tags/字体/" style="font-size: 15px;">字体</a> <a href="/tags/转载/" style="font-size: 15px;">转载</a> <a href="/tags/HFMUN重构系列/" style="font-size: 15px;">HFMUN重构系列</a> <a href="/tags/创新作文大赛/" style="font-size: 15px;">创新作文大赛</a> <a href="/tags/物理/" style="font-size: 15px;">物理</a> <a href="/tags/apt-get/" style="font-size: 15px;">apt-get</a> <a href="/tags/OOP/" style="font-size: 15px;">OOP</a> <a href="/tags/wisecity/" style="font-size: 15px;">wisecity</a> <a href="/tags/前端自动化测试/" style="font-size: 15px;">前端自动化测试</a> <a href="/tags/总结/" style="font-size: 15px;">总结</a> <a href="/tags/前端/" style="font-size: 15px;">前端</a> <a href="/tags/单元测试/" style="font-size: 15px;">单元测试</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a> <a href="/tags/web设计/" style="font-size: 15px;">web设计</a> <a href="/tags/杂感/" style="font-size: 15px;">杂感</a> <a href="/tags/产品/" style="font-size: 15px;">产品</a> <a href="/tags/家书/" style="font-size: 15px;">家书</a> <a href="/tags/成人礼/" style="font-size: 15px;">成人礼</a> <a href="/tags/作文/" style="font-size: 15px;">作文</a> <a href="/tags/诗/" style="font-size: 15px;">诗</a> <a href="/tags/随想/" style="font-size: 15px;">随想</a> <a href="/tags/python/" style="font-size: 15px;">python</a> <a href="/tags/Meta-Classes/" style="font-size: 15px;">Meta Classes</a> <a href="/tags/黑魔法/" style="font-size: 15px;">黑魔法</a> <a href="/tags/元编程/" style="font-size: 15px;">元编程</a> <a href="/tags/javascript/" style="font-size: 15px;">javascript</a> <a href="/tags/DIY/" style="font-size: 15px;">DIY</a> <a href="/tags/字符串模板/" style="font-size: 15px;">字符串模板</a> <a href="/tags/正则表达式/" style="font-size: 15px;">正则表达式</a> <a href="/tags/计算几何/" style="font-size: 15px;">计算几何</a> <a href="/tags/向量/" style="font-size: 15px;">向量</a> <a href="/tags/generator/" style="font-size: 15px;">generator</a> <a href="/tags/coroutine/" style="font-size: 15px;">coroutine</a> <a href="/tags/杂谈/" style="font-size: 15px;">杂谈</a> <a href="/tags/Key-Maps/" style="font-size: 15px;">Key Maps</a></div></div><div class="widget"><div class="widget-title">最新文章</div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/alternative-key-maps-under-ubuntu/">Ubuntu 重新映射键盘布局</a></li><li class="post-list-item"><a class="post-list-link" href="/why-I-choose-to-climb-over-the-wall/">为什么我要翻墙</a></li><li class="post-list-item"><a class="post-list-link" href="/python-generator-coroutine/">Python “黑魔法” 之 Generator Coroutines</a></li><li class="post-list-item"><a class="post-list-link" href="/the-simplest-way-to-find-out-if-two-segments-are-intersected/">数学美 之 判断线段相交的最简方法</a></li><li class="post-list-item"><a class="post-list-link" href="/thinking-in-the-day-before-lunar-new-year-of-2016/">除夕杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/a-simple-javascript-template-language/">17 行代码实现的简易 Javascript 字符串模板</a></li><li class="post-list-item"><a class="post-list-link" href="/meta-class-in-python/">Python “黑魔法” 之 Meta Classes</a></li><li class="post-list-item"><a class="post-list-link" href="/poems/">诗集</a></li><li class="post-list-item"><a class="post-list-link" href="/life-needs-discovery/">生活，需要被“发现”</a></li><li class="post-list-item"><a class="post-list-link" href="/letter-to-parents/">家书·十八岁成人礼</a></li></ul></div><div class="widget"><div class="comments-title">最近评论</div><div data-num-items="5" data-show-avatars="0" data-show-time="1" data-show-admin="0" data-excerpt-length="32" data-show-title="1" class="ds-recent-comments"></div></div></div></div></div><div id="footer">© <a href="/" rel="nofollow">thoughts of hsfzxjy.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></body><script src="/js/jquery.min.js"></script>
+<script src="/js/totop.js"></script>
+<script src="/js/adjust-wechat.js"></script><script src="/js/fancybox.pack.js"></script><link rel="stylesheet" href="/css/jquery.fancybox.css"><script>$(document).ready(function() {
+    $('img').each(function() {
+        if ($(this).parent().hasClass('fancybox')) return;
+        if ($(this).hasClass('nofancybox')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+        $(this).wrap('<a href="' + ($(this).attr('data-src') == null ? this.src : $(this).attr('data-src')) + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article');
+    });
+});</script><script>$(document).ready(function() {
+    $("a[href$='.jpg'],a[href$='.png'],a[href$='.gif']").attr('rel', 'gallery').fancybox({
+     helpers : {
+     title: { type: 'inside'}
+     }
+ });
+});
+</script><script>var duoshuoQuery = {short_name:'hsfzxjy'};
+(function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('body')[0]
+                || document.getElementsByTagName('head')[0]).appendChild(ds);
+})();
+</script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$']]},
+    jax: ["input/TeX","output/HTML-CSS"]
+});
+</script><script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></html>
