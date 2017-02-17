@@ -1,24 +1,24 @@
 <a id="rocket" href="#top" class="show"></a><html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/><meta content="telephone=no" name="format-detection"/><meta name="description"/><title>thoughts of hsfzxjy</title><link rel="stylesheet" type="text/css" href="/css/normalize.css"/><link rel="stylesheet" type="text/css" href="/css/pure-min.css"/><link rel="stylesheet" type="text/css" href="/css/grids-responsive-min.css"/><link rel="stylesheet" type="text/css" href="/css/style.css"/><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"/><link rel="alternate" type="application/atom+xml" href="/atom.xml"/></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">thoughts of hsfzxjy</h1><a id="logo" href="/">thoughts of hsfzxjy</a><p class="description"></p><iframe src="https://ghbtns.com/github-btn.html?user=hsfzxjy&amp;type=follow&amp;count=true" frameborder="0" scrolling="0" width="170px" height="20px" class="github-btn"></iframe></div><div id="nav-menu"><a href="/" class="current"><i class="icon-home"> 首页</i></a><a href="/categories/编程/"><i class="icon-code"> 码海拾贝</i></a><a href="/categories/杂感/"><i class="icon-life"> 五味杂感</i></a><a href="/about/"><i class="icon-about"> 我</i></a><a href="/aggr/"><i class="icon-history"> 索引</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h2 class="post-title"><a href="/igems-tech-study-suggestions/">iGems 后端组关于技术学习的几点建议</a></h2><div class="post-meta">2017年02月17日</div><span data-thread-key="igems-tech-study-suggestions/" class="ds-thread-count"></span><div class="post-content"><ul>
-<li>google. 对于编码者而言 Google 是唯一能用的搜索引擎，不会科学上网的看这里：<a href="https://github.com/racaljk/hosts/blob/master/README.md" target="_blank" rel="external">https://github.com/racaljk/hosts/blob/master/README.md</a> 。尽量使用英文搜索，中文内容太水。</li>
-<li>HTTP. HTTP 协议是网页的基础，理解 HTTP 可以少踩很多坑。主要了解前后端的交互机制，请求方法的种类及区别，报文的组成，返回码的含义。可以使用webkit内核的浏览器（如 chrome 或国内各大厂的浏览器按F12后切到 Timeline 页观察 HTTP 交互过程)。</li>
-<li>python. 学习 python3 即可，python2 已经过时了。初期 python 主要是学习语法，力求用最简洁的方式解决问题。面向对象将会是一道很难过的坎，你会不理解为什么代码要组织成那样。面向对象的目的可以总结为：D.R.Y(Dont Repeat Yourself), Robustness(隐藏实现，暴露接口，减少恶意访问)，Extensible(通过继承与多态为有可能的扩展留接口)。多想想几个问题：如果逻辑需要重复使用该怎么做？如果使用者很暴力该怎么做？如果事后需求更改了该怎么做？从这几个角度看面向对象就不是那么不可理喻了。我有空时会普及相关经验。</li>
-<li>python 生态. 学会使用 pip 这个工具，知道如何优雅地安装 python 模块.</li>
-<li>python virtualenv. 这是 python 的虚拟环境，用于隔离不同项目的依赖包.</li>
-<li>python 代码规范. 一个庞大的队伍很有必要统一代码规范。参阅 PEP8：<a href="https://www.python.org/dev/peps/pep-0008/" target="_blank" rel="external">https://www.python.org/dev/peps/pep-0008/</a></li>
-<li>数据库. 大家应该学过或正在学这门课，了解一下什么是 database，什么是 table，浏览一下 SQL 语法即可。实际编程时并不会直接写 SQL，web 框架会有更加 semantic 的解决方案。预计将会使用 MySQL 或 PostgreSQL(倘若需求很奇葩)</li>
-<li>git. 学会 commit 和 push（最基础），学会 branch 相关操作（开分支，合并分支，删分支等），回滚历史，读懂 conflict 报告并懂得修复。没事时可以在 github 上开个 repository 自己玩。</li>
-<li>编辑器. 顺手的编辑器是必要的。python IDLE 只是玩具，pycharm 可以一试，抑或是轻量级编辑器 Sublime Text 3， Atom，想折腾可以用 Vim。</li>
+<li><strong>google</strong>. 对于编码者而言 Google 是唯一能用的搜索引擎，不会科学上网的看这里：<a href="https://github.com/racaljk/hosts/blob/master/README.md" target="_blank" rel="external">https://github.com/racaljk/hosts/blob/master/README.md</a> 。尽量使用英文搜索，中文内容太水。</li>
+<li><strong>HTTP</strong>. HTTP 协议是网页的基础，理解 HTTP 可以少踩很多坑。主要了解前后端的交互机制，请求方法的种类及区别，报文的组成，返回码的含义。可以使用webkit内核的浏览器（如 chrome 或国内各大厂的浏览器按F12后切到 Timeline 页观察 HTTP 交互过程)。</li>
+<li><strong>python</strong>. 学习 python3 即可，python2 已经过时了。初期 python 主要是学习语法，力求用最简洁的方式解决问题。面向对象将会是一道很难过的坎，你会不理解为什么代码要组织成那样。面向对象的目的可以总结为：D.R.Y(Dont Repeat Yourself), Robustness(隐藏实现，暴露接口，减少恶意访问)，Extensible(通过继承与多态为有可能的扩展留接口)。多想想几个问题：如果逻辑需要重复使用该怎么做？如果使用者很暴力该怎么做？如果事后需求更改了该怎么做？从这几个角度看面向对象就不是那么不可理喻了。我有空时会普及相关经验。</li>
+<li><strong>python 生态</strong>. 学会使用 pip 这个工具，知道如何优雅地安装 python 模块.</li>
+<li><strong>python virtualenv</strong>. 这是 python 的虚拟环境，用于隔离不同项目的依赖包.</li>
+<li><strong>python 代码规范</strong>. 一个庞大的队伍很有必要统一代码规范。参阅 PEP8：<a href="https://www.python.org/dev/peps/pep-0008/" target="_blank" rel="external">https://www.python.org/dev/peps/pep-0008/</a></li>
+<li><strong>数据库</strong>. 大家应该学过或正在学这门课，了解一下什么是 database，什么是 table，浏览一下 SQL 语法即可。实际编程时并不会直接写 SQL，web 框架会有更加 semantic 的解决方案。预计将会使用 MySQL 或 PostgreSQL(倘若需求很奇葩)</li>
+<li><strong>git</strong>. 学会 commit 和 push（最基础），学会 branch 相关操作（开分支，合并分支，删分支等），回滚历史，读懂 conflict 报告并懂得修复。没事时可以在 github 上开个 repository 自己玩。</li>
+<li><strong>编辑器</strong>. 顺手的编辑器是必要的。python IDLE 只是玩具，pycharm 可以一试，抑或是轻量级编辑器 Sublime Text 3， Atom，想折腾可以用 Vim。</li>
 <li>终端（主要针对 Windows 依赖者）. Windows 的 cmd 真心烂，倘若安装了 git，可以使用 git bash 代替 cmd。更多选项上网自己搜。</li>
-<li>终端的使用. 熟悉各自开发环境下常用命令的用法，开发时摆脱对图形界面的依赖。真实开发时，调试、测试、环境搭建很多都不提供图形界面，要早有准备。</li>
-<li>linux. 最终部署一定是在 linux 上的，linux 相关知识不能一无所知。有空时可以装 ubuntu (虚拟机或双系统)玩一下。OSX 和 linux 都是 UNIX 的分支，很相似，Mac 用户可以多使用终端熟悉命令。</li>
-<li><p>学习资源. IT 领域有个特点，即相关知识迭代速度特别快，web 尤是如此，常以月为更新周期。后端还好些，前端甚至以天为单位。因此，很多书一出版就过时了。学习一门技术，最好是到它的官网看文档（大多数支持本地下载为 pdf，epub 等格式）。</p>
+<li><strong>终端的使用</strong>. 熟悉各自开发环境下常用命令的用法，开发时摆脱对图形界面的依赖。真实开发时，调试、测试、环境搭建很多都不提供图形界面，要早有准备。</li>
+<li><strong>linux</strong>. 最终部署一定是在 linux 上的，linux 相关知识不能一无所知。有空时可以装 ubuntu (虚拟机或双系统)玩一下。OSX 和 linux 都是 UNIX 的分支，很相似，Mac 用户可以多使用终端熟悉命令。</li>
+<li><p><strong>学习资源</strong>. IT 领域有个特点，即相关知识迭代速度特别快，web 尤是如此，常以月为更新周期。后端还好些，前端甚至以天为单位。因此，很多书一出版就过时了。学习一门技术，最好是到它的官网看文档（大多数支持本地下载为 pdf，epub 等格式）。</p>
 <p>其他，有兴趣和时间可以看看：</p>
 </li>
-<li>django. <a href="https://docs.djangoproject.com/en/1.10/" target="_blank" rel="external">https://docs.djangoproject.com/en/1.10/</a></li>
-<li>flask. <a href="http://flask.pocoo.org/" target="_blank" rel="external">http://flask.pocoo.org/</a></li>
-<li>tornado. <a href="http://www.tornadoweb.org/en/stable/" target="_blank" rel="external">http://www.tornadoweb.org/en/stable/</a></li>
-<li>REST. Representational State Transfer 是一种基于数据交换规范，倘若上面真要前后端分离，REST 不失为一种最佳实践。由于其设计合理性，不少前后端框架都有相关的插件，因此可以大幅度减少工作量。<a href="https://en.wikipedia.org/wiki/Representational_state_transfer" target="_blank" rel="external">https://en.wikipedia.org/wiki/Representational_state_transfer</a></li>
-<li>前端相关知识. 后端不能完全不懂前端，很多时候需要站在前端的角度分析技术合理性。</li>
+<li><strong>django</strong>. <a href="https://docs.djangoproject.com/en/1.10/" target="_blank" rel="external">https://docs.djangoproject.com/en/1.10/</a></li>
+<li><strong>flask</strong>. <a href="http://flask.pocoo.org/" target="_blank" rel="external">http://flask.pocoo.org/</a></li>
+<li><strong>tornado</strong>. <a href="http://www.tornadoweb.org/en/stable/" target="_blank" rel="external">http://www.tornadoweb.org/en/stable/</a></li>
+<li><strong>REST</strong>. Representational State Transfer 是一种基于数据交换规范，倘若上面真要前后端分离，REST 不失为一种最佳实践。由于其设计合理性，不少前后端框架都有相关的插件，因此可以大幅度减少工作量。<a href="https://en.wikipedia.org/wiki/Representational_state_transfer" target="_blank" rel="external">https://en.wikipedia.org/wiki/Representational_state_transfer</a></li>
+<li><strong>前端相关知识</strong>. 后端不能完全不懂前端，很多时候需要站在前端的角度分析技术合理性。</li>
 </ul>
 </div></div><div class="post"><h2 class="post-title"><a href="/raining-in-ustc/">午后雨·科大</a></h2><div class="post-meta">2016年08月22日</div><span data-thread-key="raining-in-ustc/" class="ds-thread-count"></span><div class="post-content"><p>从昏睡中惊醒——现在是下午，屋内却很昏暗。屋外，隐约有一阵持续的背景噪音，我拉开窗帘，只见白茫茫的一片。</p>
 <p>下雨了，而且是大暴雨。</p>
