@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://blog.hsfzxjy.site/igems-tech-study-suggestions/</loc>
+    
+    <lastmod>2017-02-17T14:13:17.291Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://blog.hsfzxjy.site/leaving-guangzhou/</loc>
     
     <lastmod>2016-08-28T02:24:24.900Z</lastmod>
@@ -44,14 +51,14 @@
   </url>
   
   <url>
-    <loc>http://blog.hsfzxjy.site/tags/index.html</loc>
+    <loc>http://blog.hsfzxjy.site/alter-mysql-character-set-under-ubuntu/</loc>
     
     <lastmod>2016-07-29T05:56:20.414Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://blog.hsfzxjy.site/alter-mysql-character-set-under-ubuntu/</loc>
+    <loc>http://blog.hsfzxjy.site/tags/index.html</loc>
     
     <lastmod>2016-07-29T05:56:20.414Z</lastmod>
     
@@ -198,13 +205,6 @@
   </url>
   
   <url>
-    <loc>http://blog.hsfzxjy.site/that-starry-night/</loc>
-    
-    <lastmod>2016-07-18T03:09:34.294Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://blog.hsfzxjy.site/RMQ-binary/</loc>
     
     <lastmod>2016-07-18T03:09:34.294Z</lastmod>
@@ -247,7 +247,7 @@
   </url>
   
   <url>
-    <loc>http://blog.hsfzxjy.site/remove-broken-packages-under-ubuntu/</loc>
+    <loc>http://blog.hsfzxjy.site/reprinted-shiwenguoren/</loc>
     
     <lastmod>2016-07-18T03:09:34.294Z</lastmod>
     
@@ -275,14 +275,14 @@
   </url>
   
   <url>
-    <loc>http://blog.hsfzxjy.site/chemistry-impurity/</loc>
+    <loc>http://blog.hsfzxjy.site/remove-broken-packages-under-ubuntu/</loc>
     
     <lastmod>2016-07-18T03:09:34.294Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://blog.hsfzxjy.site/reprinted-shiwenguoren/</loc>
+    <loc>http://blog.hsfzxjy.site/that-starry-night/</loc>
     
     <lastmod>2016-07-18T03:09:34.294Z</lastmod>
     
@@ -346,6 +346,13 @@
   
   <url>
     <loc>http://blog.hsfzxjy.site/html5-media-test/</loc>
+    
+    <lastmod>2016-07-18T03:09:34.294Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/chemistry-impurity/</loc>
     
     <lastmod>2016-07-18T03:09:34.294Z</lastmod>
     
