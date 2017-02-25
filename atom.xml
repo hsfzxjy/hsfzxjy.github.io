@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://hsfzxjy.oicp.io/"/>
-  <updated>2017-02-25T08:47:38.162Z</updated>
+  <updated>2017-02-25T08:51:02.592Z</updated>
   <id>http://hsfzxjy.oicp.io/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>HSFZMUN 部署小记</title>
+    <title>HSFZMUN 4.0 部署小记</title>
     <link href="http://hsfzxjy.oicp.io/django-channels-configuration/"/>
     <id>http://hsfzxjy.oicp.io/django-channels-configuration/</id>
     <published>2017-02-24T16:00:00.000Z</published>
-    <updated>2017-02-25T08:47:38.162Z</updated>
+    <updated>2017-02-25T08:51:02.592Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>技术流水账一篇，记录踩过的坑</p>
