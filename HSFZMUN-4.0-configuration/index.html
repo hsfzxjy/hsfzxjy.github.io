@@ -15,7 +15,7 @@
 <li>uwsgi</li>
 <li>redis（作为缓存和 Channel Layer）</li>
 </ul>
-<h2 id="Channels-Session-based-Authentication"><a href="#Channels-Session-based-Authentication" class="headerlink" title="Channels Session-based Authentication"></a>Channels Session-based Authentication</h2><p>channels 有提供基于 HTTP Session 的认证方式，但由于 websocket 和 http 在此不是同域请求（端口号不同），主域名下的 cookies 不会随 websocket 请求发送。故在发起 websocket 链接时要带上一个 GET 参数 <code>session_key</code>。在模板中该参数可由 <code></code> 获得。</p>
+<h2 id="Channels-Session-based-Authentication"><a href="#Channels-Session-based-Authentication" class="headerlink" title="Channels Session-based Authentication"></a>Channels Session-based Authentication</h2><p>channels 有提供基于 HTTP Session 的认证方式，但由于 websocket 和 http 在此不是同域请求（端口号不同），主域名下的 cookies 不会随 websocket 请求发送。故在发起 websocket 链接时要带上一个 GET 参数 <code>session_key</code>。在模板中该参数可由 <code>\{\{request.session.session_key\}\}</code> 获得。</p>
 <h2 id="uwsgi"><a href="#uwsgi" class="headerlink" title="uwsgi"></a>uwsgi</h2><p>安装：</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo pip install uwsgi <span class="comment"># 全局安装</span></div></pre></td></tr></table></figure>
 <p>编写配置文件 <code>/etc/uwsgi/sites/hsfzmun.ini</code>：</p>
