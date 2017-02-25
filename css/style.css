@@ -12,10 +12,16 @@
 body {
   background-color: #f6f6f6;
   color: #444;
-  font-family: Cambria, Georgia, "Microsoft Jhenghei", "Hiragino Sans GB", "Microsoft YaHei", "Times New Roman", sans-serif;
+  font-family: Georgia, Times New Roman, Times, serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 14px; }
+
+* {
+  font-family: Georgia, Times New Roman, Times, serif !important; }
+
+body, html {
+  overflow-x: hidden; }
 
 .body_container {
   padding: 0 60px;
@@ -45,7 +51,11 @@ a:hover, a:active {
 a:focus {
   outline: auto; }
 
-.clear {
+.clear:after {
+  content: " ";
+  visibility: hidden;
+  display: block;
+  height: 0;
   clear: both; }
 
 #header {
@@ -53,29 +63,24 @@ a:focus {
   text-align: left;
   border-bottom: 1px solid #ddd;
   position: relative; }
-  #header .site-name {
-    margin-bottom: 40px; }
-    #header .site-name h1 {
-      padding: 0;
-      margin: 0;
-      height: 0;
-      overflow: hidden; }
-    #header .site-name #logo {
-      font: bold 38px/1.12 "life-saver","Times New Roman", Georgia, Times, sans-serif;
-      color: #555; }
-      #header .site-name #logo span, #header .site-name #logo:hover {
-        color: #777; }
-    #header .site-name .description {
-      margin: .2em 0 0;
-      color: #999; }
-    #header .site-name .github-btn {
-      margin: 20px 0; }
+  #header .site-name h1 {
+    padding: 0;
+    margin: 0;
+    height: 0;
+    overflow: hidden; }
+  #header .site-name #logo {
+    font: bold 38px/1.12 "life-saver", "Times New Roman", Georgia, Times, sans-serif !important;
+    color: #555; }
+    #header .site-name #logo span, #header .site-name #logo:hover {
+      color: #777; }
+  #header .site-name .description {
+    margin: .2em 0 0;
+    color: #999; }
+  #header .site-name .github-btn {
+    margin: 20px 0; }
   #header #nav-menu {
     margin: 10px 0 -1px;
-    padding: 0;
-    position: absolute;
-    right: 0;
-    bottom: 0; }
+    padding: 0; }
     #header #nav-menu a {
       display: inline-block;
       padding: 3px 20px 3px;
@@ -211,8 +216,6 @@ a:focus {
       margin: 1.4em 0 1.1em; }
     .post .post-content pre code {
       padding: 0 2em; }
-    .post .post-content > p {
-      text-indent: 2em; }
     .post .post-content p {
       margin: 0 0 1.234em; }
       .post .post-content p code {
@@ -334,7 +337,6 @@ a:focus {
   #sidebar {
     display: none; }
   #header .site-name {
-    margin-bottom: 60px;
     text-align: center; }
   #header #nav-menu a {
     padding: 0 15px;
@@ -444,60 +446,51 @@ div {
 
 .timeline {
   width: 400px; }
-
-.timeline .timeline-item {
-  width: 100%; }
-
-.timeline .timeline-item .info, .timeline .timeline-item .year {
-  color: #eee;
-  display: block;
-  float: left; }
-
-.timeline .timeline-item .year {
-  font-size: 20px;
-  width: 22%; }
-
-.timeline .timeline-item .info {
-  width: 100%;
-  width: 78%;
-  margin-left: -2px;
-  padding: 0 0 40px 35px;
-  border-left: 4px solid #aaa;
-  font-size: 14px;
-  line-height: 20px; }
-
-.timeline .timeline-item .marker {
-  background-color: #f6f6f6;
-  border: 4px solid #aaa;
-  height: 20px;
-  width: 20px;
-  border-radius: 100px;
-  display: block;
-  float: right;
-  margin-right: -14px;
-  z-index: 2000;
-  position: relative; }
-
-.timeline .timeline-item.active .info {
-  color: #444; }
-
-.timeline .timeline-item.active .year {
-  color: #555; }
-
-.timeline .timeline-item .marker .dot {
-  background-color: white;
-  display: block;
-  border: 4px solid white;
-  height: 12px;
-  width: 12px;
-  border-radius: 100px;
-  float: right;
-  z-index: 2000;
-  position: relative; }
-
-.timeline .timeline-item.active .marker .dot {
-  background-color: #555;
-  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2); }
+  .timeline .timeline-item {
+    width: 100%; }
+    .timeline .timeline-item .info, .timeline .timeline-item .year {
+      color: #eee;
+      display: block;
+      float: left; }
+    .timeline .timeline-item .year {
+      font-size: 20px;
+      width: 22%; }
+    .timeline .timeline-item .info {
+      width: 100%;
+      width: 78%;
+      margin-left: -2px;
+      padding: 0 0 40px 35px;
+      border-left: 4px solid #aaa;
+      font-size: 14px;
+      line-height: 20px; }
+    .timeline .timeline-item .marker {
+      background-color: #f6f6f6;
+      border: 4px solid #aaa;
+      height: 20px;
+      width: 20px;
+      border-radius: 100px;
+      display: block;
+      float: right;
+      margin-right: -14px;
+      z-index: 2000;
+      position: relative; }
+      .timeline .timeline-item .marker .dot {
+        background-color: white;
+        display: block;
+        border: 4px solid white;
+        height: 12px;
+        width: 12px;
+        border-radius: 100px;
+        float: right;
+        z-index: 2000;
+        position: relative; }
+    .timeline .timeline-item.active .info {
+      color: #444; }
+    .timeline .timeline-item.active .year {
+      color: #555; }
+    .timeline .timeline-item.active .marker .dot {
+      background-color: #555;
+      box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2); }
 
 /* read more*/
 .readmore a {
@@ -648,9 +641,9 @@ pre,
 .gist .gist-file .gist-data .line-numbers {
   color: #666; }
 
-pre,
-code {
-  font-family: "Input Mono", "PT Mono", Consolas, Monaco, Menlo, monospace; }
+pre *,
+code * {
+  font-family: "Input Mono", "PT Mono", Consolas, Monaco, Menlo, monospace !important; }
 
 code {
   word-break: break-all;
@@ -812,7 +805,7 @@ pre .javascript .function {
   font-style: normal; }
 
 [class^="icon-"], [class*=" icon-"] {
-  font-family: 'icomoon';
+  font-family: "icomoon" !important;
   speak: none;
   font-style: normal;
   font-weight: normal;
@@ -881,16 +874,20 @@ pre .javascript .function {
   border: 1px solid #bbb;
   border-radius: 7px;
   margin: 2em 0 0 2em;
-  padding: 0.7em 0.7em 0 0.7em;
-  max-width: 40%; }
+  padding: 0.7em; }
 
 .toc-title {
   font-size: 120%; }
 
 #toc {
+  background-color: #f6f6f6;
+  opacity: .96;
   line-height: 1em;
-  float: right; }
+  position: fixed;
+  left: 0;
+  top: 0; }
   #toc .toc {
+    display: none;
     padding: 0;
     margin: 0.5em;
     line-height: 1.8em; }

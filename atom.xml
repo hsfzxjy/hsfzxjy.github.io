@@ -4,9 +4,9 @@
   
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://blog.hsfzxjy.site/"/>
-  <updated>2017-02-17T14:29:44.642Z</updated>
-  <id>http://blog.hsfzxjy.site/</id>
+  <link href="http://hsfzxjy.oicp.io/"/>
+  <updated>2017-02-25T08:47:38.162Z</updated>
+  <id>http://hsfzxjy.oicp.io/</id>
   
   <author>
     <name>hsfzxjy</name>
@@ -16,9 +16,94 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>HSFZMUN 部署小记</title>
+    <link href="http://hsfzxjy.oicp.io/django-channels-configuration/"/>
+    <id>http://hsfzxjy.oicp.io/django-channels-configuration/</id>
+    <published>2017-02-24T16:00:00.000Z</published>
+    <updated>2017-02-25T08:47:38.162Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>技术流水账一篇，记录踩过的坑</p>
+</blockquote>
+<h2 id="Channels-异构"><a href="#Channels-异构" class="headerlink" title="Channels 异构"></a>Channels 异构</h2><p>Django Channels 官方文档宣称 channels 的最佳配置是使用其自带的服务器组件 Daphne，但在开发中我发现 daphne 处理普通请求比在 WSGI 架构下慢了好几倍，更何况使用 daphne 派发静态文件是十分不切实际的。于是我将 <code>http.request</code> 和 <code>websocket.*</code> 两个 channel 解耦，前者使用 nginx 配合 uwsgi 处理，后者使用 nginx 反向代理至 daphne 处理。这样一来便可充分利用两种架构的优势。</p>
+<p><strong>旧架构：</strong></p>
+<p><img src="/assets/django-channels-configuration/old-arch.png" alt=""></p>
+<p><strong>新架构：</strong></p>
+<p><img src="/assets/django-channels-configuration/new-arch.png" alt=""></p>
+<a id="more"></a>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><ul>
+<li>Ubuntu Server 16.04（与开发环境相同）</li>
+<li>python 3.5.2</li>
+<li>virtualenv &amp; virtualenvwrapper</li>
+<li>nginx</li>
+<li>uwsgi</li>
+<li>redis（作为缓存和 Channel Layer）</li>
+</ul>
+<h2 id="Channels-Session-based-Authentication"><a href="#Channels-Session-based-Authentication" class="headerlink" title="Channels Session-based Authentication"></a>Channels Session-based Authentication</h2><p>channels 有提供基于 HTTP Session 的认证方式，但由于 websocket 和 http 在此不是同域请求（端口号不同），主域名下的 cookies 不会随 websocket 请求发送。故在发起 websocket 链接时要带上一个 GET 参数 <code>session_key</code>。在模板中该参数可由 <code></code> 获得。</p>
+<h2 id="uwsgi"><a href="#uwsgi" class="headerlink" title="uwsgi"></a>uwsgi</h2><p>安装：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo pip install uwsgi <span class="comment"># 全局安装</span></div></pre></td></tr></table></figure>
+<p>编写配置文件 <code>/etc/uwsgi/sites/hsfzmun.ini</code>：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="section">[uwsgi]</span></div><div class="line"><span class="attr">uid</span> = git</div><div class="line"><span class="attr">chdir</span> = /home/git/hsfzmun/server</div><div class="line"><span class="attr">module</span> = config.wsgi:application</div><div class="line"><span class="attr">home</span> = /home/git/virtualenvs/hsfzmun # Virtualenv 路径</div><div class="line"><span class="attr">master</span> = <span class="literal">true</span></div><div class="line"><span class="attr">processes</span> = <span class="number">10</span></div><div class="line"><span class="attr">socket</span> = /var/www/hsfzmun.sock # 使用 Unix Socket 与 nginx 通信</div><div class="line"><span class="attr">chmod-socket</span> = <span class="number">666</span></div><div class="line"><span class="attr">vacuum</span> = <span class="literal">true</span></div></pre></td></tr></table></figure>
+<p>配置 systemd 服务（<code>uwsgi.service</code>）：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="section">[Unit]</span></div><div class="line"><span class="attr">Description</span>=uWSGI Module</div><div class="line"><span class="section"></span></div><div class="line">[Service]</div><div class="line"><span class="attr">ExecStartPre</span>=/bin/bash -c <span class="string">'mkdir -p /run/uwsgi; chown git:www-data /run/uwsgi'</span></div><div class="line"><span class="attr">ExecStart</span>=/usr/local/bin/uwsgi --emperor /etc/uwsgi/sites --touch-reload=/home/git/hsfzmun/server/uwsgi_params</div><div class="line"><span class="attr">Restart</span>=always</div><div class="line"><span class="attr">KillSignal</span>=SIGQUIT</div><div class="line"><span class="attr">Type</span>=notify</div><div class="line"><span class="attr">NotifyAccess</span>=all</div><div class="line"><span class="section"></span></div><div class="line">[Install]</div><div class="line"><span class="attr">WantedBy</span>=multi-user.target</div></pre></td></tr></table></figure>
+<p>uwsgi 有个优点：可以通过 <code>--touch-reload</code> 参数简洁地重启服务，这样只需一条 <code>touch</code> 命令便可以完成新代码的部署。</p>
+<h2 id="daphne"><a href="#daphne" class="headerlink" title="daphne"></a>daphne</h2><p>daphne 有两个模块：Interface Server 和 Workers。前者负责处理 Websocket、long-polling 等请求，并将其抽象化为 channels 传递给 Workers，Workers 则负责执行具体的业务逻辑。这么做有一个好处就是 <strong>降低了底层与业务逻辑的耦合度，即使业务层崩溃也不会使连接断开，同时也减少了新代码部署对整个系统的印象</strong>。部署新代码时只需重启 Workers 即可。</p>
+<p><code>daphnei.service</code>：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="section">[Unit]</span></div><div class="line"><span class="attr">Description</span>=Daphne Interface Server</div><div class="line"><span class="section"></span></div><div class="line">[Service]</div><div class="line"><span class="attr">ExecStart</span>=/home/git/cmd/daphnei</div><div class="line"><span class="attr">Restart</span>=always</div><div class="line"><span class="attr">KillSignal</span>=SIGQUIT</div><div class="line"><span class="attr">Type</span>=simple</div><div class="line"><span class="attr">NotifyAccess</span>=all</div><div class="line"><span class="section"></span></div><div class="line">[Install]</div><div class="line"><span class="attr">WantedBy</span>=multi-user.target</div></pre></td></tr></table></figure>
+<p><code>daphnew.service</code>：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="section">[Unit]</span></div><div class="line"><span class="attr">Description</span>=Daphne Worker</div><div class="line"><span class="section"></span></div><div class="line">[Service]</div><div class="line"><span class="attr">ExecStart</span>=/home/git/cmd/daphnew</div><div class="line"><span class="attr">Type</span>=simple</div><div class="line"><span class="attr">KillSignal</span>=SIGQUIT</div><div class="line"><span class="attr">Restart</span>=always</div><div class="line"><span class="attr">NotifyAccess</span>=all</div><div class="line"><span class="section"></span></div><div class="line">[Install]</div><div class="line"><span class="attr">WantedBy</span>=multi-user.target</div></pre></td></tr></table></figure>
+<p><strong>此处踩了一个坑</strong>：起初 <code>Type</code> 处的值是 <code>Notify</code>，因为我是仿照 <code>uwsgi.service</code> 编写这两个文件的。<code>Notify</code> 型服务要求主进程自行通知 <code>systemd</code> 自己的启动/停止状态，但 daphne 没有这样的机制，从而导致 <code>systemctl</code> 阻塞，并以 90 秒为周期不断重启服务。幸好 StackOverflow 上的大神指出了这个错误。</p>
+<p>这里我将具体的服务脚本独立出来，因为 <code>ExecStart</code> 不支持编写多行语句。</p>
+<p><code>cmd/daphnei</code>：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"><span class="built_in">cd</span> /home/git/hsfzmun/server</div><div class="line">/home/git/virtualenvs/hsfzmun/bin/daphne -b 0.0.0.0 -p 8001 -v2 config.asgi:channel_layer --access-log=/var/www/daphnei.log</div></pre></td></tr></table></figure>
+<p><code>cmd/daphnew</code>：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"><span class="built_in">cd</span> /home/git/hsfzmun/server</div><div class="line">/home/git/virtualenvs/hsfzmun/bin/python manage.py runworker --threads 5 --only-channels=websocket.*</div></pre></td></tr></table></figure>
+<p><strong>此处 daphne 有个 bug</strong>：理论上 verbosity 不应该影响程序的行为，但如果不加 <code>-v2</code> 参数 nginx 会报 <code>502 Bad Gateway</code>。</p>
+<h2 id="nginx"><a href="#nginx" class="headerlink" title="nginx"></a>nginx</h2><p>此处的难点是反向代理 websockets，因为 nginx 默认不识别 websocket 协议。为了能正确指定协议头，只能将所有 websocket 请求路由到某一子路径下。</p>
+<p><code>nginx.service</code>：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="section">server</span> &#123;</div><div class="line">  <span class="attribute">listen</span> <span class="number">80</span>;</div><div class="line">  <span class="attribute">server_name</span> &lt;ip&gt; product;</div><div class="line"></div><div class="line">  <span class="comment"># 静态文件</span></div><div class="line">  <span class="attribute">location</span> /static &#123;</div><div class="line">    <span class="attribute">alias</span> /var/www/static;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment"># 用户上传的文件</span></div><div class="line">  <span class="attribute">location</span> /m &#123;</div><div class="line">    <span class="attribute">alias</span> /var/www/media;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment"># uwsgi 反向代理</span></div><div class="line">  <span class="attribute">location</span> / &#123;</div><div class="line">    <span class="attribute">include</span> /var/www/uwsgi_params;</div><div class="line">    <span class="attribute">uwsgi_pass</span> unix:/var/www/hsfzmun.sock;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment"># daphne 反向代理</span></div><div class="line">  <span class="attribute">location</span> /ws &#123;</div><div class="line">    <span class="attribute">proxy_pass</span> http://0.0.0.0:8001;</div><div class="line">    <span class="attribute">proxy_http_version</span> <span class="number">1</span>.<span class="number">1</span>;</div><div class="line">    <span class="attribute">proxy_set_header</span> Upgrade <span class="variable">$http_upgrade</span>;</div><div class="line">    <span class="attribute">proxy_set_header</span> Connection <span class="string">"upgrade"</span>;</div><div class="line"></div><div class="line">    <span class="attribute">proxy_redirect</span>     <span class="literal">off</span>;</div><div class="line">    <span class="attribute">proxy_set_header</span>   Host <span class="variable">$host</span>;</div><div class="line">    <span class="attribute">proxy_set_header</span>   X-Real-IP <span class="variable">$remote_addr</span>;</div><div class="line">    <span class="attribute">proxy_set_header</span>   X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</div><div class="line">    <span class="attribute">proxy_set_header</span>   X-Forwarded-Host <span class="variable">$server_name</span>;</div><div class="line">    <span class="attribute">proxy_read_timeout</span>  <span class="number">36000s</span>;</div><div class="line">    <span class="attribute">proxy_send_timeout</span>  <span class="number">36000s</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Git-自动化部署"><a href="#Git-自动化部署" class="headerlink" title="Git 自动化部署"></a>Git 自动化部署</h2><p>去年的 WiseCity 3.0 采用 Github 中转的方式进行部署，这对 Github 的稳定性有很高的要求。这次则将生产服务器作为 Git Server，使用 Git Hooks 进行自动化部署，大大提高了生产效率。</p>
+<p>创建 git 用户：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ useradd git</div><div class="line">$ passwd git</div></pre></td></tr></table></figure>
+<p>设置 SSH authorized_keys（略）。</p>
+<p>创建仓库：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> ~</div><div class="line">$ git init --bare hsfzmun.git</div></pre></td></tr></table></figure>
+<p>创建钩子 <code>hooks/post-receive</code>：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"><span class="comment"># Checkout Repository</span></div><div class="line">GIT_WORK_TREE=/home/git/hsfzmun git checkout <span class="_">-f</span></div><div class="line"></div><div class="line"><span class="comment"># Activate Virtualenv</span></div><div class="line"><span class="built_in">cd</span> /home/git/hsfzmun/server</div><div class="line"><span class="built_in">export</span> LC_ALL=C</div><div class="line"><span class="built_in">export</span> VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3</div><div class="line"><span class="built_in">export</span> WORKON_HOME=~/virtualenvs</div><div class="line"><span class="built_in">source</span> /usr/<span class="built_in">local</span>/bin/virtualenvwrapper.sh</div><div class="line">workon hsfzmun</div><div class="line"></div><div class="line"><span class="comment"># Internationalization</span></div><div class="line">./manage.py compilemessages</div><div class="line"></div><div class="line"><span class="comment"># Collect Static Files</span></div><div class="line">./manage.py collectstatic --noinput</div><div class="line"></div><div class="line"><span class="comment"># Migrate Databases</span></div><div class="line">./manage.py migrate</div><div class="line"></div><div class="line"><span class="comment"># Restart uWSGI</span></div><div class="line">touch ./uwsgi_params</div><div class="line"></div><div class="line"><span class="comment"># Restart Daphne Workers</span></div><div class="line">sudo systemctl restart daphnew --no-block</div><div class="line"></div><div class="line"><span class="built_in">echo</span> <span class="string">"All operations done."</span></div></pre></td></tr></table></figure>
+<p>此钩子会在每次 push 之后执行，自动更新静态文件和数据库表并重启相关服务。</p>
+<p>本地添加远程仓库（略）。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;技术流水账一篇，记录踩过的坑&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;Channels-异构&quot;&gt;&lt;a href=&quot;#Channels-异构&quot; class=&quot;headerlink&quot; title=&quot;Channels 异构&quot;&gt;&lt;/a&gt;Channels 异构&lt;/h2&gt;&lt;p&gt;Django Channels 官方文档宣称 channels 的最佳配置是使用其自带的服务器组件 Daphne，但在开发中我发现 daphne 处理普通请求比在 WSGI 架构下慢了好几倍，更何况使用 daphne 派发静态文件是十分不切实际的。于是我将 &lt;code&gt;http.request&lt;/code&gt; 和 &lt;code&gt;websocket.*&lt;/code&gt; 两个 channel 解耦，前者使用 nginx 配合 uwsgi 处理，后者使用 nginx 反向代理至 daphne 处理。这样一来便可充分利用两种架构的优势。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;旧架构：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/django-channels-configuration/old-arch.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;新架构：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/django-channels-configuration/new-arch.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="ubuntu" scheme="http://hsfzxjy.oicp.io/tags/ubuntu/"/>
+    
+      <category term="django" scheme="http://hsfzxjy.oicp.io/tags/django/"/>
+    
+      <category term="django channels" scheme="http://hsfzxjy.oicp.io/tags/django-channels/"/>
+    
+      <category term="nginx" scheme="http://hsfzxjy.oicp.io/tags/nginx/"/>
+    
+  </entry>
+  
+  <entry>
     <title>iGems 后端组关于技术学习的几点建议</title>
-    <link href="http://blog.hsfzxjy.site/igems-tech-study-suggestions/"/>
-    <id>http://blog.hsfzxjy.site/igems-tech-study-suggestions/</id>
+    <link href="http://hsfzxjy.oicp.io/igems-tech-study-suggestions/"/>
+    <id>http://hsfzxjy.oicp.io/igems-tech-study-suggestions/</id>
     <published>2017-02-16T16:00:00.000Z</published>
     <updated>2017-02-17T14:29:44.642Z</updated>
     
@@ -49,15 +134,15 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
   </entry>
   
   <entry>
     <title>午后雨·科大</title>
-    <link href="http://blog.hsfzxjy.site/raining-in-ustc/"/>
-    <id>http://blog.hsfzxjy.site/raining-in-ustc/</id>
+    <link href="http://hsfzxjy.oicp.io/raining-in-ustc/"/>
+    <id>http://hsfzxjy.oicp.io/raining-in-ustc/</id>
     <published>2016-08-21T16:00:00.000Z</published>
     <updated>2016-08-28T02:19:31.408Z</updated>
     
@@ -83,17 +168,17 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://hsfzxjy.oicp.io/categories/%E6%9D%82%E6%84%9F/"/>
     
     
-      <category term="生活杂感" scheme="http://blog.hsfzxjy.site/tags/%E7%94%9F%E6%B4%BB%E6%9D%82%E6%84%9F/"/>
+      <category term="生活杂感" scheme="http://hsfzxjy.oicp.io/tags/%E7%94%9F%E6%B4%BB%E6%9D%82%E6%84%9F/"/>
     
   </entry>
   
   <entry>
     <title>最后的雨夜·广州</title>
-    <link href="http://blog.hsfzxjy.site/leaving-guangzhou/"/>
-    <id>http://blog.hsfzxjy.site/leaving-guangzhou/</id>
+    <link href="http://hsfzxjy.oicp.io/leaving-guangzhou/"/>
+    <id>http://hsfzxjy.oicp.io/leaving-guangzhou/</id>
     <published>2016-08-17T16:00:00.000Z</published>
     <updated>2016-08-28T02:24:24.900Z</updated>
     
@@ -122,17 +207,17 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://hsfzxjy.oicp.io/categories/%E6%9D%82%E6%84%9F/"/>
     
     
-      <category term="生活杂感" scheme="http://blog.hsfzxjy.site/tags/%E7%94%9F%E6%B4%BB%E6%9D%82%E6%84%9F/"/>
+      <category term="生活杂感" scheme="http://hsfzxjy.oicp.io/tags/%E7%94%9F%E6%B4%BB%E6%9D%82%E6%84%9F/"/>
     
   </entry>
   
   <entry>
     <title>揭秘·变态的平方根倒数算法</title>
-    <link href="http://blog.hsfzxjy.site/uncover-the-secret-of-fast-inverse-square-root-algorithm/"/>
-    <id>http://blog.hsfzxjy.site/uncover-the-secret-of-fast-inverse-square-root-algorithm/</id>
+    <link href="http://hsfzxjy.oicp.io/uncover-the-secret-of-fast-inverse-square-root-algorithm/"/>
+    <id>http://hsfzxjy.oicp.io/uncover-the-secret-of-fast-inverse-square-root-algorithm/</id>
     <published>2016-08-02T16:00:00.000Z</published>
     <updated>2016-08-16T09:53:58.440Z</updated>
     
@@ -266,21 +351,21 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="数学" scheme="http://blog.hsfzxjy.site/tags/%E6%95%B0%E5%AD%A6/"/>
+      <category term="数学" scheme="http://hsfzxjy.oicp.io/tags/%E6%95%B0%E5%AD%A6/"/>
     
-      <category term="Fast Inverse Square Root Algorithm" scheme="http://blog.hsfzxjy.site/tags/Fast-Inverse-Square-Root-Algorithm/"/>
+      <category term="Fast Inverse Square Root Algorithm" scheme="http://hsfzxjy.oicp.io/tags/Fast-Inverse-Square-Root-Algorithm/"/>
     
-      <category term="算法" scheme="http://blog.hsfzxjy.site/tags/%E7%AE%97%E6%B3%95/"/>
+      <category term="算法" scheme="http://hsfzxjy.oicp.io/tags/%E7%AE%97%E6%B3%95/"/>
     
   </entry>
   
   <entry>
     <title>神坑·Python 装饰类无限递归</title>
-    <link href="http://blog.hsfzxjy.site/recursively-calling-when-decorating-a-python-class/"/>
-    <id>http://blog.hsfzxjy.site/recursively-calling-when-decorating-a-python-class/</id>
+    <link href="http://hsfzxjy.oicp.io/recursively-calling-when-decorating-a-python-class/"/>
+    <id>http://hsfzxjy.oicp.io/recursively-calling-when-decorating-a-python-class/</id>
     <published>2016-07-29T16:00:00.000Z</published>
     <updated>2016-08-16T09:53:58.440Z</updated>
     
@@ -330,21 +415,21 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="python" scheme="http://blog.hsfzxjy.site/tags/python/"/>
+      <category term="python" scheme="http://hsfzxjy.oicp.io/tags/python/"/>
     
-      <category term="装饰模式" scheme="http://blog.hsfzxjy.site/tags/%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/"/>
+      <category term="装饰模式" scheme="http://hsfzxjy.oicp.io/tags/%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/"/>
     
-      <category term="无限递归" scheme="http://blog.hsfzxjy.site/tags/%E6%97%A0%E9%99%90%E9%80%92%E5%BD%92/"/>
+      <category term="无限递归" scheme="http://hsfzxjy.oicp.io/tags/%E6%97%A0%E9%99%90%E9%80%92%E5%BD%92/"/>
     
   </entry>
   
   <entry>
     <title>Python 黑魔法 之 Encoding &amp; Decoding</title>
-    <link href="http://blog.hsfzxjy.site/python-encoding-and-decoding/"/>
-    <id>http://blog.hsfzxjy.site/python-encoding-and-decoding/</id>
+    <link href="http://hsfzxjy.oicp.io/python-encoding-and-decoding/"/>
+    <id>http://hsfzxjy.oicp.io/python-encoding-and-decoding/</id>
     <published>2016-07-20T16:00:00.000Z</published>
     <updated>2016-08-16T09:53:58.440Z</updated>
     
@@ -431,19 +516,19 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="python" scheme="http://blog.hsfzxjy.site/tags/python/"/>
+      <category term="python" scheme="http://hsfzxjy.oicp.io/tags/python/"/>
     
-      <category term="codecs" scheme="http://blog.hsfzxjy.site/tags/codecs/"/>
+      <category term="codecs" scheme="http://hsfzxjy.oicp.io/tags/codecs/"/>
     
   </entry>
   
   <entry>
     <title>Ubuntu 重新映射键盘布局</title>
-    <link href="http://blog.hsfzxjy.site/alternative-key-maps-under-ubuntu/"/>
-    <id>http://blog.hsfzxjy.site/alternative-key-maps-under-ubuntu/</id>
+    <link href="http://hsfzxjy.oicp.io/alternative-key-maps-under-ubuntu/"/>
+    <id>http://hsfzxjy.oicp.io/alternative-key-maps-under-ubuntu/</id>
     <published>2016-06-05T09:20:26.000Z</published>
     <updated>2016-07-18T03:09:34.298Z</updated>
     
@@ -468,19 +553,19 @@
     
     </summary>
     
-      <category term="随手记" scheme="http://blog.hsfzxjy.site/categories/%E9%9A%8F%E6%89%8B%E8%AE%B0/"/>
+      <category term="随手记" scheme="http://hsfzxjy.oicp.io/categories/%E9%9A%8F%E6%89%8B%E8%AE%B0/"/>
     
     
-      <category term="ubuntu" scheme="http://blog.hsfzxjy.site/tags/ubuntu/"/>
+      <category term="ubuntu" scheme="http://hsfzxjy.oicp.io/tags/ubuntu/"/>
     
-      <category term="Key Maps" scheme="http://blog.hsfzxjy.site/tags/Key-Maps/"/>
+      <category term="Key Maps" scheme="http://hsfzxjy.oicp.io/tags/Key-Maps/"/>
     
   </entry>
   
   <entry>
     <title>为什么我要翻墙</title>
-    <link href="http://blog.hsfzxjy.site/why-I-choose-to-climb-over-the-wall/"/>
-    <id>http://blog.hsfzxjy.site/why-I-choose-to-climb-over-the-wall/</id>
+    <link href="http://hsfzxjy.oicp.io/why-I-choose-to-climb-over-the-wall/"/>
+    <id>http://hsfzxjy.oicp.io/why-I-choose-to-climb-over-the-wall/</id>
     <published>2016-04-08T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.298Z</updated>
     
@@ -504,17 +589,17 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://hsfzxjy.oicp.io/categories/%E6%9D%82%E6%84%9F/"/>
     
     
-      <category term="杂谈" scheme="http://blog.hsfzxjy.site/tags/%E6%9D%82%E8%B0%88/"/>
+      <category term="杂谈" scheme="http://hsfzxjy.oicp.io/tags/%E6%9D%82%E8%B0%88/"/>
     
   </entry>
   
   <entry>
     <title>Python “黑魔法” 之 Generator Coroutines</title>
-    <link href="http://blog.hsfzxjy.site/python-generator-coroutine/"/>
-    <id>http://blog.hsfzxjy.site/python-generator-coroutine/</id>
+    <link href="http://hsfzxjy.oicp.io/python-generator-coroutine/"/>
+    <id>http://hsfzxjy.oicp.io/python-generator-coroutine/</id>
     <published>2016-04-01T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.298Z</updated>
     
@@ -633,21 +718,21 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="python" scheme="http://blog.hsfzxjy.site/tags/python/"/>
+      <category term="python" scheme="http://hsfzxjy.oicp.io/tags/python/"/>
     
-      <category term="generator" scheme="http://blog.hsfzxjy.site/tags/generator/"/>
+      <category term="generator" scheme="http://hsfzxjy.oicp.io/tags/generator/"/>
     
-      <category term="coroutine" scheme="http://blog.hsfzxjy.site/tags/coroutine/"/>
+      <category term="coroutine" scheme="http://hsfzxjy.oicp.io/tags/coroutine/"/>
     
   </entry>
   
   <entry>
     <title>数学美 之 判断线段相交的最简方法</title>
-    <link href="http://blog.hsfzxjy.site/the-simplest-way-to-find-out-if-two-segments-are-intersected/"/>
-    <id>http://blog.hsfzxjy.site/the-simplest-way-to-find-out-if-two-segments-are-intersected/</id>
+    <link href="http://hsfzxjy.oicp.io/the-simplest-way-to-find-out-if-two-segments-are-intersected/"/>
+    <id>http://hsfzxjy.oicp.io/the-simplest-way-to-find-out-if-two-segments-are-intersected/</id>
     <published>2016-02-18T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.298Z</updated>
     
@@ -753,21 +838,21 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="数学" scheme="http://blog.hsfzxjy.site/tags/%E6%95%B0%E5%AD%A6/"/>
+      <category term="数学" scheme="http://hsfzxjy.oicp.io/tags/%E6%95%B0%E5%AD%A6/"/>
     
-      <category term="计算几何" scheme="http://blog.hsfzxjy.site/tags/%E8%AE%A1%E7%AE%97%E5%87%A0%E4%BD%95/"/>
+      <category term="计算几何" scheme="http://hsfzxjy.oicp.io/tags/%E8%AE%A1%E7%AE%97%E5%87%A0%E4%BD%95/"/>
     
-      <category term="向量" scheme="http://blog.hsfzxjy.site/tags/%E5%90%91%E9%87%8F/"/>
+      <category term="向量" scheme="http://hsfzxjy.oicp.io/tags/%E5%90%91%E9%87%8F/"/>
     
   </entry>
   
   <entry>
     <title>除夕杂感</title>
-    <link href="http://blog.hsfzxjy.site/thinking-in-the-day-before-lunar-new-year-of-2016/"/>
-    <id>http://blog.hsfzxjy.site/thinking-in-the-day-before-lunar-new-year-of-2016/</id>
+    <link href="http://hsfzxjy.oicp.io/thinking-in-the-day-before-lunar-new-year-of-2016/"/>
+    <id>http://hsfzxjy.oicp.io/thinking-in-the-day-before-lunar-new-year-of-2016/</id>
     <published>2016-02-12T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.298Z</updated>
     
@@ -822,17 +907,17 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://hsfzxjy.oicp.io/categories/%E6%9D%82%E6%84%9F/"/>
     
     
-      <category term="随想" scheme="http://blog.hsfzxjy.site/tags/%E9%9A%8F%E6%83%B3/"/>
+      <category term="随想" scheme="http://hsfzxjy.oicp.io/tags/%E9%9A%8F%E6%83%B3/"/>
     
   </entry>
   
   <entry>
     <title>17 行代码实现的简易 Javascript 字符串模板</title>
-    <link href="http://blog.hsfzxjy.site/a-simple-javascript-template-language/"/>
-    <id>http://blog.hsfzxjy.site/a-simple-javascript-template-language/</id>
+    <link href="http://hsfzxjy.oicp.io/a-simple-javascript-template-language/"/>
+    <id>http://hsfzxjy.oicp.io/a-simple-javascript-template-language/</id>
     <published>2016-02-11T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.298Z</updated>
     
@@ -897,23 +982,23 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="javascript" scheme="http://blog.hsfzxjy.site/tags/javascript/"/>
+      <category term="javascript" scheme="http://hsfzxjy.oicp.io/tags/javascript/"/>
     
-      <category term="DIY" scheme="http://blog.hsfzxjy.site/tags/DIY/"/>
+      <category term="DIY" scheme="http://hsfzxjy.oicp.io/tags/DIY/"/>
     
-      <category term="字符串模板" scheme="http://blog.hsfzxjy.site/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%A8%A1%E6%9D%BF/"/>
+      <category term="字符串模板" scheme="http://hsfzxjy.oicp.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%A8%A1%E6%9D%BF/"/>
     
-      <category term="正则表达式" scheme="http://blog.hsfzxjy.site/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
+      <category term="正则表达式" scheme="http://hsfzxjy.oicp.io/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
     
   </entry>
   
   <entry>
     <title>Python “黑魔法” 之 Meta Classes</title>
-    <link href="http://blog.hsfzxjy.site/meta-class-in-python/"/>
-    <id>http://blog.hsfzxjy.site/meta-class-in-python/</id>
+    <link href="http://hsfzxjy.oicp.io/meta-class-in-python/"/>
+    <id>http://hsfzxjy.oicp.io/meta-class-in-python/</id>
     <published>2016-02-09T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.298Z</updated>
     
@@ -1016,23 +1101,23 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="python" scheme="http://blog.hsfzxjy.site/tags/python/"/>
+      <category term="python" scheme="http://hsfzxjy.oicp.io/tags/python/"/>
     
-      <category term="Meta Classes" scheme="http://blog.hsfzxjy.site/tags/Meta-Classes/"/>
+      <category term="Meta Classes" scheme="http://hsfzxjy.oicp.io/tags/Meta-Classes/"/>
     
-      <category term="黑魔法" scheme="http://blog.hsfzxjy.site/tags/%E9%BB%91%E9%AD%94%E6%B3%95/"/>
+      <category term="黑魔法" scheme="http://hsfzxjy.oicp.io/tags/%E9%BB%91%E9%AD%94%E6%B3%95/"/>
     
-      <category term="元编程" scheme="http://blog.hsfzxjy.site/tags/%E5%85%83%E7%BC%96%E7%A8%8B/"/>
+      <category term="元编程" scheme="http://hsfzxjy.oicp.io/tags/%E5%85%83%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   
   <entry>
     <title>诗集</title>
-    <link href="http://blog.hsfzxjy.site/poems/"/>
-    <id>http://blog.hsfzxjy.site/poems/</id>
+    <link href="http://hsfzxjy.oicp.io/poems/"/>
+    <id>http://hsfzxjy.oicp.io/poems/</id>
     <published>2015-11-30T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.298Z</updated>
     
@@ -1061,17 +1146,17 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://hsfzxjy.oicp.io/categories/%E6%9D%82%E6%84%9F/"/>
     
     
-      <category term="诗" scheme="http://blog.hsfzxjy.site/tags/%E8%AF%97/"/>
+      <category term="诗" scheme="http://hsfzxjy.oicp.io/tags/%E8%AF%97/"/>
     
   </entry>
   
   <entry>
     <title>生活，需要被“发现”</title>
-    <link href="http://blog.hsfzxjy.site/life-needs-discovery/"/>
-    <id>http://blog.hsfzxjy.site/life-needs-discovery/</id>
+    <link href="http://hsfzxjy.oicp.io/life-needs-discovery/"/>
+    <id>http://hsfzxjy.oicp.io/life-needs-discovery/</id>
     <published>2015-11-27T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.298Z</updated>
     
@@ -1100,19 +1185,19 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://hsfzxjy.oicp.io/categories/%E6%9D%82%E6%84%9F/"/>
     
     
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/tags/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://hsfzxjy.oicp.io/tags/%E6%9D%82%E6%84%9F/"/>
     
-      <category term="作文" scheme="http://blog.hsfzxjy.site/tags/%E4%BD%9C%E6%96%87/"/>
+      <category term="作文" scheme="http://hsfzxjy.oicp.io/tags/%E4%BD%9C%E6%96%87/"/>
     
   </entry>
   
   <entry>
     <title>家书·十八岁成人礼</title>
-    <link href="http://blog.hsfzxjy.site/letter-to-parents/"/>
-    <id>http://blog.hsfzxjy.site/letter-to-parents/</id>
+    <link href="http://hsfzxjy.oicp.io/letter-to-parents/"/>
+    <id>http://hsfzxjy.oicp.io/letter-to-parents/</id>
     <published>2015-10-17T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.298Z</updated>
     
@@ -1142,21 +1227,21 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://hsfzxjy.oicp.io/categories/%E6%9D%82%E6%84%9F/"/>
     
     
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/tags/%E6%9D%82%E6%84%9F/"/>
+      <category term="家书" scheme="http://hsfzxjy.oicp.io/tags/%E5%AE%B6%E4%B9%A6/"/>
     
-      <category term="家书" scheme="http://blog.hsfzxjy.site/tags/%E5%AE%B6%E4%B9%A6/"/>
+      <category term="杂感" scheme="http://hsfzxjy.oicp.io/tags/%E6%9D%82%E6%84%9F/"/>
     
-      <category term="成人礼" scheme="http://blog.hsfzxjy.site/tags/%E6%88%90%E4%BA%BA%E7%A4%BC/"/>
+      <category term="成人礼" scheme="http://hsfzxjy.oicp.io/tags/%E6%88%90%E4%BA%BA%E7%A4%BC/"/>
     
   </entry>
   
   <entry>
     <title>炫技？还是需求？</title>
-    <link href="http://blog.hsfzxjy.site/hobby-or-needs/"/>
-    <id>http://blog.hsfzxjy.site/hobby-or-needs/</id>
+    <link href="http://hsfzxjy.oicp.io/hobby-or-needs/"/>
+    <id>http://hsfzxjy.oicp.io/hobby-or-needs/</id>
     <published>2015-10-03T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.298Z</updated>
     
@@ -1224,21 +1309,21 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://hsfzxjy.oicp.io/categories/%E6%9D%82%E6%84%9F/"/>
     
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/tags/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://hsfzxjy.oicp.io/tags/%E7%BC%96%E7%A8%8B/"/>
     
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/tags/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://hsfzxjy.oicp.io/tags/%E6%9D%82%E6%84%9F/"/>
     
-      <category term="产品" scheme="http://blog.hsfzxjy.site/tags/%E4%BA%A7%E5%93%81/"/>
+      <category term="产品" scheme="http://hsfzxjy.oicp.io/tags/%E4%BA%A7%E5%93%81/"/>
     
   </entry>
   
   <entry>
     <title>【译】响应式图片的现状</title>
-    <link href="http://blog.hsfzxjy.site/the-state-of-responsive-images-in-2015/"/>
-    <id>http://blog.hsfzxjy.site/the-state-of-responsive-images-in-2015/</id>
+    <link href="http://hsfzxjy.oicp.io/the-state-of-responsive-images-in-2015/"/>
+    <id>http://hsfzxjy.oicp.io/the-state-of-responsive-images-in-2015/</id>
     <published>2015-09-18T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.294Z</updated>
     
@@ -1409,19 +1494,19 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="翻译" scheme="http://blog.hsfzxjy.site/tags/%E7%BF%BB%E8%AF%91/"/>
+      <category term="翻译" scheme="http://hsfzxjy.oicp.io/tags/%E7%BF%BB%E8%AF%91/"/>
     
-      <category term="web设计" scheme="http://blog.hsfzxjy.site/tags/web%E8%AE%BE%E8%AE%A1/"/>
+      <category term="web设计" scheme="http://hsfzxjy.oicp.io/tags/web%E8%AE%BE%E8%AE%A1/"/>
     
   </entry>
   
   <entry>
     <title>【译】“为什么有这么多的编程语言？”</title>
-    <link href="http://blog.hsfzxjy.site/why-are-so-many-programming-languages/"/>
-    <id>http://blog.hsfzxjy.site/why-are-so-many-programming-languages/</id>
+    <link href="http://hsfzxjy.oicp.io/why-are-so-many-programming-languages/"/>
+    <id>http://hsfzxjy.oicp.io/why-are-so-many-programming-languages/</id>
     <published>2015-09-17T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.294Z</updated>
     
@@ -1459,67 +1544,10 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="翻译" scheme="http://blog.hsfzxjy.site/tags/%E7%BF%BB%E8%AF%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Wisecity 商赛总结——也谈前端自动化测试</title>
-    <link href="http://blog.hsfzxjy.site/wisecity-conclusion/"/>
-    <id>http://blog.hsfzxjy.site/wisecity-conclusion/</id>
-    <published>2015-07-23T16:00:00.000Z</published>
-    <updated>2016-07-18T03:09:34.294Z</updated>
-    
-    <content type="html"><![CDATA[<p>真没想到，高伯还是给了我两百块报酬（土豪就是土豪）——我还担心他连运营成本都不肯给呢，毕竟网站做得并不是令人太满意。为社团做了两年的网站，这是第一次收到报酬，也算是自己赚的第一桶金吧。</p>
-<p>事实证明，临去北京前我给 cc 开放了管理者权限是一个非常正确的选择。尽管 wisecity 已经举办了两届，尽管在此之前我已做过 4 个网站，尽管这次的网站是在上一届的基础上进行改造的，我的心里仍有些忐忑不安，害怕它会出什么问题——抑或是大会的工作人员操作不当导致网站崩溃云云（这事真的发生了）。5 天的 wisecity 大会，我都身在北京，身边没有电脑，没有解决问题的条件，因此需要一个有基本的编程能力的人协助我。5 天下来，问题还不少，调试的过程可谓是十分原始：接到问题后，囿于有限的条件，我只能通过翻看手机上的代码，在脑海中模拟并觉出问题所在，找到最小代价的改动方案，再将改动之处通过短信通知 cc——当然，很多时候并不那么顺利，我还需要跟多的信息帮助判断，比如错误日志，又比如进行特定操作时的表现（这个最坑爹，可遇而不可求）。我尽一切努力在脑海中想象着程序的流程，很累，但也很有挑战性。</p>
-<p>第一天就遇到了一个棘手的问题：高伯在删除测试数据时不小心把管理员账号（admin）一起删掉了。这个消息从扬声器传出后，我足足沉默了一分钟，<br>心里像是有千万头草泥马奔过：</p>
-<blockquote>
-<p>怎么这么毛手毛脚？这下可好了，麻烦大了——虽然这个设计是有些不合理，但这不能怪我，django 已经封装好了（姜戈：怪我咯？）。快想办法快想办法……直接去后台加一个？不行不行，密码这块很难弄，MD5 + SHA1 + Salt，根本不是人能算的——只能让 django 自己产生一个用户了。嗯，我需要一个 MySQL，一个完整的 Python 开发环境，各种包……不知 cc 能不能应付过来。真是的一大早!@#$%^……<br><img src="http://i6.hexunimg.cn/2012-05-09/141219425.jpg" alt=""> </p>
-</blockquote>
-<p>挂断电话，抄起手机噼里啪啦给 cc 发了一条短信，手把手教配置 MySQL，django，导出 SQL，上传数据库……吧啦吧啦洋洋洒洒几百字。发送时一直祈祷：但愿 cc 悟性高一些，不然真的完了——还好，半个小时后，前线传来了好消息：一切顺利。</p>
-<p>总算是松了一口气，才发现，背已汗湿。</p>
-<p>然而，事情还没有结束。</p>
-<p>第二天一早，我又被告知：上传的文件下载不了（纳尼？走之前不是才作过测试吗）。点开文件看网址，发现原来是七牛的域名后面少了一个<code>/</code>，很快便处理好了。本以为可以好好玩一天了（那天出去玩），逛了大半个北京，夕阳西下时，却又接到一个 bug：选手列表只显示了 10 个用户，但应该有 40+ 个。</p>
-<p>这个 bug，前后调了 2 个小时。从奥林匹克公园，到中关村——因为，我并不知道问题出在哪，一点也不知道。打 <code>console.log</code>，翻看网络记录（没错！在短信这种高时滞的通讯条件下！），最终发现，原来是 REST 返回的用户列表顺序反了，加载了最后 10 个，但由于用户没有明显的顺序标志，所以调试时没有察觉。改正之后，终于可以安心吃完饭——</p>
-<p>谁知，两分钟后，短信又开始轰炸了：加载的用户列表有重复项！很多的重复项！！没有规律的重复项！！！</p>
-<p>这个 bug，前后又调了 2 个小时。从中关村，再到人大附中，直到繁星爬满了苍穹。第一个反应是自制的瀑布流控件滚动事件并发处理没有做好。翻看源代码，似乎找到一处疑似有问题的地方，尝试让 cc 改了一下——半个小时后，传回了一个令人泄气的消息（中间配置<code>grunt</code>又耗费了好些功夫）。冥想了一个小时，前后端的代码都看遍了，就是没有发现问题，最终只得放弃，告诉高伯用一些奇技*巧避开重复项。直至回来后，静下心分析代码，才发现在一个不起眼的地方有一处笔误，这是重构 HFMUN 的瀑布流控件时产生的。</p>
-<p>之后的几天，又有几个大大小小的 bug，抑或是需求改动，处理得还算顺利。可怕的是最后一天，KVDB 直接宕掉了——我整个缓存都是挂在 KVDB 上的，也怪当时没有作容灾处理，这个事件直接导致全站报 500 错误。急急忙忙关掉了缓存（还好做缓存时解了耦，只需改动两处即可），然后再质问 SAE，这些都是后话了。</p>
-<p>然而，这里有个值得反思的问题：既然我已经作过 4 个网站，为何还是会有 bug 出现？从 HFMUN 1.0，到 wisecity 1.0，到 HFMUN 2.0，随着我技术的逐渐成熟，bug 出现的频率也在不断下降——但是 bug 仍在，就像“杀不死的小强”一样。</p>
-<p>测试，关键还是在测试。</p>
-<p>人的主观意识，受制于时空、环境等诸多因素，任何一个参数的改变都有可能影响主观能动性的发挥。因此，不能保证在任何时候人的意识都能正确地、高效地发挥作用。软件工程，作为人类纯意识的产物，其正确性并不能百分百地保证。或是精神不振引起的一处笔误，或是重构迁移时没有同步更改的一处配置，抑或是一处自己在开发过程中完全没有意识到的错误——设计归设计，程序是否能运行，还是电脑说了算。许多的 bug 就是这样产生的。</p>
-<p>这个时候，单元测试（Unit Test）就显得非常重要了。通过分析需求而设计的测试样例，可以保证功能的相对正确性，即在能够考虑到的所有情况下，程序都能狗正常运行。这是重构（Refactory）过程中十分重要的一个环节，因为外部不变性是重构必须遵守的一个准则。</p>
-<p>在软件工程的上古时代，测试常常是由人工来完成的。团队中，总有几名成员每天都在做着重复、机械的工作，即对新增的功能或是修改过的功能进行测试。这种测试机制费时费力，同时也不是非常有效——上面已经说过了，没有人能保证主观意识的正确性。后来，出现了基于脚本的批量测试，测试人员可以编写一小段代码对特定的功能进行校验，很大程度地提高了效率；再到今天的分布式测试，成熟的测试系统可以模拟多种不同的生产环境，检测到代码库的变化后，便会自动进行单元测试。这是单元测试的自动化进程。</p>
-<p>今天的自动化测试固然很成熟，基本可以检测到各种逻辑错误。但在测试领域，却仍有一处令其束手无策的“禁地”——这便是 GUI 测试。综合分析 wisecity2.0 的 bugs，其中大部分都是前端出了问题。GUI 测试的麻烦在于：</p>
-<ul>
-<li>GUI 是一个输入与输出交替进行的系统，并且输入具有无限的可能，无法用有限的测试样例对输入进行覆盖。比如第二天发生的那个 bug 需要在“文件上传成功后，跳转到首页，点击下载链接”、“用户数量超过 10 个，在列表页面快速滚动鼠标滚轮”才能被触发。许多的 bug 只有在真实生产环境中被用户捕捉到。</li>
-<li>GUI 的正确性没有一个绝对的判定标准。元素错位、颜色不正确，这些事件都不报错，但它们也是 bug，通常也只有人类认为它们是 bug。但它们的发生并不影响功能，只是用户体验（User Experience）不好——用户体验是一个纯主观的概念，至少在当下，计算机是不能理解的。</li>
-</ul>
-<p>目前，GUI 测试主要还是依赖人工。Facebook 就有一个庞大的测试人员系统，以模拟尽可能多的用户操作样例。诚然，业界已经开始出现一些 前端自动化测试框架，有如 selenium、phantomjs 等通过 mock 事件模拟用户操作，更有甚者如 PhantomCSS 可以对特定操作的结果进行像素比对，可软件的主观部分还是需要人脑来判断。</p>
-<p>这是一个好时代，周围的一切都在飞快地变化着。希望在不久的将来，当人工智能出现时，这个问题能够有效地解决。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;真没想到，高伯还是给了我两百块报酬（土豪就是土豪）——我还担心他连运营成本都不肯给呢，毕竟网站做得并不是令人太满意。为社团做了两年的网站，这是第一次收到报酬，也算是自己赚的第一桶金吧。&lt;/p&gt;
-&lt;p&gt;事实证明，临去北京前我给 cc 开放了管理者权限是一个非常正确的选择。尽管
-    
-    </summary>
-    
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="wisecity" scheme="http://blog.hsfzxjy.site/tags/wisecity/"/>
-    
-      <category term="前端自动化测试" scheme="http://blog.hsfzxjy.site/tags/%E5%89%8D%E7%AB%AF%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/"/>
-    
-      <category term="总结" scheme="http://blog.hsfzxjy.site/tags/%E6%80%BB%E7%BB%93/"/>
-    
-      <category term="前端" scheme="http://blog.hsfzxjy.site/tags/%E5%89%8D%E7%AB%AF/"/>
-    
-      <category term="单元测试" scheme="http://blog.hsfzxjy.site/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/"/>
+      <category term="翻译" scheme="http://hsfzxjy.oicp.io/tags/%E7%BF%BB%E8%AF%91/"/>
     
   </entry>
   
