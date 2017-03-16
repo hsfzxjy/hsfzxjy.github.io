@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://hsfzxjy.oicp.io/works/index.html</loc>
+    
+    <lastmod>2017-03-16T12:26:40.677Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://hsfzxjy.oicp.io/HSFZMUN-4.0-configuration/</loc>
     
     <lastmod>2017-02-25T08:57:44.187Z</lastmod>
@@ -23,7 +30,7 @@
   </url>
   
   <url>
-    <loc>http://hsfzxjy.oicp.io/uncover-the-secret-of-fast-inverse-square-root-algorithm/</loc>
+    <loc>http://hsfzxjy.oicp.io/python-encoding-and-decoding/</loc>
     
     <lastmod>2016-08-16T09:53:58.440Z</lastmod>
     
@@ -37,7 +44,7 @@
   </url>
   
   <url>
-    <loc>http://hsfzxjy.oicp.io/python-encoding-and-decoding/</loc>
+    <loc>http://hsfzxjy.oicp.io/uncover-the-secret-of-fast-inverse-square-root-algorithm/</loc>
     
     <lastmod>2016-08-16T09:53:58.440Z</lastmod>
     
@@ -51,6 +58,13 @@
   </url>
   
   <url>
+    <loc>http://hsfzxjy.oicp.io/tags/index.html</loc>
+    
+    <lastmod>2016-07-29T05:56:20.414Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://hsfzxjy.oicp.io/categories/index.html</loc>
     
     <lastmod>2016-07-29T05:56:20.414Z</lastmod>
@@ -58,9 +72,9 @@
   </url>
   
   <url>
-    <loc>http://hsfzxjy.oicp.io/tags/index.html</loc>
+    <loc>http://hsfzxjy.oicp.io/a-simple-javascript-template-language/</loc>
     
-    <lastmod>2016-07-29T05:56:20.414Z</lastmod>
+    <lastmod>2016-07-18T03:09:34.298Z</lastmod>
     
   </url>
   
@@ -73,20 +87,6 @@
   
   <url>
     <loc>http://hsfzxjy.oicp.io/happy-mothers-day/index.html</loc>
-    
-    <lastmod>2016-07-18T03:09:34.298Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://hsfzxjy.oicp.io/works/index.html</loc>
-    
-    <lastmod>2016-07-18T03:09:34.298Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://hsfzxjy.oicp.io/about/index.html</loc>
     
     <lastmod>2016-07-18T03:09:34.298Z</lastmod>
     
@@ -121,7 +121,7 @@
   </url>
   
   <url>
-    <loc>http://hsfzxjy.oicp.io/a-simple-javascript-template-language/</loc>
+    <loc>http://hsfzxjy.oicp.io/about/index.html</loc>
     
     <lastmod>2016-07-18T03:09:34.298Z</lastmod>
     
