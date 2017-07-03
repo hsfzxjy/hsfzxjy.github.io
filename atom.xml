@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://hsfzxjy.oicp.io/"/>
-  <updated>2017-02-25T08:57:44.187Z</updated>
+  <updated>2017-07-03T16:40:15.691Z</updated>
   <id>http://hsfzxjy.oicp.io/</id>
   
   <author>
@@ -14,6 +14,55 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Linux 文件权限</title>
+    <link href="http://hsfzxjy.oicp.io/linux-file-permissions/"/>
+    <id>http://hsfzxjy.oicp.io/linux-file-permissions/</id>
+    <published>2017-07-02T16:00:00.000Z</published>
+    <updated>2017-07-03T16:40:15.691Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><p>Linux 中的每一个文件都有其 <strong>所属用户</strong> 及 <strong>所属用户组</strong>，根据这两个属性可将文件访问者分为三类：<strong>所属用户自己</strong>、<strong>所属用户组中的用户</strong> 和 <strong>其他用户</strong>，我们可以针对不同的访问者设置不同的用户权限。</p>
+<p>“访问”可分为三类：<strong>读</strong>、<strong>写</strong> 与 <strong>执行</strong>。我们可以用 <code>ls -l</code> 命令查看一个文件的权限：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ touch <span class="built_in">test</span></div><div class="line">$ ls <span class="_">-l</span> <span class="built_in">test</span></div><div class="line">-rw-rw-r-- 1 hsfzxjy hsfzxjy 0 Jul  3 23:44 <span class="built_in">test</span></div></pre></td></tr></table></figure>
+<p>首部的 <code>-rw-rw-r--</code> 即为文件的权限位。权限应该分为四部分来看：<code>-/rw-/rw-/r--</code>。第一部分标志文件的类型，如 普通文件（<code>-</code>）、目录（<code>d</code>）、UNIX 套接字（<code>s</code>）、符号链接（<code>l</code>）、块设备（<code>b</code>）等等。接下来的三个部分依次代表 <strong>所属用户</strong>、<strong>所属用户组</strong>、<strong>其他用户</strong> 的权限，每部分由三个标志位组成：<strong>读标志位</strong>、<strong>写标志位</strong>、<strong>执行标志位</strong>。</p>
+<h1 id="目录的权限"><a href="#目录的权限" class="headerlink" title="目录的权限"></a>目录的权限</h1><p>目录是一种特殊的文件，因此也拥有文件权限的概念，但权限的语义与普通文件稍有差异：</p>
+<ul>
+<li>读：读取目录下文件列表，相关命令如 <code>ls</code></li>
+<li>写：创建、删除目录下的文件，相关命令如 <code>touch</code>（当文件不存在时）、<code>rm</code> 等</li>
+<li>执行：进入目录，相关命令如 <code>cd</code></li>
+</ul>
+<h1 id="特殊权限"><a href="#特殊权限" class="headerlink" title="特殊权限"></a>特殊权限</h1><p>出于某些特殊目的，Linux 中存在两个特殊的权限位：粘滞位（<code>t</code>）、Set Id（<code>s</code>）。这两个权限可以 <strong>叠加</strong> 在执行权限位上，其中 Set Id 可以置于 <strong>所属用户</strong> 和 <strong>所属用户组</strong> 的权限组上，而 粘滞位 只能置于 <strong>其他用户</strong> 权限组上。当特殊权限被设置时，执行权限位上即会显示 <code>s/t</code> （已有 <code>x</code> 权限）或 <code>S/T</code> （尚未有 <code>x</code> 权限）。</p>
+<h2 id="粘滞位"><a href="#粘滞位" class="headerlink" title="粘滞位"></a>粘滞位</h2><p>粘滞位的作用是 <strong>防止他人误删自己的文件</strong>。当某个目录的其他用户权限组有 <code>w</code> 权限时，系统中的其他用户即可随意删除目录中的文件。而一旦叠加上 <code>t</code> 权限，只有文件的所有者方能删除文件。一个经典的例子是 <code>/tmp</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ ls <span class="_">-l</span> /</div><div class="line">drwxrwxrwt  13 root root 12288 Jul  4 00:15 tmp/</div></pre></td></tr></table></figure>
+<h2 id="Set-Id"><a href="#Set-Id" class="headerlink" title="Set Id"></a>Set Id</h2><p>Linux 中的进程也有自己所属用户与用户组。一般而言，进程的所属用户即为其发起者，但这会引起一些麻烦。一个例子是 <code>passwd</code> 命令，该命令需要修改属于 <code>root</code> 用户的系统文件以保存密码，倘若进程所属用户即为所属者，此功能则无法实现。</p>
+<p>Set Id 权限的作用是：在文件被执行时，将其有效用户/用户组设置为文件的用户/用户组，而不是当前执行者。下面是一个演示：</p>
+<p>设当前用户为 <code>hsfzxjy</code>，我们在 <code>/tmp</code> 下创建一个 <code>test</code> 文件，并删去其他用户的 <code>r</code> 权限：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> /tmp</div><div class="line">$ <span class="built_in">echo</span> <span class="built_in">test</span> text &gt; <span class="built_in">test</span></div><div class="line">$ chmod o-r <span class="built_in">test</span></div><div class="line">$ ll <span class="built_in">test</span></div><div class="line">-rw-rw---- 1 hsfzxjy hsfzxjy 0 Jul  4 00:28 <span class="built_in">test</span></div></pre></td></tr></table></figure>
+<p>由于 <code>test</code> 文件的所属用户是 <code>hsfzxjy</code>，其他用户没有权限读取其中的内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ sudo -u mysql cat <span class="built_in">test</span></div><div class="line">cat: <span class="built_in">test</span>: Permission denied</div></pre></td></tr></table></figure>
+<p>现在我们修改一下 <code>cat</code> 命令的权限，为了不影响系统文件，我们拷贝一份 <code>cat</code> 副本至当前目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ cp /bin/cat .</div><div class="line">$ chmod u+s cat</div><div class="line">$ ll cat</div><div class="line">-rwsr-xr-x 1 hsfzxjy hsfzxjy 52080 Jul  4 00:34 cat*</div></pre></td></tr></table></figure>
+<p>再以 <code>mysql</code> 的身份执行命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ sudo -u mysql ./cat <span class="built_in">test</span></div><div class="line"><span class="built_in">test</span> text</div></pre></td></tr></table></figure>
+<p>可见 <code>./cat</code> 在执行时所属用户是 <code>hsfzxjy</code>。我们可以使用 <code>ps</code> 命令更清楚地看到这点：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ sudo -u mysql cat</div><div class="line"><span class="comment"># 在另一个终端中</span></div><div class="line">$ ps -eo euser,ruser,comm | grep cat</div><div class="line">mysql    mysql    cat</div><div class="line"></div><div class="line"><span class="comment"># -----------</span></div><div class="line"></div><div class="line">$ sudo -u mysql ./cat</div><div class="line"><span class="comment"># 在另一个终端中</span></div><div class="line">$ ps -eo euser,ruser,comm | grep cat</div><div class="line">hsfzxjy  mysql    cat</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;概念&quot;&gt;&lt;a href=&quot;#概念&quot; class=&quot;headerlink&quot; title=&quot;概念&quot;&gt;&lt;/a&gt;概念&lt;/h1&gt;&lt;p&gt;Linux 中的每一个文件都有其 &lt;strong&gt;所属用户&lt;/strong&gt; 及 &lt;strong&gt;所属用户组&lt;/strong&gt;，根据这两个属
+    
+    </summary>
+    
+      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="Linux" scheme="http://hsfzxjy.oicp.io/tags/Linux/"/>
+    
+      <category term="文件权限" scheme="http://hsfzxjy.oicp.io/tags/%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/"/>
+    
+  </entry>
   
   <entry>
     <title>HSFZMUN 4.0 部署小记</title>
@@ -1509,63 +1558,6 @@
     
     
       <category term="翻译" scheme="http://hsfzxjy.oicp.io/tags/%E7%BF%BB%E8%AF%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Wisecity 商赛总结——也谈前端自动化测试</title>
-    <link href="http://hsfzxjy.oicp.io/wisecity-conclusion/"/>
-    <id>http://hsfzxjy.oicp.io/wisecity-conclusion/</id>
-    <published>2015-07-23T16:00:00.000Z</published>
-    <updated>2016-07-18T03:09:34.294Z</updated>
-    
-    <content type="html"><![CDATA[<p>真没想到，高伯还是给了我两百块报酬（土豪就是土豪）——我还担心他连运营成本都不肯给呢，毕竟网站做得并不是令人太满意。为社团做了两年的网站，这是第一次收到报酬，也算是自己赚的第一桶金吧。</p>
-<p>事实证明，临去北京前我给 cc 开放了管理者权限是一个非常正确的选择。尽管 wisecity 已经举办了两届，尽管在此之前我已做过 4 个网站，尽管这次的网站是在上一届的基础上进行改造的，我的心里仍有些忐忑不安，害怕它会出什么问题——抑或是大会的工作人员操作不当导致网站崩溃云云（这事真的发生了）。5 天的 wisecity 大会，我都身在北京，身边没有电脑，没有解决问题的条件，因此需要一个有基本的编程能力的人协助我。5 天下来，问题还不少，调试的过程可谓是十分原始：接到问题后，囿于有限的条件，我只能通过翻看手机上的代码，在脑海中模拟并觉出问题所在，找到最小代价的改动方案，再将改动之处通过短信通知 cc——当然，很多时候并不那么顺利，我还需要跟多的信息帮助判断，比如错误日志，又比如进行特定操作时的表现（这个最坑爹，可遇而不可求）。我尽一切努力在脑海中想象着程序的流程，很累，但也很有挑战性。</p>
-<p>第一天就遇到了一个棘手的问题：高伯在删除测试数据时不小心把管理员账号（admin）一起删掉了。这个消息从扬声器传出后，我足足沉默了一分钟，<br>心里像是有千万头草泥马奔过：</p>
-<blockquote>
-<p>怎么这么毛手毛脚？这下可好了，麻烦大了——虽然这个设计是有些不合理，但这不能怪我，django 已经封装好了（姜戈：怪我咯？）。快想办法快想办法……直接去后台加一个？不行不行，密码这块很难弄，MD5 + SHA1 + Salt，根本不是人能算的——只能让 django 自己产生一个用户了。嗯，我需要一个 MySQL，一个完整的 Python 开发环境，各种包……不知 cc 能不能应付过来。真是的一大早!@#$%^……<br><img src="http://i6.hexunimg.cn/2012-05-09/141219425.jpg" alt=""> </p>
-</blockquote>
-<p>挂断电话，抄起手机噼里啪啦给 cc 发了一条短信，手把手教配置 MySQL，django，导出 SQL，上传数据库……吧啦吧啦洋洋洒洒几百字。发送时一直祈祷：但愿 cc 悟性高一些，不然真的完了——还好，半个小时后，前线传来了好消息：一切顺利。</p>
-<p>总算是松了一口气，才发现，背已汗湿。</p>
-<p>然而，事情还没有结束。</p>
-<p>第二天一早，我又被告知：上传的文件下载不了（纳尼？走之前不是才作过测试吗）。点开文件看网址，发现原来是七牛的域名后面少了一个<code>/</code>，很快便处理好了。本以为可以好好玩一天了（那天出去玩），逛了大半个北京，夕阳西下时，却又接到一个 bug：选手列表只显示了 10 个用户，但应该有 40+ 个。</p>
-<p>这个 bug，前后调了 2 个小时。从奥林匹克公园，到中关村——因为，我并不知道问题出在哪，一点也不知道。打 <code>console.log</code>，翻看网络记录（没错！在短信这种高时滞的通讯条件下！），最终发现，原来是 REST 返回的用户列表顺序反了，加载了最后 10 个，但由于用户没有明显的顺序标志，所以调试时没有察觉。改正之后，终于可以安心吃完饭——</p>
-<p>谁知，两分钟后，短信又开始轰炸了：加载的用户列表有重复项！很多的重复项！！没有规律的重复项！！！</p>
-<p>这个 bug，前后又调了 2 个小时。从中关村，再到人大附中，直到繁星爬满了苍穹。第一个反应是自制的瀑布流控件滚动事件并发处理没有做好。翻看源代码，似乎找到一处疑似有问题的地方，尝试让 cc 改了一下——半个小时后，传回了一个令人泄气的消息（中间配置<code>grunt</code>又耗费了好些功夫）。冥想了一个小时，前后端的代码都看遍了，就是没有发现问题，最终只得放弃，告诉高伯用一些奇技*巧避开重复项。直至回来后，静下心分析代码，才发现在一个不起眼的地方有一处笔误，这是重构 HFMUN 的瀑布流控件时产生的。</p>
-<p>之后的几天，又有几个大大小小的 bug，抑或是需求改动，处理得还算顺利。可怕的是最后一天，KVDB 直接宕掉了——我整个缓存都是挂在 KVDB 上的，也怪当时没有作容灾处理，这个事件直接导致全站报 500 错误。急急忙忙关掉了缓存（还好做缓存时解了耦，只需改动两处即可），然后再质问 SAE，这些都是后话了。</p>
-<p>然而，这里有个值得反思的问题：既然我已经作过 4 个网站，为何还是会有 bug 出现？从 HFMUN 1.0，到 wisecity 1.0，到 HFMUN 2.0，随着我技术的逐渐成熟，bug 出现的频率也在不断下降——但是 bug 仍在，就像“杀不死的小强”一样。</p>
-<p>测试，关键还是在测试。</p>
-<p>人的主观意识，受制于时空、环境等诸多因素，任何一个参数的改变都有可能影响主观能动性的发挥。因此，不能保证在任何时候人的意识都能正确地、高效地发挥作用。软件工程，作为人类纯意识的产物，其正确性并不能百分百地保证。或是精神不振引起的一处笔误，或是重构迁移时没有同步更改的一处配置，抑或是一处自己在开发过程中完全没有意识到的错误——设计归设计，程序是否能运行，还是电脑说了算。许多的 bug 就是这样产生的。</p>
-<p>这个时候，单元测试（Unit Test）就显得非常重要了。通过分析需求而设计的测试样例，可以保证功能的相对正确性，即在能够考虑到的所有情况下，程序都能狗正常运行。这是重构（Refactory）过程中十分重要的一个环节，因为外部不变性是重构必须遵守的一个准则。</p>
-<p>在软件工程的上古时代，测试常常是由人工来完成的。团队中，总有几名成员每天都在做着重复、机械的工作，即对新增的功能或是修改过的功能进行测试。这种测试机制费时费力，同时也不是非常有效——上面已经说过了，没有人能保证主观意识的正确性。后来，出现了基于脚本的批量测试，测试人员可以编写一小段代码对特定的功能进行校验，很大程度地提高了效率；再到今天的分布式测试，成熟的测试系统可以模拟多种不同的生产环境，检测到代码库的变化后，便会自动进行单元测试。这是单元测试的自动化进程。</p>
-<p>今天的自动化测试固然很成熟，基本可以检测到各种逻辑错误。但在测试领域，却仍有一处令其束手无策的“禁地”——这便是 GUI 测试。综合分析 wisecity2.0 的 bugs，其中大部分都是前端出了问题。GUI 测试的麻烦在于：</p>
-<ul>
-<li>GUI 是一个输入与输出交替进行的系统，并且输入具有无限的可能，无法用有限的测试样例对输入进行覆盖。比如第二天发生的那个 bug 需要在“文件上传成功后，跳转到首页，点击下载链接”、“用户数量超过 10 个，在列表页面快速滚动鼠标滚轮”才能被触发。许多的 bug 只有在真实生产环境中被用户捕捉到。</li>
-<li>GUI 的正确性没有一个绝对的判定标准。元素错位、颜色不正确，这些事件都不报错，但它们也是 bug，通常也只有人类认为它们是 bug。但它们的发生并不影响功能，只是用户体验（User Experience）不好——用户体验是一个纯主观的概念，至少在当下，计算机是不能理解的。</li>
-</ul>
-<p>目前，GUI 测试主要还是依赖人工。Facebook 就有一个庞大的测试人员系统，以模拟尽可能多的用户操作样例。诚然，业界已经开始出现一些 前端自动化测试框架，有如 selenium、phantomjs 等通过 mock 事件模拟用户操作，更有甚者如 PhantomCSS 可以对特定操作的结果进行像素比对，可软件的主观部分还是需要人脑来判断。</p>
-<p>这是一个好时代，周围的一切都在飞快地变化着。希望在不久的将来，当人工智能出现时，这个问题能够有效地解决。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;真没想到，高伯还是给了我两百块报酬（土豪就是土豪）——我还担心他连运营成本都不肯给呢，毕竟网站做得并不是令人太满意。为社团做了两年的网站，这是第一次收到报酬，也算是自己赚的第一桶金吧。&lt;/p&gt;
-&lt;p&gt;事实证明，临去北京前我给 cc 开放了管理者权限是一个非常正确的选择。尽管
-    
-    </summary>
-    
-      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="wisecity" scheme="http://hsfzxjy.oicp.io/tags/wisecity/"/>
-    
-      <category term="前端自动化测试" scheme="http://hsfzxjy.oicp.io/tags/%E5%89%8D%E7%AB%AF%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/"/>
-    
-      <category term="总结" scheme="http://hsfzxjy.oicp.io/tags/%E6%80%BB%E7%BB%93/"/>
-    
-      <category term="前端" scheme="http://hsfzxjy.oicp.io/tags/%E5%89%8D%E7%AB%AF/"/>
-    
-      <category term="单元测试" scheme="http://hsfzxjy.oicp.io/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/"/>
     
   </entry>
   
