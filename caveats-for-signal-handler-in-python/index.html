@@ -15,7 +15,6 @@
 <li>异常的 traceback 指向 celery 包，也就是说这是在 celery 主进程内部发生的异常</li>
 </ul>
 <p>这个结果大大出乎了我的意料。随机性异常是众多最难缠的问题之一，因为这常常意味着并发问题，涉及底层知识，病灶隐蔽，调试难度大，同时没有有效的手段判断问题是否彻底解决（可能只是降低了频率）。</p>
-<p><img src="https://segmentfault.com/img/bVS7nP" alt=""></p>
 <h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>异常信息中有两个词很关键：<code>reentrant</code> 和 <code>stdout</code>。<code>reentrant call</code> 说明有一个不可重入的函数被递归调用了；<code>stdout</code> 则指明了发生的地点和时机。初步可以判定：<strong>由于某种原因，有两股控制流在同时操控 <code>stdout</code></strong>。</p>
 <p>“可重入”是什么？根据 <a href="https://en.wikipedia.org/wiki/Reentrancy_%28computing%29" target="_blank" rel="external">Wikipedia</a> 的定义：<strong>如果一个子程序能在执行时被中断并在之后被正确地、安全地唤起，它就被称为可重入的</strong>。依赖于全局数据的过程是不可重入的，如 <code>printf</code>（依赖于全局文件描述符）、<code>malloc</code>（依赖与和堆相关的一系列数据结构）等函数。需要注意的是，可重入性（reentrant）与 线程安全性（thread-safe）并不等价，甚至不存在包含关系，<a href="https://en.wikipedia.org/wiki/Reentrancy_%28computing%29#Examples" target="_blank" rel="external">Wikipedia</a> 中给出了相关的反例。</p>
 <p>多次尝试后，出现了一条线索：有时候 <code>worker: Warm shutdown (MainProcess)</code> 这个字符串会被二次打印，时机不确定。这句话是 celery 将要热关闭时的提示语，二次出现只可能是主进程收到了第二个信号。阅读 <a href="http://docs.celeryproject.org/en/latest/userguide/workers.html#process-signals" target="_blank" rel="external">celery 的文档</a> 可知，<code>SIGINT</code> 和 <code>SIGTERM</code> 信号可以引发热关闭。回头浏览我的代码，其中只有一处发送了 <code>SIGTERM</code> 信号（<code>celery_process.terminate()</code>），至于另一个神秘的信号，我怀疑是 <code>SIGINT</code>。</p>
@@ -26,12 +25,12 @@
 <p><code>SIGINT</code> 信号不仅会发送到父进程，而是会发到整个进程组，默认情况下包括了所有子进程。也就是说——在拦截了 <code>KeyboardInterrupt</code> 之后执行的 <code>celery_process.terminate()</code> 是多此一举，因为 <code>SIGINT</code> 信号也会被发送至 celery 主进程，同样会引起热关闭。代码稍作修改即可正常运行：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ...</span></div><div class="line"><span class="keyword">try</span>:</div><div class="line">    <span class="comment"># Start and wait for server process</span></div><div class="line"><span class="keyword">except</span> KeyboardInterrupt:</div><div class="line">    <span class="comment"># Ctrl + C pressed</span></div><div class="line">    <span class="keyword">pass</span></div><div class="line"><span class="keyword">else</span>:</div><div class="line">    <span class="comment"># Signal SIGTERM if no exception raised</span></div><div class="line">    celery_process.terminate()</div><div class="line"><span class="keyword">finally</span>:</div><div class="line">    <span class="comment"># Wait for it to avoid it becoming orphan</span></div><div class="line">    celery_process.wait()</div></pre></td></tr></table></figure>
 <h2 id="猜测"><a href="#猜测" class="headerlink" title="猜测"></a>猜测</h2><p>UNIX 信号处理是一个相当奇葩的过程——当进程收到一个信号时，内核会选择一条线程（以一定的规则），中断其当前控制流，将控制流强行转给信号处理函数，待其执行完毕后再将控制流交还给原线程。时序图如下：</p>
-<p><img src="https://segmentfault.com/img/bVS7gW" alt=""></p>
+<p><img src="/assets/caveats-for-signal-handler-in-python/bVS7gW" alt=""></p>
 <p>由于控制流转换发生在同一条线程上，许多线程间同步机制会失效甚至报错。因此信号处理函数的编写要比线程函数更加严格，对同一个文件输出是被禁止并且无解的，因为很可能会发生这样的事情：</p>
-<p><img src="https://segmentfault.com/img/bVS7nP" alt=""></p>
+<p><img src="/assets/caveats-for-signal-handler-in-python/bVS7nP" alt=""></p>
 <p>而且这个问题不能通过加锁来解决（因为是在同一个线程中，会死锁）。</p>
 <p>因此，我猜测异常发生时的事件时序是这样的：在 <code>print</code> 未执行完时中断，又在信号处理函数中调用 print，触发了重入检测，引起 <code>RuntimeError</code>：</p>
-<p><img src="https://segmentfault.com/img/bVS831" alt=""></p>
+<p><img src="/assets/caveats-for-signal-handler-in-python/bVS831" alt=""></p>
 <h2 id="疑云又起"><a href="#疑云又起" class="headerlink" title="疑云又起"></a>疑云又起</h2><p>不幸的是，我的猜想很快被推翻了。</p>
 <p>在翻看 Python <code>signal</code> 模块的官方文档，我看到了如下叙述：</p>
 <blockquote>
@@ -41,9 +40,9 @@
 <p>这番表述可以说是推翻了我的猜想，因为 Signal Handler 中的 <code>print</code> 并没有在异常控制流中执行。那异常又是怎么产生的呢？</p>
 <p>文档说 Python Signal Handler 会被延后至某个时机进行，但并没有明示是什么时候。对于这个疑问，<a href="https://stackoverflow.com/questions/19699314/how-to-use-a-separate-thread-for-asynchronous-signal-handling-in-python" target="_blank" rel="external">这个提问的被采纳回答</a> 则斩钉截铁地将其具体化到了“某两个 Python 字节码之间”。</p>
 <p>我们知道，Python 程序在执行前会被编译成 Python 内定的字节码<br>（bytecode）,Python 虚拟机实际执行的正是这些字节码。倘若该回答是正确的，则立即有如下推论：<strong>在处理信号的过程中，字节码具有原子性（atomic）</strong>。也就是说，主线程总是在两个字节码之间决定是否转移控制流， 而 <strong>不会</strong> 出现以下情况：</p>
-<p><img src="https://segmentfault.com/img/bVS7EH" alt=""></p>
+<p><img src="/assets/caveats-for-signal-handler-in-python/bVS7EH" alt=""></p>
 <p>这很显然与我的程序结果相悖：<code>print</code> 与 <code>print</code> 所调用的 <code>io.BufferedWriter.write</code> 和 <code>io.BufferedWriter.flush</code> 都是用纯 C 代码编写的，对其的调用只消耗一条字节码（<code>CALL_FUNCTION</code> 或 <code>CALL_FUNCTION_KW</code>），在信号中断的影响下，这几个函数仍保持原子性，在时序图上互不重叠，更不会发生重入。</p>
-<p><img src="https://segmentfault.com/img/bVS7ag" alt=""></p>
+<p><img src="/assets/caveats-for-signal-handler-in-python/bVS7ag" alt=""></p>
 <p>因此，<strong>除了在两个字节码之间，应该还有其他时机唤起了 Python Signal Handler</strong>。</p>
 <p>至此，问题已触及 Python 的地板了，需向更底层挖掘才能找到答案。</p>
 <h2 id="深入源码"><a href="#深入源码" class="headerlink" title="深入源码"></a>深入源码</h2><p>信号注册逻辑位于 <code>Modules/signalmodule.c</code> 文件中。 313 行的 <code>signal_handler</code> 是信号处理函数的最外层包装，由系统调用 <code>signal</code> 或 <code>sigaction</code> 注册至内核，并在信号发生时被内核回调，是异常控制流的入口。<code>signal_handler</code> 主要调用了 239 行处的 <code>trip_signal</code> 函数，其中有这样一段代码：</p>
@@ -70,10 +69,10 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ENTER_BUFFERED(self)</div><div class="line"><span class="comment">// ...</span></div><div class="line">PyErr_CheckSignals();</div><div class="line"><span class="comment">// ...</span></div><div class="line">LEAVE_BUFFERED(self)</div></pre></td></tr></table></figure>
 <p><code>ENTER_BUFFERED</code> 是一个宏，会尝试申请无阻塞线程锁以保证函数不会被重入：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> ENTER_BUFFERED(self) \</span></div><div class="line">    ( (PyThread_acquire_lock(self-&gt;lock, 0) ? \</div><div class="line">       1 : _enter_buffered_busy(self)) \</div><div class="line">     &amp;&amp; (self-&gt;owner = PyThread_get_thread_ident(), 1) )</div></pre></td></tr></table></figure>
-<p><img src="https://segmentfault.com/img/bVS9iq" alt=""></p>
+<p><img src="/assets/caveats-for-signal-handler-in-python/bVS9AJ" alt=""></p>
 <p>至此，真相已经大白了。</p>
 <h2 id="真相"><a href="#真相" class="headerlink" title="真相"></a>真相</h2><p>当信号中断发生在 <code>_bufferedwriter_flush_unlocked</code> 或 <code>_io_BufferedWriter_write_impl</code> 中时，这两个函数中的 <code>PyErr_CheckSignals</code> 会直接唤起 Python Signal Handler，而此时由 <code>ENTER_BUFFERED</code> 上的锁尚未解开，若 Python Signal Handler 中又有 <code>print</code> 函数调用，则会导致再次 <code>ENTER_BUFFERED</code> 上锁失败，从而抛出异常。时序图如下：</p>
-<p><img src="https://segmentfault.com/img/bVS9lQ" alt=""></p>
+<p><img src="/assets/caveats-for-signal-handler-in-python/bVS9lQ" alt=""></p>
 <h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>为什么不将 Python Signal Handler 调用的地点统一在一个地方，而是散布在程序的各处呢？阅读相关代码，我认为有两点原因：</p>
 <ul>
 <li>信号中断会使某些系统调用行为异常，从而使系统调用的调用者不知如何处理，此时需要调用 Signal Handler 进行可能的状态恢复。一个例子是 <code>write</code> 系统调用，信号中断会导致数据部分写回，与此相关的一大批 I/O 函数（包括出问题的 <code>_bufferedwriter_flush_unlocked</code> 和 <code>_io_BufferedWriter_write_impl</code>）便只能相应地调用 <code>PyErr_CheckSignals</code>。</li>
