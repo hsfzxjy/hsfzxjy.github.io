@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://hsfzxjy.oicp.io/caveats-for-signal-handler-in-python/</loc>
+    
+    <lastmod>2017-08-17T15:33:18.712Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://hsfzxjy.oicp.io/diving-into-thread-local-objects-of-flask/</loc>
+    
+    <lastmod>2017-07-09T10:58:26.803Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://hsfzxjy.oicp.io/linux-file-permissions/</loc>
     
     <lastmod>2017-07-03T16:40:15.691Z</lastmod>
@@ -44,14 +58,14 @@
   </url>
   
   <url>
-    <loc>http://hsfzxjy.oicp.io/uncover-the-secret-of-fast-inverse-square-root-algorithm/</loc>
+    <loc>http://hsfzxjy.oicp.io/python-encoding-and-decoding/</loc>
     
     <lastmod>2016-08-16T09:53:58.440Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://hsfzxjy.oicp.io/python-encoding-and-decoding/</loc>
+    <loc>http://hsfzxjy.oicp.io/uncover-the-secret-of-fast-inverse-square-root-algorithm/</loc>
     
     <lastmod>2016-08-16T09:53:58.440Z</lastmod>
     
@@ -79,14 +93,14 @@
   </url>
   
   <url>
-    <loc>http://hsfzxjy.oicp.io/happy-mothers-day/index.html</loc>
+    <loc>http://hsfzxjy.oicp.io/aggr/index.html</loc>
     
     <lastmod>2016-07-18T03:09:34.298Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://hsfzxjy.oicp.io/aggr/index.html</loc>
+    <loc>http://hsfzxjy.oicp.io/happy-mothers-day/index.html</loc>
     
     <lastmod>2016-07-18T03:09:34.298Z</lastmod>
     
@@ -191,20 +205,6 @@
   </url>
   
   <url>
-    <loc>http://hsfzxjy.oicp.io/wisecity-conclusion/</loc>
-    
-    <lastmod>2016-07-18T03:09:34.294Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://hsfzxjy.oicp.io/how-to-fuck-a-bilk-site/</loc>
-    
-    <lastmod>2016-07-18T03:09:34.294Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://hsfzxjy.oicp.io/RMQ-binary/</loc>
     
     <lastmod>2016-07-18T03:09:34.294Z</lastmod>
@@ -247,7 +247,7 @@
   </url>
   
   <url>
-    <loc>http://hsfzxjy.oicp.io/reprinted-shiwenguoren/</loc>
+    <loc>http://hsfzxjy.oicp.io/lagrange-multiplier-method/</loc>
     
     <lastmod>2016-07-18T03:09:34.294Z</lastmod>
     
@@ -282,14 +282,14 @@
   </url>
   
   <url>
-    <loc>http://hsfzxjy.oicp.io/secret/</loc>
+    <loc>http://hsfzxjy.oicp.io/reprinted-shiwenguoren/</loc>
     
     <lastmod>2016-07-18T03:09:34.294Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://hsfzxjy.oicp.io/lagrange-multiplier-method/</loc>
+    <loc>http://hsfzxjy.oicp.io/wisecity-conclusion/</loc>
     
     <lastmod>2016-07-18T03:09:34.294Z</lastmod>
     
@@ -360,6 +360,20 @@
   
   <url>
     <loc>http://hsfzxjy.oicp.io/that-starry-night/</loc>
+    
+    <lastmod>2016-07-18T03:09:34.294Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://hsfzxjy.oicp.io/secret/</loc>
+    
+    <lastmod>2016-07-18T03:09:34.294Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://hsfzxjy.oicp.io/how-to-fuck-a-bilk-site/</loc>
     
     <lastmod>2016-07-18T03:09:34.294Z</lastmod>
     
@@ -471,7 +485,7 @@
   </url>
   
   <url>
-    <loc>http://hsfzxjy.oicp.io//extended-gcd-algorithm//</loc>
+    <loc>http://hsfzxjy.oicp.io/extended-gcd-algorithm/</loc>
     
     <lastmod>2016-07-18T03:09:34.290Z</lastmod>
     
@@ -527,7 +541,7 @@
   </url>
   
   <url>
-    <loc>http://hsfzxjy.oicp.io//mysqldump-without-lock//</loc>
+    <loc>http://hsfzxjy.oicp.io/mysqldump-without-lock/</loc>
     
     <lastmod>2016-07-18T03:09:34.290Z</lastmod>
     

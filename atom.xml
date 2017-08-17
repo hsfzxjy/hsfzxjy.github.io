@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://hsfzxjy.oicp.io/"/>
-  <updated>2017-07-03T16:40:15.691Z</updated>
+  <updated>2017-08-17T15:33:18.712Z</updated>
   <id>http://hsfzxjy.oicp.io/</id>
   
   <author>
@@ -14,6 +14,120 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>一个 Reentrant Error 引发的对 Python 信号机制的探索和思考</title>
+    <link href="http://hsfzxjy.oicp.io/caveats-for-signal-handler-in-python/"/>
+    <id>http://hsfzxjy.oicp.io/caveats-for-signal-handler-in-python/</id>
+    <published>2017-08-16T16:00:00.000Z</published>
+    <updated>2017-08-17T15:33:18.712Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>前几天工作时遇到了一个匪夷所思的问题。经过几次尝试后问题得以解决，但问题产生的原因却仍令人费解。查找 SO 无果，我决定翻看 Python 的源码。断断续续地研究了几天，终于恍然大悟。撰此文以记。</p>
+<a id="more"></a>
+<p>本文环境：</p>
+<ul>
+<li>Ubuntu 16.04 (64 bit)</li>
+<li>Python 3.6.2</li>
+</ul>
+<p>使用的 C 源码可以从 <a href="https://www.python.org/ftp/python/3.6.2/Python-3.6.2.tgz" target="_blank" rel="external">Python 官网</a> 获取。</p>
+<h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>工作时用到了 celery 作为异步任务队列，为方便调试，我写了一个脚本用以启动/关闭 celery 主进程。代码简化后如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> sys</div><div class="line"><span class="keyword">import</span> subprocess</div><div class="line"><span class="comment"># ...</span></div><div class="line">celery_process = subprocess.Popen(</div><div class="line">    [<span class="string">'celery'</span>, <span class="string">'-A'</span>, <span class="string">'XXX'</span>, <span class="string">'worker'</span>],</div><div class="line">    stdout=subprocess.PIPE,</div><div class="line">    stderr=sys.stderr</div><div class="line">)</div><div class="line"><span class="keyword">try</span>:</div><div class="line">    <span class="comment"># Start and wait for server process</span></div><div class="line"><span class="keyword">except</span> KeyboardInterrupt:</div><div class="line">    <span class="comment"># Ctrl + C pressed</span></div><div class="line">    celery_process.terminate()</div><div class="line">    celery_process.wait()</div></pre></td></tr></table></figure>
+<p>代码启动了 celery worker，并尝试在捕获到 <code>KeyboardInterrupt</code> 异常时将其热关闭。</p>
+<p>初看上去没什么问题。然而实际测试时却发生了十分诡异的事情：按下 <code>Ctrl+C</code> 后，程序 <strong>偶尔</strong> 会抛出这样的异常：<code>RuntimeError: reentrant call inside &lt;_io.BufferedWriter name=&#39;&lt;stdout&gt;&#39;&gt;</code>。诡异之处有两点：</p>
+<ul>
+<li>异常发生的时机有随机性</li>
+<li>异常的 traceback 指向 celery 包，也就是说这是在 celery 主进程内部发生的异常</li>
+</ul>
+<p>这个结果大大出乎了我的意料。随机性异常是众多最难缠的问题之一，因为这常常意味着并发问题，涉及底层知识，病灶隐蔽，调试难度大，同时没有有效的手段判断问题是否彻底解决（可能只是降低了频率）。</p>
+<p><img src="https://segmentfault.com/img/bVS7nP" alt=""></p>
+<h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>异常信息中有两个词很关键：<code>reentrant</code> 和 <code>stdout</code>。<code>reentrant call</code> 说明有一个不可重入的函数被递归调用了；<code>stdout</code> 则指明了发生的地点和时机。初步可以判定：<strong>由于某种原因，有两股控制流在同时操控 <code>stdout</code></strong>。</p>
+<p>“可重入”是什么？根据 <a href="https://en.wikipedia.org/wiki/Reentrancy_%28computing%29" target="_blank" rel="external">Wikipedia</a> 的定义：<strong>如果一个子程序能在执行时被中断并在之后被正确地、安全地唤起，它就被称为可重入的</strong>。依赖于全局数据的过程是不可重入的，如 <code>printf</code>（依赖于全局文件描述符）、<code>malloc</code>（依赖与和堆相关的一系列数据结构）等函数。需要注意的是，可重入性（reentrant）与 线程安全性（thread-safe）并不等价，甚至不存在包含关系，<a href="https://en.wikipedia.org/wiki/Reentrancy_%28computing%29#Examples" target="_blank" rel="external">Wikipedia</a> 中给出了相关的反例。</p>
+<p>多次尝试后，出现了一条线索：有时候 <code>worker: Warm shutdown (MainProcess)</code> 这个字符串会被二次打印，时机不确定。这句话是 celery 将要热关闭时的提示语，二次出现只可能是主进程收到了第二个信号。阅读 <a href="http://docs.celeryproject.org/en/latest/userguide/workers.html#process-signals" target="_blank" rel="external">celery 的文档</a> 可知，<code>SIGINT</code> 和 <code>SIGTERM</code> 信号可以引发热关闭。回头浏览我的代码，其中只有一处发送了 <code>SIGTERM</code> 信号（<code>celery_process.terminate()</code>），至于另一个神秘的信号，我怀疑是 <code>SIGINT</code>。</p>
+<p>SO 一下，结果印证了我的猜想：</p>
+<blockquote>
+<p>If you are generating the SIGINT with Ctrl-C on a Unix system, then the signal is being sent to the entire process group.<br>– via <a href="https://stackoverflow.com/questions/6803395/child-process-receives-parents-sigint" target="_blank" rel="external">StackOverflow</a></p>
+</blockquote>
+<p><code>SIGINT</code> 信号不仅会发送到父进程，而是会发到整个进程组，默认情况下包括了所有子进程。也就是说——在拦截了 <code>KeyboardInterrupt</code> 之后执行的 <code>celery_process.terminate()</code> 是多此一举，因为 <code>SIGINT</code> 信号也会被发送至 celery 主进程，同样会引起热关闭。代码稍作修改即可正常运行：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ...</span></div><div class="line"><span class="keyword">try</span>:</div><div class="line">    <span class="comment"># Start and wait for server process</span></div><div class="line"><span class="keyword">except</span> KeyboardInterrupt:</div><div class="line">    <span class="comment"># Ctrl + C pressed</span></div><div class="line">    <span class="keyword">pass</span></div><div class="line"><span class="keyword">else</span>:</div><div class="line">    <span class="comment"># Signal SIGTERM if no exception raised</span></div><div class="line">    celery_process.terminate()</div><div class="line"><span class="keyword">finally</span>:</div><div class="line">    <span class="comment"># Wait for it to avoid it becoming orphan</span></div><div class="line">    celery_process.wait()</div></pre></td></tr></table></figure>
+<h2 id="猜测"><a href="#猜测" class="headerlink" title="猜测"></a>猜测</h2><p>UNIX 信号处理是一个相当奇葩的过程——当进程收到一个信号时，内核会选择一条线程（以一定的规则），中断其当前控制流，将控制流强行转给信号处理函数，待其执行完毕后再将控制流交还给原线程。时序图如下：</p>
+<p><img src="https://segmentfault.com/img/bVS7gW" alt=""></p>
+<p>由于控制流转换发生在同一条线程上，许多线程间同步机制会失效甚至报错。因此信号处理函数的编写要比线程函数更加严格，对同一个文件输出是被禁止并且无解的，因为很可能会发生这样的事情：</p>
+<p><img src="https://segmentfault.com/img/bVS7nP" alt=""></p>
+<p>而且这个问题不能通过加锁来解决（因为是在同一个线程中，会死锁）。</p>
+<p>因此，我猜测异常发生时的事件时序是这样的：在 <code>print</code> 未执行完时中断，又在信号处理函数中调用 print，触发了重入检测，引起 <code>RuntimeError</code>：</p>
+<p><img src="https://segmentfault.com/img/bVS831" alt=""></p>
+<h2 id="疑云又起"><a href="#疑云又起" class="headerlink" title="疑云又起"></a>疑云又起</h2><p>不幸的是，我的猜想很快被推翻了。</p>
+<p>在翻看 Python <code>signal</code> 模块的官方文档，我看到了如下叙述：</p>
+<blockquote>
+<p>A Python signal handler does not get executed inside the low-level (C) signal handler. Instead, the low-level signal handler sets a flag which tells the virtual machine to execute the corresponding Python signal handler at a later point(for example at the next bytecode instruction).<br>– via <a href="https://docs.python.org/3/library/signal.html?highlight=signal#execution-of-python-signal-handlers" target="_blank" rel="external">Python Documentation</a></p>
+</blockquote>
+<p>也就是说，<strong>Python 中使用 <code>signal.signal</code> 注册的信号处理函数并不会在收到信号时立即执行，而只是简单做一个标记，将其延迟至之后的某个时机</strong>。这么做可以尽量快地结束异常控制流，减少其对被阻断进程的影响。</p>
+<p>这番表述可以说是推翻了我的猜想，因为 Signal Handler 中的 <code>print</code> 并没有在异常控制流中执行。那异常又是怎么产生的呢？</p>
+<p>文档说 Python Signal Handler 会被延后至某个时机进行，但并没有明示是什么时候。对于这个疑问，<a href="https://stackoverflow.com/questions/19699314/how-to-use-a-separate-thread-for-asynchronous-signal-handling-in-python" target="_blank" rel="external">这个提问的被采纳回答</a> 则斩钉截铁地将其具体化到了“某两个 Python 字节码之间”。</p>
+<p>我们知道，Python 程序在执行前会被编译成 Python 内定的字节码<br>（bytecode）,Python 虚拟机实际执行的正是这些字节码。倘若该回答是正确的，则立即有如下推论：<strong>在处理信号的过程中，字节码具有原子性（atomic）</strong>。也就是说，主线程总是在两个字节码之间决定是否转移控制流， 而 <strong>不会</strong> 出现以下情况：</p>
+<p><img src="https://segmentfault.com/img/bVS7EH" alt=""></p>
+<p>这很显然与我的程序结果相悖：<code>print</code> 与 <code>print</code> 所调用的 <code>io.BufferedWriter.write</code> 和 <code>io.BufferedWriter.flush</code> 都是用纯 C 代码编写的，对其的调用只消耗一条字节码（<code>CALL_FUNCTION</code> 或 <code>CALL_FUNCTION_KW</code>），在信号中断的影响下，这几个函数仍保持原子性，在时序图上互不重叠，更不会发生重入。</p>
+<p><img src="https://segmentfault.com/img/bVS7ag" alt=""></p>
+<p>因此，<strong>除了在两个字节码之间，应该还有其他时机唤起了 Python Signal Handler</strong>。</p>
+<p>至此，问题已触及 Python 的地板了，需向更底层挖掘才能找到答案。</p>
+<h2 id="深入源码"><a href="#深入源码" class="headerlink" title="深入源码"></a>深入源码</h2><p>信号注册逻辑位于 <code>Modules/signalmodule.c</code> 文件中。 313 行的 <code>signal_handler</code> 是信号处理函数的最外层包装，由系统调用 <code>signal</code> 或 <code>sigaction</code> 注册至内核，并在信号发生时被内核回调，是异常控制流的入口。<code>signal_handler</code> 主要调用了 239 行处的 <code>trip_signal</code> 函数，其中有这样一段代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Handlers[sig_num].tripped = <span class="number">1</span>;</div><div class="line"></div><div class="line"><span class="keyword">if</span> (!is_tripped) &#123;</div><div class="line">    is_tripped = <span class="number">1</span>;</div><div class="line">    Py_AddPendingCall(checksignals_witharg, <span class="literal">NULL</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这段代码便是文档中所说的逻辑：做标记并延后 Python Signal Handler。其中 <code>checksignals_witharg</code> 即为被延后调用的函数，位于 192 行，核心代码只有一句：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span></span></div><div class="line"><span class="title">checksignals_witharg</span><span class="params">(<span class="keyword">void</span> * unused)</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> PyErr_CheckSignals();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>PyErr_CheckSignals</code> 位于 1511 行：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span></span></div><div class="line"><span class="title">PyErr_CheckSignals</span><span class="params">(<span class="keyword">void</span>)</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> i;</div><div class="line">    PyObject *f;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!is_tripped)</div><div class="line">        <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> WITH_THREAD</span></div><div class="line">    <span class="keyword">if</span> (PyThread_get_thread_ident() != main_thread)</div><div class="line">        <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"></div><div class="line">    is_tripped = <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!(f = (PyObject *)PyEval_GetFrame()))</div><div class="line">        f = Py_None;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt; NSIG; i++) &#123;</div><div class="line">        <span class="keyword">if</span> (Handlers[i].tripped) &#123;</div><div class="line">            PyObject *result = <span class="literal">NULL</span>;</div><div class="line">            PyObject *arglist = Py_BuildValue(<span class="string">"(iO)"</span>, i, f);</div><div class="line">            Handlers[i].tripped = <span class="number">0</span>;</div><div class="line"></div><div class="line">            <span class="keyword">if</span> (arglist) &#123;</div><div class="line">                result = PyEval_CallObject(Handlers[i].func,</div><div class="line">                                           arglist);</div><div class="line">                Py_DECREF(arglist);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (!result)</div><div class="line">                <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line"></div><div class="line">            Py_DECREF(result);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可见，这个函数便是异步回调的最里层，包含了执行 Python Signal Handler 的逻辑。</p>
+<p>至此我们可以发现，整个 Python 中有两个办法可以唤起 Python Signal Handler，一个是调用 <code>checksignals_witharg</code>，另一个是调用 <code>PyErr_CheckSignals</code>。前者只是后者的简单封包。</p>
+<p><code>checksignals_witharg</code> 在 Python 源码中只出现了一次（不包括定义，下同），没有被直接调用的迹象。但需要注意的是，<code>checksignals_witharg</code> 曾被当做 <code>Py_AddPendingCall</code> 的参数，<code>Py_AddPendingCall</code> 所做的工作时将其加入到一个全局队列中。与之对应的出队操作是 <code>Py_MakePendingCalls</code>，位于 <code>Python/ceval.c</code> 的 464 行。此函数会间接调用 <code>checksignals_witharg</code>，在 Python 源码中被调用了 3 次：</p>
+<ul>
+<li><code>Modules/_threadmodule.c</code> 52 行的 <code>acquire_timed</code></li>
+<li><code>Modules/main.c</code> 310 行的 <code>run_file</code></li>
+<li><code>Python/ceval.c</code> 722 行的 <code>_PyEval_EvalFrameDefault</code></li>
+</ul>
+<p>值得注意的是，<code>_PyEval_EvalFrameDefault</code> 是一个长达 2600 多行的状态机，是解析字节码的核心逻辑所在。此处调用出现于状态机主循环开始处——这印证了上面回答中的部分说法，即 Python 会在两个字节码中间唤起 Python Signal Hanlder。</p>
+<p>而 <code>PyErr_CheckSignals</code> 在 Python 源码中出现了 80 多处，遍布 Python 的各个模块中——这说明该回答的另一半说法是错误的：<strong>除了在两个字节码之间，Python 还可能在其他角落唤起 Python Signal Handler</strong>。其中有两处值得注意，它们都位于 <code>Modules/_io/bufferedio.c</code> 中：</p>
+<ul>
+<li>1884 行的 <code>_bufferedwriter_flush_unlocked</code></li>
+<li>1939 行的 <code>_io_BufferedWriter_write_impl</code></li>
+</ul>
+<p>这两个函数是 <code>io.BufferedWriter</code> 类的底层实现，会被 <code>print</code> 间接调用。仔细观察可以发现，它们都有着相似的结构：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ENTER_BUFFERED(self)</div><div class="line"><span class="comment">// ...</span></div><div class="line">PyErr_CheckSignals();</div><div class="line"><span class="comment">// ...</span></div><div class="line">LEAVE_BUFFERED(self)</div></pre></td></tr></table></figure>
+<p><code>ENTER_BUFFERED</code> 是一个宏，会尝试申请无阻塞线程锁以保证函数不会被重入：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> ENTER_BUFFERED(self) \</span></div><div class="line">    ( (PyThread_acquire_lock(self-&gt;lock, 0) ? \</div><div class="line">       1 : _enter_buffered_busy(self)) \</div><div class="line">     &amp;&amp; (self-&gt;owner = PyThread_get_thread_ident(), 1) )</div></pre></td></tr></table></figure>
+<p><img src="https://segmentfault.com/img/bVS9iq" alt=""></p>
+<p>至此，真相已经大白了。</p>
+<h2 id="真相"><a href="#真相" class="headerlink" title="真相"></a>真相</h2><p>当信号中断发生在 <code>_bufferedwriter_flush_unlocked</code> 或 <code>_io_BufferedWriter_write_impl</code> 中时，这两个函数中的 <code>PyErr_CheckSignals</code> 会直接唤起 Python Signal Handler，而此时由 <code>ENTER_BUFFERED</code> 上的锁尚未解开，若 Python Signal Handler 中又有 <code>print</code> 函数调用，则会导致再次 <code>ENTER_BUFFERED</code> 上锁失败，从而抛出异常。时序图如下：</p>
+<p><img src="https://segmentfault.com/img/bVS9lQ" alt=""></p>
+<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>为什么不将 Python Signal Handler 调用的地点统一在一个地方，而是散布在程序的各处呢？阅读相关代码，我认为有两点原因：</p>
+<ul>
+<li>信号中断会使某些系统调用行为异常，从而使系统调用的调用者不知如何处理，此时需要调用 Signal Handler 进行可能的状态恢复。一个例子是 <code>write</code> 系统调用，信号中断会导致数据部分写回，与此相关的一大批 I/O 函数（包括出问题的 <code>_bufferedwriter_flush_unlocked</code> 和 <code>_io_BufferedWriter_write_impl</code>）便只能相应地调用 <code>PyErr_CheckSignals</code>。</li>
+<li>某些函数需要做计算密集型任务，为了防止 Python Signal Handler 的调用被过长地延后（其实主要是为了及时响应键盘中断，防止程序无法从前台结束），必须适时地检查并调用 Python Signal Handler。一个例子是 <code>Objects/longobject.c</code> 中的诸函数，<code>longobject.c</code> 定义了 Python 特有的无限长整型，其相关的运算可能耗时相当长，必须做这样的处理。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>Python Signal Handler 的调用会被延后，但时机不止在两个字节码之间，而是可能出现在任何地方。</li>
+<li>由于第一条，Python Signal Handler 中尽量都使用 <strong>可重入的</strong> 的函数，以避免奇怪的问题。可重入性可以从文档获知，也可以结合定义由源码推断出来。</li>
+<li>有疑问，翻源码。人会说谎，代码不会。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;写在前面&quot;&gt;&lt;a href=&quot;#写在前面&quot; class=&quot;headerlink&quot; title=&quot;写在前面&quot;&gt;&lt;/a&gt;写在前面&lt;/h2&gt;&lt;p&gt;前几天工作时遇到了一个匪夷所思的问题。经过几次尝试后问题得以解决，但问题产生的原因却仍令人费解。查找 SO 无果，我决定翻看 Python 的源码。断断续续地研究了几天，终于恍然大悟。撰此文以记。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="python" scheme="http://hsfzxjy.oicp.io/tags/python/"/>
+    
+      <category term="POSIX" scheme="http://hsfzxjy.oicp.io/tags/POSIX/"/>
+    
+      <category term="signal" scheme="http://hsfzxjy.oicp.io/tags/signal/"/>
+    
+      <category term="reentrancy" scheme="http://hsfzxjy.oicp.io/tags/reentrancy/"/>
+    
+  </entry>
   
   <entry>
     <title>Linux 文件权限</title>
@@ -61,6 +175,68 @@
       <category term="Linux" scheme="http://hsfzxjy.oicp.io/tags/Linux/"/>
     
       <category term="文件权限" scheme="http://hsfzxjy.oicp.io/tags/%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>深入了解 Flask 的 Thread Local Objects 运行机理</title>
+    <link href="http://hsfzxjy.oicp.io/diving-into-thread-local-objects-of-flask/"/>
+    <id>http://hsfzxjy.oicp.io/diving-into-thread-local-objects-of-flask/</id>
+    <published>2017-04-26T16:00:00.000Z</published>
+    <updated>2017-07-09T10:58:26.803Z</updated>
+    
+    <content type="html"><![CDATA[<div id="flowchart-0" class="flow-chart"></div>
+
+<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>首次接触 Flask 时我就被惊艳到了——Flask 中的请求对象 <code>request</code> 居然是以全局对象的形式提供的！诚然，这种设计避免了繁冗的参数互传，使代码变得简洁，可是在多线程环境中，全局对象真的不会有数据同步问题吗？然而文档明确表明了：这类特殊的全局对象叫 <strong>Thread Local Objects</strong>，对逻辑而言是全局的，对线程而言则是局部的，因此它们是“线程安全的”（thread-safe)。</p>
+<p>心生好奇，遂深究其理，撰此文。</p>
+<p>（本文中的代码基于 Flask 0.12，werkzeug 0.12，适当去除了部分 Sphinx 的文档注释）</p>
+<h2 id="让人迷惑的定义"><a href="#让人迷惑的定义" class="headerlink" title="让人迷惑的定义"></a>让人迷惑的定义</h2><p>我们从 <code>request</code> 对象的入口开始探索。<code>request</code> 定义在 <code>flask/globals.py</code> 中——这是一个接口模块，所有的 Thread Local Objects 都由此暴露给调用者。此处只摘取 <code>request</code> 相关的片段：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> partial</div><div class="line"><span class="keyword">from</span> werkzeug.local <span class="keyword">import</span> LocalStack, LocalProxy</div><div class="line"></div><div class="line">_request_ctx_err_msg = <span class="string">'...'</span> <span class="comment"># Shortened</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">_lookup_req_object</span><span class="params">(name)</span>:</span></div><div class="line">    top = _request_ctx_stack.top</div><div class="line">    <span class="keyword">if</span> top <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">        <span class="keyword">raise</span> RuntimeError(_request_ctx_err_msg)</div><div class="line">    <span class="keyword">return</span> getattr(top, name)</div><div class="line"></div><div class="line"><span class="comment"># context locals</span></div><div class="line">_request_ctx_stack = LocalStack()</div><div class="line">request = LocalProxy(partial(_lookup_req_object, <span class="string">'request'</span>))</div></pre></td></tr></table></figure>
+<p>想必看到这，你仍然心存疑惑——这么两行代码，就能实现上下文环境的动态切换吗？当然，只是实现细节都被很好地封装了起来。不过即使是如此抽象的代码，我们也可以隐约从命名中发掘大致的逻辑：</p>
+<ul>
+<li><code>Request</code> 对象外面还包装了一层 <code>Request Context</code>，应该是储存了上下文相关的信息</li>
+<li>Request Contexts 储存在 <code>_request_ctx_stack</code> 中，这是一个 <code>LocalStack</code> 类型的对象，应该是使用了栈</li>
+<li><code>request</code> 和 <code>_request_ctx_stack</code> 之间由一个 <code>LocalProxy</code> 对象相关联，此处应该是使用了代理模式</li>
+</ul>
+<p>以上三点可以看出：<code>LocalStack</code> 和 <code>LocalProxy</code> 是两个关键的类。但它们内部是怎样的呢？我们接着往下走。</p>
+<h2 id="werkzeug-中的魔法"><a href="#werkzeug-中的魔法" class="headerlink" title="werkzeug 中的魔法"></a>werkzeug 中的魔法</h2><p>让我们跳出 <code>flask</code>，进入 <code>werkzeug</code>。<code>werkzeug</code> 是一个 WSGI Utility Library，为 Web 框架的开发提供了诸多便利，也是 pocoo 团队的一个出色的作品。<code>flask</code> 正是基于它构建的。</p>
+<p>Thread Local Objects 相关类定义在 <code>werkzeug/local.py</code> 中，此处有三个相关的类：<code>Local</code>、<code>LocalStack</code> 和 <code>LocalProxy</code>。我们逐个进行分析。</p>
+<h3 id="Local"><a href="#Local" class="headerlink" title="Local"></a>Local</h3><p>个人认为，<code>Local</code> 这个类名语义太过含糊，致使许多人须通过完整阅读其代码才能理解其用途。私以为 <code>ThreadLocalObjectsStorage</code> 更为恰当，且看代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># werkzeug/local.py: 51-86</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Local</span><span class="params">(object)</span>:</span></div><div class="line">    __slots__ = (<span class="string">'__storage__'</span>, <span class="string">'__ident_func__'</span>)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        object.__setattr__(self, <span class="string">'__storage__'</span>, &#123;&#125;)</div><div class="line">        object.__setattr__(self, <span class="string">'__ident_func__'</span>, get_ident)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">return</span> iter(self.__storage__.items())</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, proxy)</span>:</span></div><div class="line">        <span class="string">"""Create a proxy for a name."""</span></div><div class="line">        <span class="keyword">return</span> LocalProxy(self, proxy)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__release_local__</span><span class="params">(self)</span>:</span></div><div class="line">        self.__storage__.pop(self.__ident_func__(), <span class="keyword">None</span>)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getattr__</span><span class="params">(self, name)</span>:</span></div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            <span class="keyword">return</span> self.__storage__[self.__ident_func__()][name]</div><div class="line">        <span class="keyword">except</span> KeyError:</div><div class="line">            <span class="keyword">raise</span> AttributeError(name)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__setattr__</span><span class="params">(self, name, value)</span>:</span></div><div class="line">        ident = self.__ident_func__()</div><div class="line">        storage = self.__storage__</div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            storage[ident][name] = value</div><div class="line">        <span class="keyword">except</span> KeyError:</div><div class="line">            storage[ident] = &#123;name: value&#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__delattr__</span><span class="params">(self, name)</span>:</span></div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            <span class="keyword">del</span> self.__storage__[self.__ident_func__()][name]</div><div class="line">        <span class="keyword">except</span> KeyError:</div><div class="line">            <span class="keyword">raise</span> AttributeError(name)</div></pre></td></tr></table></figure>
+<p>可以看出，<code>Local</code> 对象将自己的 <code>__storage__</code> 属性当作一个大字典来使用，并覆盖了 <code>__*attr__</code> 方法，在增删改属性时加上了一个 <code>ident</code> 标识符——这是一个线程唯一标识符，由 <code>thread.get_ident</code> 获得。如此一来，在不同的线程环境中观察此对象就会得到不同的结果，这就实现了所谓“对线程而言是局部的特性”。</p>
+<p><script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/flowchart/1.6.5/flowchart.min.js"></script><textarea id="flowchart-0-code" style="display: none">st=>start: Start|past:>http://www.google.com[blank]
+e=>end: End:>http://www.google.com
+op1=>operation: My Operation|past
+op2=>operation: Stuff|current
+sub1=>subroutine: My Subroutine|invalid
+cond=>condition: Yes
+or No?|approved:>http://www.google.com
+c2=>condition: Good idea|rejected
+io=>inputoutput: catch something...|request
+
+st->op1(right)->cond
+cond(yes, right)->c2
+cond(no)->sub1(left)->op1
+c2(yes)->io->e
+c2(no)->op2->e</textarea><textarea id="flowchart-0-options" style="display: none">{"scale":1,"line-width":2,"line-length":50,"text-margin":10,"font-size":12}</textarea><script>  var code = document.getElementById("flowchart-0-code").value;  var options = JSON.parse(decodeURIComponent(document.getElementById("flowchart-0-options").value));  var diagram = flowchart.parse(code);  diagram.drawSVG("flowchart-0", options);</script></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;div id=&quot;flowchart-0&quot; class=&quot;flow-chart&quot;&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;写在前面&quot;&gt;&lt;a href=&quot;#写在前面&quot; class=&quot;headerlink&quot; title=&quot;写在前面&quot;&gt;&lt;/a&gt;写在前面&lt;/h2&gt;&lt;p&gt;首次接触 Flask 时我
+    
+    </summary>
+    
+      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="python" scheme="http://hsfzxjy.oicp.io/tags/python/"/>
+    
+      <category term="Flask" scheme="http://hsfzxjy.oicp.io/tags/Flask/"/>
+    
+      <category term="Thread Local Objects" scheme="http://hsfzxjy.oicp.io/tags/Thread-Local-Objects/"/>
     
   </entry>
   
@@ -1327,237 +1503,6 @@
       <category term="杂感" scheme="http://hsfzxjy.oicp.io/tags/%E6%9D%82%E6%84%9F/"/>
     
       <category term="产品" scheme="http://hsfzxjy.oicp.io/tags/%E4%BA%A7%E5%93%81/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【译】响应式图片的现状</title>
-    <link href="http://hsfzxjy.oicp.io/the-state-of-responsive-images-in-2015/"/>
-    <id>http://hsfzxjy.oicp.io/the-state-of-responsive-images-in-2015/</id>
-    <published>2015-09-18T16:00:00.000Z</published>
-    <updated>2016-07-18T03:09:34.294Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>原文链接：<a href="http://www.webdesignerdepot.com/2015/08/the-state-of-responsive-images/" target="_blank" rel="external">戳这里</a></p>
-</blockquote>
-<p><img src="http://netdna.webdesignerdepot.com/uploads/2015/08/featured_images1.jpg" alt=""></p>
-<p>Web 是一种可视化的媒体。绚丽的视觉效果，很大程度上离不开图片文件所作出的贡献。虽然（Whilst）其中的许多效果都可以用 CSS 和 内联 SVG 来实现，互联网上的许多站点仍需要图片文件。</p>
-<p>从去年的统计来看，每个站点中，图片平均占了一半的页面体积，并且随着时间的推移，图片体积有持续增加的趋势；就 2014 年而言，图片的大小便增长了 <strong>21%</strong>。</p>
-<p>与此同时，互联网终端的种类、数量也在增长。从 72 ppi（市场份额正在下降）到 600 ppi，不同设备的分辨率（resolution）有着天壤之别。</p>
-<p>创建能在任何设备中都有着高质量的图片，其实再容易不过了——用 1000 ppi 的质量保存图片，然后就可以不用再理他了（译者注：原文是 call it a day）。生成的图片，即使是在分辨率最高的设备上查看也是十分清晰的（crisp）。但是，在图片质量提升的同时，图片文件的大小也会相应地增加。要知道，<strong>页面加载时间</strong>可是影响用户体验的<strong>首要因素</strong>——因此，保证站点能够及时地呈现在用户面前是我们义不容辞（incrumbent）的责任。高质量的图片，即使是在宽带环境下加载也要耗费几十秒，更不用说（let alone）是移动端的设备了——简直就是无法使用。</p>
-<p>响应式图片的目的，不是要为设备提供尽可能高质量的图片（这一点，我们很容易做到），而是要为设备提供它所能支持的最高质量的图片，仅此而已（nothing more）。</p>
-<p>从这篇指南中，你将了解到响应式图片的工作原理（what works），响应式图片仍然存在的问题和陷阱（pitfall），以及如何将响应式图片运用到网站中。</p>
-<a id="more"></a>
-<h2 id="我能感受到这欲望，对速度的渴求"><a href="#我能感受到这欲望，对速度的渴求" class="headerlink" title="我能感受到这欲望，对速度的渴求"></a>我能感受到这欲望，对速度的渴求</h2><p>为什么速度这么重要？难道还有人在用 3G 网络吗（译者注：歪果仁科技发达，早已看不起 3G 网络）？如果你的目标客户都住在曼哈顿市中心，为什么还要为莱索托的乡巴佬担心呢（译者注：南非山区）？ 事实上，“每个人都能用上超快的宽带，用上由那些利欲熏心的公司提供的宽带”——听起来就像个神话。</p>
-<p>每个人每天都要耗费至少两个小时在恶劣的（inferior）网络环境中。就我而言，在挤公交上下班时（commuting），我常常会上网以打发无聊的时光——每当这时，稳定的 3G 网络听起来都像是遥不可及的美梦。</p>
-<p>今年四月的时候，<a href="http://googlewebmastercentral.blogspot.co.uk/2015/04/rolling-out-mobile-friendly-update.html" target="_blank" rel="external">Google 声称</a>“‘移动设备友好性’将会成为移动站点的排名因素“。甚至，在此之前，<a href="http://googlewebmastercentral.blogspot.co.uk/2011/03/introducing-page-speed-online-with.html" target="_blank" rel="external">加载速度也是一个重要的排名因素</a>——无论是显式地体现在 Google 的统计中，抑或是隐式地成为影响网站跳出率（bounce rate）的一个重要因素。</p>
-<p>对于两个相近的站点，1Kb 的冗余数据，都可能将你的 Google 排名从第三降到第四、第五，甚至是第十、第十一——换言之，从第一页降到了第二页——这会给你的收入（revenue）带来不小的冲击。</p>
-<h2 id="你真的需要这图片吗？"><a href="#你真的需要这图片吗？" class="headerlink" title="你真的需要这图片吗？"></a>你真的需要这图片吗？</h2><p>图片优化的最高境界便是：没有图片。你的站点上有五张图片，去掉一张，你便节省了 20%——或许更重要地，你节省了一次 HTTP 请求。如果你将五张图片都去掉了，那你就节省了 100%，以及所有的 HTTP 请求。因此，何乐而不为呢？</p>
-<p>然而，我们并不会这么做——毕竟在短期内，图片比文字更有感染力。它们能和用户建立一种”感情通道“，从而使用户被站点的内容所吸引。</p>
-<p>要知道，<a href="http://www.nngroup.com/articles/how-little-do-users-read/" target="_blank" rel="external">用户从来不读网页</a>——只有极少数人会深入阅读站点上的内容。图片能让我们在很短的时间（a fraction of time）内了解一个品牌，深深地记住它（reinforce）——这是文字做不到的。</p>
-<p>也许，图片的体积会很大，加载起来显得很笨重。然而一旦被浏览器渲染出来，和文字相比，它们能够更有力地抓住用户的眼球，更高效地传达品牌信息。</p>
-<p>而响应式图片，就是为了更好地把握住这来之不易的”感情通道“，以防不耐烦的用户点击点击了”后退“按钮。</p>
-<h2 id="那么，SVG-又怎么样呢？"><a href="#那么，SVG-又怎么样呢？" class="headerlink" title="那么，SVG 又怎么样呢？"></a>那么，SVG 又怎么样呢？</h2><p>SVG（可缩放矢量图像）是 Web 发展史上的一大创举。它引领着潮流（ahead of the curve），至今大多数设计师依旧没有意识到其真正的潜力。</p>
-<p>SVG ——正如它的名字所描述——是基于矢量的。这意味着 SVG 图像是由点、角和直线构成的。SVG 同时也是——正如它的名字所描述——是可缩放的，这意味着在 5k iMac 和 Android 智能手机上，它会表现得同样出色——没有质量的损失，也没有体积的差别。</p>
-<p>如果你需要一张平面插图（flat illustration），一个图标，一个 logo 以及其他所有能够以 SVG 的形式显示出来的东西，SVG 是不二之选（the way to go）。</p>
-<p>Web 上大多数图片都是位图。一般来说，位图的工作原理就是将每个像素点依次描述出来，包括它们的颜色（RGB 的形式，即 红、绿、蓝值），以及透明度（在某些场景下）。如果你有一张尺寸为 100px × 100px 的图片，那么它将有 10000 个像素点。如果每个像素点都用 4 个值来描述，那么这张图将等同于 40000 bits 的数据。听起来很多，不是吗？然而有时，它们的体积会比矢量图还要小。</p>
-<p>考虑 1px × 1px 的图片，若使用位图，则需要 4 bits 来记录（红、绿、蓝，以及透明度）。现在考虑用矢量的形式来记录相同尺寸的图片：除了 RGBA 颜色值之外，还需要矩形的左上角坐标、长度和宽度这几个量。</p>
-<p>这都是些极端的（crude）情况，但它们是准确的。通常，如果一幅图片的矢量版本——假使有的话——比同样的（equivalent）位图占用的体积还要多，那么位图是唯一合理的选择。</p>
-<h2 id="（错误地）使用-Javascript"><a href="#（错误地）使用-Javascript" class="headerlink" title="（错误地）使用 Javascript"></a>（错误地）使用 Javascript</h2><p>正如生活中的许多问题（如果你的生活是在网络上的话），响应式图片也可以用 Javascript 来解决。事实上，在过去的许多年中，Javascript 是解决这个问题的唯一途径。通过对 User Agent 进行测试，Javascript 可以知道当前的浏览器类型，然后将指向合适的图片地址的 <code>image</code> 标签输出到页面上。</p>
-<p>有些 Web 设计师反对这么做，理由是：<a href="https://gds.blog.gov.uk/2013/10/21/how-many-people-are-missing-out-on-javascript-enhancement/" target="_blank" rel="external">有些人会关闭 Javascript 功能</a>。然而，这种情况已经非常少见了，尤其是在移动设备中。尽管如此，这种方法仍存在着一些问题——比如，这种图片不会被搜索引擎机器人解析出来，而且只有当脚本执行后图片才会被加载出来。</p>
-<p>事实上，使用 Javascript 最大问题是：这是一种有悖于 Javascript 主要目的的使用方式。HTML 管理数据，CSS 处理表现形式，而 Javascript 负责功能实现。当我们违背了这些既定规则时，我们就会遇到各种各样的问题，遇到需要”奇技淫巧“（hack）来解决的问题。图片的本质是数据，因此应该交由 HTML 来处理。</p>
-<h2 id="浏览器的问题"><a href="#浏览器的问题" class="headerlink" title="浏览器的问题"></a>浏览器的问题</h2><p>从 RWD （响应式网页设计，Responsive Web Design）提出至今，图片都是最大的绊脚石（stumbling block）。然而现在，我们要开始寻找方法来解决这各种各样的问题了。能够被称为”最佳实践“的，都是那些久经沙场的（battle-hardened）、有足够成功案例的技术。专业的（dedicated）开发者已经牺牲了自己的时间去去游说（lobby） W3C，以求获得官方的解决方案。而现在，响应式图片第一次成为了可能。</p>
-<p>响应式图片的关键，在于它充分地意识到了 Web 的失败之处。为保证响应式图片不会使浏览器崩溃，设计者们早已考虑得十分周到——即使对于不支持响应式图片的浏览器，代码也不会报错，而是向用户展示一张默认的、非响应式的图片。</p>
-<p>在这篇文章中，我们将见到两个官方的响应式图片标签：<code>srcset</code> 以及 <code>picture</code>。</p>
-<p>截至目前，Edge、Safari 和 iOS Safari 只支持 <code>srcset</code> 的一部分特性。Firefox、Chrome、Opera、Android 内置浏览器以及下一个版本的 Safari 和 iOS Safari 都将会完整地支持它。（我们会在下文讨论它们的区别）</p>
-<p>而 <code>picture</code> 元素，已经被 Firefox、Chrome、Opera 以及 Android 内置浏览器完美支持。Edge、Safari 和 iOS Safari 则完全不支持，并且暂时也没有实现它们的打算。</p>
-<p>由于不同厂商解析 W3C 特性的方法不同，即使是在兼容它们的浏览器中，也有一些不一致的地方。例如，当你使用 viewport 的大小来区分不同的设备时，有些浏览器会在 viewport 比小图片大 1px 时便将小图切换为大图，而另外一些则在 viewport 完全符合大图显示条件时才会这么做。</p>
-<p>总之，浏览器可以分为两大阵营：想要图片质量尽可能高的 以及 想要图片体积尽可能小的。浏览器厂商都在各自推崇（duking）自己的主张，直到某一方的实现被大众所认可——个人而言我喜欢后者，因为它认为性能对用户体验而言更加关键。</p>
-<p>至于现在，Web 设计人员的最佳选择就是：坚持 W3C 标准，而不要对浏览器作额外的猜测。毕竟，浏览器的默认体验（高质量 或是 高性能）是由用户选择的默认浏览器决定的——因此，如果用户意识到这其中的区别，那么用户的偏好就最有可能成为浏览器的偏好（译者注：这里怪怪的）。</p>
-<h2 id="响应式图片最佳实践（2015）"><a href="#响应式图片最佳实践（2015）" class="headerlink" title="响应式图片最佳实践（2015）"></a>响应式图片最佳实践（2015）</h2><p>纵观 Web 的历史，我们曾经用一个标签来表示图片：<code>img</code> 标签。在 HTML5 中，<code>img</code> 的角色经历了（undergone）一些微妙（subtle）的变化——它被设计成响应式图片的开关，即其不再代表一张图片，而只是响应式图片的占位符。</p>
-<p>这其中的区别十分重要。曾经，<code>img</code> 标签只能持有一副图片的数据（位图 或 矢量图）——而现在，它能持有多幅图的数据。</p>
-<p><code>img</code>标签看起来是这样的（概括（recap）给非开发者）：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">""</span> <span class="attr">alt</span>=<span class="string">""</span> /&gt;</span></div></pre></td></tr></table></figure>
-<p><code>img</code> 标签的响应式版本看起来是这样的：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">srcset</span>=<span class="string">""</span> <span class="attr">src</span>=<span class="string">""</span> <span class="attr">alt</span>=<span class="string">""</span> /&gt;</span></div></pre></td></tr></table></figure>
-<p>仅仅（Barely）只有一些区别而已。仔细看代码，你会注意到一件重要的事情：<strong>代码是向后兼容的</strong>。如果一个浏览器不能理解 <code>srcset</code> 属性，它会简单地忽略它，并按照 1993 年的原始标准进行渲染。</p>
-<p>这意味着：我们能通过标记来使用响应式图片，而不需要对相关特性进行检测。</p>
-<p>在新的响应式 <code>img</code> 标签中， 原则上 <code>src</code> 属性只是为不支持 <code>srcset</code> 的浏览器指定了默认的图片地址，而 <code>srcset</code> 属性则包含了用于适配各种分辨率的图片信息。</p>
-<p>在渲染 <code>img</code> 标签是时，浏览器会自己决定出最适合的图片文件。</p>
-<h3 id="使用-srcset"><a href="#使用-srcset" class="headerlink" title="使用 srcset"></a>使用 srcset</h3><p>既然我们已经知道 <code>srcset</code> 在不兼容的浏览器中会静默失败，我们便可以子有底增加图片了：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">srcset</span>=<span class="string">"image-b.jpg"</span> <span class="attr">src</span>=<span class="string">"image-a.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div></pre></td></tr></table></figure>
-<p>在这个例子中，任何支持 <code>srcset</code> 的浏览器将会显示 <code>image-b.jpg</code>，而任何不支持的浏览器则会显示 <code>image-a.jpg</code>。</p>
-<p>重要的是，你要知道浏览器只会下载它想要显示的图片，而并不会将所有图片都加载出来后再进行选择。</p>
-<p>遗憾的是，我们并没有任何进步——除非我们是在展示 <code>srcset</code> 属性的使用，仅靠 <code>srcset</code> 的支持与否来加载图片并没有什么实际的应用。</p>
-<p>解决方法就是：为浏览器提供更多的信息，让其知道自己该选择那一张图片。为了做到这一点，我们需要提供和图片的 像素密度（pixel density） 以及 可用空间（available space） 相关的信息。</p>
-<h3 id="使用-x-描述符"><a href="#使用-x-描述符" class="headerlink" title="使用 x 描述符"></a>使用 x 描述符</h3><p>x 描述符能够让浏览器知道图片的像素密度。</p>
-<p>举个例子，如果你想要提供一张两倍像素于标准图片的 视网膜级的（retina-grade）的图片，你需要在 <code>srcset</code> 中做出说明：在文件名后加上 <code>2x</code>。</p>
-<p>这是我们的图片：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div></pre></td></tr></table></figure>
-<p>为了给浏览器增添一个视网膜选项，我们将作出如下修改：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">srcset</span>=<span class="string">"retina-image.jpg 2x"</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div></pre></td></tr></table></figure>
-<p>在这个案例中，有三个可能的结果：</p>
-<ol>
-<li>如果浏览器不支持 <code>srcset</code>，则 <code>src</code> 所定义的图片将会被使用。</li>
-<li>如果浏览器支持 <code>srcset</code> ，并且屏幕能够胜任两倍的分辨率，则 <code>srcset</code> 所定义的图片将会被采用</li>
-<li>如果浏览器支持 <code>srcset</code>，但是没有足够高的分辨率，<code>src</code> 所定义的图片将会被采用（在 <code>srcset</code> 没有定义 <code>1x</code> 图片的情况下，<code>src</code> 属性会被视为这种情况下的选项）</li>
-</ol>
-<p>浏览器支持是良好的，并且在飞快地改进中。只用一个属性，我们就解决了响应式图片的难题（conundrum），真棒！</p>
-<p>最后，关于 x 描述符，值得注意的是：图片的选择是基于像素密度的。故如果一个用户将浏览器缩放至 200%（等效于将图片大小减半，将像素密度加倍），2x 图片将会被加载。这会对 无障碍访问设备（accessibility）造成一些不利（detrimental）的影响——我们当然不希望在视力受损者访问网站时加载速度下降，而仅仅是因为他们缩放了网页。</p>
-<h3 id="使用-w-描述符"><a href="#使用-w-描述符" class="headerlink" title="使用 w 描述符"></a>使用 w 描述符</h3><p>w 描述符比 x 描述符稍微先进一些。w 描述符的工作原理是：对于一个特定的图片选项，它会告诉浏览器 x 轴上的实际像素有多少（即宽度）。</p>
-<p>截止写作时，Edge，Safari 以及 iOS Safari 尚不支持 w 描述符，这在某些程度上削弱了它的实用性。</p>
-<p>让我们回到原来的图片：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div></pre></td></tr></table></figure>
-<p>假设在本地时，这张图片的宽度是 1600 像素，现在我们想要新增一张视网膜级的图片。正如 x 描述符，我们将在 <code>srcset</code> 中定义宽为一张 3200 像素的图片：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">srcset</span>=<span class="string">"retina-image.jpg 3200w"</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div></pre></td></tr></table></figure>
-<p>w 描述符最大的毛病（gotcha）就是：尽管在使用 x 描述符时， <code>src</code> 属性被视为默认选项，在支持 <code>srcset</code> 的浏览器上使用 w 描述符时它却会被忽略。在使用 w 描述符时，我们只能显示地定义默认图片：加上第二个 <code>srcset</code> 图片选项，用逗号分隔：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">srcset</span>=<span class="string">"retina-image.jpg 3200w, image.jpg 1600w"</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div></pre></td></tr></table></figure>
-<p>导致有代码洁癖的我们要去使用……</p>
-<h3 id="使用多幅图片"><a href="#使用多幅图片" class="headerlink" title="使用多幅图片"></a>使用多幅图片</h3><p>能够在 HTML 代码中为浏览器提供高分辨率图片选项，确实很酷——然而，就像你所猜测的那样，当我们指定多幅图片时，事情会变得更酷。</p>
-<p>响应式图片的目的，就是为了给不同的设备提供尽可能高质量的图片，而不要存在任何冗余。简单地提供一张高质量的图片还不够，我们需要提供更多的选择——比如 1x、1.5x、2x、2.5x 和 3x 的。</p>
-<p>再回过头来，这是我们的原始定义：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div></pre></td></tr></table></figure>
-<p>接下来，我们为浏览器提供了一个视网膜级的选项：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">srcset</span>=<span class="string">"retina-image.jpg 2x"</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div></pre></td></tr></table></figure>
-<p>而在这一次，我们会提供更多的额外选项，我们用逗号分隔它们：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">srcset</span>=<span class="string">"huge-image.jpg 3x, retina-image 2x, moderate-image 1.5x"</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div></pre></td></tr></table></figure>
-<p>由于对于不同的人而言，关键字有着不同的意思，我建议根据 x 描述符来为图片命名，这样更有助于人脑的记忆，同时也更容易确定各个图片的尺寸以及让团队中的成员更加清楚：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">srcset</span>=<span class="string">"image_3x.jpg 3x, image_2x.jpg 2x, image_1-5.jpg 1.5x"</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div></pre></td></tr></table></figure>
-<p>要记住：我们并没有告诉浏览器应该选择哪一幅图片，我们只是将可用的选项告诉了它，并允许它自行选择。浏览器只会下载其中的一副图片。</p>
-<p>在使用多幅图片时有一个问题：永远不要为一幅图片定义两种描述符——举个例子：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">srcset</span>=<span class="string">"cross-the-streams.jpg 2x, cross-the-streams.jpg 3200w"</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div></pre></td></tr></table></figure>
-<p><a href="https://www.youtube.com/watch?v=jyaLZHiJJnE" target="_blank" rel="external">这会很不好</a>……</p>
-<h3 id="使用-sizes"><a href="#使用-sizes" class="headerlink" title="使用 sizes"></a>使用 sizes</h3><p>除了定义格式，<code>sizes</code> 属性是相当有趣的，因为 <code>sizes</code> 属性的值是相对于 viewport 而言的，而不是图片本身。</p>
-<p>使用 <code>vw</code> （viewport width），我们以相对于浏览器宽度的方式指定了图片区域——记住，<code>img</code> 标签现在只等效于一个占位符，因此我们不是在指定图片的实际尺寸，而是在指定包含图片的占位符的尺寸。</p>
-<p><code>100v</code> 就是 100% 的 viewport 宽度， <code>50vw</code> 就是 50% 的 viewport 宽度，<code>25vw</code> 就是 25% 的 viewport 宽度……以此类推。</p>
-<p>如果我们想让 <code>img</code> 的宽度达到浏览器宽度的一半，我们可以这样：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">sizes</span>=<span class="string">"50vw"</span> <span class="attr">srcset</span>=<span class="string">"retina-image.jpg 2x"</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div></pre></td></tr></table></figure>
-<p>这并不是特别有用，直到我们将它和 media query 结合起来……</p>
-<h3 id="使用-media-query"><a href="#使用-media-query" class="headerlink" title="使用 media query"></a>使用 media query</h3><p>当我们将 <code>sizes</code> 属性和 media query 相结合时，它会变得越来越强大。我们可以用逗号分隔多个 viewport 宽度，并通过 CSS 风格的 media query 告诉浏览器该使用哪一个。</p>
-<p>举个例子，想象我们需要这么一张图片：在大多数的设备上它将占用 80% 的浏览器宽度，但在宽度小于等于  380px 的小尺寸设备（手机）上，我们想让它充满所有的空间（100% 的宽度）。我们应该这么写：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">sizes</span>=<span class="string">"(max-width: 380px) 100vw, 80vw"</span> <span class="attr">srcset</span>=<span class="string">"retina-image.jpg 2x"</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div></pre></td></tr></table></figure>
-<p>根据这个逻辑，任何视口宽度小于等于 380px 的浏览器会让图片充满 100% 的视口。其他的浏览器则会导致 media query 返回 <code>false</code>，从而采用另外的值——在这个例子中，即 <code>80vw</code>。</p>
-<p>一般说来（As a general rule），我对在 HTML 使用 media query 表示十分反感。只是因为响应式图片数据是属于 HTML 的（不是 Javascript），而 media query 却是属于 CSS 的（不是 HTML）。但是，如果你需要，这也不失为一个选择。</p>
-<h2 id="响应式图片的最佳实践（2016？）"><a href="#响应式图片的最佳实践（2016？）" class="headerlink" title="响应式图片的最佳实践（2016？）"></a>响应式图片的最佳实践（2016？）</h2><p>我不知道你是怎么想的，但我确实为 <code>srcset</code> 带来的改变感到兴奋。这是一个复杂问题的一个简单的解决方案，并且似乎提供了我们所需的所有东西。</p>
-<p>但是，就像公交车一样，你为了响应式图片的官方解决方案等待了 20 年，而且一上场就有两个。除了 <code>img</code> 标签的 <code>srcset</code> 属性，我们还有 <code>picture</code> 标签。</p>
-<p><code>picture</code> 标签是另外一种占位符——尽管（albeit）是较为传统的一种。它被设计为 HTML5 中 <code>audio</code> 和 <code>video</code> 标签的模仿者（mimic），因此，它的语法被大多数人所熟识。当你需要更多 <code>srcset</code> 不能提供的功能时，建议你使用 <code>picture</code>。</p>
-<p>遗憾的是，<code>picture</code> 的浏览器支持比 <code>srcset</code> 更差，并且<strong>它不会静默失败</strong>。</p>
-<h3 id="使用-picture"><a href="#使用-picture" class="headerlink" title="使用 picture"></a>使用 picture</h3><p>这是图片的原始定义：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div></pre></td></tr></table></figure>
-<p>这是一副嵌套在 <code>picture</code> 中的图片：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">picture</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">picture</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>在 <code>picture</code> 标签中，我们也可以为 <code>img</code> 标签指定 <code>srcset</code> 属性：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">picture</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">srcset</span>=<span class="string">"retina-image.jpg 2x"</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">picture</span>&gt;</span></div></pre></td></tr></table></figure>
-<h3 id="使用-source-标签"><a href="#使用-source-标签" class="headerlink" title="使用 source 标签"></a>使用 source 标签</h3><p>在没有增加 <code>source</code> 标签时，<code>picture</code> 标签是死的：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">picture</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">source</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">picture</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>当选择所要展示的图片时，浏览器会从第一个 <code>source</code> 标签开始遍历，直到找到一个 <code>media</code> 值为 <code>true</code> 的 <code>source</code> 标签为止。该 <code>source</code> 标签的 <code>srcset</code> 属性将会被采用。</p>
-<p>例如，我们可以为图片指定”肖像“（portrait）格式和”风景“格式：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">picture</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">source</span> <span class="attr">media</span>=<span class="string">"orientation:landscape"</span> <span class="attr">srcset</span>=<span class="string">"horizontal-image.jpg"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">source</span> <span class="attr">media</span>=<span class="string">"orientation:portrait"</span> <span class="attr">srcset</span>=<span class="string">"vertical-image.jpg"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">picture</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>甚至，我们可以用 x 描述符 和 w 描述符 来指定多幅图片：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">picture</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">source</span> <span class="attr">media</span>=<span class="string">"orientation:landscape"</span> <span class="attr">srcset</span>=<span class="string">"retina-horizontal-image.jpg 2x, horizontal-image.jpg"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">source</span> <span class="attr">media</span>=<span class="string">"orientation:portrait"</span> <span class="attr">srcset</span>=<span class="string">"retina-vertical-image.jpg 2x, vertical-image.jpg"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">picture</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>在 <code>sizes</code> 属性中使用 media query 时，我会质疑在 HTML 而不是在 CSS 中基于样式来控制图片的合理性。然而，如果你需要，<code>media</code> 属性也不失为一种选择。</p>
-<h3 id="使用-type"><a href="#使用-type" class="headerlink" title="使用 type"></a>使用 type</h3><p><code>picture</code> 标签真正厉害的地方，在于它能从不同的图片类型中作出选择。</p>
-<p>想象我们现在有一张标准 PNG 图片，但我们想用 <a href="https://developers.google.com/speed/webp/?hl=en" target="_blank" rel="external">WebP</a> 格式去替换它，因为这会缩减 26% 的体积——记住，响应式图片的核心在于 用最小的数据量提供尽可能高质量的图片——然而目前它仅被 Chrome、Opera 和 Android 内置浏览器所支持。我们需要使用 <code>type</code> 属性来确定 <code>WebP</code> 格式是否被支持：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">picture</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">source</span> <span class="attr">type</span>=<span class="string">"image/webp"</span> <span class="attr">srcset</span>=<span class="string">"retina-image.webp 2x, image.webp 1x"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">srcset</span>=<span class="string">"retina-image.jpg 2x"</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">picture</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>在这个案例中，浏览器会先检查是否支持 <code>WebP</code> 格式。如果是，它会继续判断屏幕是否有足够的像素密度去显示 <code>retina-image,webp</code> 图片，如果不是，则会显示 <code>image.webp</code> 。倘若 <code>WebP</code> 不被支持，浏览器将会径直跳至 <code>img</code> 标签处并解析——这部分我们已经非常熟悉了。</p>
-<p><code>type</code> 属性的出现，意味着在环境支持的情况下，我们可以可以提供体积更小的图片格式。</p>
-<h3 id="已知的问题"><a href="#已知的问题" class="headerlink" title="已知的问题"></a>已知的问题</h3><p>在 IE9 中有一个已知的问题：<code>picture</code> 标签将不会静默失败。为了处理 IE9 的情况，你需要欺骗 IE9，让它以为 <code>source</code> 标签是 <code>video</code> 标签的一部分：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">picture</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">!—[if</span> <span class="attr">IE</span> <span class="attr">9</span>]&gt;</span><span class="tag">&lt;<span class="name">video</span> <span class="attr">style</span>=<span class="string">"display:none;"</span>&gt;</span><span class="tag">&lt;<span class="name">![endif]—</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">source</span> <span class="attr">type</span>=<span class="string">"image/webp"</span> <span class="attr">srcset</span>=<span class="string">"retina-image.webp 2x, image.webp 1x"</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">!—[if</span> <span class="attr">IE</span> <span class="attr">9</span>]&gt;</span><span class="tag">&lt;/<span class="name">video</span>&gt;</span><span class="tag">&lt;<span class="name">![endif]—</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">srcset</span>=<span class="string">"retina-image.jpg 2x"</span> <span class="attr">src</span>=<span class="string">"image.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">picture</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>这是一个丑陋的解决方案——但聊胜于无。我们只能期望 Windows10 的发布能够加速 IE9 退出市场，因为虽然 Edge 也不支持 <code>picture</code> 标签，但至少它会用正确的方式来处理（静默失败）。</p>
-<p>当然，也有相应的 <a href="https://scottjehl.github.io/picturefill/" target="_blank" rel="external">polyfills</a> 来实现 IE 对 <code>picture</code> 的兼容，但我的建议是去避免它。我从来不信任用 Javascript 打补丁，因为这会极大地影响性能，同时也让代码变得不可维护。</p>
-<p>出于这种原因，我建议现在还是最好不要使用 <code>picture</code> 标签。除非，你在运营一个大规模的电子商务网站，由 <code>WebP</code> 格式节省下来的下载时间实在不足以弥补因对代码打补丁所带来的不便。</p>
-<p>一旦 IE9 的市场份额降至 1% 以下——也许发生在明年的某一个时刻（译者注：歪果仁的看法不代表天朝的实际情况），<code>picture</code> 标签就会变得可以接受（viable）。如果你在 2016 年读到这篇文章，或许，这种方案值得你去实践。</p>
-<h2 id="创建-响应式图片"><a href="#创建-响应式图片" class="headerlink" title="创建 响应式图片"></a>创建 响应式图片</h2><p>位图并不会自己放大——这点和 SVG 不一样。面对这个问题，我们的解决方法是：使用 <code>srcset</code> 或者是 <code>picture</code>，从而为不同能力的浏览器提供不同的图片。因此，我们需要提供许多种不同尺寸的图片。</p>
-<p>许多图片编辑软件都实现了图片自动化多尺寸导出——无论使用何种软件，你都可以轻松获得各种尺寸的图片，而无需亲自逐一调整。</p>
-<p>Adobe Photoshop 是一款事实上的（de facto）位图编辑器。尽管对于设计工作者而言，它并不是一个很好的选择，但不可否认的是——用它来设计图片确实是一种享受（smooth &amp; reliable）。在 Photoshop 中，多图输出的实现相对直接一些：</p>
-<ol>
-<li>打开图片，并将其放在一个独立的图层上。 <img src="http://netdna.webdesignerdepot.com/uploads/2015/08/step_1.jpg" alt=""></li>
-<li>将图层重命名为你要生成的文件的名字（包括扩展名）<img src="http://netdna.webdesignerdepot.com/uploads/2015/08/step_2.jpg" alt=""></li>
-<li>勾选 文件 -&gt; 生成 -&gt; 图片资源，然后 Photoshop 会在 PSD 文件旁生成一个新目录，其中有生成好的图片。</li>
-<li>再次重命名图层，在每个文件名前加上对应的缩放尺寸。一旦图层被重命名，对应的图片便会自动生成，因此不必重复 步骤3。<img src="http://netdna.webdesignerdepot.com/uploads/2015/08/step_4.jpg" alt=""></li>
-</ol>
-<p><em>（图片版权归 <a href="http://www.freeimages.com/photo/bikes-1447404" target="_blank" rel="external">Philip Collier</a> 所有）</em></p>
-<p>若想了解更多关于 使用 Photoshop 生成图片 的知识，请点击 (这里)[<a href="https://helpx.adobe.com/photoshop/using/generate-assets-layers.html)。" target="_blank" rel="external">https://helpx.adobe.com/photoshop/using/generate-assets-layers.html)。</a></p>
-<p>基于这些图片，我们便可以给浏览器提供 5 种选择：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">srcset</span>=<span class="string">"bikes_3x.jpg 3x, bikes_2-5x.jpg 2.5x, bikes_2x.jpg 2x, bikes_1-5x.jpg 1.5x"</span> <span class="attr">src</span>=<span class="string">"bikes_1x.jpg"</span> <span class="attr">alt</span>=<span class="string">"an image"</span> /&gt;</span></div></pre></td></tr></table></figure>
-<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p><code>img</code> 标签已经度过了漫长的 20 个春秋——或者更精确地说，在伴着缺点（inadequate）缓慢行进了 18 年后，<code>img</code> 标签在最后的两年突然“奋起直追”，直到变成今天这个相对复杂（sophisticated）的样子。</p>
-<p>当然最重要的是：<strong>我们找到了解决方案</strong>。</p>
-<p>迄今为止，在 <code>srcset</code> 和 <code>picture</code> 这两个可选项中，前者的浏览器支持相对比较完善。如果你的网站已经完成了 95%，<code>srcset</code> 的高级特性及其简洁的实现将是你的不二之选。</p>
-<p>如果你在运营一个庞大的电子商务网站，有成千上万的产品图片需要显示，最佳的实践便是使用 WebP 格式的图片——随着 <code>picture</code> 元素的支持被不断完善，这一切的付出都是值得的。</p>
-<p>浏览器无法依据当前的网络状况来选择适合的图片——这是现有解决方案最大的缺点。这不是我们所能左右的。在当下，我们只能祈求“好马配好鞍”了。</p>
-<p>用最小的尺寸提供最高质量的图片，终于成为了可能。这意味着：在不久的将来，我们将能拥抱（embrace）更好的用户体验。</p>
-<p><em>（图片引用：<a href="http://www.shutterstock.com/pic-84977458.html" target="_blank" rel="external">mountains</a> &amp; <a href="http://www.shutterstock.com/pic-116864680.html" target="_blank" rel="external">devices</a>，来自 Shutterstock）</em></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;原文链接：&lt;a href=&quot;http://www.webdesignerdepot.com/2015/08/the-state-of-responsive-images/&quot;&gt;戳这里&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;&lt;img src=&quot;http://netdna.webdesignerdepot.com/uploads/2015/08/featured_images1.jpg&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;Web 是一种可视化的媒体。绚丽的视觉效果，很大程度上离不开图片文件所作出的贡献。虽然（Whilst）其中的许多效果都可以用 CSS 和 内联 SVG 来实现，互联网上的许多站点仍需要图片文件。&lt;/p&gt;
-&lt;p&gt;从去年的统计来看，每个站点中，图片平均占了一半的页面体积，并且随着时间的推移，图片体积有持续增加的趋势；就 2014 年而言，图片的大小便增长了 &lt;strong&gt;21%&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;与此同时，互联网终端的种类、数量也在增长。从 72 ppi（市场份额正在下降）到 600 ppi，不同设备的分辨率（resolution）有着天壤之别。&lt;/p&gt;
-&lt;p&gt;创建能在任何设备中都有着高质量的图片，其实再容易不过了——用 1000 ppi 的质量保存图片，然后就可以不用再理他了（译者注：原文是 call it a day）。生成的图片，即使是在分辨率最高的设备上查看也是十分清晰的（crisp）。但是，在图片质量提升的同时，图片文件的大小也会相应地增加。要知道，&lt;strong&gt;页面加载时间&lt;/strong&gt;可是影响用户体验的&lt;strong&gt;首要因素&lt;/strong&gt;——因此，保证站点能够及时地呈现在用户面前是我们义不容辞（incrumbent）的责任。高质量的图片，即使是在宽带环境下加载也要耗费几十秒，更不用说（let alone）是移动端的设备了——简直就是无法使用。&lt;/p&gt;
-&lt;p&gt;响应式图片的目的，不是要为设备提供尽可能高质量的图片（这一点，我们很容易做到），而是要为设备提供它所能支持的最高质量的图片，仅此而已（nothing more）。&lt;/p&gt;
-&lt;p&gt;从这篇指南中，你将了解到响应式图片的工作原理（what works），响应式图片仍然存在的问题和陷阱（pitfall），以及如何将响应式图片运用到网站中。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="翻译" scheme="http://hsfzxjy.oicp.io/tags/%E7%BF%BB%E8%AF%91/"/>
-    
-      <category term="web设计" scheme="http://hsfzxjy.oicp.io/tags/web%E8%AE%BE%E8%AE%A1/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【译】“为什么有这么多的编程语言？”</title>
-    <link href="http://hsfzxjy.oicp.io/why-are-so-many-programming-languages/"/>
-    <id>http://hsfzxjy.oicp.io/why-are-so-many-programming-languages/</id>
-    <published>2015-09-17T16:00:00.000Z</published>
-    <updated>2016-07-18T03:09:34.294Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>原文链接：<a href="http://blog.stackoverflow.com/2015/07/why-are-there-so-many-programming-languages/" target="_blank" rel="external">戳这里</a></p>
-</blockquote>
-<p>在过去的一周中，几位同事曾两次问了我这个问题。听起来，这像是一个糟糕的问题，但事实上并不是这样的。</p>
-<p>最简短的答案就是：<strong>尽管我们并不需要这么多语言，但我们还是想要（want）它们</strong>。让我们再探索得更深一些吧。</p>
-<a id="more"></a>
-<h2 id="难道它们不都是一样的吗？"><a href="#难道它们不都是一样的吗？" class="headerlink" title="难道它们不都是一样的吗？"></a>难道它们不都是一样的吗？</h2><p>某种意义上（In a sense），是的。创建一个网站，你可以使用 <code>Ruby</code>、<code>Java</code>、<code>Python</code>、<code>C#</code>、<code>Go</code> 抑或是 <code>Javascript</code>。甚至，你可以使用 <code>C</code> 或 <code>C++</code> 或 <code>Haskell</code> 或 <code>Rust</code> 或 <code>COBOL</code> 或 <code>Pascal</code> 或 <code>Perl</code>。</p>
-<p>事实的背后就是：这些语言都有着同样的目的——把人类的思想转变成为计算机能够读懂的 1 和 0——用夸张的（highfalutin）的计算机术语来讲：它们都是 <a href="https://en.wikipedia.org/wiki/Turing_completeness" target="_blank" rel="external">图灵完备（Turing complete）</a> 的。</p>
-<p>从底层上来看，这些语言都<strong>是</strong>完全一样的。但从表面（人类和它们交互的接口）上来看，它们却有很大的不同。这，便是人们关注的焦点了。</p>
-<h2 id="不同的任务需要不同的工具"><a href="#不同的任务需要不同的工具" class="headerlink" title="不同的任务需要不同的工具"></a>不同的任务需要不同的工具</h2><p>事实上，编程语言只是工具，而对于不同的任务，我们需要选择不同的工具。拖拉机（tractor trailer）、自行车、特斯拉汽车（Tesla）都是交通工具——它们都有轮子，有转向器（steering ?），并且都会将你从一个地方带到另一个地方——但显然，我们要将它们运用到不同的场景中。</p>
-<p>编程语言也是类似的：若是要构建网站，<code>Ruby</code> 和 <code>Javascript</code> 是不错的选择；<code>Java</code> 和 <code>C++</code> 则常常被运用在金融领域；至于 <code>Python</code> 和 <code>R</code>，它们是统计分析的工具。</p>
-<p>在语言的选择上，我们常常要从便捷程度、安全性和速度这几个方面进行权衡（trade-offs）——就像交通工具一样。通常来讲，需要根据手头上的工作视情况而定。</p>
-<h2 id="开发者们有不同的“口味”（tastes）"><a href="#开发者们有不同的“口味”（tastes）" class="headerlink" title="开发者们有不同的“口味”（tastes）"></a>开发者们有不同的“口味”（tastes）</h2><p>抛开纯粹的功能，开发者还会根据个人的“口味”来选择工具。</p>
-<p>编程语言是人类向计算机<strong>表达</strong>想法的工具。尽管不同的开发者在许多方面都有相似之处，我们的思考方式仍存在着区别——这是自然所决定的。</p>
-<p>由于有多种编程语言供我们选择，我们完全可以选择一种“以我们想要的方式工作”的语言。有的开发者喜欢<code>Ruby</code>的灵活性（flexibility），而另一些则喜欢<code>Java</code>的严谨（strictness）。同时，有些语言看上去和数学一样深奥，而另一些读起来却和散文一样（prose）。</p>
-<h2 id="以人为本"><a href="#以人为本" class="headerlink" title="以人为本"></a>以人为本</h2><p>业务是以人为本的。</p>
-<p>撇开功能和个人“口味”，通常来说，你会选择一种你了解的，或是你周围的人了解的语言。</p>
-<p>Stack Overflow 选择了 <code>C#</code>，很大程度上是因为团队的创始人了解它。其次（In turn），它也是为创始人的朋友和同事所了解的。<code>C#</code> 使招聘工作（recruiting）变得更加简单，同时也使 Stack Overflow 更快地进入市场。</p>
-<p>（幸运的是，<code>C#</code> 同时也有着超棒的技术亮点）</p>
-<p>一种技术需要一个“生态圈”（ecosystem）来支持——那便是能为每个有需要的开发者提供工具和帮助的社区（communities）和组织（organizations）。好的“生态圈”能让个人开发者更加成功——<code>Ruby</code> 就是个很好的例子。</p>
-<h2 id="多样性就是力量"><a href="#多样性就是力量" class="headerlink" title="多样性就是力量"></a>多样性就是力量</h2><p>总的来说，由于我们有着各种各样的任务，同时也有着各种各样的人在完成这些任务，我们才有了各种各样的编程语言。</p>
-<p>而正是这种多样性的存在，使得许多有趣的程序，有趣的公司甚至是有趣的职业生涯，从不可能成为了可能。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;原文链接：&lt;a href=&quot;http://blog.stackoverflow.com/2015/07/why-are-there-so-many-programming-languages/&quot;&gt;戳这里&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;在过去的一周中，几位同事曾两次问了我这个问题。听起来，这像是一个糟糕的问题，但事实上并不是这样的。&lt;/p&gt;
-&lt;p&gt;最简短的答案就是：&lt;strong&gt;尽管我们并不需要这么多语言，但我们还是想要（want）它们&lt;/strong&gt;。让我们再探索得更深一些吧。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
-    
-    
-      <category term="翻译" scheme="http://hsfzxjy.oicp.io/tags/%E7%BF%BB%E8%AF%91/"/>
     
   </entry>
   
