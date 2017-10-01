@@ -2,13 +2,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://hsfzxjy.oicp.io/diving-into-thread-local-objects-of-flask/</loc>
-    
-    <lastmod>2017-10-01T14:43:28.377Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://hsfzxjy.oicp.io/caveats-for-signal-handler-in-python/</loc>
     
     <lastmod>2017-08-17T16:40:13.403Z</lastmod>
@@ -51,7 +44,7 @@
   </url>
   
   <url>
-    <loc>http://hsfzxjy.oicp.io/recursively-calling-when-decorating-a-python-class/</loc>
+    <loc>http://hsfzxjy.oicp.io/uncover-the-secret-of-fast-inverse-square-root-algorithm/</loc>
     
     <lastmod>2016-08-16T09:53:58.440Z</lastmod>
     
@@ -65,7 +58,7 @@
   </url>
   
   <url>
-    <loc>http://hsfzxjy.oicp.io/uncover-the-secret-of-fast-inverse-square-root-algorithm/</loc>
+    <loc>http://hsfzxjy.oicp.io/recursively-calling-when-decorating-a-python-class/</loc>
     
     <lastmod>2016-08-16T09:53:58.440Z</lastmod>
     
@@ -93,14 +86,14 @@
   </url>
   
   <url>
-    <loc>http://hsfzxjy.oicp.io/aggr/index.html</loc>
+    <loc>http://hsfzxjy.oicp.io/happy-mothers-day/index.html</loc>
     
     <lastmod>2016-07-18T03:09:34.298Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://hsfzxjy.oicp.io/happy-mothers-day/index.html</loc>
+    <loc>http://hsfzxjy.oicp.io/aggr/index.html</loc>
     
     <lastmod>2016-07-18T03:09:34.298Z</lastmod>
     
@@ -205,6 +198,13 @@
   </url>
   
   <url>
+    <loc>http://hsfzxjy.oicp.io/wisecity-conclusion/</loc>
+    
+    <lastmod>2016-07-18T03:09:34.294Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://hsfzxjy.oicp.io/RMQ-binary/</loc>
     
     <lastmod>2016-07-18T03:09:34.294Z</lastmod>
@@ -289,7 +289,7 @@
   </url>
   
   <url>
-    <loc>http://hsfzxjy.oicp.io/wisecity-conclusion/</loc>
+    <loc>http://hsfzxjy.oicp.io/how-to-fuck-a-bilk-site/</loc>
     
     <lastmod>2016-07-18T03:09:34.294Z</lastmod>
     
@@ -367,13 +367,6 @@
   
   <url>
     <loc>http://hsfzxjy.oicp.io/secret/</loc>
-    
-    <lastmod>2016-07-18T03:09:34.294Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://hsfzxjy.oicp.io/how-to-fuck-a-bilk-site/</loc>
     
     <lastmod>2016-07-18T03:09:34.294Z</lastmod>
     
