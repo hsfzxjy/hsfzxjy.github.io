@@ -182,11 +182,9 @@
     <link href="http://hsfzxjy.oicp.io/diving-into-thread-local-objects-of-flask/"/>
     <id>http://hsfzxjy.oicp.io/diving-into-thread-local-objects-of-flask/</id>
     <published>2017-04-26T16:00:00.000Z</published>
-    <updated>2017-07-09T10:58:26.803Z</updated>
+    <updated>2017-10-01T14:43:28.377Z</updated>
     
-    <content type="html"><![CDATA[<div id="flowchart-0" class="flow-chart"></div>
-
-<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>首次接触 Flask 时我就被惊艳到了——Flask 中的请求对象 <code>request</code> 居然是以全局对象的形式提供的！诚然，这种设计避免了繁冗的参数互传，使代码变得简洁，可是在多线程环境中，全局对象真的不会有数据同步问题吗？然而文档明确表明了：这类特殊的全局对象叫 <strong>Thread Local Objects</strong>，对逻辑而言是全局的，对线程而言则是局部的，因此它们是“线程安全的”（thread-safe)。</p>
+    <content type="html"><![CDATA[<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>首次接触 Flask 时我就被惊艳到了——Flask 中的请求对象 <code>request</code> 居然是以全局对象的形式提供的！诚然，这种设计避免了繁冗的参数互传，使代码变得简洁，可是在多线程环境中，全局对象真的不会有数据同步问题吗？然而文档明确表明了：这类特殊的全局对象叫 <strong>Thread Local Objects</strong>，对逻辑而言是全局的，对线程而言则是局部的，因此它们是“线程安全的”（thread-safe)。</p>
 <p>心生好奇，遂深究其理，撰此文。</p>
 <p>（本文中的代码基于 Flask 0.12，werkzeug 0.12，适当去除了部分 Sphinx 的文档注释）</p>
 <h2 id="让人迷惑的定义"><a href="#让人迷惑的定义" class="headerlink" title="让人迷惑的定义"></a>让人迷惑的定义</h2><p>我们从 <code>request</code> 对象的入口开始探索。<code>request</code> 定义在 <code>flask/globals.py</code> 中——这是一个接口模块，所有的 Thread Local Objects 都由此暴露给调用者。此处只摘取 <code>request</code> 相关的片段：</p>
@@ -203,28 +201,11 @@
 <h3 id="Local"><a href="#Local" class="headerlink" title="Local"></a>Local</h3><p>个人认为，<code>Local</code> 这个类名语义太过含糊，致使许多人须通过完整阅读其代码才能理解其用途。私以为 <code>ThreadLocalObjectsStorage</code> 更为恰当，且看代码：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># werkzeug/local.py: 51-86</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Local</span><span class="params">(object)</span>:</span></div><div class="line">    __slots__ = (<span class="string">'__storage__'</span>, <span class="string">'__ident_func__'</span>)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        object.__setattr__(self, <span class="string">'__storage__'</span>, &#123;&#125;)</div><div class="line">        object.__setattr__(self, <span class="string">'__ident_func__'</span>, get_ident)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">return</span> iter(self.__storage__.items())</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, proxy)</span>:</span></div><div class="line">        <span class="string">"""Create a proxy for a name."""</span></div><div class="line">        <span class="keyword">return</span> LocalProxy(self, proxy)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__release_local__</span><span class="params">(self)</span>:</span></div><div class="line">        self.__storage__.pop(self.__ident_func__(), <span class="keyword">None</span>)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getattr__</span><span class="params">(self, name)</span>:</span></div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            <span class="keyword">return</span> self.__storage__[self.__ident_func__()][name]</div><div class="line">        <span class="keyword">except</span> KeyError:</div><div class="line">            <span class="keyword">raise</span> AttributeError(name)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__setattr__</span><span class="params">(self, name, value)</span>:</span></div><div class="line">        ident = self.__ident_func__()</div><div class="line">        storage = self.__storage__</div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            storage[ident][name] = value</div><div class="line">        <span class="keyword">except</span> KeyError:</div><div class="line">            storage[ident] = &#123;name: value&#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__delattr__</span><span class="params">(self, name)</span>:</span></div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            <span class="keyword">del</span> self.__storage__[self.__ident_func__()][name]</div><div class="line">        <span class="keyword">except</span> KeyError:</div><div class="line">            <span class="keyword">raise</span> AttributeError(name)</div></pre></td></tr></table></figure>
 <p>可以看出，<code>Local</code> 对象将自己的 <code>__storage__</code> 属性当作一个大字典来使用，并覆盖了 <code>__*attr__</code> 方法，在增删改属性时加上了一个 <code>ident</code> 标识符——这是一个线程唯一标识符，由 <code>thread.get_ident</code> 获得。如此一来，在不同的线程环境中观察此对象就会得到不同的结果，这就实现了所谓“对线程而言是局部的特性”。</p>
-<p><script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/flowchart/1.6.5/flowchart.min.js"></script><textarea id="flowchart-0-code" style="display: none">st=>start: Start|past:>http://www.google.com[blank]
-e=>end: End:>http://www.google.com
-op1=>operation: My Operation|past
-op2=>operation: Stuff|current
-sub1=>subroutine: My Subroutine|invalid
-cond=>condition: Yes
-or No?|approved:>http://www.google.com
-c2=>condition: Good idea|rejected
-io=>inputoutput: catch something...|request
-
-st->op1(right)->cond
-cond(yes, right)->c2
-cond(no)->sub1(left)->op1
-c2(yes)->io->e
-c2(no)->op2->e</textarea><textarea id="flowchart-0-options" style="display: none">{"scale":1,"line-width":2,"line-length":50,"text-margin":10,"font-size":12}</textarea><script>  var code = document.getElementById("flowchart-0-code").value;  var options = JSON.parse(decodeURIComponent(document.getElementById("flowchart-0-options").value));  var diagram = flowchart.parse(code);  diagram.drawSVG("flowchart-0", options);</script></p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;div id=&quot;flowchart-0&quot; class=&quot;flow-chart&quot;&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;写在前面&quot;&gt;&lt;a href=&quot;#写在前面&quot; class=&quot;headerlink&quot; title=&quot;写在前面&quot;&gt;&lt;/a&gt;写在前面&lt;/h2&gt;&lt;p&gt;首次接触 Flask 时我
+      &lt;h2 id=&quot;写在前面&quot;&gt;&lt;a href=&quot;#写在前面&quot; class=&quot;headerlink&quot; title=&quot;写在前面&quot;&gt;&lt;/a&gt;写在前面&lt;/h2&gt;&lt;p&gt;首次接触 Flask 时我就被惊艳到了——Flask 中的请求对象 &lt;code&gt;request&lt;/code&gt; 居然是以全局对
     
     </summary>
     
