@@ -8,6 +8,12 @@
 @font-face {
   font-family: "life-saver";
   src: url("../fonts/LifeSavers-Regular.ttf"); }
+@font-face {
+  font-family: "Lato";
+  src: url("../fonts/lato.woff2"); }
+.lato, .readmore a {
+  font-family: "Lato" !important; }
+
 body {
   background-color: #f6f6f6;
   color: #444;
@@ -17,7 +23,7 @@ body {
   font-size: 14px; }
 
 * {
-  font-family: Georgia, Times New Roman, Times, serif !important; }
+  font-family: Georgia,Times New Roman,Times,serif; }
 
 body, html {
   overflow-x: hidden; }
@@ -92,6 +98,9 @@ a:focus {
       #header #nav-menu a.current {
         border: 1px solid #ddd;
         border-bottom-color: #f6f6f6; }
+      #header #nav-menu a span {
+        margin-left: .5em;
+        font-family: Lato; }
 
 #sidebar {
   border-left: 1px solid #ddd;
@@ -108,7 +117,8 @@ a:focus {
       font-size: 16px;
       border-bottom: 1px solid #ddd;
       display: block;
-      font-weight: normal; }
+      font-weight: normal;
+      font-family: Lato; }
     #sidebar .widget .comments-title {
       color: #6E7173;
       line-height: 2.7;
@@ -165,11 +175,11 @@ a:focus {
   .post .post-title {
     margin: 0;
     color: #555;
-    text-align: left;
+    text-align: center;
     padding: 0;
     padding-top: 2em;
-    border-top: 2px dotted #aaaaaa;
-    font-size: 40.9px;
+    border-top: 2px dashed #aaaaaa;
+    font-size: 30px;
     font-weight: 300; }
     .post .post-title a {
       color: #555;
@@ -185,8 +195,7 @@ a:focus {
     padding: 0;
     margin: 12px 0 0;
     color: #999;
-    float: left;
-    display: inline;
+    text-align: center;
     text-indent: .15em; }
   .post .ds-thread-count {
     padding: 0;
@@ -327,7 +336,6 @@ a:focus {
 @media print, screen and (max-width: 48em) {
   .post .post-title {
     padding-top: 2em;
-    font-size: 35px !important;
     text-align: center; }
 
   .body_container {
@@ -356,7 +364,6 @@ a:focus {
 
   .post .post-title {
     padding-top: 2em;
-    font-size: 30px !important;
     text-align: center; } }
 blockquote, .stressed {
   -moz-box-sizing: border-box;
@@ -496,21 +503,25 @@ div {
       box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2); }
 
 /* read more*/
+.readmore {
+  text-align: center;
+  margin-top: 2em;
+  margin-bottom: 0; }
+
 .readmore a {
-  font-size: 13px;
-  color: #999;
+  font-size: 12px;
+  color: #fff;
   margin-top: -10px;
   margin-bottom: -10px;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  padding-top: 6px;
+  padding-bottom: 6px;
   padding-left: 10px;
   padding-right: 10px;
-  border: 1px solid #999;
-  border-radius: 7px;
-  float: right; }
+  border: 1px solid #444;
+  background: #444; }
   .readmore a:hover {
     color: #444;
-    border-color: #444; }
+    background: #eee; }
 
 /* duoshuo style*/
 #ds-thread #ds-reset {
@@ -637,8 +648,7 @@ pre,
   overflow: auto;
   font-size: 15px;
   color: #ccc;
-  line-height: 1.6;
-  border-radius: 7px; }
+  line-height: 1.6; }
 
 .highlight .gutter pre,
 .gist .gist-file .gist-data .line-numbers {
@@ -1185,3 +1195,10 @@ pre .javascript .function {
   content: '('; }
 .category-list-count:after {
   content: ')'; }
+
+.category-list-link {
+  color: #222;
+  margin-right: .25em; }
+
+.widget-item span {
+  margin-left: .5em; }

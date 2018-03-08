@@ -14,6 +14,15 @@
     src: url("../fonts/LifeSavers-Regular.ttf");
 }
 
+@font-face {
+    font-family: "Lato";
+    src: url("../fonts/lato.woff2");
+}
+
+.lato {
+    font-family: 'Lato'!important;
+}
+
 body {
     background-color: $bk-color;
     color: #444;
@@ -24,7 +33,7 @@ body {
 }
 
 * {
-    font-family: Georgia,Times New Roman,Times,serif!important;
+    font-family: Georgia,Times New Roman,Times,serif;
 }
 
 body, html {
@@ -114,6 +123,11 @@ a:focus {
                 border: 1px solid #ddd;
                 border-bottom-color: $bk-color;
             }
+
+            span {
+                margin-left: .5em;
+                font-family: Lato;
+            }
         }
     }
 }
@@ -134,6 +148,7 @@ a:focus {
             border-bottom: 1px solid #ddd;
             display: block;
             font-weight: normal;
+            font-family: Lato;
         }
         .comments-title {
             color: #6E7173;
@@ -201,13 +216,13 @@ a:focus {
     .post-title {
         margin: 0;
         color: #555;
-        text-align: left;
+        text-align: center;
         padding: 0;
         padding-top: 2em;
-        border-top: 2px dotted darken($bk-color, 30%);
-        font-size: 40.9px;
+        border-top: 2px dashed darken($bk-color, 30%);
+        font-size: 30px;
         font-weight: 300;
-        
+
         a {
             color: #555;
             position: relative;
@@ -229,8 +244,7 @@ a:focus {
         padding: 0;
         margin: 12px 0 0;
         color: #999;
-        float: left;
-        display: inline;
+        text-align: center;
         text-indent: .15em;
     }
     .ds-thread-count {
@@ -417,7 +431,6 @@ a:focus {
     .post {
         .post-title {
             padding-top: 2em;
-            font-size: 35px!important;
             text-align: center;
         }
     }
@@ -456,7 +469,6 @@ a:focus {
     .post {
         .post-title {
             padding-top: 2em;
-            font-size: 30px!important;
             text-align: center;
         }
     }
@@ -630,21 +642,30 @@ div {
 }
 
 /* read more*/
+
+.readmore {
+    text-align: center;
+    margin-top: 2em;
+    margin-bottom: 0;
+}
+
 .readmore a {
-    font-size: 13px;
-    color: #999;
+    @extend .lato;
+
+    font-size: 12px;
+    color: #fff;
     margin-top: -10px;
     margin-bottom: -10px;
-    padding-top: 2px;
-    padding-bottom: 2px;
+    padding-top: 6px;
+    padding-bottom: 6px;
     padding-left: 10px;
     padding-right: 10px;
-    border: 1px solid #999;
-    border-radius: 7px;
-    float: right;
+    border: 1px solid #444;
+    background: #444;
+    //float: right;
     &:hover {
         color: #444;
-        border-color: #444;
+        background: #eee;
     }
 }
 
@@ -810,7 +831,6 @@ pre,
     font-size: 15px;
     color: #ccc;
     line-height: 1.6;
-    border-radius: 7px;
 }
 .highlight .gutter pre,
 .gist .gist-file .gist-data .line-numbers {
@@ -1388,5 +1408,16 @@ pre .javascript .function {
     }
     &:after {
         content: ')';
+    }
+}
+
+.category-list-link {
+    color: #222;
+    margin-right: .25em;
+}
+
+.widget-item {
+    span {
+        margin-left: .5em;
     }
 }

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.hsfzxjy.site/"/>
-  <updated>2018-03-08T15:30:18.865Z</updated>
+  <updated>2018-03-08T17:23:20.929Z</updated>
   <id>http://blog.hsfzxjy.site/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://blog.hsfzxjy.site/RMPE-Notes/"/>
     <id>http://blog.hsfzxjy.site/RMPE-Notes/</id>
     <published>2018-03-07T16:00:00.000Z</published>
-    <updated>2018-03-08T15:30:18.865Z</updated>
+    <updated>2018-03-08T17:23:20.929Z</updated>
     
     <content type="html"><![CDATA[<p>论文地址：<a href="https://arxiv.org/pdf/1612.00137" target="_blank" rel="external">https://arxiv.org/pdf/1612.00137</a></p>
 <a id="more"></a>
@@ -63,7 +63,7 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
     
     
       <category term="RMPE" scheme="http://blog.hsfzxjy.site/tags/RMPE/"/>
@@ -77,7 +77,7 @@
     <link href="http://blog.hsfzxjy.site/caveats-for-signal-handler-in-python/"/>
     <id>http://blog.hsfzxjy.site/caveats-for-signal-handler-in-python/</id>
     <published>2017-08-16T16:00:00.000Z</published>
-    <updated>2017-08-17T16:40:13.403Z</updated>
+    <updated>2018-03-08T17:23:20.897Z</updated>
     
     <content type="html"><![CDATA[<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>前几天工作时遇到了一个匪夷所思的问题。经过几次尝试后问题得以解决，但问题产生的原因却仍令人费解。查找 SO 无果，我决定翻看 Python 的源码。断断续续地研究了几天，终于恍然大悟。撰此文以记。</p>
 <a id="more"></a>
@@ -172,16 +172,14 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
     
-    
-      <category term="python" scheme="http://blog.hsfzxjy.site/tags/python/"/>
     
       <category term="POSIX" scheme="http://blog.hsfzxjy.site/tags/POSIX/"/>
     
-      <category term="signal" scheme="http://blog.hsfzxjy.site/tags/signal/"/>
+      <category term="Python" scheme="http://blog.hsfzxjy.site/tags/Python/"/>
     
-      <category term="reentrancy" scheme="http://blog.hsfzxjy.site/tags/reentrancy/"/>
+      <category term="Reentrancy" scheme="http://blog.hsfzxjy.site/tags/Reentrancy/"/>
     
   </entry>
   
@@ -190,7 +188,7 @@
     <link href="http://blog.hsfzxjy.site/linux-file-permissions/"/>
     <id>http://blog.hsfzxjy.site/linux-file-permissions/</id>
     <published>2017-07-02T16:00:00.000Z</published>
-    <updated>2017-07-03T16:40:15.691Z</updated>
+    <updated>2018-03-08T17:23:20.861Z</updated>
     
     <content type="html"><![CDATA[<h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><p>Linux 中的每一个文件都有其 <strong>所属用户</strong> 及 <strong>所属用户组</strong>，根据这两个属性可将文件访问者分为三类：<strong>所属用户自己</strong>、<strong>所属用户组中的用户</strong> 和 <strong>其他用户</strong>，我们可以针对不同的访问者设置不同的用户权限。</p>
 <p>“访问”可分为三类：<strong>读</strong>、<strong>写</strong> 与 <strong>执行</strong>。我们可以用 <code>ls -l</code> 命令查看一个文件的权限：</p>
@@ -225,12 +223,12 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
     
     
       <category term="Linux" scheme="http://blog.hsfzxjy.site/tags/Linux/"/>
     
-      <category term="文件权限" scheme="http://blog.hsfzxjy.site/tags/%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/"/>
+      <category term="File Permissions" scheme="http://blog.hsfzxjy.site/tags/File-Permissions/"/>
     
   </entry>
   
@@ -239,7 +237,7 @@
     <link href="http://blog.hsfzxjy.site/HSFZMUN-4.0-configuration/"/>
     <id>http://blog.hsfzxjy.site/HSFZMUN-4.0-configuration/</id>
     <published>2017-02-24T16:00:00.000Z</published>
-    <updated>2017-02-25T08:57:44.187Z</updated>
+    <updated>2018-03-08T17:23:20.829Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>技术流水账一篇，记录踩过的坑</p>
@@ -306,16 +304,16 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
     
     
-      <category term="ubuntu" scheme="http://blog.hsfzxjy.site/tags/ubuntu/"/>
+      <category term="Ubuntu" scheme="http://blog.hsfzxjy.site/tags/Ubuntu/"/>
     
-      <category term="django" scheme="http://blog.hsfzxjy.site/tags/django/"/>
+      <category term="Django" scheme="http://blog.hsfzxjy.site/tags/Django/"/>
     
-      <category term="django channels" scheme="http://blog.hsfzxjy.site/tags/django-channels/"/>
+      <category term="Django Channels" scheme="http://blog.hsfzxjy.site/tags/Django-Channels/"/>
     
-      <category term="nginx" scheme="http://blog.hsfzxjy.site/tags/nginx/"/>
+      <category term="Nginx" scheme="http://blog.hsfzxjy.site/tags/Nginx/"/>
     
   </entry>
   
@@ -324,7 +322,7 @@
     <link href="http://blog.hsfzxjy.site/raining-in-ustc/"/>
     <id>http://blog.hsfzxjy.site/raining-in-ustc/</id>
     <published>2016-08-21T16:00:00.000Z</published>
-    <updated>2016-08-28T02:19:31.408Z</updated>
+    <updated>2018-03-08T17:22:51.013Z</updated>
     
     <content type="html"><![CDATA[<p>从昏睡中惊醒——现在是下午，屋内却很昏暗。屋外，隐约有一阵持续的背景噪音，我拉开窗帘，只见白茫茫的一片。</p>
 <p>下雨了，而且是大暴雨。</p>
@@ -348,7 +346,7 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="Essays" scheme="http://blog.hsfzxjy.site/categories/Essays/"/>
     
     
       <category term="生活杂感" scheme="http://blog.hsfzxjy.site/tags/%E7%94%9F%E6%B4%BB%E6%9D%82%E6%84%9F/"/>
@@ -360,7 +358,7 @@
     <link href="http://blog.hsfzxjy.site/leaving-guangzhou/"/>
     <id>http://blog.hsfzxjy.site/leaving-guangzhou/</id>
     <published>2016-08-17T16:00:00.000Z</published>
-    <updated>2016-08-28T02:24:24.900Z</updated>
+    <updated>2018-03-08T17:23:19.417Z</updated>
     
     <content type="html"><![CDATA[<p> 明天就要走了。</p>
 <p> 我贪婪地呼吸着这座城市，想要记住一切。</p>
@@ -387,7 +385,7 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="Essays" scheme="http://blog.hsfzxjy.site/categories/Essays/"/>
     
     
       <category term="生活杂感" scheme="http://blog.hsfzxjy.site/tags/%E7%94%9F%E6%B4%BB%E6%9D%82%E6%84%9F/"/>
@@ -399,7 +397,7 @@
     <link href="http://blog.hsfzxjy.site/uncover-the-secret-of-fast-inverse-square-root-algorithm/"/>
     <id>http://blog.hsfzxjy.site/uncover-the-secret-of-fast-inverse-square-root-algorithm/</id>
     <published>2016-08-02T16:00:00.000Z</published>
-    <updated>2016-08-16T09:53:58.441Z</updated>
+    <updated>2018-03-08T17:23:20.797Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>神的时代已离去<br>神的故事却化为传说<br>流落凡间<br>供凡人传颂、膜拜</p>
@@ -531,14 +529,10 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
     
-    
-      <category term="数学" scheme="http://blog.hsfzxjy.site/tags/%E6%95%B0%E5%AD%A6/"/>
     
       <category term="Fast Inverse Square Root Algorithm" scheme="http://blog.hsfzxjy.site/tags/Fast-Inverse-Square-Root-Algorithm/"/>
-    
-      <category term="算法" scheme="http://blog.hsfzxjy.site/tags/%E7%AE%97%E6%B3%95/"/>
     
   </entry>
   
@@ -547,7 +541,7 @@
     <link href="http://blog.hsfzxjy.site/recursively-calling-when-decorating-a-python-class/"/>
     <id>http://blog.hsfzxjy.site/recursively-calling-when-decorating-a-python-class/</id>
     <published>2016-07-29T16:00:00.000Z</published>
-    <updated>2016-08-16T09:53:58.441Z</updated>
+    <updated>2018-03-08T17:23:20.761Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>《神坑》系列将会不定期更新一些可遇而不可求的坑<br>防止他人入坑，也防止自己再次入坑</p>
@@ -595,14 +589,14 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
     
     
-      <category term="python" scheme="http://blog.hsfzxjy.site/tags/python/"/>
+      <category term="Python" scheme="http://blog.hsfzxjy.site/tags/Python/"/>
     
-      <category term="装饰模式" scheme="http://blog.hsfzxjy.site/tags/%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/"/>
+      <category term="Decorator Pattern" scheme="http://blog.hsfzxjy.site/tags/Decorator-Pattern/"/>
     
-      <category term="无限递归" scheme="http://blog.hsfzxjy.site/tags/%E6%97%A0%E9%99%90%E9%80%92%E5%BD%92/"/>
+      <category term="Infinite Recursion" scheme="http://blog.hsfzxjy.site/tags/Infinite-Recursion/"/>
     
   </entry>
   
@@ -611,7 +605,7 @@
     <link href="http://blog.hsfzxjy.site/python-encoding-and-decoding/"/>
     <id>http://blog.hsfzxjy.site/python-encoding-and-decoding/</id>
     <published>2016-07-20T16:00:00.000Z</published>
-    <updated>2017-10-01T14:50:33.985Z</updated>
+    <updated>2018-03-08T17:23:20.729Z</updated>
     
     <content type="html"><![CDATA[<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><blockquote>
 <ul>
@@ -696,12 +690,12 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
     
-    
-      <category term="python" scheme="http://blog.hsfzxjy.site/tags/python/"/>
     
       <category term="codecs" scheme="http://blog.hsfzxjy.site/tags/codecs/"/>
+    
+      <category term="Python" scheme="http://blog.hsfzxjy.site/tags/Python/"/>
     
   </entry>
   
@@ -710,7 +704,7 @@
     <link href="http://blog.hsfzxjy.site/alternative-key-maps-under-ubuntu/"/>
     <id>http://blog.hsfzxjy.site/alternative-key-maps-under-ubuntu/</id>
     <published>2016-06-05T09:20:26.000Z</published>
-    <updated>2016-07-18T03:09:34.299Z</updated>
+    <updated>2018-03-08T17:55:00.193Z</updated>
     
     <content type="html"><![CDATA[<p>键盘持续失灵，已经到了让我忍无可忍的地步了。</p>
 <p>刚开始只是方向键失灵，好在可以用小键盘替代；后来右 Ctrl 和 Alt 也失灵了，好在可以用左边的替代；直到最近 Fn 键也失灵了，终于逼疯了我——因为这意味着 F1 ～ F12 都将不能使用。</p>
@@ -733,12 +727,10 @@
     
     </summary>
     
-      <category term="随手记" scheme="http://blog.hsfzxjy.site/categories/%E9%9A%8F%E6%89%8B%E8%AE%B0/"/>
+      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
     
     
-      <category term="ubuntu" scheme="http://blog.hsfzxjy.site/tags/ubuntu/"/>
-    
-      <category term="Key Maps" scheme="http://blog.hsfzxjy.site/tags/Key-Maps/"/>
+      <category term="Ubuntu" scheme="http://blog.hsfzxjy.site/tags/Ubuntu/"/>
     
   </entry>
   
@@ -747,7 +739,7 @@
     <link href="http://blog.hsfzxjy.site/why-I-choose-to-climb-over-the-wall/"/>
     <id>http://blog.hsfzxjy.site/why-I-choose-to-climb-over-the-wall/</id>
     <published>2016-04-08T16:00:00.000Z</published>
-    <updated>2016-07-18T03:09:34.299Z</updated>
+    <updated>2018-03-08T17:23:19.393Z</updated>
     
     <content type="html"><![CDATA[<p>很多人不解为什么我要翻墙。他们认为，国家明令禁止的东西就不应该去做——而更何况，墙内的世界已经足够精彩，异世界的天空也不一定令人神往。</p>
 <p>在中国大陆，能上网的人被分为两类：翻墙的 与 不翻墙的。这里说的“翻墙”不是“有能力翻墙”，而是“有意愿翻墙”。这两类人奇怪地构成了一个鄙视环。翻墙的 看不起 不翻墙的，认为后者甘于“虚假”的现状。其中不乏有狂热的传教者，不遗余力地宣传墙外的世界，并对不接受者嗤之以鼻；同时，不翻墙的 又鄙视 翻墙的，认为后者崇洋媚外，被国外反华势力蛊惑，以致对 翻墙 产生如信仰宗教般的虔诚。</p>
@@ -769,7 +761,7 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="Essays" scheme="http://blog.hsfzxjy.site/categories/Essays/"/>
     
     
       <category term="杂谈" scheme="http://blog.hsfzxjy.site/tags/%E6%9D%82%E8%B0%88/"/>
@@ -781,7 +773,7 @@
     <link href="http://blog.hsfzxjy.site/python-generator-coroutine/"/>
     <id>http://blog.hsfzxjy.site/python-generator-coroutine/</id>
     <published>2016-04-01T16:00:00.000Z</published>
-    <updated>2016-07-18T03:09:34.299Z</updated>
+    <updated>2018-03-08T17:23:20.685Z</updated>
     
     <content type="html"><![CDATA[<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><blockquote>
 <ul>
@@ -806,7 +798,7 @@
 </ul>
 <p>直至 Python 3.4，Python 第一次将异步编程纳入标准库中（参见 <a href="https://www.python.org/dev/peps/pep-3156/" target="_blank" rel="external">PEP 3156</a>），其中包括了用生成器模拟的 协程。而在 Python 3.5 中，Guido 总算在语法层面上实现了 协程（参见 <a href="https://www.python.org/dev/peps/pep-0492/" target="_blank" rel="external">PEP 0492</a>）。比起 <code>yield</code> 关键字，新关键字 <code>async</code> 和 <code>await</code> 具有更好的可读性。在不久的将来，新的实现将会慢慢统一混乱已久的协程领域。</p>
 <p>尽管 生成器协程 已成为了过去时，但它曾经的辉煌却不可磨灭。下面，让我们一起来探索其中的魔法。</p>
-<h2 id="一个简单的例子"><a href="#一个简单的例子" class="headerlink" title="一个简单的例子"></a>一个简单的例子</h2><p>假设有两个子程序 <code>main</code> 和 <code>printer</code>。<code>printer</code> 是一个死循环，等待输入、加工并输出结果。<code>main</code> 作为主程序，不时地向 <code>printer</code> 发送数据。    </p>
+<h2 id="一个简单的例子"><a href="#一个简单的例子" class="headerlink" title="一个简单的例子"></a>一个简单的例子</h2><p>假设有两个子程序 <code>main</code> 和 <code>printer</code>。<code>printer</code> 是一个死循环，等待输入、加工并输出结果。<code>main</code> 作为主程序，不时地向 <code>printer</code> 发送数据。</p>
 <p>这应该怎么实现呢？</p>
 <p>传统方式中，这几乎不可能在一个线程中实现，因为死循环会阻塞。而协程却能很好地解决这个问题：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">printer</span><span class="params">()</span>:</span></div><div class="line"></div><div class="line">    counter = <span class="number">0</span></div><div class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</div><div class="line">        string = (<span class="keyword">yield</span>)</div><div class="line">        print(<span class="string">'[&#123;0&#125;] &#123;1&#125;'</span>.format(counter, string))</div><div class="line">        counter += <span class="number">1</span></div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    p = printer()</div><div class="line">    next(p)</div><div class="line">    p.send(<span class="string">'Hi'</span>)</div><div class="line">    p.send(<span class="string">'My name is hsfzxjy.'</span>)</div><div class="line">    p.send(<span class="string">'Bye!'</span>)</div></pre></td></tr></table></figure>
@@ -898,14 +890,14 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
     
     
-      <category term="python" scheme="http://blog.hsfzxjy.site/tags/python/"/>
+      <category term="Python" scheme="http://blog.hsfzxjy.site/tags/Python/"/>
     
-      <category term="generator" scheme="http://blog.hsfzxjy.site/tags/generator/"/>
+      <category term="Generator" scheme="http://blog.hsfzxjy.site/tags/Generator/"/>
     
-      <category term="coroutine" scheme="http://blog.hsfzxjy.site/tags/coroutine/"/>
+      <category term="Coroutine" scheme="http://blog.hsfzxjy.site/tags/Coroutine/"/>
     
   </entry>
   
@@ -914,7 +906,7 @@
     <link href="http://blog.hsfzxjy.site/the-simplest-way-to-find-out-if-two-segments-are-intersected/"/>
     <id>http://blog.hsfzxjy.site/the-simplest-way-to-find-out-if-two-segments-are-intersected/</id>
     <published>2016-02-18T16:00:00.000Z</published>
-    <updated>2016-07-18T03:09:34.299Z</updated>
+    <updated>2018-03-08T17:23:20.661Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>解析几何的巅峰<br>是 向量<br>那无关过程的狂妄与简洁<br>映射着大自然无与伦比的美</p>
@@ -1018,14 +1010,8 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
     
-    
-      <category term="数学" scheme="http://blog.hsfzxjy.site/tags/%E6%95%B0%E5%AD%A6/"/>
-    
-      <category term="计算几何" scheme="http://blog.hsfzxjy.site/tags/%E8%AE%A1%E7%AE%97%E5%87%A0%E4%BD%95/"/>
-    
-      <category term="向量" scheme="http://blog.hsfzxjy.site/tags/%E5%90%91%E9%87%8F/"/>
     
   </entry>
   
@@ -1034,7 +1020,7 @@
     <link href="http://blog.hsfzxjy.site/thinking-in-the-day-before-lunar-new-year-of-2016/"/>
     <id>http://blog.hsfzxjy.site/thinking-in-the-day-before-lunar-new-year-of-2016/</id>
     <published>2016-02-12T16:00:00.000Z</published>
-    <updated>2016-07-18T03:09:34.299Z</updated>
+    <updated>2018-03-08T17:23:19.365Z</updated>
     
     <content type="html"><![CDATA[<!--## 一-->
 <p>直到下午四点，供桌才摆上。</p>
@@ -1087,10 +1073,8 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="Essays" scheme="http://blog.hsfzxjy.site/categories/Essays/"/>
     
-    
-      <category term="随想" scheme="http://blog.hsfzxjy.site/tags/%E9%9A%8F%E6%83%B3/"/>
     
   </entry>
   
@@ -1099,7 +1083,7 @@
     <link href="http://blog.hsfzxjy.site/a-simple-javascript-template-language/"/>
     <id>http://blog.hsfzxjy.site/a-simple-javascript-template-language/</id>
     <published>2016-02-11T16:00:00.000Z</published>
-    <updated>2016-07-18T03:09:34.299Z</updated>
+    <updated>2018-03-08T17:23:20.637Z</updated>
     
     <content type="html"><![CDATA[<p>这是源于两年前，当我在做人生中第一个真正意义上的网站时遇到的一个问题</p>
 <p>该网站采用前后端分离的方式，由后端的 REST 接口返回 JSON 数据，再由前端渲染到页面上。</p>
@@ -1138,7 +1122,7 @@
 <p>不过，有可能 <code>token</code> 指定的变量并不存在，这时上面的代码便会报错。为了更好的体验，代码最好有一定的容错能力：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> variables = token.replace(<span class="regexp">/\s/g</span>, <span class="string">''</span>).split(<span class="string">'.'</span>); <span class="comment">// 切割 token</span></div><div class="line"><span class="keyword">var</span> currentObject = context;</div><div class="line"><span class="keyword">var</span> i, length, variable;</div><div class="line"></div><div class="line"><span class="keyword">for</span> (i = <span class="number">0</span>, length = variables.length; i &lt; length; ++i) &#123;</div><div class="line">    variable = variables[i];</div><div class="line">    currentObject = currentObject[variable];</div><div class="line">    <span class="keyword">if</span> (currentObject === <span class="literal">undefined</span> || currentObject === <span class="literal">null</span>) <span class="keyword">return</span> <span class="string">''</span>; <span class="comment">// 如果当前索引的对象不存在，则直接返回空字符串。</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">return</span> currentObject;</div></pre></td></tr></table></figure>
 <p>把所有的代码组合在一起，便得到了最终的版本：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">render</span>(<span class="params">template, context</span>) </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">var</span> tokenReg = <span class="regexp">/(\\)?\&#123;([^\&#123;\&#125;\\]+)(\\)?\&#125;/g</span>;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> template.replace(tokenReg, <span class="function"><span class="keyword">function</span> (<span class="params">word, slash1, token, slash2</span>) </span>&#123;</div><div class="line">        <span class="keyword">if</span> (slash1 || slash2) &#123;  </div><div class="line">            <span class="keyword">return</span> word.replace(<span class="string">'\\'</span>, <span class="string">''</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">var</span> variables = token.replace(<span class="regexp">/\s/g</span>, <span class="string">''</span>).split(<span class="string">'.'</span>);</div><div class="line">        <span class="keyword">var</span> currentObject = context;</div><div class="line">        <span class="keyword">var</span> i, length, variable;</div><div class="line"></div><div class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>, length = variables.length; i &lt; length; ++i) &#123;</div><div class="line">            variable = variables[i];</div><div class="line">            currentObject = currentObject[variable];</div><div class="line">            <span class="keyword">if</span> (currentObject === <span class="literal">undefined</span> || currentObject === <span class="literal">null</span>) <span class="keyword">return</span> <span class="string">''</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> currentObject;</div><div class="line">    &#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">render</span>(<span class="params">template, context</span>) </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">var</span> tokenReg = <span class="regexp">/(\\)?\&#123;([^\&#123;\&#125;\\]+)(\\)?\&#125;/g</span>;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> template.replace(tokenReg, <span class="function"><span class="keyword">function</span> (<span class="params">word, slash1, token, slash2</span>) </span>&#123;</div><div class="line">        <span class="keyword">if</span> (slash1 || slash2) &#123;</div><div class="line">            <span class="keyword">return</span> word.replace(<span class="string">'\\'</span>, <span class="string">''</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">var</span> variables = token.replace(<span class="regexp">/\s/g</span>, <span class="string">''</span>).split(<span class="string">'.'</span>);</div><div class="line">        <span class="keyword">var</span> currentObject = context;</div><div class="line">        <span class="keyword">var</span> i, length, variable;</div><div class="line"></div><div class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>, length = variables.length; i &lt; length; ++i) &#123;</div><div class="line">            variable = variables[i];</div><div class="line">            currentObject = currentObject[variable];</div><div class="line">            <span class="keyword">if</span> (currentObject === <span class="literal">undefined</span> || currentObject === <span class="literal">null</span>) <span class="keyword">return</span> <span class="string">''</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> currentObject;</div><div class="line">    &#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>除去空白行，一共 17 行。</p>
 <h2 id="将函数挂到-String-的原型链"><a href="#将函数挂到-String-的原型链" class="headerlink" title="将函数挂到 String 的原型链"></a>将函数挂到 String 的原型链</h2><p>甚至，我们可以通过修改原型链，实现一些很酷的效果：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">String</span>.prototype.render = <span class="function"><span class="keyword">function</span> (<span class="params">context</span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> render(<span class="keyword">this</span>, context);</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
@@ -1162,16 +1146,14 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
     
     
-      <category term="javascript" scheme="http://blog.hsfzxjy.site/tags/javascript/"/>
+      <category term="JavaScript" scheme="http://blog.hsfzxjy.site/tags/JavaScript/"/>
     
-      <category term="DIY" scheme="http://blog.hsfzxjy.site/tags/DIY/"/>
+      <category term="String Template" scheme="http://blog.hsfzxjy.site/tags/String-Template/"/>
     
-      <category term="字符串模板" scheme="http://blog.hsfzxjy.site/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%A8%A1%E6%9D%BF/"/>
-    
-      <category term="正则表达式" scheme="http://blog.hsfzxjy.site/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
+      <category term="Regular Expression" scheme="http://blog.hsfzxjy.site/tags/Regular-Expression/"/>
     
   </entry>
   
@@ -1180,7 +1162,7 @@
     <link href="http://blog.hsfzxjy.site/meta-class-in-python/"/>
     <id>http://blog.hsfzxjy.site/meta-class-in-python/</id>
     <published>2016-02-09T16:00:00.000Z</published>
-    <updated>2016-07-18T03:09:34.299Z</updated>
+    <updated>2018-03-08T17:23:20.601Z</updated>
     
     <content type="html"><![CDATA[<p>接触过 Django 的同学都应该十分熟悉它的 ORM 系统。对于 python 新手而言，这是一项几乎可以被称作“黑科技”的特性：只要你在<code>models.py</code>中随便定义一个<code>Model</code>的子类，Django 便可以：</p>
 <ul>
@@ -1281,16 +1263,16 @@
     
     </summary>
     
-      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
     
-    
-      <category term="python" scheme="http://blog.hsfzxjy.site/tags/python/"/>
     
       <category term="Meta Classes" scheme="http://blog.hsfzxjy.site/tags/Meta-Classes/"/>
     
       <category term="黑魔法" scheme="http://blog.hsfzxjy.site/tags/%E9%BB%91%E9%AD%94%E6%B3%95/"/>
     
       <category term="元编程" scheme="http://blog.hsfzxjy.site/tags/%E5%85%83%E7%BC%96%E7%A8%8B/"/>
+    
+      <category term="Python" scheme="http://blog.hsfzxjy.site/tags/Python/"/>
     
   </entry>
   
@@ -1299,7 +1281,7 @@
     <link href="http://blog.hsfzxjy.site/poems/"/>
     <id>http://blog.hsfzxjy.site/poems/</id>
     <published>2015-11-30T16:00:00.000Z</published>
-    <updated>2016-07-18T03:09:34.299Z</updated>
+    <updated>2018-03-08T17:23:19.333Z</updated>
     
     <content type="html"><![CDATA[<h3 id="2015-11-04"><a href="#2015-11-04" class="headerlink" title="2015-11-04"></a>2015-11-04</h3><p>第 -206 天</p>
 <p>曾经的不屑</p>
@@ -1326,7 +1308,7 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="Essays" scheme="http://blog.hsfzxjy.site/categories/Essays/"/>
     
     
       <category term="诗" scheme="http://blog.hsfzxjy.site/tags/%E8%AF%97/"/>
@@ -1338,7 +1320,7 @@
     <link href="http://blog.hsfzxjy.site/life-needs-discovery/"/>
     <id>http://blog.hsfzxjy.site/life-needs-discovery/</id>
     <published>2015-11-27T16:00:00.000Z</published>
-    <updated>2016-07-18T03:09:34.299Z</updated>
+    <updated>2018-03-08T17:23:19.297Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>40 分钟赶完的作文，没想到居然成了范文。 <strong>Scores：47</strong></p>
@@ -1365,12 +1347,8 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="Essays" scheme="http://blog.hsfzxjy.site/categories/Essays/"/>
     
-    
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/tags/%E6%9D%82%E6%84%9F/"/>
-    
-      <category term="作文" scheme="http://blog.hsfzxjy.site/tags/%E4%BD%9C%E6%96%87/"/>
     
   </entry>
   
@@ -1379,7 +1357,7 @@
     <link href="http://blog.hsfzxjy.site/letter-to-parents/"/>
     <id>http://blog.hsfzxjy.site/letter-to-parents/</id>
     <published>2015-10-17T16:00:00.000Z</published>
-    <updated>2016-07-18T03:09:34.299Z</updated>
+    <updated>2018-03-08T17:23:19.265Z</updated>
     
     <content type="html"><![CDATA[<p>事实上，截至目前，我只有十七岁，但无论年龄的多与少，今天这个特殊的日子，都有着其特殊的意义——是的，我要成人了。</p>
 <p>这里，我想先说一声谢谢。</p>
@@ -1407,12 +1385,8 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="Essays" scheme="http://blog.hsfzxjy.site/categories/Essays/"/>
     
-    
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/tags/%E6%9D%82%E6%84%9F/"/>
-    
-      <category term="家书" scheme="http://blog.hsfzxjy.site/tags/%E5%AE%B6%E4%B9%A6/"/>
     
       <category term="成人礼" scheme="http://blog.hsfzxjy.site/tags/%E6%88%90%E4%BA%BA%E7%A4%BC/"/>
     
@@ -1423,10 +1397,10 @@
     <link href="http://blog.hsfzxjy.site/hobby-or-needs/"/>
     <id>http://blog.hsfzxjy.site/hobby-or-needs/</id>
     <published>2015-10-03T16:00:00.000Z</published>
-    <updated>2016-07-18T03:09:34.299Z</updated>
+    <updated>2018-03-08T17:23:19.233Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
-<p>一款产品，其生命周期始于想法的萌发<br>但其终结，无人能预测<br>诚然，有些产品能够颠覆世界<br>但更多的，只是湮灭在残酷的市场中<br>甚至——<br>有的只是一场白日梦<br>连真正的出生都未曾经历    </p>
+<p>一款产品，其生命周期始于想法的萌发<br>但其终结，无人能预测<br>诚然，有些产品能够颠覆世界<br>但更多的，只是湮灭在残酷的市场中<br>甚至——<br>有的只是一场白日梦<br>连真正的出生都未曾经历</p>
 </blockquote>
 <a id="more"></a>
 <h2 id="闪念"><a href="#闪念" class="headerlink" title="闪念"></a>闪念</h2><p>“做一个云聊天平台。”</p>
@@ -1484,19 +1458,13 @@
     <summary type="html">
     
       &lt;blockquote&gt;
-&lt;p&gt;一款产品，其生命周期始于想法的萌发&lt;br&gt;但其终结，无人能预测&lt;br&gt;诚然，有些产品能够颠覆世界&lt;br&gt;但更多的，只是湮灭在残酷的市场中&lt;br&gt;甚至——&lt;br&gt;有的只是一场白日梦&lt;br&gt;连真正的出生都未曾经历    &lt;/p&gt;
+&lt;p&gt;一款产品，其生命周期始于想法的萌发&lt;br&gt;但其终结，无人能预测&lt;br&gt;诚然，有些产品能够颠覆世界&lt;br&gt;但更多的，只是湮灭在残酷的市场中&lt;br&gt;甚至——&lt;br&gt;有的只是一场白日梦&lt;br&gt;连真正的出生都未曾经历&lt;/p&gt;
 &lt;/blockquote&gt;
     
     </summary>
     
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="Essays" scheme="http://blog.hsfzxjy.site/categories/Essays/"/>
     
-    
-      <category term="编程" scheme="http://blog.hsfzxjy.site/tags/%E7%BC%96%E7%A8%8B/"/>
-    
-      <category term="杂感" scheme="http://blog.hsfzxjy.site/tags/%E6%9D%82%E6%84%9F/"/>
-    
-      <category term="产品" scheme="http://blog.hsfzxjy.site/tags/%E4%BA%A7%E5%93%81/"/>
     
   </entry>
   
