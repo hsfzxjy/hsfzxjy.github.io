@@ -4,9 +4,9 @@
   
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://hsfzxjy.oicp.io/"/>
+  <link href="http://blog.hsfzxjy.site/"/>
   <updated>2018-03-08T15:30:18.865Z</updated>
-  <id>http://hsfzxjy.oicp.io/</id>
+  <id>http://blog.hsfzxjy.site/</id>
   
   <author>
     <name>hsfzxjy</name>
@@ -17,8 +17,8 @@
   
   <entry>
     <title>RMPE 论文读书笔记</title>
-    <link href="http://hsfzxjy.oicp.io/RMPE-Notes/"/>
-    <id>http://hsfzxjy.oicp.io/RMPE-Notes/</id>
+    <link href="http://blog.hsfzxjy.site/RMPE-Notes/"/>
+    <id>http://blog.hsfzxjy.site/RMPE-Notes/</id>
     <published>2018-03-07T16:00:00.000Z</published>
     <updated>2018-03-08T15:30:18.865Z</updated>
     
@@ -63,19 +63,19 @@
     
     </summary>
     
-      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="RMPE" scheme="http://hsfzxjy.oicp.io/tags/RMPE/"/>
+      <category term="RMPE" scheme="http://blog.hsfzxjy.site/tags/RMPE/"/>
     
-      <category term="Machine Learning" scheme="http://hsfzxjy.oicp.io/tags/Machine-Learning/"/>
+      <category term="Machine Learning" scheme="http://blog.hsfzxjy.site/tags/Machine-Learning/"/>
     
   </entry>
   
   <entry>
     <title>一个 Reentrant Error 引发的对 Python 信号机制的探索和思考</title>
-    <link href="http://hsfzxjy.oicp.io/caveats-for-signal-handler-in-python/"/>
-    <id>http://hsfzxjy.oicp.io/caveats-for-signal-handler-in-python/</id>
+    <link href="http://blog.hsfzxjy.site/caveats-for-signal-handler-in-python/"/>
+    <id>http://blog.hsfzxjy.site/caveats-for-signal-handler-in-python/</id>
     <published>2017-08-16T16:00:00.000Z</published>
     <updated>2017-08-17T16:40:13.403Z</updated>
     
@@ -172,23 +172,23 @@
     
     </summary>
     
-      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="python" scheme="http://hsfzxjy.oicp.io/tags/python/"/>
+      <category term="python" scheme="http://blog.hsfzxjy.site/tags/python/"/>
     
-      <category term="POSIX" scheme="http://hsfzxjy.oicp.io/tags/POSIX/"/>
+      <category term="POSIX" scheme="http://blog.hsfzxjy.site/tags/POSIX/"/>
     
-      <category term="signal" scheme="http://hsfzxjy.oicp.io/tags/signal/"/>
+      <category term="signal" scheme="http://blog.hsfzxjy.site/tags/signal/"/>
     
-      <category term="reentrancy" scheme="http://hsfzxjy.oicp.io/tags/reentrancy/"/>
+      <category term="reentrancy" scheme="http://blog.hsfzxjy.site/tags/reentrancy/"/>
     
   </entry>
   
   <entry>
     <title>Linux 文件权限</title>
-    <link href="http://hsfzxjy.oicp.io/linux-file-permissions/"/>
-    <id>http://hsfzxjy.oicp.io/linux-file-permissions/</id>
+    <link href="http://blog.hsfzxjy.site/linux-file-permissions/"/>
+    <id>http://blog.hsfzxjy.site/linux-file-permissions/</id>
     <published>2017-07-02T16:00:00.000Z</published>
     <updated>2017-07-03T16:40:15.691Z</updated>
     
@@ -225,19 +225,19 @@
     
     </summary>
     
-      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="Linux" scheme="http://hsfzxjy.oicp.io/tags/Linux/"/>
+      <category term="Linux" scheme="http://blog.hsfzxjy.site/tags/Linux/"/>
     
-      <category term="文件权限" scheme="http://hsfzxjy.oicp.io/tags/%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/"/>
+      <category term="文件权限" scheme="http://blog.hsfzxjy.site/tags/%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/"/>
     
   </entry>
   
   <entry>
     <title>HSFZMUN 4.0 部署小记</title>
-    <link href="http://hsfzxjy.oicp.io/HSFZMUN-4.0-configuration/"/>
-    <id>http://hsfzxjy.oicp.io/HSFZMUN-4.0-configuration/</id>
+    <link href="http://blog.hsfzxjy.site/HSFZMUN-4.0-configuration/"/>
+    <id>http://blog.hsfzxjy.site/HSFZMUN-4.0-configuration/</id>
     <published>2017-02-24T16:00:00.000Z</published>
     <updated>2017-02-25T08:57:44.187Z</updated>
     
@@ -306,23 +306,23 @@
     
     </summary>
     
-      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="ubuntu" scheme="http://hsfzxjy.oicp.io/tags/ubuntu/"/>
+      <category term="ubuntu" scheme="http://blog.hsfzxjy.site/tags/ubuntu/"/>
     
-      <category term="django" scheme="http://hsfzxjy.oicp.io/tags/django/"/>
+      <category term="django" scheme="http://blog.hsfzxjy.site/tags/django/"/>
     
-      <category term="django channels" scheme="http://hsfzxjy.oicp.io/tags/django-channels/"/>
+      <category term="django channels" scheme="http://blog.hsfzxjy.site/tags/django-channels/"/>
     
-      <category term="nginx" scheme="http://hsfzxjy.oicp.io/tags/nginx/"/>
+      <category term="nginx" scheme="http://blog.hsfzxjy.site/tags/nginx/"/>
     
   </entry>
   
   <entry>
     <title>午后雨·科大</title>
-    <link href="http://hsfzxjy.oicp.io/raining-in-ustc/"/>
-    <id>http://hsfzxjy.oicp.io/raining-in-ustc/</id>
+    <link href="http://blog.hsfzxjy.site/raining-in-ustc/"/>
+    <id>http://blog.hsfzxjy.site/raining-in-ustc/</id>
     <published>2016-08-21T16:00:00.000Z</published>
     <updated>2016-08-28T02:19:31.408Z</updated>
     
@@ -348,17 +348,17 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://hsfzxjy.oicp.io/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
     
     
-      <category term="生活杂感" scheme="http://hsfzxjy.oicp.io/tags/%E7%94%9F%E6%B4%BB%E6%9D%82%E6%84%9F/"/>
+      <category term="生活杂感" scheme="http://blog.hsfzxjy.site/tags/%E7%94%9F%E6%B4%BB%E6%9D%82%E6%84%9F/"/>
     
   </entry>
   
   <entry>
     <title>最后的雨夜·广州</title>
-    <link href="http://hsfzxjy.oicp.io/leaving-guangzhou/"/>
-    <id>http://hsfzxjy.oicp.io/leaving-guangzhou/</id>
+    <link href="http://blog.hsfzxjy.site/leaving-guangzhou/"/>
+    <id>http://blog.hsfzxjy.site/leaving-guangzhou/</id>
     <published>2016-08-17T16:00:00.000Z</published>
     <updated>2016-08-28T02:24:24.900Z</updated>
     
@@ -387,17 +387,17 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://hsfzxjy.oicp.io/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
     
     
-      <category term="生活杂感" scheme="http://hsfzxjy.oicp.io/tags/%E7%94%9F%E6%B4%BB%E6%9D%82%E6%84%9F/"/>
+      <category term="生活杂感" scheme="http://blog.hsfzxjy.site/tags/%E7%94%9F%E6%B4%BB%E6%9D%82%E6%84%9F/"/>
     
   </entry>
   
   <entry>
     <title>揭秘·变态的平方根倒数算法</title>
-    <link href="http://hsfzxjy.oicp.io/uncover-the-secret-of-fast-inverse-square-root-algorithm/"/>
-    <id>http://hsfzxjy.oicp.io/uncover-the-secret-of-fast-inverse-square-root-algorithm/</id>
+    <link href="http://blog.hsfzxjy.site/uncover-the-secret-of-fast-inverse-square-root-algorithm/"/>
+    <id>http://blog.hsfzxjy.site/uncover-the-secret-of-fast-inverse-square-root-algorithm/</id>
     <published>2016-08-02T16:00:00.000Z</published>
     <updated>2016-08-16T09:53:58.441Z</updated>
     
@@ -531,21 +531,21 @@
     
     </summary>
     
-      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="数学" scheme="http://hsfzxjy.oicp.io/tags/%E6%95%B0%E5%AD%A6/"/>
+      <category term="数学" scheme="http://blog.hsfzxjy.site/tags/%E6%95%B0%E5%AD%A6/"/>
     
-      <category term="Fast Inverse Square Root Algorithm" scheme="http://hsfzxjy.oicp.io/tags/Fast-Inverse-Square-Root-Algorithm/"/>
+      <category term="Fast Inverse Square Root Algorithm" scheme="http://blog.hsfzxjy.site/tags/Fast-Inverse-Square-Root-Algorithm/"/>
     
-      <category term="算法" scheme="http://hsfzxjy.oicp.io/tags/%E7%AE%97%E6%B3%95/"/>
+      <category term="算法" scheme="http://blog.hsfzxjy.site/tags/%E7%AE%97%E6%B3%95/"/>
     
   </entry>
   
   <entry>
     <title>神坑·Python 装饰类无限递归</title>
-    <link href="http://hsfzxjy.oicp.io/recursively-calling-when-decorating-a-python-class/"/>
-    <id>http://hsfzxjy.oicp.io/recursively-calling-when-decorating-a-python-class/</id>
+    <link href="http://blog.hsfzxjy.site/recursively-calling-when-decorating-a-python-class/"/>
+    <id>http://blog.hsfzxjy.site/recursively-calling-when-decorating-a-python-class/</id>
     <published>2016-07-29T16:00:00.000Z</published>
     <updated>2016-08-16T09:53:58.441Z</updated>
     
@@ -595,21 +595,21 @@
     
     </summary>
     
-      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="python" scheme="http://hsfzxjy.oicp.io/tags/python/"/>
+      <category term="python" scheme="http://blog.hsfzxjy.site/tags/python/"/>
     
-      <category term="装饰模式" scheme="http://hsfzxjy.oicp.io/tags/%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/"/>
+      <category term="装饰模式" scheme="http://blog.hsfzxjy.site/tags/%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/"/>
     
-      <category term="无限递归" scheme="http://hsfzxjy.oicp.io/tags/%E6%97%A0%E9%99%90%E9%80%92%E5%BD%92/"/>
+      <category term="无限递归" scheme="http://blog.hsfzxjy.site/tags/%E6%97%A0%E9%99%90%E9%80%92%E5%BD%92/"/>
     
   </entry>
   
   <entry>
     <title>Python “黑魔法” 之 Encoding &amp; Decoding</title>
-    <link href="http://hsfzxjy.oicp.io/python-encoding-and-decoding/"/>
-    <id>http://hsfzxjy.oicp.io/python-encoding-and-decoding/</id>
+    <link href="http://blog.hsfzxjy.site/python-encoding-and-decoding/"/>
+    <id>http://blog.hsfzxjy.site/python-encoding-and-decoding/</id>
     <published>2016-07-20T16:00:00.000Z</published>
     <updated>2017-10-01T14:50:33.985Z</updated>
     
@@ -696,19 +696,19 @@
     
     </summary>
     
-      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="python" scheme="http://hsfzxjy.oicp.io/tags/python/"/>
+      <category term="python" scheme="http://blog.hsfzxjy.site/tags/python/"/>
     
-      <category term="codecs" scheme="http://hsfzxjy.oicp.io/tags/codecs/"/>
+      <category term="codecs" scheme="http://blog.hsfzxjy.site/tags/codecs/"/>
     
   </entry>
   
   <entry>
     <title>Ubuntu 重新映射键盘布局</title>
-    <link href="http://hsfzxjy.oicp.io/alternative-key-maps-under-ubuntu/"/>
-    <id>http://hsfzxjy.oicp.io/alternative-key-maps-under-ubuntu/</id>
+    <link href="http://blog.hsfzxjy.site/alternative-key-maps-under-ubuntu/"/>
+    <id>http://blog.hsfzxjy.site/alternative-key-maps-under-ubuntu/</id>
     <published>2016-06-05T09:20:26.000Z</published>
     <updated>2016-07-18T03:09:34.299Z</updated>
     
@@ -733,19 +733,19 @@
     
     </summary>
     
-      <category term="随手记" scheme="http://hsfzxjy.oicp.io/categories/%E9%9A%8F%E6%89%8B%E8%AE%B0/"/>
+      <category term="随手记" scheme="http://blog.hsfzxjy.site/categories/%E9%9A%8F%E6%89%8B%E8%AE%B0/"/>
     
     
-      <category term="ubuntu" scheme="http://hsfzxjy.oicp.io/tags/ubuntu/"/>
+      <category term="ubuntu" scheme="http://blog.hsfzxjy.site/tags/ubuntu/"/>
     
-      <category term="Key Maps" scheme="http://hsfzxjy.oicp.io/tags/Key-Maps/"/>
+      <category term="Key Maps" scheme="http://blog.hsfzxjy.site/tags/Key-Maps/"/>
     
   </entry>
   
   <entry>
     <title>为什么我要翻墙</title>
-    <link href="http://hsfzxjy.oicp.io/why-I-choose-to-climb-over-the-wall/"/>
-    <id>http://hsfzxjy.oicp.io/why-I-choose-to-climb-over-the-wall/</id>
+    <link href="http://blog.hsfzxjy.site/why-I-choose-to-climb-over-the-wall/"/>
+    <id>http://blog.hsfzxjy.site/why-I-choose-to-climb-over-the-wall/</id>
     <published>2016-04-08T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.299Z</updated>
     
@@ -769,17 +769,17 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://hsfzxjy.oicp.io/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
     
     
-      <category term="杂谈" scheme="http://hsfzxjy.oicp.io/tags/%E6%9D%82%E8%B0%88/"/>
+      <category term="杂谈" scheme="http://blog.hsfzxjy.site/tags/%E6%9D%82%E8%B0%88/"/>
     
   </entry>
   
   <entry>
     <title>Python “黑魔法” 之 Generator Coroutines</title>
-    <link href="http://hsfzxjy.oicp.io/python-generator-coroutine/"/>
-    <id>http://hsfzxjy.oicp.io/python-generator-coroutine/</id>
+    <link href="http://blog.hsfzxjy.site/python-generator-coroutine/"/>
+    <id>http://blog.hsfzxjy.site/python-generator-coroutine/</id>
     <published>2016-04-01T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.299Z</updated>
     
@@ -898,21 +898,21 @@
     
     </summary>
     
-      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="python" scheme="http://hsfzxjy.oicp.io/tags/python/"/>
+      <category term="python" scheme="http://blog.hsfzxjy.site/tags/python/"/>
     
-      <category term="generator" scheme="http://hsfzxjy.oicp.io/tags/generator/"/>
+      <category term="generator" scheme="http://blog.hsfzxjy.site/tags/generator/"/>
     
-      <category term="coroutine" scheme="http://hsfzxjy.oicp.io/tags/coroutine/"/>
+      <category term="coroutine" scheme="http://blog.hsfzxjy.site/tags/coroutine/"/>
     
   </entry>
   
   <entry>
     <title>数学美 之 判断线段相交的最简方法</title>
-    <link href="http://hsfzxjy.oicp.io/the-simplest-way-to-find-out-if-two-segments-are-intersected/"/>
-    <id>http://hsfzxjy.oicp.io/the-simplest-way-to-find-out-if-two-segments-are-intersected/</id>
+    <link href="http://blog.hsfzxjy.site/the-simplest-way-to-find-out-if-two-segments-are-intersected/"/>
+    <id>http://blog.hsfzxjy.site/the-simplest-way-to-find-out-if-two-segments-are-intersected/</id>
     <published>2016-02-18T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.299Z</updated>
     
@@ -1018,21 +1018,21 @@
     
     </summary>
     
-      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="数学" scheme="http://hsfzxjy.oicp.io/tags/%E6%95%B0%E5%AD%A6/"/>
+      <category term="数学" scheme="http://blog.hsfzxjy.site/tags/%E6%95%B0%E5%AD%A6/"/>
     
-      <category term="计算几何" scheme="http://hsfzxjy.oicp.io/tags/%E8%AE%A1%E7%AE%97%E5%87%A0%E4%BD%95/"/>
+      <category term="计算几何" scheme="http://blog.hsfzxjy.site/tags/%E8%AE%A1%E7%AE%97%E5%87%A0%E4%BD%95/"/>
     
-      <category term="向量" scheme="http://hsfzxjy.oicp.io/tags/%E5%90%91%E9%87%8F/"/>
+      <category term="向量" scheme="http://blog.hsfzxjy.site/tags/%E5%90%91%E9%87%8F/"/>
     
   </entry>
   
   <entry>
     <title>除夕杂感</title>
-    <link href="http://hsfzxjy.oicp.io/thinking-in-the-day-before-lunar-new-year-of-2016/"/>
-    <id>http://hsfzxjy.oicp.io/thinking-in-the-day-before-lunar-new-year-of-2016/</id>
+    <link href="http://blog.hsfzxjy.site/thinking-in-the-day-before-lunar-new-year-of-2016/"/>
+    <id>http://blog.hsfzxjy.site/thinking-in-the-day-before-lunar-new-year-of-2016/</id>
     <published>2016-02-12T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.299Z</updated>
     
@@ -1087,17 +1087,17 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://hsfzxjy.oicp.io/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
     
     
-      <category term="随想" scheme="http://hsfzxjy.oicp.io/tags/%E9%9A%8F%E6%83%B3/"/>
+      <category term="随想" scheme="http://blog.hsfzxjy.site/tags/%E9%9A%8F%E6%83%B3/"/>
     
   </entry>
   
   <entry>
     <title>17 行代码实现的简易 Javascript 字符串模板</title>
-    <link href="http://hsfzxjy.oicp.io/a-simple-javascript-template-language/"/>
-    <id>http://hsfzxjy.oicp.io/a-simple-javascript-template-language/</id>
+    <link href="http://blog.hsfzxjy.site/a-simple-javascript-template-language/"/>
+    <id>http://blog.hsfzxjy.site/a-simple-javascript-template-language/</id>
     <published>2016-02-11T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.299Z</updated>
     
@@ -1162,23 +1162,23 @@
     
     </summary>
     
-      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="javascript" scheme="http://hsfzxjy.oicp.io/tags/javascript/"/>
+      <category term="javascript" scheme="http://blog.hsfzxjy.site/tags/javascript/"/>
     
-      <category term="DIY" scheme="http://hsfzxjy.oicp.io/tags/DIY/"/>
+      <category term="DIY" scheme="http://blog.hsfzxjy.site/tags/DIY/"/>
     
-      <category term="字符串模板" scheme="http://hsfzxjy.oicp.io/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%A8%A1%E6%9D%BF/"/>
+      <category term="字符串模板" scheme="http://blog.hsfzxjy.site/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%A8%A1%E6%9D%BF/"/>
     
-      <category term="正则表达式" scheme="http://hsfzxjy.oicp.io/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
+      <category term="正则表达式" scheme="http://blog.hsfzxjy.site/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
     
   </entry>
   
   <entry>
     <title>Python “黑魔法” 之 Meta Classes</title>
-    <link href="http://hsfzxjy.oicp.io/meta-class-in-python/"/>
-    <id>http://hsfzxjy.oicp.io/meta-class-in-python/</id>
+    <link href="http://blog.hsfzxjy.site/meta-class-in-python/"/>
+    <id>http://blog.hsfzxjy.site/meta-class-in-python/</id>
     <published>2016-02-09T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.299Z</updated>
     
@@ -1281,23 +1281,23 @@
     
     </summary>
     
-      <category term="编程" scheme="http://hsfzxjy.oicp.io/categories/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://blog.hsfzxjy.site/categories/%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="python" scheme="http://hsfzxjy.oicp.io/tags/python/"/>
+      <category term="python" scheme="http://blog.hsfzxjy.site/tags/python/"/>
     
-      <category term="Meta Classes" scheme="http://hsfzxjy.oicp.io/tags/Meta-Classes/"/>
+      <category term="Meta Classes" scheme="http://blog.hsfzxjy.site/tags/Meta-Classes/"/>
     
-      <category term="黑魔法" scheme="http://hsfzxjy.oicp.io/tags/%E9%BB%91%E9%AD%94%E6%B3%95/"/>
+      <category term="黑魔法" scheme="http://blog.hsfzxjy.site/tags/%E9%BB%91%E9%AD%94%E6%B3%95/"/>
     
-      <category term="元编程" scheme="http://hsfzxjy.oicp.io/tags/%E5%85%83%E7%BC%96%E7%A8%8B/"/>
+      <category term="元编程" scheme="http://blog.hsfzxjy.site/tags/%E5%85%83%E7%BC%96%E7%A8%8B/"/>
     
   </entry>
   
   <entry>
     <title>诗集</title>
-    <link href="http://hsfzxjy.oicp.io/poems/"/>
-    <id>http://hsfzxjy.oicp.io/poems/</id>
+    <link href="http://blog.hsfzxjy.site/poems/"/>
+    <id>http://blog.hsfzxjy.site/poems/</id>
     <published>2015-11-30T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.299Z</updated>
     
@@ -1326,17 +1326,17 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://hsfzxjy.oicp.io/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
     
     
-      <category term="诗" scheme="http://hsfzxjy.oicp.io/tags/%E8%AF%97/"/>
+      <category term="诗" scheme="http://blog.hsfzxjy.site/tags/%E8%AF%97/"/>
     
   </entry>
   
   <entry>
     <title>生活，需要被“发现”</title>
-    <link href="http://hsfzxjy.oicp.io/life-needs-discovery/"/>
-    <id>http://hsfzxjy.oicp.io/life-needs-discovery/</id>
+    <link href="http://blog.hsfzxjy.site/life-needs-discovery/"/>
+    <id>http://blog.hsfzxjy.site/life-needs-discovery/</id>
     <published>2015-11-27T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.299Z</updated>
     
@@ -1365,19 +1365,19 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://hsfzxjy.oicp.io/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
     
     
-      <category term="杂感" scheme="http://hsfzxjy.oicp.io/tags/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://blog.hsfzxjy.site/tags/%E6%9D%82%E6%84%9F/"/>
     
-      <category term="作文" scheme="http://hsfzxjy.oicp.io/tags/%E4%BD%9C%E6%96%87/"/>
+      <category term="作文" scheme="http://blog.hsfzxjy.site/tags/%E4%BD%9C%E6%96%87/"/>
     
   </entry>
   
   <entry>
     <title>家书·十八岁成人礼</title>
-    <link href="http://hsfzxjy.oicp.io/letter-to-parents/"/>
-    <id>http://hsfzxjy.oicp.io/letter-to-parents/</id>
+    <link href="http://blog.hsfzxjy.site/letter-to-parents/"/>
+    <id>http://blog.hsfzxjy.site/letter-to-parents/</id>
     <published>2015-10-17T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.299Z</updated>
     
@@ -1407,21 +1407,21 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://hsfzxjy.oicp.io/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
     
     
-      <category term="杂感" scheme="http://hsfzxjy.oicp.io/tags/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://blog.hsfzxjy.site/tags/%E6%9D%82%E6%84%9F/"/>
     
-      <category term="家书" scheme="http://hsfzxjy.oicp.io/tags/%E5%AE%B6%E4%B9%A6/"/>
+      <category term="家书" scheme="http://blog.hsfzxjy.site/tags/%E5%AE%B6%E4%B9%A6/"/>
     
-      <category term="成人礼" scheme="http://hsfzxjy.oicp.io/tags/%E6%88%90%E4%BA%BA%E7%A4%BC/"/>
+      <category term="成人礼" scheme="http://blog.hsfzxjy.site/tags/%E6%88%90%E4%BA%BA%E7%A4%BC/"/>
     
   </entry>
   
   <entry>
     <title>炫技？还是需求？</title>
-    <link href="http://hsfzxjy.oicp.io/hobby-or-needs/"/>
-    <id>http://hsfzxjy.oicp.io/hobby-or-needs/</id>
+    <link href="http://blog.hsfzxjy.site/hobby-or-needs/"/>
+    <id>http://blog.hsfzxjy.site/hobby-or-needs/</id>
     <published>2015-10-03T16:00:00.000Z</published>
     <updated>2016-07-18T03:09:34.299Z</updated>
     
@@ -1489,14 +1489,14 @@
     
     </summary>
     
-      <category term="杂感" scheme="http://hsfzxjy.oicp.io/categories/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://blog.hsfzxjy.site/categories/%E6%9D%82%E6%84%9F/"/>
     
     
-      <category term="编程" scheme="http://hsfzxjy.oicp.io/tags/%E7%BC%96%E7%A8%8B/"/>
+      <category term="编程" scheme="http://blog.hsfzxjy.site/tags/%E7%BC%96%E7%A8%8B/"/>
     
-      <category term="杂感" scheme="http://hsfzxjy.oicp.io/tags/%E6%9D%82%E6%84%9F/"/>
+      <category term="杂感" scheme="http://blog.hsfzxjy.site/tags/%E6%9D%82%E6%84%9F/"/>
     
-      <category term="产品" scheme="http://hsfzxjy.oicp.io/tags/%E4%BA%A7%E5%93%81/"/>
+      <category term="产品" scheme="http://blog.hsfzxjy.site/tags/%E4%BA%A7%E5%93%81/"/>
     
   </entry>
   
