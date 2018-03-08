@@ -8,7 +8,6 @@
 @font-face {
   font-family: "life-saver";
   src: url("../fonts/LifeSavers-Regular.ttf"); }
-
 body {
   background-color: #f6f6f6;
   color: #444;
@@ -330,12 +329,16 @@ a:focus {
     padding-top: 2em;
     font-size: 35px !important;
     text-align: center; }
+
   .body_container {
     padding: 0 30px; }
+
   .content_container {
     padding-right: 15px; }
+
   #sidebar {
     display: none; }
+
   #header .site-name {
     text-align: center; }
   #header #nav-menu a {
@@ -343,18 +346,18 @@ a:focus {
     line-height: 27px;
     height: 27px;
     font-size: 13px; } }
-
 /*<small*/
 @media print, screen and (max-width: 35.5em) {
   .body_container {
     padding: 0 20px; }
+
   .content_container {
     padding-right: 0; }
+
   .post .post-title {
     padding-top: 2em;
     font-size: 30px !important;
     text-align: center; } }
-
 blockquote, .stressed {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -803,7 +806,6 @@ pre .javascript .function {
   src: url("../fonts/icomoon.eot?5xv1e3#iefix") format("embedded-opentype"), url("../fonts/icomoon.ttf?5xv1e3") format("truetype"), url("../fonts/icomoon.woff?5xv1e3") format("woff"), url("../fonts/icomoon.svg?5xv1e3#icomoon") format("svg");
   font-weight: normal;
   font-style: normal; }
-
 [class^="icon-"], [class*=" icon-"] {
   font-family: "icomoon" !important;
   speak: none;
@@ -935,7 +937,7 @@ pre .javascript .function {
 #process .timeline-centered .timeline-entry {
   position: relative;
   /*width: 50%;
-    float: right;*/
+  float: right;*/
   margin-top: 5px;
   margin-left: 20px;
   margin-bottom: 10px;
@@ -1156,19 +1158,22 @@ pre .javascript .function {
 @media (max-width: 768px) {
   #process .line {
     right: 10px; }
+
   #process .timeline-centered .timeline-entry .timeline-entry-inner .timeline-label {
     margin-right: 30px;
     margin-left: 45px;
     padding: 20px; }
+
   #process .timeline-centered .timeline-entry {
     margin-right: 20px; }
+
   #process .dot_tp,
   #process .dot_bt {
     right: 5px; }
+
   #process .present,
   #process .born {
     right: 35px; } }
-
 .widget ul {
   list-style: none;
   padding: 0; }
@@ -1178,6 +1183,5 @@ pre .javascript .function {
 
 .category-list-count:before {
   content: '('; }
-
 .category-list-count:after {
   content: ')'; }
