@@ -1162,7 +1162,7 @@
     <link href="http://blog.hsfzxjy.site/meta-class-in-python/"/>
     <id>http://blog.hsfzxjy.site/meta-class-in-python/</id>
     <published>2016-02-09T16:00:00.000Z</published>
-    <updated>2018-03-08T17:23:20.601Z</updated>
+    <updated>2018-03-09T07:25:00.939Z</updated>
     
     <content type="html"><![CDATA[<p>接触过 Django 的同学都应该十分熟悉它的 ORM 系统。对于 python 新手而言，这是一项几乎可以被称作“黑科技”的特性：只要你在<code>models.py</code>中随便定义一个<code>Model</code>的子类，Django 便可以：</p>
 <ul>
@@ -1269,8 +1269,6 @@
       <category term="Meta Classes" scheme="http://blog.hsfzxjy.site/tags/Meta-Classes/"/>
     
       <category term="黑魔法" scheme="http://blog.hsfzxjy.site/tags/%E9%BB%91%E9%AD%94%E6%B3%95/"/>
-    
-      <category term="元编程" scheme="http://blog.hsfzxjy.site/tags/%E5%85%83%E7%BC%96%E7%A8%8B/"/>
     
       <category term="Python" scheme="http://blog.hsfzxjy.site/tags/Python/"/>
     

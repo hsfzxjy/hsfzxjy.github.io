@@ -8,12 +8,33 @@
 @font-face {
   font-family: "life-saver";
   src: url("../fonts/LifeSavers-Regular.ttf"); }
+/* Webfont: Lato-Regular */
 @font-face {
-  font-family: "Lato";
-  src: url("../fonts/lato.woff2"); }
-.lato, .readmore a {
-  font-family: "Lato" !important; }
-
+  font-family: 'LatoWeb';
+  src: url("../fonts/Lato/Lato-Regular.eot");
+  /* IE9 Compat Modes */
+  src: url("../fonts/Lato/Lato-Regular.eot?#iefix") format("embedded-opentype"), url("../fonts/Lato/Lato-Regular.woff2") format("woff2"), url("../fonts/Lato/Lato-Regular.woff") format("woff"), url("../fonts/Lato/Lato-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: normal;
+  text-rendering: optimizeLegibility; }
+/* Webfont: Lato-Thin */
+@font-face {
+  font-family: 'LatoWebThin';
+  src: url("../fonts/Lato/Lato-Thin.eot");
+  /* IE9 Compat Modes */
+  src: url("../fonts/Lato/Lato-Thin.eot?#iefix") format("embedded-opentype"), url("../fonts/Lato/Lato-Thin.woff2") format("woff2"), url("../fonts/Lato/Lato-Thin.woff") format("woff"), url("../fonts/Lato/Lato-Thin.ttf") format("truetype");
+  font-style: normal;
+  font-weight: normal;
+  text-rendering: optimizeLegibility; }
+/* Webfont: Lato-Light */
+@font-face {
+  font-family: 'LatoWebLight';
+  src: url("../fonts/Lato/Lato-Light.eot");
+  /* IE9 Compat Modes */
+  src: url("../fonts/Lato/Lato-Light.eot?#iefix") format("embedded-opentype"), url("../fonts/Lato/Lato-Light.woff2") format("woff2"), url("../fonts/Lato/Lato-Light.woff") format("woff"), url("../fonts/Lato/Lato-Light.ttf") format("truetype");
+  font-style: normal;
+  font-weight: normal;
+  text-rendering: optimizeLegibility; }
 body {
   background-color: #f6f6f6;
   color: #444;
@@ -51,7 +72,7 @@ a, button.submit {
   transition: all .1s ease-in; }
 
 a:hover, a:active {
-  color: #444; }
+  color: #42b983; }
 
 a:focus {
   outline: auto; }
@@ -100,7 +121,7 @@ a:focus {
         border-bottom-color: #f6f6f6; }
       #header #nav-menu a span {
         margin-left: .5em;
-        font-family: Lato; }
+        font-family: LatoWeb; }
 
 #sidebar {
   border-left: 1px solid #ddd;
@@ -131,7 +152,8 @@ a:focus {
       margin-top: 10px; }
       #sidebar .widget .tagcloud a {
         line-height: 1.5;
-        padding: 5px; }
+        padding: 5px;
+        font-family: LatoWeb; }
     #sidebar .widget ul {
       list-style: none;
       padding: 0; }
@@ -180,7 +202,8 @@ a:focus {
     padding-top: 2em;
     border-top: 2px dashed #aaaaaa;
     font-size: 30px;
-    font-weight: 300; }
+    font-weight: 300;
+    font-family: "LatoWeb", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important; }
     .post .post-title a {
       color: #555;
       position: relative;
@@ -217,9 +240,26 @@ a:focus {
     line-height: 1.77;
     color: #444;
     padding-top: 20px; }
-    .post .post-content b.pay {
-      display: block;
-      text-align: center; }
+    .post .post-content p, .post .post-content a, .post .post-content h1, .post .post-content h2, .post .post-content h3, .post .post-content h4, .post .post-content h5, .post .post-content h6 {
+      font-family: "LatoWeb", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important; }
+    .post .post-content p a {
+      color: #399f70 !important; }
+      .post .post-content p a:hover, .post .post-content p a:active {
+        color: #4bbf8a !important; }
+    .post .post-content h1 {
+      font-size: 1.6em; }
+    .post .post-content h2 {
+      font-size: 1.5em; }
+    .post .post-content h3 {
+      font-size: 1.4em; }
+    .post .post-content h4 {
+      font-size: 1.3em; }
+    .post .post-content h5 {
+      font-size: 1.2em; }
+    .post .post-content h6 {
+      font-size: 1.1em; }
+    .post .post-content h1, .post .post-content h2, .post .post-content h3, .post .post-content h4, .post .post-content h5, .post .post-content h6 {
+      font-weight: normal; }
     .post .post-content h2, .post .post-content h3 {
       margin: 1.4em 0 1.1em; }
     .post .post-content pre code {
@@ -509,6 +549,7 @@ div {
   margin-bottom: 0; }
 
 .readmore a {
+  font-family: LatoWeb;
   font-size: 12px;
   color: #fff;
   margin-top: -10px;
@@ -1198,7 +1239,12 @@ pre .javascript .function {
 
 .category-list-link {
   color: #222;
-  margin-right: .25em; }
+  margin-right: .25em;
+  font-family: LatoWeb; }
 
 .widget-item span {
-  margin-left: .5em; }
+  margin-left: .5em;
+  font-family: LatoWeb; }
+
+.post-list-link {
+  font-family: "LatoWeb", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important; }
