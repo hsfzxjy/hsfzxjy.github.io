@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://blog.hsfzxjy.site/python-gil-and-threads/</loc>
+    
+    <lastmod>2018-03-10T09:36:09.681Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://blog.hsfzxjy.site/meta-class-in-python/</loc>
     
     <lastmod>2018-03-09T07:25:00.939Z</lastmod>
