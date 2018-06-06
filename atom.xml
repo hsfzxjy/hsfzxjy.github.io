@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.hsfzxjy.site/"/>
-  <updated>2018-03-10T09:40:28.000Z</updated>
+  <updated>2018-06-06T09:53:03.405Z</updated>
   <id>http://blog.hsfzxjy.site/</id>
   
   <author>
@@ -20,10 +20,10 @@
     <link href="http://blog.hsfzxjy.site/python-gil-and-threads/"/>
     <id>http://blog.hsfzxjy.site/python-gil-and-threads/</id>
     <published>2018-03-09T16:00:00.000Z</published>
-    <updated>2018-03-10T09:40:28.000Z</updated>
+    <updated>2018-06-06T09:53:03.405Z</updated>
     
     <content type="html"><![CDATA[<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><ul>
-<li>作者电脑有 4 个 CPU，因此使用 4 个线程测试是合理的</li>
+<li>作者电脑 CPU 为 4 核，因此使用 4 个线程测试是合理的</li>
 <li>本文使用的 <code>cpython</code> 版本为 <code>3.6.4</code></li>
 <li>本文使用的 <code>pypy</code> 版本为 <code>5.9.0-beta0</code>，兼容 Python 3.5 语法</li>
 <li>本文使用的 <code>jython</code> 版本为 <code>2.7.0</code>，兼容 Python 2.7 语法</li>
@@ -102,7 +102,7 @@
     <summary type="html">
     
       &lt;h2 id=&quot;写在前面&quot;&gt;&lt;a href=&quot;#写在前面&quot; class=&quot;headerlink&quot; title=&quot;写在前面&quot;&gt;&lt;/a&gt;写在前面&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;作者电脑有 4 个 CPU，因此使用 4 个线程测试是合理的&lt;/li&gt;
+&lt;li&gt;作者电脑 CPU 为 4 核，因此使用 4 个线程测试是合理的&lt;/li&gt;
 &lt;li&gt;本文使用的 &lt;code&gt;cpython&lt;/code&gt; 版本为 &lt;code&gt;3.6.4&lt;/code&gt;&lt;/li&gt;
 &lt;li&gt;本文使用的 &lt;code&gt;pypy&lt;/code&gt; 版本为 &lt;code&gt;5.9.0-beta0&lt;/code&gt;，兼容 Python 3.5 语法&lt;/li&gt;
 &lt;li&gt;本文使用的 &lt;code&gt;jython&lt;/code&gt; 版本为 &lt;code&gt;2.7.0&lt;/code&gt;，兼容 Python 2.7 语法&lt;/li&gt;
