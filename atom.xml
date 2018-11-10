@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.hsfzxjy.site/"/>
-  <updated>2018-06-11T05:08:04.832Z</updated>
+  <updated>2018-11-10T16:25:35.586Z</updated>
   <id>http://blog.hsfzxjy.site/</id>
   
   <author>
@@ -14,6 +14,46 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Haskell 笔记：folds</title>
+    <link href="http://blog.hsfzxjy.site/haskell-fold/"/>
+    <id>http://blog.hsfzxjy.site/haskell-fold/</id>
+    <published>2018-11-09T16:00:00.000Z</published>
+    <updated>2018-11-10T16:25:35.586Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Prelude-foldl"><a href="#Prelude-foldl" class="headerlink" title="Prelude.foldl"></a>Prelude.foldl</h2><p><code>foldl</code> 为 left-associative folding。</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="title">foldl</span> :: (b -&gt; a -&gt; b) -&gt; b -&gt; [a] -&gt; b</div><div class="line"><span class="title">foldl</span> f acc [] = acc</div><div class="line"><span class="title">foldl</span> f acc (x:xs) = foldl f (f acc x) xs</div></pre></td></tr></table></figure>
+<p><code>foldl (+) 0 [1..3]</code> 等价于 <code>(((0 + 1) + 2) + 3)</code>。</p>
+<ul>
+<li>尾递归，因此有 strict 版本 <code>foldl&#39;</code></li>
+<li>求值时必须先到达栈底，遍历完列表，因此无法处理无穷列表</li>
+</ul>
+<h2 id="Data-List-foldl’"><a href="#Data-List-foldl’" class="headerlink" title="Data.List.foldl’"></a>Data.List.foldl’</h2><p><code>foldl&#39;</code> 为 <code>foldl</code> 的 TRO 版本。</p>
+<h2 id="Prelude-foldr"><a href="#Prelude-foldr" class="headerlink" title="Prelude.foldr"></a>Prelude.foldr</h2><p><code>foldr</code> 为 right-associative folding。</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="title">foldr</span> :: (a -&gt; b -&gt; b) -&gt; b -&gt; [a] -&gt; b</div><div class="line"><span class="title">foldr</span> f acc [] = acc</div><div class="line"><span class="title">foldr</span> f acc (x:xs) = f x (foldr f acc xs)</div></pre></td></tr></table></figure>
+<p><code>foldr (+) 0 [1..3]</code> 等价于 <code>(0 + (1 + (2 + 3)))</code></p>
+<ul>
+<li>没有尾递归，有爆栈的危险。</li>
+<li>有向右展开的特点，而 Haskell 中许多数据结构都有向右递归的特点（如 Cons），因此可以很好地处理无穷递归的数据，从而更加通用。</li>
+</ul>
+<h2 id="Prelude-foldl1-amp-amp-Prelude-foldr1"><a href="#Prelude-foldl1-amp-amp-Prelude-foldr1" class="headerlink" title="Prelude.foldl1 &amp;&amp; Prelude.foldr1"></a>Prelude.foldl1 &amp;&amp; Prelude.foldr1</h2><p>Helper functions。将 operator 限制为同一种类型，同时约去 accumulator。</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="title">foldl1</span> :: (a -&gt; a -&gt; a) -&gt; [a] -&gt; a</div><div class="line"><span class="title">foldl1</span> f (x:xs) = foldl f x xs</div><div class="line"><span class="title">foldl1</span> _ [] = error</div><div class="line"></div><div class="line"><span class="title">foldr1</span> :: (a -&gt; a -&gt; a) -&gt; [a] -&gt; a</div><div class="line"><span class="title">foldr1</span> f (x:xs) = foldr f x xs</div><div class="line"><span class="title">foldr1</span> _ [] = error</div></pre></td></tr></table></figure>
+<p>即，<code>foldr1</code> 将列表的第一个值作为 accumulator，将剩余部分作为 list，传给 <code>foldr</code>。<code>foldl</code> 同理。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Prelude-foldl&quot;&gt;&lt;a href=&quot;#Prelude-foldl&quot; class=&quot;headerlink&quot; title=&quot;Prelude.foldl&quot;&gt;&lt;/a&gt;Prelude.foldl&lt;/h2&gt;&lt;p&gt;&lt;code&gt;foldl&lt;/code&gt; 为 left-
+    
+    </summary>
+    
+      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+    
+    
+      <category term="Haskell" scheme="http://blog.hsfzxjy.site/tags/Haskell/"/>
+    
+  </entry>
   
   <entry>
     <title>使用 Aria2 在 Ubuntu 中下载百度云资源</title>
@@ -1446,43 +1486,6 @@
     
     
       <category term="诗" scheme="http://blog.hsfzxjy.site/tags/%E8%AF%97/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>生活，需要被“发现”</title>
-    <link href="http://blog.hsfzxjy.site/life-needs-discovery/"/>
-    <id>http://blog.hsfzxjy.site/life-needs-discovery/</id>
-    <published>2015-11-27T16:00:00.000Z</published>
-    <updated>2018-03-08T17:23:19.297Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>40 分钟赶完的作文，没想到居然成了范文。 <strong>Scores：47</strong></p>
-</blockquote>
-<p>互联网，从当初的雨后春笋发展成为了我们生活中必不可缺的一部分——二十年，有如白驹过隙，但就是在如此短的时间中，世界已完全被网络颠覆了。</p>
-<a id="more"></a>
-<p>网络，在方便了人们衣食住行的同时，也在悄悄地改变着人们的生活方式。外出吃饭，不必再为饭店的选择而头疼。打开搜索，指尖滑动，一份详细的选择清单即可为我们呈现；外出远足，不必再为出行路线担忧。打开搜索，鼠标轻点，立刻可以获得网友们的“独家推荐”。身处信息时代，我们变得无所不知，在包罗万象的网络的引导下，过去的许多问题都会迎刃而解。然而——</p>
-<p>在这个时代，我们似乎失去了什么。</p>
-<p>足不出户即可知天下。网络中，世界变小了。但在巨量信息的冲击下，我们却愈发地感到生活的乏味。其中的原因便是：“发现”的乐趣正在流失。</p>
-<p>过去，当世界尚未联网时。在工作之余漫步于大街小巷，偶遇一家未曾谋面的饭店你会感到惊喜。仔细品尝其中的美味，或咸或淡，皆源于自己的感受。那一刻的感受，好比发现了新大陆般令人愉悦。</p>
-<p>曾经，当世界尚未联网时。在假日慕名拜访一座名山。没有指引，没有推荐，完全凭着感觉走。偶然踏出一条小路，通向一片未知的天地。当你站在奇山异水前，那种快感，只有亲身经历的人才能体会。</p>
-<p>犹记得，有这样一个田园时代，人们甚至还不知道地球是圆的。那时，一山一水，都是一个世界。男耕女织，养蚕植桑。不时，在小世界中来一次探索，用双腿踏出一条路，用双眼去发现。一旦发现一处未知的角隅，便有如开拓了一片新天地——事实上，世界的拓荒，便是在人们不断的“发现”中完成的。</p>
-<p>生活需要被“发现”。”发现“引导着我们探索新领域，而在这个过程中，我们会收获”发现“的乐趣。</p>
-<p>只可惜，网络时代的到来，将我们淹没在了信息的洋流中。在变得全知全能的同时，我们却失去了”发现“的动力。生活，自然也变得乏味了起来。</p>
-<p>因此，不妨偶尔离开网络，尝试去探索自己未知的领域，在”发现“的同时，拾回遗失已久的乐趣。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;40 分钟赶完的作文，没想到居然成了范文。 &lt;strong&gt;Scores：47&lt;/strong&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;互联网，从当初的雨后春笋发展成为了我们生活中必不可缺的一部分——二十年，有如白驹过隙，但就是在如此短的时间中，世界已完全被网络颠覆了。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Essays" scheme="http://blog.hsfzxjy.site/categories/Essays/"/>
-    
     
   </entry>
   
