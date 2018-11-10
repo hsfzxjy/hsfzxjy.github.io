@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.hsfzxjy.site/"/>
-  <updated>2018-11-10T16:25:35.586Z</updated>
+  <updated>2018-11-10T16:42:19.570Z</updated>
   <id>http://blog.hsfzxjy.site/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://blog.hsfzxjy.site/haskell-fold/"/>
     <id>http://blog.hsfzxjy.site/haskell-fold/</id>
     <published>2018-11-09T16:00:00.000Z</published>
-    <updated>2018-11-10T16:25:35.586Z</updated>
+    <updated>2018-11-10T16:42:19.570Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Prelude-foldl"><a href="#Prelude-foldl" class="headerlink" title="Prelude.foldl"></a>Prelude.foldl</h2><p><code>foldl</code> 为 left-associative folding。</p>
 <figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="title">foldl</span> :: (b -&gt; a -&gt; b) -&gt; b -&gt; [a] -&gt; b</div><div class="line"><span class="title">foldl</span> f acc [] = acc</div><div class="line"><span class="title">foldl</span> f acc (x:xs) = foldl f (f acc x) xs</div></pre></td></tr></table></figure>
@@ -40,7 +40,8 @@
 <h2 id="Prelude-foldl1-amp-amp-Prelude-foldr1"><a href="#Prelude-foldl1-amp-amp-Prelude-foldr1" class="headerlink" title="Prelude.foldl1 &amp;&amp; Prelude.foldr1"></a>Prelude.foldl1 &amp;&amp; Prelude.foldr1</h2><p>Helper functions。将 operator 限制为同一种类型，同时约去 accumulator。</p>
 <figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="title">foldl1</span> :: (a -&gt; a -&gt; a) -&gt; [a] -&gt; a</div><div class="line"><span class="title">foldl1</span> f (x:xs) = foldl f x xs</div><div class="line"><span class="title">foldl1</span> _ [] = error</div><div class="line"></div><div class="line"><span class="title">foldr1</span> :: (a -&gt; a -&gt; a) -&gt; [a] -&gt; a</div><div class="line"><span class="title">foldr1</span> f (x:xs) = foldr f x xs</div><div class="line"><span class="title">foldr1</span> _ [] = error</div></pre></td></tr></table></figure>
 <p>即，<code>foldr1</code> 将列表的第一个值作为 accumulator，将剩余部分作为 list，传给 <code>foldr</code>。<code>foldl</code> 同理。</p>
-]]></content>
+<h2 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h2><p>用 folds 实现 <code>reverse</code></p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="title">reversel</span>, reverser :: [a] -&gt; [a]</div><div class="line"><span class="title">reversel</span> list = foldl (\acc x -&gt; x : acc) [] list</div><div class="line"></div><div class="line"><span class="title">reverser</span> list = foldr (\x acc -&gt; acc ++ [x]) [] list</div></pre></td></tr></table></figure>]]></content>
     
     <summary type="html">
     
