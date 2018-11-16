@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://blog.hsfzxjy.site/haskell-data-type-newtype/</loc>
+    
+    <lastmod>2018-11-16T06:02:59.635Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://blog.hsfzxjy.site/haskell-fold/</loc>
     
     <lastmod>2018-11-14T05:28:14.870Z</lastmod>
@@ -534,14 +541,14 @@
   </url>
   
   <url>
-    <loc>http://blog.hsfzxjy.site/aggr/index.html</loc>
+    <loc>http://blog.hsfzxjy.site/happy-mothers-day/index.html</loc>
     
     <lastmod>2016-07-18T03:09:34.299Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://blog.hsfzxjy.site/happy-mothers-day/index.html</loc>
+    <loc>http://blog.hsfzxjy.site/aggr/index.html</loc>
     
     <lastmod>2016-07-18T03:09:34.299Z</lastmod>
     
