@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.hsfzxjy.site/"/>
-  <updated>2018-11-16T06:12:22.160Z</updated>
+  <updated>2018-11-18T08:55:22.260Z</updated>
   <id>http://blog.hsfzxjy.site/</id>
   
   <author>
@@ -14,6 +14,59 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Haskell 笔记：Category Theory and Functor</title>
+    <link href="http://blog.hsfzxjy.site/haskell-category-theory-and-functor/"/>
+    <id>http://blog.hsfzxjy.site/haskell-category-theory-and-functor/</id>
+    <published>2018-11-18T00:50:00.000Z</published>
+    <updated>2018-11-18T08:55:22.260Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Category-Theory"><a href="#Category-Theory" class="headerlink" title="Category Theory"></a>Category Theory</h2><p>A category has three components:</p>
+<ul>
+<li>A collection of objects.</li>
+<li>A collection of morphisms, each of which map one object to another.</li>
+<li>A notion of composition of these morphisms, i.e. morphisms can be composed. If <code>f: A -&gt; B</code> and <code>g: B -&gt; C</code> are morphisms, <code>f.g</code> generates a new morphism <code>A -&gt; C</code>.</li>
+</ul>
+<p>Note that a morphism has no specific semantics of mapping, but simply links two objects together. Morphisms are also called <strong>Arrows</strong>.</p>
+<h3 id="Examples"><a href="#Examples" class="headerlink" title="Examples"></a>Examples</h3><h4 id="Set-Category-Set"><a href="#Set-Category-Set" class="headerlink" title="Set Category: Set"></a>Set Category: Set</h4><p>All sets and standard functions form a category. Functions need not to be surjective, since morphisms have no mapping semantics.</p>
+<h4 id="Group-Category-Grp"><a href="#Group-Category-Grp" class="headerlink" title="Group Category: Grp"></a>Group Category: Grp</h4><p>All groups and homomorphisms between groups form a category. A group has specific algebaric structure, which morphisms should preserve.</p>
+<h3 id="Laws"><a href="#Laws" class="headerlink" title="Laws"></a>Laws</h3><p>Three laws needed to be followed for a category:</p>
+<ul>
+<li>Composition should be associative.</li>
+<li>Composition operation should be closed in the category, i.e. if <code>f: A -&gt; B</code> and <code>g: B -&gt; C</code>, there must be a <code>h: A -&gt; C</code> satisfying <code>h = f . g</code>.</li>
+<li>For each object <code>A</code>, there should exist an identity morphism <code>id(A): A -&gt; A</code> s.t. for every <code>f: A -&gt; B</code>, <code>f = id(A) . f = f . id(B)</code>.</li>
+</ul>
+<p>Note that:</p>
+<ul>
+<li>There may exist serveral morphisms between <code>A</code> and <code>B</code>.</li>
+<li>An identity has type <code>A -&gt; A</code>, but a morphism with such type needs not to be an identity.</li>
+</ul>
+<h3 id="Functors-in-Category-Theory"><a href="#Functors-in-Category-Theory" class="headerlink" title="Functors in Category Theory"></a>Functors in Category Theory</h3><p>A functor maps a category to another category. It should contains two mappings for objects and for morphisms, with composition operation and category laws preserved.</p>
+<p>There’s a natural functor from Grp to Set, which maps groups to their underlying sets and group morphisms to the function which behave the same but are defined on sets instead of groups.</p>
+<h2 id="Paramateric-Types-in-Haskell"><a href="#Paramateric-Types-in-Haskell" class="headerlink" title="Paramateric Types in Haskell"></a>Paramateric Types in Haskell</h2><p>It’s common to create new types that hold values of other types. <code>List[a]</code> type constructor creates types that holds sequential values of same type; <code>Maybe[a]</code> creates types that hold operation states (failure, or success with returned values). </p>
+<p>Usually we want generated types to inherit functions from types being wrapped. For example, <code>List[Int]</code> should have element-wise addition as <code>Int</code> does, and <code>Maybe[Int]</code> should have similar operations with no burden of re-wrapping and unwrapping. <strong>Such ‘inheritance’ is only concerned with the structure of types, instead of specific functions, so should be done automatically if possible.</strong></p>
+<h2 id="Hask-Category"><a href="#Hask-Category" class="headerlink" title="Hask Category"></a>Hask Category</h2><p>Haskell language itself forms a category, with <strong>all types</strong> being objects, and functions being morphisms. Such category is called Hask.</p>
+<h2 id="Hask-Functors"><a href="#Hask-Functors" class="headerlink" title="Hask Functors"></a>Hask Functors</h2><figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="type">Functor</span> m <span class="keyword">where</span></span></div><div class="line">    fmap :: (a -&gt; b) -&gt; m a -&gt; m b</div></pre></td></tr></table></figure>
+<p>A parameteric type implementing class <code>Functor</code> is a category functor mapping Hask to one of its sub-category, where types <code>m a</code> are the object collection. The type constructor <code>m</code> maps objects, and specific <code>fmap</code> defined on <code>m</code> maps corresponding functions.</p>
+<p>It’s worth noted that <code>(a -&gt; b) -&gt; m a -&gt; m b</code> can also read as <code>(a -&gt; b) -&gt; (m a -&gt; m b)</code>, as <code>-&gt;</code> is right-associative. This may provide a clearer view of <code>fmap</code>, which takes a regular function in Hask and returns the corresponding function in sub-category.</p>
+<p>Examples:</p>
+<p><code>fmap (+) :: List[Int] -&gt; List[Int]</code> generates element-wise addition in <code>List[Int]</code>.</p>
+<p><code>fmap (+) :: Maybe Int -&gt; Maybe Int</code> generates such function:</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="title">maybePlus</span> :: <span class="type">Maybe</span> <span class="type">Int</span> -&gt; <span class="type">Maybe</span> <span class="type">Int</span></div><div class="line"><span class="title">maybePlus</span> _        <span class="type">Nothing</span>  = <span class="type">Nothing</span></div><div class="line"><span class="title">maybePlus</span> <span class="type">Nothing</span>  _        = <span class="type">Nothing</span></div><div class="line"><span class="title">maybePlut</span> (<span class="type">Just</span> x) (<span class="type">Just</span> y) = <span class="type">Maybe</span> (x + y)</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Category-Theory&quot;&gt;&lt;a href=&quot;#Category-Theory&quot; class=&quot;headerlink&quot; title=&quot;Category Theory&quot;&gt;&lt;/a&gt;Category Theory&lt;/h2&gt;&lt;p&gt;A category has thr
+    
+    </summary>
+    
+      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+    
+    
+      <category term="Haskell" scheme="http://blog.hsfzxjy.site/tags/Haskell/"/>
+    
+  </entry>
   
   <entry>
     <title>Haskell 笔记：data, type, newtype</title>
@@ -1372,123 +1425,6 @@
       <category term="String Template" scheme="http://blog.hsfzxjy.site/tags/String-Template/"/>
     
       <category term="Regular Expression" scheme="http://blog.hsfzxjy.site/tags/Regular-Expression/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python “黑魔法” 之 Meta Classes</title>
-    <link href="http://blog.hsfzxjy.site/meta-class-in-python/"/>
-    <id>http://blog.hsfzxjy.site/meta-class-in-python/</id>
-    <published>2016-02-09T16:00:00.000Z</published>
-    <updated>2018-03-09T07:25:00.939Z</updated>
-    
-    <content type="html"><![CDATA[<p>接触过 Django 的同学都应该十分熟悉它的 ORM 系统。对于 python 新手而言，这是一项几乎可以被称作“黑科技”的特性：只要你在<code>models.py</code>中随便定义一个<code>Model</code>的子类，Django 便可以：</p>
-<ul>
-<li>获取它的字段定义，并转换成表结构</li>
-<li>读取<code>Meta</code>内部类，并转化成相应的配置信息。对于特殊的<code>Model</code>（如<code>abstract</code>、<code>proxy</code>），还要进行相应的转换</li>
-<li>为没有定义<code>objects</code>的<code>Model</code>加上一个默认的<code>Manager</code></li>
-</ul>
-<p>开发之余，我也曾脑补过其背后的原理。曾经，我认为是这样的：</p>
-<blockquote>
-<p>启动时，遍历<code>models.py</code>中的所有属性，找到<code>Model</code>的子类，并对其进行上述的修改。</p>
-</blockquote>
-<p>当初，我还以为自己触碰到了真理，并曾将其应用到实际生产中——为 SAE 的 KVDB 写了一个类 ORM 系统。然而在实现的过程中，我明显感受到了这种方法的丑陋，而且性能并不出色（因为要遍历所有的定义模块）。</p>
-<p>那么事实上，Django 是怎么实现的呢？</p>
-<blockquote>
-<p>自古以来我们制造东西的方法都是“自上而下”的，是用切削、分割、组合的方法来制造。然而，生命是自下而上地，自发地建造起来的，这个过程极为低廉。<br><cite>——王晋康 《水星播种》</cite></p>
-</blockquote>
-<p>这句话揭示了生命的神奇所在：<strong>真正的生命都是由基本物质自发构成的，而非造物主流水线式的加工</strong>。</p>
-<p>那么，如果 类 也有生命的话，对它自己的修饰就不应该由调用者来完成，而应该是<strong>自发的</strong>。</p>
-<p>幸而，python 提供了造物主的接口——这便是 Meta Classes，或者称为“元类”。</p>
-<a id="more"></a>
-<h2 id="元类-是什么？"><a href="#元类-是什么？" class="headerlink" title="元类 是什么？"></a>元类 是什么？</h2><p>简单说：元类就是<strong>类的类</strong>。</p>
-<p>首先，要有一个概念：</p>
-<h3 id="python-中，一切都是对象。"><a href="#python-中，一切都是对象。" class="headerlink" title="python 中，一切都是对象。"></a>python 中，一切都是对象。</h3><p>没错，一切，包括 类 本身。</p>
-<p>既然，类 是 对象，对象 是 类的实例，那么——类 也应该有 类 才对。</p>
-<h3 id="类的类：type"><a href="#类的类：type" class="headerlink" title="类的类：type"></a>类的类：type</h3><p>在 python 中，我们可以用<code>type</code>检测一个对象的类，如：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">print</span> type(<span class="number">1</span>) <span class="comment"># &lt;type 'int'&gt;</span></div></pre></td></tr></table></figure>
-<p>如果对一个类操作呢？</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">print</span> type(int) <span class="comment"># &lt;type 'type'&gt;</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span><span class="params">(object)</span>:</span> <span class="keyword">pass</span></div><div class="line"></div><div class="line"><span class="keyword">print</span> type(MyClass) <span class="comment"># &lt;type 'type'&gt;</span></div><div class="line"></div><div class="line"><span class="keyword">print</span> type(type) <span class="comment"># &lt;type 'type'&gt;</span></div></pre></td></tr></table></figure>
-<p>这说明：<code>type</code>其实是一个类型，所有类——包括<code>type</code>自己——的类都是<code>type</code>。</p>
-<h3 id="type-简介"><a href="#type-简介" class="headerlink" title="type 简介"></a>type 简介</h3><p>从 <a href="https://docs.python.org/2/library/functions.html#type" target="_blank" rel="external">官方文档</a> 中，我们可以知道：</p>
-<ul>
-<li>和 <code>dict</code> 类似，<code>type</code> 也是一个工厂构造函数，调用其将返回 一个<code>type</code>类型的实例（即 类）。</li>
-<li><p><code>type</code> 有两个重载版本：</p>
-<ul>
-<li><code>type(object)</code>，即我们最常用的版本。</li>
-<li><p><code>type(name, bases, dict)</code>，一个更强大的版本。通过指定 类名称（<code>name</code>）、父类列表（<code>bases</code>）和 属性字典（<code>dict</code>） 动态合成一个类。</p>
-<p>下面两个语句等价：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"> <span class="class"><span class="keyword">class</span> <span class="title">Integer</span><span class="params">(int)</span>:</span></div><div class="line"></div><div class="line">    name = <span class="string">'my integer'</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">increase</span><span class="params">(self, num)</span>:</span></div><div class="line">        <span class="keyword">return</span> num + <span class="number">1</span></div><div class="line"></div><div class="line"><span class="comment"># -------------------</span></div><div class="line"></div><div class="line">Integer = type(<span class="string">'Integer'</span>, (int, ), &#123;</div><div class="line">    <span class="string">'name'</span>: <span class="string">'my integer'</span>,</div><div class="line">    <span class="string">'increase'</span>: <span class="keyword">lambda</span> self, num: \</div><div class="line">                    num + <span class="number">1</span>    <span class="comment"># 很酷的写法，不是么</span></div><div class="line">&#125;)</div></pre></td></tr></table></figure>
-</li>
-</ul>
-</li>
-</ul>
-<p>也就是说：<strong>类的定义过程，其实是<code>type</code>类型实例化的过程</strong>。</p>
-<p><strong>然而这和修饰一个已定义的类有什么关系呢？</strong></p>
-<p>当然有啦～既然“类的定义”就是“<code>type</code>类型的初始化过程”，那其中必定会调用到<code>type</code>的构造函数(<code>__new__()</code> 或 <code>__init__()</code>)。只要我们继承 <code>type</code>类 并修改其 <code>__new__</code>函数，在这里面动手脚就可以啦。</p>
-<p>接下来我们将通过一个栗子感受 python 的黑魔法，不过在此之前，我们要先了解一个语法糖。</p>
-<h3 id="metaclass-属性"><a href="#metaclass-属性" class="headerlink" title="__metaclass__ 属性"></a>__metaclass__ 属性</h3><p>有没觉得上面第二段示例有些鬼畜呢？它勒令程序员将类的成员写成一个字典，简直是反人类。如果我们真的是要通过修改 元类 来改变 类 的行为的话，似乎就必须采用这种方法了～～简直可怕～～</p>
-<p>好在，<a href="https://docs.python.org/2/reference/datamodel.html?#__metaclass__" target="_blank" rel="external">python 2.2</a> 时引进了一个语法糖：<code>__metaclass__</code>。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Integer</span><span class="params">(int)</span>:</span></div><div class="line"></div><div class="line">    __metaclass__ = IntMeta</div></pre></td></tr></table></figure>
-<p>现在将会等价于：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Integer = IntMeta(<span class="string">'Integer'</span>, (int, ), &#123;&#125;)</div></pre></td></tr></table></figure>
-<p>由此一来，我们在使用传统类定义的同时，也可以使用元类啦。</p>
-<h2 id="栗子：子类净化器"><a href="#栗子：子类净化器" class="headerlink" title="栗子：子类净化器"></a>栗子：子类净化器</h2><blockquote>
-<h4 id="需求描述"><a href="#需求描述" class="headerlink" title="需求描述"></a>需求描述</h4><p>你是一个有语言洁癖的开发者，平时容不得别人讲一句脏话，在开发时也是如此。现在，你写出了一个非常棒的框架，并马上要将它公之于众了。不过，你的强迫症又犯了：如果你的使用者在代码中写满了脏话，怎么办？岂不是玷污了自己的纯洁？</p>
-</blockquote>
-<p>假如你就是这个丧心病狂的开发者，你会怎么做？</p>
-<p>在知道元类之前，你可能会无从下手。不过，这个问题你可以用 元类 轻松解决——只要在类定义时过滤掉不干净的字眼就好了（百度贴吧的干活～～）。</p>
-<p>我们的元类看起来会是这样的：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">sensitive_words_list = [<span class="string">'asshole'</span>, <span class="string">'fuck'</span>, <span class="string">'shit'</span>]</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">detect_sensitive_words</span><span class="params">(string)</span>:</span></div><div class="line">    <span class="string">'''检测敏感词汇'''</span></div><div class="line">    words_detected = filter(<span class="keyword">lambda</span> word: word <span class="keyword">in</span> string.lower(), sensitive_words_list)</div><div class="line"></div><div class="line">    <span class="keyword">if</span> words_detected:</div><div class="line">        <span class="keyword">raise</span> NameError(<span class="string">'Sensitive words &#123;0&#125; detected in the string "&#123;1&#125;".'</span> \</div><div class="line">            .format(</div><div class="line">                <span class="string">', '</span>.join(map(<span class="keyword">lambda</span> s: <span class="string">'"%s"'</span> % s, words_detected)),</div><div class="line">                string</div><div class="line">            )</div><div class="line">        )</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">CleanerMeta</span><span class="params">(type)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(cls, class_name, bases, attrs)</span>:</span></div><div class="line">        detect_sensitive_words(class_name) <span class="comment"># 检查类名</span></div><div class="line">        map(detect_sensitive_words, attrs.iterkeys()) <span class="comment"># 检查属性名</span></div><div class="line"></div><div class="line">        <span class="keyword">print</span> <span class="string">"Well done! You are a polite coder!"</span> <span class="comment"># 如无异常，输出祝贺消息</span></div><div class="line"></div><div class="line">        <span class="keyword">return</span> super(CleanerMeta, cls).__new__(cls, class_name, bases, attrs)</div><div class="line">        <span class="comment"># 重要！这行一定不能漏！！这回调用内建的类构造器来构造类，否则定义好的类将会变成 None</span></div></pre></td></tr></table></figure>
-<p>现在，只需这样定义基类：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">APIBase</span><span class="params">(object)</span>:</span></div><div class="line"></div><div class="line">    __metaclass__ = CleanerMeta</div><div class="line"></div><div class="line">    <span class="comment"># ...</span></div></pre></td></tr></table></figure>
-<p>那么所有 <code>APIBase</code> 的派生类都会接受安全审查（奸笑～～）：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ImAGoodBoy</span><span class="params">(APIBase)</span>:</span></div><div class="line"></div><div class="line">    a_polite_attribute = <span class="number">1</span></div><div class="line"></div><div class="line"><span class="comment"># [Output] Well done! You are a polite coder!</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">FuckMyBoss</span><span class="params">(APIBase)</span>:</span></div><div class="line"></div><div class="line">    <span class="keyword">pass</span></div><div class="line"></div><div class="line"><span class="comment"># [Output] NameError: Sensitive words "fuck" detected in the string "FuckMyBoss".</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">PretendToBePolite</span><span class="params">(APIBase)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__fuck_your_asshole</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">pass</span></div><div class="line"></div><div class="line"><span class="comment"># [Output] NameError: Sensitive words "asshole", "fuck" detected in the string "_PretendToBePolite__fuck_your_asshole".</span></div></pre></td></tr></table></figure>
-<p>看，即使像最后一个例子中的私有属性也难逃审查，因为它们本质都是相同的。</p>
-<p>甚至，你还可以对有问题的属性进行偷偷的修改，比如 让不文明的函数在调用时打出一行警告 等等，这里就不多说了。</p>
-<h2 id="元类-在实际开发中的应用"><a href="#元类-在实际开发中的应用" class="headerlink" title="元类 在实际开发中的应用"></a>元类 在实际开发中的应用</h2><p>日常开发时，元类 常用吗？</p>
-<p>当然，Django 的 ORM 就是一个例子，大名鼎鼎的 SQLAlchemy 也用了这种黑魔法。</p>
-<p>此外，在一些小型的库中，也有 元类 的身影。比如 <code>abc</code>（奇怪的名字～～）——这是 python 的一个内建库，用于模拟 抽象基类（Abstract Base Classes）。开发者可以使用 <code>abc.abstractmethod</code> 装饰器，将 指定了 <code>__metaclass__ = abc.ABCMeta</code> 的类的方法定义成 抽象方法，同时这个类也成了 抽象基类，抽象基类是不可实例化的。这便实现了对 抽象基类 的模拟。</p>
-<p>倘若你也有需要动态修改类定义的需求，不妨也试试这种“黑魔法”。</p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><ul>
-<li>类 也是 对象，所有的类都是<code>type</code>的实例</li>
-<li>元类（Meta Classes）是类的类</li>
-<li><code>__metaclass__ = Meta</code> 是 <code>Meta(name, bases, dict)</code> 的 语法糖</li>
-<li>可以通过重载元类的 <code>__new__</code> 方法，修改 类定义 的行为</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;接触过 Django 的同学都应该十分熟悉它的 ORM 系统。对于 python 新手而言，这是一项几乎可以被称作“黑科技”的特性：只要你在&lt;code&gt;models.py&lt;/code&gt;中随便定义一个&lt;code&gt;Model&lt;/code&gt;的子类，Django 便可以：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;获取它的字段定义，并转换成表结构&lt;/li&gt;
-&lt;li&gt;读取&lt;code&gt;Meta&lt;/code&gt;内部类，并转化成相应的配置信息。对于特殊的&lt;code&gt;Model&lt;/code&gt;（如&lt;code&gt;abstract&lt;/code&gt;、&lt;code&gt;proxy&lt;/code&gt;），还要进行相应的转换&lt;/li&gt;
-&lt;li&gt;为没有定义&lt;code&gt;objects&lt;/code&gt;的&lt;code&gt;Model&lt;/code&gt;加上一个默认的&lt;code&gt;Manager&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;开发之余，我也曾脑补过其背后的原理。曾经，我认为是这样的：&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;启动时，遍历&lt;code&gt;models.py&lt;/code&gt;中的所有属性，找到&lt;code&gt;Model&lt;/code&gt;的子类，并对其进行上述的修改。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;当初，我还以为自己触碰到了真理，并曾将其应用到实际生产中——为 SAE 的 KVDB 写了一个类 ORM 系统。然而在实现的过程中，我明显感受到了这种方法的丑陋，而且性能并不出色（因为要遍历所有的定义模块）。&lt;/p&gt;
-&lt;p&gt;那么事实上，Django 是怎么实现的呢？&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;自古以来我们制造东西的方法都是“自上而下”的，是用切削、分割、组合的方法来制造。然而，生命是自下而上地，自发地建造起来的，这个过程极为低廉。&lt;br&gt;&lt;cite&gt;——王晋康 《水星播种》&lt;/cite&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;这句话揭示了生命的神奇所在：&lt;strong&gt;真正的生命都是由基本物质自发构成的，而非造物主流水线式的加工&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;那么，如果 类 也有生命的话，对它自己的修饰就不应该由调用者来完成，而应该是&lt;strong&gt;自发的&lt;/strong&gt;。&lt;/p&gt;
-&lt;p&gt;幸而，python 提供了造物主的接口——这便是 Meta Classes，或者称为“元类”。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
-    
-    
-      <category term="Meta Classes" scheme="http://blog.hsfzxjy.site/tags/Meta-Classes/"/>
-    
-      <category term="黑魔法" scheme="http://blog.hsfzxjy.site/tags/%E9%BB%91%E9%AD%94%E6%B3%95/"/>
-    
-      <category term="Python" scheme="http://blog.hsfzxjy.site/tags/Python/"/>
     
   </entry>
   

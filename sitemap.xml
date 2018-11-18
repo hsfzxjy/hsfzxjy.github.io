@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://blog.hsfzxjy.site/haskell-category-theory-and-functor/</loc>
+    
+    <lastmod>2018-11-18T08:55:22.260Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://blog.hsfzxjy.site/haskell-data-type-newtype/</loc>
     
     <lastmod>2018-11-16T06:12:22.160Z</lastmod>
