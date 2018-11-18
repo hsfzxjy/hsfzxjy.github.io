@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://blog.hsfzxjy.site/haskell-applicative/</loc>
+    
+    <lastmod>2018-11-18T10:27:47.416Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://blog.hsfzxjy.site/haskell-category-theory-and-functor/</loc>
     
     <lastmod>2018-11-18T08:55:22.260Z</lastmod>
@@ -548,14 +555,14 @@
   </url>
   
   <url>
-    <loc>http://blog.hsfzxjy.site/happy-mothers-day/index.html</loc>
+    <loc>http://blog.hsfzxjy.site/aggr/index.html</loc>
     
     <lastmod>2016-07-18T03:09:34.299Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://blog.hsfzxjy.site/aggr/index.html</loc>
+    <loc>http://blog.hsfzxjy.site/happy-mothers-day/index.html</loc>
     
     <lastmod>2016-07-18T03:09:34.299Z</lastmod>
     
