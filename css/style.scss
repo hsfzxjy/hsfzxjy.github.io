@@ -63,9 +63,9 @@ body {
     font-size: 14px;
 }
 
-* {
-    font-family: Georgia,Times New Roman,Times,serif;
-}
+// * {
+//     font-family: Georgia,Times New Roman,Times,serif;
+// }
 
 body, html {
     overflow-x: hidden;
@@ -305,7 +305,7 @@ a:focus {
         color: #444;
         padding-top: 20px;
 
-        p, a, h1, h2, h3, h4, h5, h6 {
+        p, a, h1, h2, h3, h4, h5, h6, li {
             @include set-font;
         }
 

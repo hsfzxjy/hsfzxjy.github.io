@@ -43,9 +43,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-size: 14px; }
 
-* {
-  font-family: Georgia,Times New Roman,Times,serif; }
-
 body, html {
   overflow-x: hidden; }
 
@@ -240,7 +237,7 @@ a:focus {
     line-height: 1.77;
     color: #444;
     padding-top: 20px; }
-    .post .post-content p, .post .post-content a, .post .post-content h1, .post .post-content h2, .post .post-content h3, .post .post-content h4, .post .post-content h5, .post .post-content h6 {
+    .post .post-content p, .post .post-content a, .post .post-content h1, .post .post-content h2, .post .post-content h3, .post .post-content h4, .post .post-content h5, .post .post-content h6, .post .post-content li {
       font-family: "LatoWeb", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important; }
     .post .post-content p a {
       color: #399f70 !important; }
