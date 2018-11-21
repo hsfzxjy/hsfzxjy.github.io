@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.hsfzxjy.site/"/>
-  <updated>2018-11-18T10:35:33.192Z</updated>
+  <updated>2018-11-21T06:25:19.775Z</updated>
   <id>http://blog.hsfzxjy.site/</id>
   
   <author>
@@ -20,11 +20,11 @@
     <link href="http://blog.hsfzxjy.site/haskell-applicative/"/>
     <id>http://blog.hsfzxjy.site/haskell-applicative/</id>
     <published>2018-11-18T02:29:00.000Z</published>
-    <updated>2018-11-18T10:35:33.192Z</updated>
+    <updated>2018-11-21T06:25:19.775Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h2><p><code>Functor</code> solves the problem of mapping regular one-parameter functions to a sub-category, but that’s not easy for functions with more than one parameters.</p>
+    <content type="html"><![CDATA[<h2 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h2><p><code>Functor</code> solves the problem of mapping regular one-parameter functions into a sub-category, but that’s not easy for functions with more than one parameters.</p>
 <p>Let’s consider a function with two parameters <code>f :: a -&gt; b -&gt; c</code>, which can also read as <code>a -&gt; (b -&gt; c)</code>. Applying <code>fmap</code> on <code>f</code>, we will get <code>fmap f :: m a -&gt; m (b -&gt; c)</code>. There’s still some distance from what we want: <code>f&#39; :: m a -&gt; m b -&gt; m c</code>. To get <code>f&#39;</code>, we need a transform from <code>m (b -&gt; c)</code> to <code>m b -&gt; m c</code>. Here we denote it as <code>&lt;*&gt; :: m （b -&gt; c) -&gt; m b -&gt; m c</code>. We will later show that such transform is universal for functions with more parameters.</p>
-<p>Now consider a function with four parameters <code>f :: a -&gt; b -&gt; c -&gt; d</code>. We are going to transform it into a wrapped-value version, with the help of <code>fmap</code> and <code>&lt;*&gt;</code>.</p>
+<p>Now consider a function with three parameters <code>f :: a -&gt; b -&gt; c -&gt; d</code>. We are going to transform it into a wrapped-value version, with the help of <code>fmap</code> and <code>&lt;*&gt;</code>.</p>
 <figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="title">f</span> :: a -&gt; b -&gt; c -&gt; d</div><div class="line"></div><div class="line">(fmap f) :: m a -&gt; m (b -&gt; (c -&gt; d))</div><div class="line"></div><div class="line">\a_ b_ -&gt; (fmap f a_) &lt;*&gt; b_</div><div class="line">    :: m a -&gt; m b -&gt; m (c -&gt; d)</div><div class="line"></div><div class="line">\a_ b_ c_ -&gt; ((fmap f a_) &lt;*&gt; b_) &lt;*&gt; c_</div><div class="line">    :: m a -&gt; m b -&gt; m c -&gt; (m d)</div></pre></td></tr></table></figure>
 <p>Here <code>\a_ b_ c_ -&gt; ((fmap f a_) &lt;*&gt; b_) &lt;*&gt; c_</code> is in the desired type. For most of the time, applying parameters directly is actually what we want, instead of the function itself, so the code could simply be written as <code>((fmap f a) &lt;*&gt; b) &lt;*&gt; c</code>, where <code>a</code>, <code>b</code> and <code>c</code> are wrapped values. Parenthesis could be omitted if precedences are set properly, which leads to a neat and easy-to-read form:</p>
 <figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="title">f</span> `fmap` a &lt;*&gt; b &lt;*&gt; c</div></pre></td></tr></table></figure>
