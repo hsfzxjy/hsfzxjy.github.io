@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://blog.hsfzxjy.site/haskell-monad/</loc>
+    
+    <lastmod>2018-12-15T08:27:43.637Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://blog.hsfzxjy.site/haskell-applicative/</loc>
     
     <lastmod>2018-11-21T06:25:19.775Z</lastmod>

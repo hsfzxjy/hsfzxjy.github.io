@@ -1,0 +1,97 @@
+<a id="rocket" href="#top" class="show"></a><html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/><meta content="telephone=no" name="format-detection"/><meta name="description"/><title>Haskell 笔记：Monad 引论 | thoughts of hsfzxjy</title><link rel="stylesheet" type="text/css" href="/css/normalize.css"/><link rel="stylesheet" type="text/css" href="/css/pure-min.css"/><link rel="stylesheet" type="text/css" href="/css/grids-responsive-min.css"/><link rel="stylesheet" type="text/css" href="/css/style.css"/><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"/><link rel="alternate" type="application/atom+xml" href="/atom.xml"/></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Haskell 笔记：Monad 引论</h1><a id="logo" href="/">thoughts of hsfzxjy</a><p class="description"></p><iframe src="https://ghbtns.com/github-btn.html?user=hsfzxjy&amp;type=follow&amp;count=true" frameborder="0" scrolling="0" width="170px" height="20px" class="github-btn"></iframe></div><div id="nav-menu"><a href="/"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Coding/" class="current"><i class="icon-code"></i><span>Coding</span></a><a href="/categories/Essays/"><i class="icon-life"></i><span>Essays</span></a><a href="/about/"><i class="icon-about"></i><span>Me</span></a><a href="/aggr/"><i class="icon-history"></i><span>Index</span></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post post-page"><h1 class="post-title">Haskell 笔记：Monad 引论</h1><div class="post-meta">2018-12-14 | <span class="categories"><a href="/categories/Coding/"> Coding</a></span></div><span data-disqus-identifier="haskell-monad/" class="disqus-comment-count"></span><div class="post-content"><h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>pure functions 看似完美，但却不能模拟现实世界中的诸多任务。这是由于 pure functions 是良定的映射，对于特定的输入值会返回唯一的输出。这种模式在面对如下任务时会显得苍白无力：</p>
+<ul>
+<li>有可能失败的任务。如大多数的 IO。</li>
+<li>依赖外部状态的任务。如（伪）随机数生成器。</li>
+<li>非确定性任务，即对于确定的输入可能有多个输出。这种在 IP 中较为少见。</li>
+<li>对外界会造成影响的任务。如大多数的写入过程。</li>
+</ul>
+<p>这些问题可以用数学中的<strong>域扩充技巧</strong>来解决。</p>
+<h2 id="域扩充"><a href="#域扩充" class="headerlink" title="域扩充"></a>域扩充</h2><p>在数学中，当定义问题的范畴不足以容纳问题的解时，我们通常会对相关的范畴进行扩充。类似的技巧同样也可以应用在这里。</p>
+<p>假设一个不良定的函数 <code>f: A -&gt; B</code>：</p>
+<ul>
+<li>如果 <code>f</code> 有可能失败，我们可以将 <code>B</code> 扩充为 <code>Err(B) ∪ { reasons of failures }</code>，其中 <code>reasons of failures</code> 可能是对异常的描述，也可以是空值一类的东西。则 <code>f&#39;: A -&gt; Err(B)</code> 是良定的映射，且与 <code>f</code> 行为一致。事实上，这就是 Maybe Monad 和 Either Monad。</li>
+<li>如果 <code>f</code> 依赖于外部状态，我们定义 <code>Pref(B)</code> 为 <strong>从外部状态空间到 B 的映射的全体</strong>，则 <code>f&#39;: A -&gt; Pref(B)</code> 为良定的映射，且行为和 <code>f</code> 一致。换言之，对于特定的输入 <code>a</code>，<code>f&#39;(a)</code> 返回一个函数，其中蕴含了已知 <code>a</code> 时如何从各种不同状态得到结果的逻辑。事实上，这就是 State Monad。</li>
+<li>如果 <code>f</code> 具有非确定性，我们将 <code>B</code> 扩充为 <code>Power(B)</code>，即 <code>B</code> 的幂集。则 <code>f&#39;: A -&gt; Power(B)</code> 为良定的映射，且行为与 <code>f</code> 一致。事实上，这就是 List Monad。</li>
+<li>如果 <code>f</code> 依赖于真实世界，我们将 <code>B</code> 扩充为 <code>IO(B)</code>，其中的元素为一些值域为 <code>B</code> 的<strong>伪函数</strong>，可能对真实世界有影响。这些伪函数已经脱离了 pure functions 的范畴，但将它们看成元素是没有问题的。如此一来 <code>f&#39;: A -&gt; IO(B)</code> 为良定的映射，且行为与 <code>f</code> 一致。事实上，这就是 IO Monad。</li>
+</ul>
+<p>以上操作都有一个共同点，即对一个不良定函数的值域做了扩充，使之变成良定函数。如果用 Haskell 语言描述，它们都有相似的型：<code>f :: a -&gt; m b</code>，其中 <code>m</code> 为扩充规则。</p>
+<p>一个问题随之而来：这样的新函数该怎么结合？为此我们要对相关逻辑进行抽象。这就是 Monad。</p>
+<h2 id="Monad"><a href="#Monad" class="headerlink" title="Monad"></a>Monad</h2><p>这里我们尝试从实际需求出发，导出一个 Type Constructor 成为 Monad 的必要条件。</p>
+<p>约定两个名称：</p>
+<ul>
+<li>称 <code>a -&gt; m b</code> 型函数为 monadic function</li>
+<li>称 <code>a -&gt; b</code> 型函数为 non-monadic function</li>
+</ul>
+<p>首先需要解决的是 monadic functions 如何结合的问题。这个问题具有重要的现实意义。monadic function 常常代表某种计算任务，它们之间的结合相当于把若干计算任务串行化，而后者是非常常见的需求。</p>
+<p>我们希望有一种运算符有如下的类型 <code>(b -&gt; m c) -&gt; (a -&gt; m b) -&gt; (a -&gt; m c)</code>，在此记为 <code>&gt;=&gt;</code> （因其形状，常被叫做 fish operator）。一个自然的想法是，Monad <code>m</code> 需要某种平凡的拆箱操作 <code>extract&#39; :: m a -&gt; a</code>。所谓“平凡”，即 <code>extract&#39;</code> 不应该丢失参数的任何信息。但这往往不能实现，因为 <code>m a</code> 通常会比 <code>a</code> 包含更多的信息，导致 <code>extract&#39;</code> 无法构成良定的映射。例如 <code>Maybe a</code> 中的值 <code>Nothing</code> 就无法在 <code>a</code> 中找到对应的值。</p>
+<p>而事实上，我们不需要条件这么强的拆箱操作。在 <code>m</code> 已是 Functor 的情况下，拆箱操作可以弱化为 <code>join :: m (m a) -&gt; m a</code>。我们尝试用 <code>fmap</code>、 <code>join</code> 合成 <code>&gt;=&gt;</code>。</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="title">f</span> :: b -&gt; m c</div><div class="line"><span class="title">g</span> :: a -&gt; m b</div><div class="line"></div><div class="line"><span class="title">fmap</span> f :: m b -&gt; m (m c)</div><div class="line">(fmap f) . g :: a -&gt; m (m c)</div><div class="line"><span class="title">join</span> . (fmap f) . g :: a -&gt; m c</div><div class="line"></div><div class="line"><span class="comment">-- i.e. </span></div><div class="line"></div><div class="line"><span class="title">f</span> &gt;=&gt; g = join . (fmap f) . g</div></pre></td></tr></table></figure>
+<p>Functor 的假设是容易成立的。当然我们可以定义多个不同的 <code>fmap</code>，如此产生的 Monad 会有不同的语义。<code>join</code> 的假设也是容易成立的，<code>m (m a)</code> 通常和 <code>m a</code> 包含相同多的信息。故此做法是实际可行的。</p>
+<p>我们再考虑 monadic function 和 non-monadic function 结合的问题。期望有如此一个运算：<code>&gt;.&gt; :: (b -&gt; c) -&gt; (a -&gt; m b) -&gt; (a -&gt; m c)</code>。注意，此处返回值是 <code>a -&gt; m c</code> 而不是 <code>a -&gt; c</code>，因为我们不希望 <code>a -&gt; m b</code> 产生的额外信息有所丢失。自然地，我们希望有一个平凡的装箱操作，<code>return :: a -&gt; m a</code>。如此一来便可结合 <code>&gt;=&gt;</code> 完成上面的运算：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="title">f</span> :: b -&gt; c</div><div class="line"><span class="title">g</span> :: a -&gt; m b</div><div class="line"></div><div class="line"><span class="title">return</span> . f :: b -&gt; m c</div><div class="line">(return . f) &gt;=&gt; g :: a -&gt; m c</div><div class="line"></div><div class="line"><span class="comment">-- i.e.</span></div><div class="line"></div><div class="line"><span class="title">f</span> &gt;.&gt; g :: (return . f) &gt;=&gt; g</div></pre></td></tr></table></figure>
+<p>non-monadic function 和 monadic function 另一个方向的结合是平凡的。</p>
+<p>综上我们可以得到成为 Monad 的基本条件：</p>
+<ul>
+<li>是 Functor，存在 <code>fmap :: (a -&gt; b) -&gt; m a -&gt; m b</code></li>
+<li>有一个平凡的拆箱操作 <code>join :: m (m a) -&gt; m a</code></li>
+<li>有一个平凡的装箱操作 <code>return :: a -&gt; m a</code></li>
+</ul>
+<p>为了描述平凡，我们要求三个函数必须满足如下公理（下面的 <code>f</code> 为 non-monadic function）：</p>
+<ol>
+<li><code>return . f == (fmap f) . return</code> （<code>return</code> 的平凡性）</li>
+<li><code>join . fmap (fmap f) == (fmap f) . join</code> （<code>join</code> 的平凡性）</li>
+</ol>
+<blockquote>
+<p>事实上在 Category Theory 中，还有另外两条公理：</p>
+<ul>
+<li><code>join . (fmap join) == join . join</code></li>
+<li><code>join . fmap return == join . return == id</code></li>
+</ul>
+<p>以上四条公理描述了 <code>Id</code>（恒等 Functor）、<code>m</code>、<code>m^2</code>、<code>m^3</code> 之间的泛性质，并使图交换。</p>
+</blockquote>
+<h2 id="Monad-Typeclass"><a href="#Monad-Typeclass" class="headerlink" title="Monad Typeclass"></a>Monad Typeclass</h2><p>以下为 Prelude 中的定义：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="type">Functor</span> m =&gt; m a <span class="keyword">where</span></span></div><div class="line"></div><div class="line">    return :: a -&gt; m a</div><div class="line">    (&gt;&gt;=)  :: m a -&gt; (a -&gt; m b) -&gt; m b</div></pre></td></tr></table></figure>
+<p>此处没有出现 <code>join</code>，也没有 fish operator，而是使用了一个更常用的算符 <code>&gt;&gt;=</code> （通常称为 bind operator）。这是因为在实际中我们不直接将函数结合，而是使用 non-pointfree 的写法。</p>
+<p>此外，还有 <code>&gt;&gt; :: m a -&gt; m b -&gt; m b</code> 运算符。<code>return</code>、<code>&gt;&gt;=</code>、<code>&gt;&gt;</code> 三者是构成 do-notation 的基础。此处不再赘述。</p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ul>
+<li><a href="https://en.wikibooks.org/wiki/Haskell/Category_theory" target="_blank" rel="noopener">Haskell/Category Theory</a></li>
+<li><a href="https://cdsmith.wordpress.com/2012/04/18/why-do-monads-matter/" target="_blank" rel="noopener">Why Do Monads Matter?</a></li>
+</ul>
+</div><div class="tags"><a href="/tags/Haskell/">Haskell</a></div><div class="post-nav"><a href="/haskell-applicative/" class="next">Haskell 笔记：Applicative»</a></div><div id="disqus_thread"><script>var disqus_shortname = 'hsfzxjy';
+var disqus_identifier = 'haskell-monad/';
+var disqus_title = 'Haskell 笔记：Monad 引论';
+var disqus_url = 'http://blog.hsfzxjy.site/haskell-monad/';
+(function() {
+  var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  dsq.src = 'https://' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('body')[0] || document.getElementsByTagName('head')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//hsfzxjy.disqus.com/count.js" async="async"></script></div></div></div></div><div class="pure-u-1-4"><div id="sidebar"><div class="widget"><div class="widget-title">Navigations</div><ul><li><a href="/archives/" class="widget-item"><i class="icon-archives"></i><span>Archives</span></a></li><li><a href="/works/" class="widget-item"><i class="icon-works"></i><span>Masterpieces</span></a></li><li><a href="/atom.xml" class="widget-item"><i class="icon-rss"></i><span>RSS</span></a></li></ul></div><div class="widget"><div class="widget-title">Categories</div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Coding/">Coding</a><span class="category-list-count">61</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Essays/">Essays</a><span class="category-list-count">15</span></li></ul></div><div class="widget"><div class="widget-title">Tags</div><div class="tagcloud"><a href="/tags/黑魔法/" style="font-size: 15px;">黑魔法</a> <a href="/tags/诗/" style="font-size: 15px;">诗</a> <a href="/tags/生活杂感/" style="font-size: 15px;">生活杂感</a> <a href="/tags/游记/" style="font-size: 15px;">游记</a> <a href="/tags/杂谈/" style="font-size: 15px;">杂谈</a> <a href="/tags/数论/" style="font-size: 15px;">数论</a> <a href="/tags/成人礼/" style="font-size: 15px;">成人礼</a> <a href="/tags/总结/" style="font-size: 15px;">总结</a> <a href="/tags/不经意间的感动/" style="font-size: 15px;">不经意间的感动</a> <a href="/tags/codecs/" style="font-size: 15px;">codecs</a> <a href="/tags/apt-get/" style="font-size: 15px;">apt-get</a> <a href="/tags/WiseCity/" style="font-size: 15px;">WiseCity</a> <a href="/tags/Win32/" style="font-size: 15px;">Win32</a> <a href="/tags/Web-Design/" style="font-size: 15px;">Web Design</a> <a href="/tags/Unit-Test/" style="font-size: 15px;">Unit Test</a> <a href="/tags/Ubuntu/" style="font-size: 15px;">Ubuntu</a> <a href="/tags/UVa/" style="font-size: 15px;">UVa</a> <a href="/tags/Translation/" style="font-size: 15px;">Translation</a> <a href="/tags/Sublime-Text/" style="font-size: 15px;">Sublime Text</a> <a href="/tags/String-Template/" style="font-size: 15px;">String Template</a> <a href="/tags/Search/" style="font-size: 15px;">Search</a> <a href="/tags/Regular-Expression/" style="font-size: 15px;">Regular Expression</a> <a href="/tags/Reentrancy/" style="font-size: 15px;">Reentrancy</a> <a href="/tags/RMPE/" style="font-size: 15px;">RMPE</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Pruning/" style="font-size: 15px;">Pruning</a> <a href="/tags/Pascal/" style="font-size: 15px;">Pascal</a> <a href="/tags/POSIX/" style="font-size: 15px;">POSIX</a> <a href="/tags/OOP/" style="font-size: 15px;">OOP</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/NOIP/" style="font-size: 15px;">NOIP</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/Multi-Threading/" style="font-size: 15px;">Multi-Threading</a> <a href="/tags/Meta-Classes/" style="font-size: 15px;">Meta Classes</a> <a href="/tags/Merge-Sort/" style="font-size: 15px;">Merge Sort</a> <a href="/tags/Machine-Learning/" style="font-size: 15px;">Machine Learning</a> <a href="/tags/MST/" style="font-size: 15px;">MST</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/LCA/" style="font-size: 15px;">LCA</a> <a href="/tags/JavaScript/" style="font-size: 15px;">JavaScript</a> <a href="/tags/Infinite-Recursion/" style="font-size: 15px;">Infinite Recursion</a> <a href="/tags/Haskell/" style="font-size: 15px;">Haskell</a> <a href="/tags/Generator/" style="font-size: 15px;">Generator</a> <a href="/tags/GIL/" style="font-size: 15px;">GIL</a> <a href="/tags/Front-End/" style="font-size: 15px;">Front End</a> <a href="/tags/Font/" style="font-size: 15px;">Font</a> <a href="/tags/Float-Number/" style="font-size: 15px;">Float Number</a> <a href="/tags/File-Permissions/" style="font-size: 15px;">File Permissions</a> <a href="/tags/Fast-Inverse-Square-Root-Algorithm/" style="font-size: 15px;">Fast Inverse Square Root Algorithm</a> <a href="/tags/Django-Channels/" style="font-size: 15px;">Django Channels</a> <a href="/tags/Django/" style="font-size: 15px;">Django</a> <a href="/tags/Delphi/" style="font-size: 15px;">Delphi</a> <a href="/tags/Decorator-Pattern/" style="font-size: 15px;">Decorator Pattern</a> <a href="/tags/DDos/" style="font-size: 15px;">DDos</a> <a href="/tags/Coroutine/" style="font-size: 15px;">Coroutine</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 15px;">Binary Indexed Tree</a> <a href="/tags/Automatic-Test/" style="font-size: 15px;">Automatic Test</a></div></div><div class="widget"><div class="widget-title">Recent Articles</div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/haskell-monad/">Haskell 笔记：Monad 引论</a></li><li class="post-list-item"><a class="post-list-link" href="/haskell-applicative/">Haskell 笔记：Applicative</a></li><li class="post-list-item"><a class="post-list-link" href="/haskell-category-theory-and-functor/">Haskell 笔记：Category Theory and Functor</a></li><li class="post-list-item"><a class="post-list-link" href="/haskell-data-type-newtype/">Haskell 笔记：data, type, newtype</a></li><li class="post-list-item"><a class="post-list-link" href="/haskell-fold/">Haskell 笔记：folds</a></li><li class="post-list-item"><a class="post-list-link" href="/download-in-ubuntu-with-aria/">使用 Aria2 在 Ubuntu 中下载百度云资源</a></li><li class="post-list-item"><a class="post-list-link" href="/python-gil-and-threads/">从伪并行的 Python 多线程说起</a></li><li class="post-list-item"><a class="post-list-link" href="/RMPE-Notes/">RMPE 论文读书笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/caveats-for-signal-handler-in-python/">一个 Reentrant Error 引发的对 Python 信号机制的探索和思考</a></li><li class="post-list-item"><a class="post-list-link" href="/linux-file-permissions/">Linux 文件权限</a></li></ul></div><div class="widget"><div class="widget-title">Recent Comments</div><script type="text/javascript" src="//hsfzxjy.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div></div></div></div><div id="footer">© <a href="/" rel="nofollow">thoughts of hsfzxjy.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></body><script src="/js/jquery.min.js"></script>
+<script src="/js/totop.js"></script>
+<script src="/js/adjust-wechat.js"></script><script src="/js/fancybox.pack.js"></script><link rel="stylesheet" href="/css/jquery.fancybox.css"><script>$(document).ready(function() {
+    $('img').each(function() {
+        if ($(this).parent().hasClass('fancybox')) return;
+        if ($(this).hasClass('nofancybox')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+        $(this).wrap('<a href="' + ($(this).attr('data-src') == null ? this.src : $(this).attr('data-src')) + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article');
+    });
+});</script><script>$(document).ready(function() {
+    $("a[href$='.jpg'],a[href$='.png'],a[href$='.gif']").attr('rel', 'gallery').fancybox({
+     helpers : {
+     title: { type: 'inside'}
+     }
+ });
+});
+</script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$']]},
+    jax: ["input/TeX","output/HTML-CSS"],
+    "HTML-CSS": {
+        noReflows: false,
+        imageFont: null,
+        webFont: null
+    }
+});
+</script><script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script></html>

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.hsfzxjy.site/"/>
-  <updated>2018-11-21T06:25:19.775Z</updated>
+  <updated>2018-12-15T08:27:43.637Z</updated>
   <id>http://blog.hsfzxjy.site/</id>
   
   <author>
@@ -14,6 +14,87 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Haskell 笔记：Monad 引论</title>
+    <link href="http://blog.hsfzxjy.site/haskell-monad/"/>
+    <id>http://blog.hsfzxjy.site/haskell-monad/</id>
+    <published>2018-12-13T16:00:00.000Z</published>
+    <updated>2018-12-15T08:27:43.637Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>pure functions 看似完美，但却不能模拟现实世界中的诸多任务。这是由于 pure functions 是良定的映射，对于特定的输入值会返回唯一的输出。这种模式在面对如下任务时会显得苍白无力：</p>
+<ul>
+<li>有可能失败的任务。如大多数的 IO。</li>
+<li>依赖外部状态的任务。如（伪）随机数生成器。</li>
+<li>非确定性任务，即对于确定的输入可能有多个输出。这种在 IP 中较为少见。</li>
+<li>对外界会造成影响的任务。如大多数的写入过程。</li>
+</ul>
+<p>这些问题可以用数学中的<strong>域扩充技巧</strong>来解决。</p>
+<h2 id="域扩充"><a href="#域扩充" class="headerlink" title="域扩充"></a>域扩充</h2><p>在数学中，当定义问题的范畴不足以容纳问题的解时，我们通常会对相关的范畴进行扩充。类似的技巧同样也可以应用在这里。</p>
+<p>假设一个不良定的函数 <code>f: A -&gt; B</code>：</p>
+<ul>
+<li>如果 <code>f</code> 有可能失败，我们可以将 <code>B</code> 扩充为 <code>Err(B) ∪ { reasons of failures }</code>，其中 <code>reasons of failures</code> 可能是对异常的描述，也可以是空值一类的东西。则 <code>f&#39;: A -&gt; Err(B)</code> 是良定的映射，且与 <code>f</code> 行为一致。事实上，这就是 Maybe Monad 和 Either Monad。</li>
+<li>如果 <code>f</code> 依赖于外部状态，我们定义 <code>Pref(B)</code> 为 <strong>从外部状态空间到 B 的映射的全体</strong>，则 <code>f&#39;: A -&gt; Pref(B)</code> 为良定的映射，且行为和 <code>f</code> 一致。换言之，对于特定的输入 <code>a</code>，<code>f&#39;(a)</code> 返回一个函数，其中蕴含了已知 <code>a</code> 时如何从各种不同状态得到结果的逻辑。事实上，这就是 State Monad。</li>
+<li>如果 <code>f</code> 具有非确定性，我们将 <code>B</code> 扩充为 <code>Power(B)</code>，即 <code>B</code> 的幂集。则 <code>f&#39;: A -&gt; Power(B)</code> 为良定的映射，且行为与 <code>f</code> 一致。事实上，这就是 List Monad。</li>
+<li>如果 <code>f</code> 依赖于真实世界，我们将 <code>B</code> 扩充为 <code>IO(B)</code>，其中的元素为一些值域为 <code>B</code> 的<strong>伪函数</strong>，可能对真实世界有影响。这些伪函数已经脱离了 pure functions 的范畴，但将它们看成元素是没有问题的。如此一来 <code>f&#39;: A -&gt; IO(B)</code> 为良定的映射，且行为与 <code>f</code> 一致。事实上，这就是 IO Monad。</li>
+</ul>
+<p>以上操作都有一个共同点，即对一个不良定函数的值域做了扩充，使之变成良定函数。如果用 Haskell 语言描述，它们都有相似的型：<code>f :: a -&gt; m b</code>，其中 <code>m</code> 为扩充规则。</p>
+<p>一个问题随之而来：这样的新函数该怎么结合？为此我们要对相关逻辑进行抽象。这就是 Monad。</p>
+<h2 id="Monad"><a href="#Monad" class="headerlink" title="Monad"></a>Monad</h2><p>这里我们尝试从实际需求出发，导出一个 Type Constructor 成为 Monad 的必要条件。</p>
+<p>约定两个名称：</p>
+<ul>
+<li>称 <code>a -&gt; m b</code> 型函数为 monadic function</li>
+<li>称 <code>a -&gt; b</code> 型函数为 non-monadic function</li>
+</ul>
+<p>首先需要解决的是 monadic functions 如何结合的问题。这个问题具有重要的现实意义。monadic function 常常代表某种计算任务，它们之间的结合相当于把若干计算任务串行化，而后者是非常常见的需求。</p>
+<p>我们希望有一种运算符有如下的类型 <code>(b -&gt; m c) -&gt; (a -&gt; m b) -&gt; (a -&gt; m c)</code>，在此记为 <code>&gt;=&gt;</code> （因其形状，常被叫做 fish operator）。一个自然的想法是，Monad <code>m</code> 需要某种平凡的拆箱操作 <code>extract&#39; :: m a -&gt; a</code>。所谓“平凡”，即 <code>extract&#39;</code> 不应该丢失参数的任何信息。但这往往不能实现，因为 <code>m a</code> 通常会比 <code>a</code> 包含更多的信息，导致 <code>extract&#39;</code> 无法构成良定的映射。例如 <code>Maybe a</code> 中的值 <code>Nothing</code> 就无法在 <code>a</code> 中找到对应的值。</p>
+<p>而事实上，我们不需要条件这么强的拆箱操作。在 <code>m</code> 已是 Functor 的情况下，拆箱操作可以弱化为 <code>join :: m (m a) -&gt; m a</code>。我们尝试用 <code>fmap</code>、 <code>join</code> 合成 <code>&gt;=&gt;</code>。</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="title">f</span> :: b -&gt; m c</div><div class="line"><span class="title">g</span> :: a -&gt; m b</div><div class="line"></div><div class="line"><span class="title">fmap</span> f :: m b -&gt; m (m c)</div><div class="line">(fmap f) . g :: a -&gt; m (m c)</div><div class="line"><span class="title">join</span> . (fmap f) . g :: a -&gt; m c</div><div class="line"></div><div class="line"><span class="comment">-- i.e. </span></div><div class="line"></div><div class="line"><span class="title">f</span> &gt;=&gt; g = join . (fmap f) . g</div></pre></td></tr></table></figure>
+<p>Functor 的假设是容易成立的。当然我们可以定义多个不同的 <code>fmap</code>，如此产生的 Monad 会有不同的语义。<code>join</code> 的假设也是容易成立的，<code>m (m a)</code> 通常和 <code>m a</code> 包含相同多的信息。故此做法是实际可行的。</p>
+<p>我们再考虑 monadic function 和 non-monadic function 结合的问题。期望有如此一个运算：<code>&gt;.&gt; :: (b -&gt; c) -&gt; (a -&gt; m b) -&gt; (a -&gt; m c)</code>。注意，此处返回值是 <code>a -&gt; m c</code> 而不是 <code>a -&gt; c</code>，因为我们不希望 <code>a -&gt; m b</code> 产生的额外信息有所丢失。自然地，我们希望有一个平凡的装箱操作，<code>return :: a -&gt; m a</code>。如此一来便可结合 <code>&gt;=&gt;</code> 完成上面的运算：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="title">f</span> :: b -&gt; c</div><div class="line"><span class="title">g</span> :: a -&gt; m b</div><div class="line"></div><div class="line"><span class="title">return</span> . f :: b -&gt; m c</div><div class="line">(return . f) &gt;=&gt; g :: a -&gt; m c</div><div class="line"></div><div class="line"><span class="comment">-- i.e.</span></div><div class="line"></div><div class="line"><span class="title">f</span> &gt;.&gt; g :: (return . f) &gt;=&gt; g</div></pre></td></tr></table></figure>
+<p>non-monadic function 和 monadic function 另一个方向的结合是平凡的。</p>
+<p>综上我们可以得到成为 Monad 的基本条件：</p>
+<ul>
+<li>是 Functor，存在 <code>fmap :: (a -&gt; b) -&gt; m a -&gt; m b</code></li>
+<li>有一个平凡的拆箱操作 <code>join :: m (m a) -&gt; m a</code></li>
+<li>有一个平凡的装箱操作 <code>return :: a -&gt; m a</code></li>
+</ul>
+<p>为了描述平凡，我们要求三个函数必须满足如下公理（下面的 <code>f</code> 为 non-monadic function）：</p>
+<ol>
+<li><code>return . f == (fmap f) . return</code> （<code>return</code> 的平凡性）</li>
+<li><code>join . fmap (fmap f) == (fmap f) . join</code> （<code>join</code> 的平凡性）</li>
+</ol>
+<blockquote>
+<p>事实上在 Category Theory 中，还有另外两条公理：</p>
+<ul>
+<li><code>join . (fmap join) == join . join</code></li>
+<li><code>join . fmap return == join . return == id</code></li>
+</ul>
+<p>以上四条公理描述了 <code>Id</code>（恒等 Functor）、<code>m</code>、<code>m^2</code>、<code>m^3</code> 之间的泛性质，并使图交换。</p>
+</blockquote>
+<h2 id="Monad-Typeclass"><a href="#Monad-Typeclass" class="headerlink" title="Monad Typeclass"></a>Monad Typeclass</h2><p>以下为 Prelude 中的定义：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="type">Functor</span> m =&gt; m a <span class="keyword">where</span></span></div><div class="line"></div><div class="line">    return :: a -&gt; m a</div><div class="line">    (&gt;&gt;=)  :: m a -&gt; (a -&gt; m b) -&gt; m b</div></pre></td></tr></table></figure>
+<p>此处没有出现 <code>join</code>，也没有 fish operator，而是使用了一个更常用的算符 <code>&gt;&gt;=</code> （通常称为 bind operator）。这是因为在实际中我们不直接将函数结合，而是使用 non-pointfree 的写法。</p>
+<p>此外，还有 <code>&gt;&gt; :: m a -&gt; m b -&gt; m b</code> 运算符。<code>return</code>、<code>&gt;&gt;=</code>、<code>&gt;&gt;</code> 三者是构成 do-notation 的基础。此处不再赘述。</p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ul>
+<li><a href="https://en.wikibooks.org/wiki/Haskell/Category_theory" target="_blank" rel="noopener">Haskell/Category Theory</a></li>
+<li><a href="https://cdsmith.wordpress.com/2012/04/18/why-do-monads-matter/" target="_blank" rel="noopener">Why Do Monads Matter?</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;动机&quot;&gt;&lt;a href=&quot;#动机&quot; class=&quot;headerlink&quot; title=&quot;动机&quot;&gt;&lt;/a&gt;动机&lt;/h2&gt;&lt;p&gt;pure functions 看似完美，但却不能模拟现实世界中的诸多任务。这是由于 pure functions 是良定的映射，对于特定的输
+    
+    </summary>
+    
+      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+    
+    
+      <category term="Haskell" scheme="http://blog.hsfzxjy.site/tags/Haskell/"/>
+    
+  </entry>
   
   <entry>
     <title>Haskell 笔记：Applicative</title>
@@ -1321,69 +1402,6 @@
     </summary>
     
       <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>除夕杂感</title>
-    <link href="http://blog.hsfzxjy.site/thinking-in-the-day-before-lunar-new-year-of-2016/"/>
-    <id>http://blog.hsfzxjy.site/thinking-in-the-day-before-lunar-new-year-of-2016/</id>
-    <published>2016-02-12T16:00:00.000Z</published>
-    <updated>2018-03-08T17:23:19.365Z</updated>
-    
-    <content type="html"><![CDATA[<!--## 一-->
-<p>直到下午四点，供桌才摆上。</p>
-<p>冒着热气的鸡，整只；两尾鱼，张着嘴卧在盘中；一摞柑，愣是叠成了宝塔的形状；此外，还有一包包花花绿绿的零食。一米见方的桌子被塞得满满的，全是贡品。</p>
-<p>母亲忙得团团转。本来是不想拜天公的，但转念一想，不是太好，便摆上了。阳光下，热气一直往上冒，往上冒，直到看不见的地方——那里，想必就住着那位神。</p>
-<p>看来，这位神一定是个重要人物了——不然，母亲怎会遗忘了其他的几位，而只供奉他一个？</p>
-<p>搬家之前，家里可还是住着许多神的：门口有一个，阳台上有一个，厨房有一个，抽屉下有一个，就连洗衣机上也有一个。听母亲说：每一家都有，每一位神，都在守卫着这个家。</p>
-<p>神们也不是白干活，也是要吃饭的。不只是过年，每个月中总有那么几天，神们会一起来要吃的。每到这时，母亲便会忙活起来，为他们张罗吃的。好在他们并不挑剔——生的，熟的，速食的，神们都默默地收下了。当然，贡品在屋子里转了一圈，自然又都进到了我们的肚子里。</p>
-<p>每换一个地方，母亲便上一炷香，虔诚地跪下来，轻轻地拜两拜，口中念念有词。</p>
-<p>接着，她又拉我一起来。</p>
-<p>我不懂，她便教我——想着自己想要的事就好了。</p>
-<p>我学着样子跪下来，胡乱说了几句，装模作样地拜了两拜，余光却仍盯着那食物。</p>
-<p>听母亲说，这是老家带来的习俗。对神的敬畏，在那个古老的地方，说着那古老语言的人们，已经沿袭了很久很久了。</p>
-<p>人终是怕神的——以前是，现在也是；中国是，外国也是。神像一群喜欢偷窥的人，在这里，也在那里，在每个角落偷窥着你。你受欺负时，神会给你庇护；你做坏事时，神会予你惩罚。因此，怕神的人，多是善良的。</p>
-<p>说是怕神，倒不如说是怕天，敬畏变幻莫测的未知。活物总是怀着对死亡的恐惧，人类也不例外。未知中蕴藏着杀机，使愚昧的人类感到不安，转而求助于那假象中的造物主，那超能力者，那个开着全局视角看戏的“人”，这便成了“神”。神为人类抵挡着未知，人类也因此安分守己，深怕触犯了神，再次被暴露于未知的荒野中。</p>
-<p>然而，神正在离去，因为未知正在散去。</p>
-<p>但藏在那未知背后的是什么，谁又知道呢？未知的背后仍是未知，现实可以是虚幻，真理也可以是谬误，时间洪流夹带着未知，使任何人都只能屏息，任何人，都不可以妄自尊大。</p>
-<p>好在，还有神——尽管神正在离去。</p>
-<p>但终究，怕神的人是善良的。</p>
-<!--## 二
-
-母亲跪在供桌前，红着眼圈，抽泣着。
-
-供桌背后，是明净的落地窗——厚重的窗帘已被拆下，在洗衣机里轰鸣着。透过窗子，可以看见这个城市，在阳光下闪着金光。
-
-与其说是在拜天公，倒不如说是在祭拜整个世界。
-
-物欲横流的世界。人们渐行渐远的世界。
-
-门外，父亲许久没有发声。
-
-母亲和父亲刚吵了一架。父亲又出去打麻将了，在除夕，家里只有母亲一个人在忙活。
-
-母亲措辞犀利，出言不逊，像是有憋了一整年的怨气。叫罢，便像孩子一样失声哭了起来。
-
-父亲自知理亏，一直没有发声。
-
-其实，父亲只是想娱乐一下而已。纷纷扰扰的世事，压迫着每一个人，谁都有烦恼的时候。
-
-或许，父亲只是把春节当成是一个稍长的假期罢了，但母亲不这么想。观念的分歧，引起了这场纠纷。
--->
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;!--## 一--&gt;
-&lt;p&gt;直到下午四点，供桌才摆上。&lt;/p&gt;
-&lt;p&gt;冒着热气的鸡，整只；两尾鱼，张着嘴卧在盘中；一摞柑，愣是叠成了宝塔的形状；此外，还有一包包花花绿绿的零食。一米见方的桌子被塞得满满的，全是贡品。&lt;/p&gt;
-&lt;p&gt;母亲忙得团团转。本来是不想拜天公的，但转念一想，
-    
-    </summary>
-    
-      <category term="Essays" scheme="http://blog.hsfzxjy.site/categories/Essays/"/>
     
     
   </entry>
