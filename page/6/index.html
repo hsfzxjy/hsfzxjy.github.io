@@ -1,4 +1,13 @@
-<a id="rocket" href="#top" class="show"></a><html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/><meta content="telephone=no" name="format-detection"/><meta name="description"/><title>thoughts of hsfzxjy</title><link rel="stylesheet" type="text/css" href="/css/normalize.css"/><link rel="stylesheet" type="text/css" href="/css/pure-min.css"/><link rel="stylesheet" type="text/css" href="/css/grids-responsive-min.css"/><link rel="stylesheet" type="text/css" href="/css/style.css"/><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"/><link rel="alternate" type="application/atom+xml" href="/atom.xml"/></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">thoughts of hsfzxjy</h1><a id="logo" href="/">thoughts of hsfzxjy</a><p class="description"></p><iframe src="https://ghbtns.com/github-btn.html?user=hsfzxjy&amp;type=follow&amp;count=true" frameborder="0" scrolling="0" width="170px" height="20px" class="github-btn"></iframe></div><div id="nav-menu"><a href="/" class="current"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Coding/"><i class="icon-code"></i><span>Coding</span></a><a href="/categories/Essays/"><i class="icon-life"></i><span>Essays</span></a><a href="/about/"><i class="icon-about"></i><span>Me</span></a><a href="/aggr/"><i class="icon-history"></i><span>Index</span></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h2 class="post-title"><a href="/kruscal-and-prim/">最小生成树（Kruscal &amp; Prim）</a></h2><div class="post-meta">2014-10-26</div><span data-disqus-identifier="kruscal-and-prim/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
+<a id="rocket" href="#top" class="show"></a><html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/><meta content="telephone=no" name="format-detection"/><meta name="description"/><title>thoughts of hsfzxjy</title><link rel="stylesheet" type="text/css" href="/css/normalize.css"/><link rel="stylesheet" type="text/css" href="/css/pure-min.css"/><link rel="stylesheet" type="text/css" href="/css/grids-responsive-min.css"/><link rel="stylesheet" type="text/css" href="/css/style.css"/><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"/><link rel="alternate" type="application/atom+xml" href="/atom.xml"/></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">thoughts of hsfzxjy</h1><a id="logo" href="/">thoughts of hsfzxjy</a><p class="description"></p><iframe src="https://ghbtns.com/github-btn.html?user=hsfzxjy&amp;type=follow&amp;count=true" frameborder="0" scrolling="0" width="170px" height="20px" class="github-btn"></iframe></div><div id="nav-menu"><a href="/" class="current"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Coding/"><i class="icon-code"></i><span>Coding</span></a><a href="/categories/Essays/"><i class="icon-life"></i><span>Essays</span></a><a href="/about/"><i class="icon-about"></i><span>Me</span></a><a href="/aggr/"><i class="icon-history"></i><span>Index</span></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h2 class="post-title"><a href="/revelation-of-binary/">二进制的启示</a></h2><div class="post-meta">2014-11-01</div><span data-disqus-identifier="revelation-of-binary/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
+<p>在学习数论时我们都知道：只用2的幂次可以组合出所有的正整数。这便是二进制的魅力——状态简单而又变化万千。</p>
+</blockquote>
+<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a><strong>引子</strong></h2><p>实际算法中，常常有一些线性的但数据量特别大的问题，如区间求和、求最小值等。很多时候，为了把时间复杂度从$O(n^2)$甚至更高的地方降下来，我们需要对数据进行一些预处理，以提高计算的速度。在这其中，有很大一部分是来自二进制运算特点的启发。</p>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a><strong>目录</strong></h2><ol>
+<li><a href="/archives/307">树状数组</a></li>
+<li><a href="/archives/318">RMQ</a></li>
+<li><a href="/archives/324">LCA&amp;树上倍增</a></li>
+</ol>
+</div></div><div class="post"><h2 class="post-title"><a href="/kruscal-and-prim/">最小生成树（Kruscal &amp; Prim）</a></h2><div class="post-meta">2014-10-26</div><span data-disqus-identifier="kruscal-and-prim/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
 <p>测试位置：<a href="http://codevs.cn/problem/1078/" target="_blank" rel="external">WikiOI1078</a></p>
 </blockquote>
 <pre><code>type
@@ -816,193 +825,7 @@ end.
 <li>NOIP官网：<strong><a href="http://www.noi.cn/" target="_blank" rel="external">http://www.noi.cn/</a></strong>。</li>
 <li>中国互联网信息中心的缩写：<strong>CNNIC</strong>。</li>
 </ul>
-</div></div><div class="post"><h2 class="post-title"><a href="/uva12219-common-subexpression-elimination/">UVa12219 Common Subexpression Elimination</a></h2><div class="post-meta">2014-10-05</div><span data-disqus-identifier="uva12219-common-subexpression-elimination/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
-<p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;page=show_problem&amp;problem=3371" target="_blank" rel="external">Link</a> 状态：<strong>Runtime Error</strong></p>
-</blockquote>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这题做的可真够久的，整整三个小时。但即便如此，还是只过了一部分的点，另一部分报运行时错误——估计是哈希表设计的不太好。但这确实是一道好题，因此，在睡觉前决定记录一下。</p>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>很容易便想到：用一个三元组$(x,y,z)$表示节点，表示内容为x的节点下跟着标号为y和z的左右子树。这样一来，一类相同的子树便可以唯一确定了，而不必每构造一棵子树就把整棵树遍历一遍。<br>对于三元组的储存，刚开始图方便，用了数组。查找也是用了$O(n)$的线性查找。磕磕碰碰写了两个多小时然后兴冲冲地提交，结果TLE了…………没办法，只好又花了半个小时写了一个哈希表，然后就是上文说过的情况了：<strong>Runtime Error204</strong>。可能是哈希数组过大的原因，日后再微调一下，今天实在是没有脑子了。</p>
-<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h2><pre><code>const
-  maxn = 20000;
-type
-  NodeRec = record
-    Value: string;
-    l, r, index: longint;
-  end;
-  Node = record
-     left, right: longint;   //Index of left and right child in the `tree` array, -1 for none.
-     Rec: NodeRec;
-     index: longint;
-  end;
-  //以下为哈希表的定义
-  _PNode = ^_Node;
-  _Node = record
-    n: Node;
-    next: _PNode;
-  end;
-
-  HashTable = object
-    arr: array [0..maxn] of _PNode;
-    function hash(n: NodeRec): longint;
-    procedure add(n: Node);
-    procedure clear;
-    function find(n: NodeRec): longint;
-  end;
-
-procedure HashTable.clear;
-var
-  i: longint;
-  p, q: _PNode;
-begin
-  for i := 0 to maxn do
-  begin
-    p := arr[i];
-    while p&lt;&gt;nil do
-    begin
-      q := p^.next;
-      dispose(p);
-      p := q;
-    end;
-  end;
-  fillchar(arr, sizeof(arr),0);
-end;
-
-function cmp(r1, r2: NodeRec): Boolean;
-begin
-  cmp := (r1.l = r2.l) and (r1.r = r2.r) and (r1.Value = r2.Value);
-end;
-
-function HashTable.hash(n: NodeRec): longint;
-var
-  i: longint;
-begin
-  hash := 0;
-  for i := 1 to length(n.Value) do
-    hash := (hash*5 + ord(n.Value[i]) - ord(&apos;a&apos;)) mod maxn;
-  hash := (hash + n.l * 10 + n.r * 5) mod maxn;
-end;
-
-procedure HashTable.add(n: Node);
-var
-  h: longint;
-  p, q: _PNode;
-begin
-  h := hash(n.rec);
-  new(q);
-  fillchar(q^, sizeof(_Node), 0);
-  q^.next := arr[h];
-  q^.n := n;
-  arr[h] := q;
-end;
-
-function HashTable.find(n: NodeRec): longint;
-var
-  p: _PNode;
-begin
-  find := -1;
-  p := arr[hash(n)];
-  while (p&lt;&gt;nil) and not cmp(n, p^.n.rec) do p := p^.next;
-  if p &lt;&gt; nil then
-    find := p^.n.index;
-end;
-//哈系表定义结束
-var
-  inputs: Ansistring;
-  _: longint;
-  tree: array [1..50001] of Node;
-  cur: longint;              //The current pointer of the input string.
-  num: longint;              //The current number of the `tree` array.
-  ls: longint;
-  t: longint;
-  tot: longint;
-  ht: HashTable;
-
-function build: longint; //建树
-label lb;
-var
-  rec: NodeRec;
-  i,j,l,r: longint;
-begin
-  l := 0;
-  r := 0;
-  fillchar(rec, sizeof(rec), 0);
-  inc(tot);
-  rec.index := tot;
-  while (cur&lt;=ls) and (inputs[cur] in [&apos;a&apos;..&apos;z&apos;]) do
-  begin
-    rec.Value := rec.Value+inputs[cur];
-    inc(cur);
-  end;
-  if cur&gt;ls then goto lb;    //。。。这里被迫跳转控制流，由于实在不想多谢，就用了臭名昭著的label
-  if inputs[cur] = &apos;(&apos; then
-  begin
-    inc(cur);
-    l := build();
-    rec.l := tree[l].rec.index;
-    inc(cur);
-    r := build();
-    rec.r := tree[r].rec.index;
-    inc(cur);
-  end;
-  j := ht.find(rec);
-  if j&gt;0 then
-  begin
-    dec(tot);
-    exit(j);
-  end
-  else
-  begin
-lb:
-    inc(num);
-    tree[num].left := l;
-    tree[num].right := r;
-    tree[num].rec := rec;
-    tree[num].index := num;
-    ht.add(tree[num]);
-    exit(num);
-  end;
-end;
-
-procedure print(n: longint);
-begin
-  if tree[n].rec.index &gt; t then
-  begin
-    write(tree[n].rec.Value);
-    t := tree[n].rec.index;
-  end
-  else
-  begin
-    write(tree[n].rec.index);
-    exit;
-  end;
-  if tree[n].right = 0 then
-    exit;
-  write(&apos;(&apos;);
-  print(tree[n].left);
-  write(&apos;,&apos;);
-  print(tree[n].right);
-  write(&apos;)&apos;);
-end;
-begin
-  assign(input, &apos;main.in&apos;); reset(input);
-  assign(output, &apos;main.out&apos;); rewrite(output);
-  readln(_);
-  fillchar(ht.arr, sizeof(ht.arr),0);
-  while _&gt;0 do
-  begin
-    dec(_);
-    readln(inputs);
-    fillchar(tree, sizeof(tree), 0);
-    ht.clear;
-    ls := length(inputs);
-    cur := 1;  num := 0; tot := 0;
-    build;
-    t := 0;
-    print(num);
-    writeln;
-  end;
-  close(input); close(output);
-end.
-</code></pre></div></div><div class="page-navigator"><a href="/page/5/" class="pre">Previous</a><a href="/page/7/" class="next">Next</a></div><script id="dsq-count-scr" src="//hsfzxjy.disqus.com/count.js" async="async"></script></div></div><div class="pure-u-1-4"><div id="sidebar"><div class="widget"><div class="widget-title">Navigations</div><ul><li><a href="/archives/" class="widget-item"><i class="icon-archives"></i><span>Archives</span></a></li><li><a href="/works/" class="widget-item"><i class="icon-works"></i><span>Masterpieces</span></a></li><li><a href="/atom.xml" class="widget-item"><i class="icon-rss"></i><span>RSS</span></a></li></ul></div><div class="widget"><div class="widget-title">Categories</div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Coding/">Coding</a><span class="category-list-count">62</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Essays/">Essays</a><span class="category-list-count">15</span></li></ul></div><div class="widget"><div class="widget-title">Tags</div><div class="tagcloud"><a href="/tags/黑魔法/" style="font-size: 15px;">黑魔法</a> <a href="/tags/诗/" style="font-size: 15px;">诗</a> <a href="/tags/生活杂感/" style="font-size: 15px;">生活杂感</a> <a href="/tags/游记/" style="font-size: 15px;">游记</a> <a href="/tags/杂谈/" style="font-size: 15px;">杂谈</a> <a href="/tags/数论/" style="font-size: 15px;">数论</a> <a href="/tags/成人礼/" style="font-size: 15px;">成人礼</a> <a href="/tags/总结/" style="font-size: 15px;">总结</a> <a href="/tags/不经意间的感动/" style="font-size: 15px;">不经意间的感动</a> <a href="/tags/codecs/" style="font-size: 15px;">codecs</a> <a href="/tags/apt-get/" style="font-size: 15px;">apt-get</a> <a href="/tags/WiseCity/" style="font-size: 15px;">WiseCity</a> <a href="/tags/Win32/" style="font-size: 15px;">Win32</a> <a href="/tags/Web-Design/" style="font-size: 15px;">Web Design</a> <a href="/tags/Unit-Test/" style="font-size: 15px;">Unit Test</a> <a href="/tags/Ubuntu/" style="font-size: 15px;">Ubuntu</a> <a href="/tags/UVa/" style="font-size: 15px;">UVa</a> <a href="/tags/Translation/" style="font-size: 15px;">Translation</a> <a href="/tags/Sublime-Text/" style="font-size: 15px;">Sublime Text</a> <a href="/tags/String-Template/" style="font-size: 15px;">String Template</a> <a href="/tags/Search/" style="font-size: 15px;">Search</a> <a href="/tags/Regular-Expression/" style="font-size: 15px;">Regular Expression</a> <a href="/tags/Reentrancy/" style="font-size: 15px;">Reentrancy</a> <a href="/tags/RMPE/" style="font-size: 15px;">RMPE</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Pruning/" style="font-size: 15px;">Pruning</a> <a href="/tags/Pascal/" style="font-size: 15px;">Pascal</a> <a href="/tags/POSIX/" style="font-size: 15px;">POSIX</a> <a href="/tags/OOP/" style="font-size: 15px;">OOP</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/NOIP/" style="font-size: 15px;">NOIP</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/Multi-Threading/" style="font-size: 15px;">Multi-Threading</a> <a href="/tags/Meta-Classes/" style="font-size: 15px;">Meta Classes</a> <a href="/tags/Merge-Sort/" style="font-size: 15px;">Merge Sort</a> <a href="/tags/Machine-Learning/" style="font-size: 15px;">Machine Learning</a> <a href="/tags/MST/" style="font-size: 15px;">MST</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/LCA/" style="font-size: 15px;">LCA</a> <a href="/tags/JavaScript/" style="font-size: 15px;">JavaScript</a> <a href="/tags/Infinite-Recursion/" style="font-size: 15px;">Infinite Recursion</a> <a href="/tags/Haskell/" style="font-size: 15px;">Haskell</a> <a href="/tags/Generator/" style="font-size: 15px;">Generator</a> <a href="/tags/GIL/" style="font-size: 15px;">GIL</a> <a href="/tags/Front-End/" style="font-size: 15px;">Front End</a> <a href="/tags/Font/" style="font-size: 15px;">Font</a> <a href="/tags/Float-Number/" style="font-size: 15px;">Float Number</a> <a href="/tags/File-Permissions/" style="font-size: 15px;">File Permissions</a> <a href="/tags/Fast-Inverse-Square-Root-Algorithm/" style="font-size: 15px;">Fast Inverse Square Root Algorithm</a> <a href="/tags/Django-Channels/" style="font-size: 15px;">Django Channels</a> <a href="/tags/Django/" style="font-size: 15px;">Django</a> <a href="/tags/Delphi/" style="font-size: 15px;">Delphi</a> <a href="/tags/Decorator-Pattern/" style="font-size: 15px;">Decorator Pattern</a> <a href="/tags/DDos/" style="font-size: 15px;">DDos</a> <a href="/tags/Coroutine/" style="font-size: 15px;">Coroutine</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 15px;">Binary Indexed Tree</a> <a href="/tags/Automatic-Test/" style="font-size: 15px;">Automatic Test</a></div></div><div class="widget"><div class="widget-title">Recent Articles</div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/haskell-state-monad/">Haskell 笔记：State Monad</a></li><li class="post-list-item"><a class="post-list-link" href="/haskell-monad/">Haskell 笔记：Monad 引论</a></li><li class="post-list-item"><a class="post-list-link" href="/haskell-applicative/">Haskell 笔记：Applicative</a></li><li class="post-list-item"><a class="post-list-link" href="/haskell-category-theory-and-functor/">Haskell 笔记：Category Theory and Functor</a></li><li class="post-list-item"><a class="post-list-link" href="/haskell-data-type-newtype/">Haskell 笔记：data, type, newtype</a></li><li class="post-list-item"><a class="post-list-link" href="/haskell-fold/">Haskell 笔记：folds</a></li><li class="post-list-item"><a class="post-list-link" href="/download-in-ubuntu-with-aria/">使用 Aria2 在 Ubuntu 中下载百度云资源</a></li><li class="post-list-item"><a class="post-list-link" href="/python-gil-and-threads/">从伪并行的 Python 多线程说起</a></li><li class="post-list-item"><a class="post-list-link" href="/RMPE-Notes/">RMPE 论文读书笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/caveats-for-signal-handler-in-python/">一个 Reentrant Error 引发的对 Python 信号机制的探索和思考</a></li></ul></div><div class="widget"><div class="widget-title">Recent Comments</div><script type="text/javascript" src="//hsfzxjy.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div></div></div></div><div id="footer">© <a href="/" rel="nofollow">thoughts of hsfzxjy.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></body><script src="/js/jquery.min.js"></script>
+</div></div><div class="page-navigator"><a href="/page/5/" class="pre">Previous</a><a href="/page/7/" class="next">Next</a></div><script id="dsq-count-scr" src="//hsfzxjy.disqus.com/count.js" async="async"></script></div></div><div class="pure-u-1-4"><div id="sidebar"><div class="widget"><div class="widget-title">Navigations</div><ul><li><a href="/archives/" class="widget-item"><i class="icon-archives"></i><span>Archives</span></a></li><li><a href="/works/" class="widget-item"><i class="icon-works"></i><span>Masterpieces</span></a></li><li><a href="/atom.xml" class="widget-item"><i class="icon-rss"></i><span>RSS</span></a></li></ul></div><div class="widget"><div class="widget-title">Categories</div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Coding/">Coding</a><span class="category-list-count">62</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Essays/">Essays</a><span class="category-list-count">16</span></li></ul></div><div class="widget"><div class="widget-title">Tags</div><div class="tagcloud"><a href="/tags/黑魔法/" style="font-size: 15px;">黑魔法</a> <a href="/tags/诗/" style="font-size: 15px;">诗</a> <a href="/tags/生活杂感/" style="font-size: 15px;">生活杂感</a> <a href="/tags/游记/" style="font-size: 15px;">游记</a> <a href="/tags/杂谈/" style="font-size: 15px;">杂谈</a> <a href="/tags/数论/" style="font-size: 15px;">数论</a> <a href="/tags/成人礼/" style="font-size: 15px;">成人礼</a> <a href="/tags/总结/" style="font-size: 15px;">总结</a> <a href="/tags/不经意间的感动/" style="font-size: 15px;">不经意间的感动</a> <a href="/tags/codecs/" style="font-size: 15px;">codecs</a> <a href="/tags/apt-get/" style="font-size: 15px;">apt-get</a> <a href="/tags/WiseCity/" style="font-size: 15px;">WiseCity</a> <a href="/tags/Win32/" style="font-size: 15px;">Win32</a> <a href="/tags/Web-Design/" style="font-size: 15px;">Web Design</a> <a href="/tags/Unit-Test/" style="font-size: 15px;">Unit Test</a> <a href="/tags/Ubuntu/" style="font-size: 15px;">Ubuntu</a> <a href="/tags/UVa/" style="font-size: 15px;">UVa</a> <a href="/tags/Translation/" style="font-size: 15px;">Translation</a> <a href="/tags/Sublime-Text/" style="font-size: 15px;">Sublime Text</a> <a href="/tags/String-Template/" style="font-size: 15px;">String Template</a> <a href="/tags/Search/" style="font-size: 15px;">Search</a> <a href="/tags/Regular-Expression/" style="font-size: 15px;">Regular Expression</a> <a href="/tags/Reentrancy/" style="font-size: 15px;">Reentrancy</a> <a href="/tags/RMPE/" style="font-size: 15px;">RMPE</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Pruning/" style="font-size: 15px;">Pruning</a> <a href="/tags/Pascal/" style="font-size: 15px;">Pascal</a> <a href="/tags/POSIX/" style="font-size: 15px;">POSIX</a> <a href="/tags/OOP/" style="font-size: 15px;">OOP</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/NOIP/" style="font-size: 15px;">NOIP</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/Multi-Threading/" style="font-size: 15px;">Multi-Threading</a> <a href="/tags/Meta-Classes/" style="font-size: 15px;">Meta Classes</a> <a href="/tags/Merge-Sort/" style="font-size: 15px;">Merge Sort</a> <a href="/tags/Machine-Learning/" style="font-size: 15px;">Machine Learning</a> <a href="/tags/MST/" style="font-size: 15px;">MST</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/LCA/" style="font-size: 15px;">LCA</a> <a href="/tags/JavaScript/" style="font-size: 15px;">JavaScript</a> <a href="/tags/Infinite-Recursion/" style="font-size: 15px;">Infinite Recursion</a> <a href="/tags/Haskell/" style="font-size: 15px;">Haskell</a> <a href="/tags/Generator/" style="font-size: 15px;">Generator</a> <a href="/tags/GIL/" style="font-size: 15px;">GIL</a> <a href="/tags/Front-End/" style="font-size: 15px;">Front End</a> <a href="/tags/Font/" style="font-size: 15px;">Font</a> <a href="/tags/Float-Number/" style="font-size: 15px;">Float Number</a> <a href="/tags/File-Permissions/" style="font-size: 15px;">File Permissions</a> <a href="/tags/Fast-Inverse-Square-Root-Algorithm/" style="font-size: 15px;">Fast Inverse Square Root Algorithm</a> <a href="/tags/Django-Channels/" style="font-size: 15px;">Django Channels</a> <a href="/tags/Django/" style="font-size: 15px;">Django</a> <a href="/tags/Delphi/" style="font-size: 15px;">Delphi</a> <a href="/tags/Decorator-Pattern/" style="font-size: 15px;">Decorator Pattern</a> <a href="/tags/DDos/" style="font-size: 15px;">DDos</a> <a href="/tags/Coroutine/" style="font-size: 15px;">Coroutine</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 15px;">Binary Indexed Tree</a> <a href="/tags/Automatic-Test/" style="font-size: 15px;">Automatic Test</a></div></div><div class="widget"><div class="widget-title">Recent Articles</div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/Psychologie-des-Foules-network-era/">网络时代再读勒庞《乌合之众》</a></li><li class="post-list-item"><a class="post-list-link" href="/haskell-state-monad/">Haskell 笔记：State Monad</a></li><li class="post-list-item"><a class="post-list-link" href="/haskell-monad/">Haskell 笔记：Monad 引论</a></li><li class="post-list-item"><a class="post-list-link" href="/haskell-applicative/">Haskell 笔记：Applicative</a></li><li class="post-list-item"><a class="post-list-link" href="/haskell-category-theory-and-functor/">Haskell 笔记：Category Theory and Functor</a></li><li class="post-list-item"><a class="post-list-link" href="/haskell-data-type-newtype/">Haskell 笔记：data, type, newtype</a></li><li class="post-list-item"><a class="post-list-link" href="/haskell-fold/">Haskell 笔记：folds</a></li><li class="post-list-item"><a class="post-list-link" href="/download-in-ubuntu-with-aria/">使用 Aria2 在 Ubuntu 中下载百度云资源</a></li><li class="post-list-item"><a class="post-list-link" href="/python-gil-and-threads/">从伪并行的 Python 多线程说起</a></li><li class="post-list-item"><a class="post-list-link" href="/RMPE-Notes/">RMPE 论文读书笔记</a></li></ul></div><div class="widget"><div class="widget-title">Recent Comments</div><script type="text/javascript" src="//hsfzxjy.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div></div></div></div><div id="footer">© <a href="/" rel="nofollow">thoughts of hsfzxjy.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></body><script src="/js/jquery.min.js"></script>
 <script src="/js/totop.js"></script>
 <script src="/js/adjust-wechat.js"></script><script src="/js/fancybox.pack.js"></script><link rel="stylesheet" href="/css/jquery.fancybox.css"><script>$(document).ready(function() {
     $('img').each(function() {
