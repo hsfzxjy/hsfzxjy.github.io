@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.hsfzxjy.site/"/>
-  <updated>2018-12-31T07:31:40.782Z</updated>
+  <updated>2019-01-06T09:00:11.954Z</updated>
   <id>http://blog.hsfzxjy.site/</id>
   
   <author>
@@ -14,6 +14,54 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Sublime 配置 Rust 环境</title>
+    <link href="http://blog.hsfzxjy.site/rust-sublime/"/>
+    <id>http://blog.hsfzxjy.site/rust-sublime/</id>
+    <published>2019-01-05T16:00:00.000Z</published>
+    <updated>2019-01-06T09:00:11.954Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="rustup-v-s-cargo"><a href="#rustup-v-s-cargo" class="headerlink" title="rustup v.s. cargo"></a>rustup v.s. cargo</h2><p>cargo 是 Rust <strong>最底层的</strong>包管理器，类似 npm 或 pip。</p>
+<p>rustup 是 Rust 的工具链管理器，允许开发者在多个不同版本的工具间切换。所谓工具不仅包括 rustc 和 cargo，还包括 rustfmt、racer 等一系列辅助开发的模块。类似于 Anaconda、Pipenv 之于 Python，或是 n 之于 Node.js。</p>
+<p>Rust 的工具链默认存在于 <code>~/.cargo/bin</code> 中，rustup 会用代理脚本覆盖其中的可执行文件，从而用户可以通过命令行标志方便地切换版本。</p>
+<h2 id="stable-v-s-beta-v-s-nightly"><a href="#stable-v-s-beta-v-s-nightly" class="headerlink" title="stable v.s. beta v.s. nightly"></a>stable v.s. beta v.s. nightly</h2><p>Rust 官方默认提供三个通道，稳定性依次递降，即时性依次递增。当然，还有众多的第三方版本。</p>
+<p>Rust 工具链普遍有一个标志 <code>+&lt;channel&gt;</code> 用于注明通道版本，如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ rustc +nighly --version</div><div class="line">rustc 1.33.0-nightly (68fe5182c 2019-01-05)</div><div class="line">$ rustc +stable --version</div><div class="line">rustc 1.31.1 (b6c32da9b 2018-12-18)</div></pre></td></tr></table></figure>
+<h2 id="Sublime-配置"><a href="#Sublime-配置" class="headerlink" title="Sublime 配置"></a>Sublime 配置</h2><p>我们希望让 Sublime 支持如下功能：</p>
+<ol>
+<li>Auto Formatting</li>
+<li>Auto Completement</li>
+<li>Check on Save</li>
+</ol>
+<p>为此需要两个插件：</p>
+<ul>
+<li>Rust Enhanced（提供 3）</li>
+<li>Anaconda Rust（提供 1 和 2）</li>
+</ul>
+<h3 id="Rust-Enhanced"><a href="#Rust-Enhanced" class="headerlink" title="Rust Enhanced"></a>Rust Enhanced</h3><p>直接安装即可。</p>
+<h3 id="Anaconda-Rust"><a href="#Anaconda-Rust" class="headerlink" title="Anaconda Rust"></a>Anaconda Rust</h3><p>官方版本停更了，<code>rustfmt</code> 相关功能有一些问题。为此需要使用我修改过的版本：<a href="https://github.com/hsfzxjy/anaconda_rust" target="_blank" rel="noopener">https://github.com/hsfzxjy/anaconda_rust</a> 。</p>
+<p>依赖 <code>rustfmt</code> 和 <code>racer</code>。</p>
+<h4 id="racer"><a href="#racer" class="headerlink" title="racer"></a>racer</h4><p><code>racer</code> 需要 <code>nightly</code> 版本，用以下脚本安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ cargo +nightly install racer</div></pre></td></tr></table></figure>
+<p>此方法需要本地编译，时间比较久。</p>
+<p>自动补全的完成还需要一份 Rust 库的源码，可以从<a href="https://forge.rust-lang.org/other-installation-methods.html" target="_blank" rel="noopener">这个页面</a> 下载。</p>
+<p>解压完成后需要配置 <code>Anaconda Rust</code> 插件的 <code>rust_src_path</code> 选项。</p>
+<h4 id="rustfmt"><a href="#rustfmt" class="headerlink" title="rustfmt"></a>rustfmt</h4><p><code>rustfmt</code> 支持使用 <code>rustup</code> 安装，更省时间：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ rustup component add rustfmt-preview</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;rustup-v-s-cargo&quot;&gt;&lt;a href=&quot;#rustup-v-s-cargo&quot; class=&quot;headerlink&quot; title=&quot;rustup v.s. cargo&quot;&gt;&lt;/a&gt;rustup v.s. cargo&lt;/h2&gt;&lt;p&gt;cargo 是 Rust
+    
+    </summary>
+    
+      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+    
+    
+      <category term="Rust" scheme="http://blog.hsfzxjy.site/tags/Rust/"/>
+    
+  </entry>
   
   <entry>
     <title>四月·病</title>
@@ -1184,41 +1232,6 @@
       <category term="codecs" scheme="http://blog.hsfzxjy.site/tags/codecs/"/>
     
       <category term="Python" scheme="http://blog.hsfzxjy.site/tags/Python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Ubuntu 重新映射键盘布局</title>
-    <link href="http://blog.hsfzxjy.site/alternative-key-maps-under-ubuntu/"/>
-    <id>http://blog.hsfzxjy.site/alternative-key-maps-under-ubuntu/</id>
-    <published>2016-06-05T09:20:26.000Z</published>
-    <updated>2018-03-08T17:55:00.193Z</updated>
-    
-    <content type="html"><![CDATA[<p>键盘持续失灵，已经到了让我忍无可忍的地步了。</p>
-<p>刚开始只是方向键失灵，好在可以用小键盘替代；后来右 Ctrl 和 Alt 也失灵了，好在可以用左边的替代；直到最近 Fn 键也失灵了，终于逼疯了我——因为这意味着 F1 ～ F12 都将不能使用。</p>
-<p>我曾试图寻找方法将 CapsLock 键映射为 Fn 键映射，但失败了——Fn 键消息是由 BIOS 拦截的，无法被操作系统捕获。</p>
-<p>但今天我找到了一个更好的替代方案：</p>
-<ul>
-<li>交换 Fn 和 Ctrl。这是唯一一种能让 Fn 键移位的方式，在所有的 BIOS 中都可以设置。</li>
-<li>将 CapsLock 映射为 Ctrl。反正 CapsLock 闲着也是闲着，不如用它代替坏了的键。</li>
-</ul>
-<p>ubuntu 下需要执行：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">setxkbmap -layout us -option ctrl:nocaps</div></pre></td></tr></table></figure>
-<p>参考： <a href="http://askubuntu.com/questions/462021/how-do-i-turn-caps-lock-into-an-extra-control-key" target="_blank" rel="external">How do I turn Caps Lock into an extra Control key? - Ask Ubuntu</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;键盘持续失灵，已经到了让我忍无可忍的地步了。&lt;/p&gt;
-&lt;p&gt;刚开始只是方向键失灵，好在可以用小键盘替代；后来右 Ctrl 和 Alt 也失灵了，好在可以用左边的替代；直到最近 Fn 键也失灵了，终于逼疯了我——因为这意味着 F1 ～ F12 都将不能使用。&lt;/p&gt;
-&lt;p&gt;我
-    
-    </summary>
-    
-      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
-    
-    
-      <category term="Ubuntu" scheme="http://blog.hsfzxjy.site/tags/Ubuntu/"/>
     
   </entry>
   
