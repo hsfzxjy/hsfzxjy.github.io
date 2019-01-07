@@ -17,8 +17,8 @@
   
   <entry>
     <title>一月七日杂感</title>
-    <link href="http://blog.hsfzxjy.site/notitle/"/>
-    <id>http://blog.hsfzxjy.site/notitle/</id>
+    <link href="http://blog.hsfzxjy.site/2019-01-07-notitle/"/>
+    <id>http://blog.hsfzxjy.site/2019-01-07-notitle/</id>
     <published>2019-01-06T16:00:00.000Z</published>
     <updated>2019-01-07T11:05:11.775Z</updated>
     
@@ -47,8 +47,8 @@
   
   <entry>
     <title>Sublime 配置 Rust 环境</title>
-    <link href="http://blog.hsfzxjy.site/rust-sublime/"/>
-    <id>http://blog.hsfzxjy.site/rust-sublime/</id>
+    <link href="http://blog.hsfzxjy.site/2019-01-06-rust-sublime/"/>
+    <id>http://blog.hsfzxjy.site/2019-01-06-rust-sublime/</id>
     <published>2019-01-05T16:00:00.000Z</published>
     <updated>2019-01-06T09:00:11.954Z</updated>
     
@@ -95,8 +95,8 @@
   
   <entry>
     <title>四月·病</title>
-    <link href="http://blog.hsfzxjy.site/april-illness/"/>
-    <id>http://blog.hsfzxjy.site/april-illness/</id>
+    <link href="http://blog.hsfzxjy.site/2018-12-31-april-illness/"/>
+    <id>http://blog.hsfzxjy.site/2018-12-31-april-illness/</id>
     <published>2018-12-30T16:00:00.000Z</published>
     <updated>2018-12-31T07:31:40.782Z</updated>
     
@@ -125,8 +125,8 @@
   
   <entry>
     <title>Haskell 笔记：State Monad</title>
-    <link href="http://blog.hsfzxjy.site/haskell-state-monad/"/>
-    <id>http://blog.hsfzxjy.site/haskell-state-monad/</id>
+    <link href="http://blog.hsfzxjy.site/2018-12-15-haskell-state-monad/"/>
+    <id>http://blog.hsfzxjy.site/2018-12-15-haskell-state-monad/</id>
     <published>2018-12-14T16:00:00.000Z</published>
     <updated>2018-12-15T09:16:19.096Z</updated>
     
@@ -159,8 +159,8 @@
   
   <entry>
     <title>Haskell 笔记：Monad 引论</title>
-    <link href="http://blog.hsfzxjy.site/haskell-monad/"/>
-    <id>http://blog.hsfzxjy.site/haskell-monad/</id>
+    <link href="http://blog.hsfzxjy.site/2018-12-14-haskell-monad/"/>
+    <id>http://blog.hsfzxjy.site/2018-12-14-haskell-monad/</id>
     <published>2018-12-13T16:00:00.000Z</published>
     <updated>2018-12-15T08:27:43.637Z</updated>
     
@@ -240,8 +240,8 @@
   
   <entry>
     <title>Haskell 笔记：Applicative</title>
-    <link href="http://blog.hsfzxjy.site/haskell-applicative/"/>
-    <id>http://blog.hsfzxjy.site/haskell-applicative/</id>
+    <link href="http://blog.hsfzxjy.site/2018-11-18-haskell-applicative/"/>
+    <id>http://blog.hsfzxjy.site/2018-11-18-haskell-applicative/</id>
     <published>2018-11-18T02:29:00.000Z</published>
     <updated>2018-11-21T06:25:19.775Z</updated>
     
@@ -279,8 +279,8 @@
   
   <entry>
     <title>Haskell 笔记：Category Theory and Functor</title>
-    <link href="http://blog.hsfzxjy.site/haskell-category-theory-and-functor/"/>
-    <id>http://blog.hsfzxjy.site/haskell-category-theory-and-functor/</id>
+    <link href="http://blog.hsfzxjy.site/2018-11-18-haskell-category-theory-and-functor/"/>
+    <id>http://blog.hsfzxjy.site/2018-11-18-haskell-category-theory-and-functor/</id>
     <published>2018-11-18T00:50:00.000Z</published>
     <updated>2018-11-18T08:55:22.260Z</updated>
     
@@ -332,8 +332,8 @@
   
   <entry>
     <title>Haskell 笔记：data, type, newtype</title>
-    <link href="http://blog.hsfzxjy.site/haskell-data-type-newtype/"/>
-    <id>http://blog.hsfzxjy.site/haskell-data-type-newtype/</id>
+    <link href="http://blog.hsfzxjy.site/2018-11-16-haskell-data-type-newtype/"/>
+    <id>http://blog.hsfzxjy.site/2018-11-16-haskell-data-type-newtype/</id>
     <published>2018-11-15T16:00:00.000Z</published>
     <updated>2018-11-16T06:12:22.160Z</updated>
     
@@ -365,8 +365,8 @@
   
   <entry>
     <title>Haskell 笔记：folds</title>
-    <link href="http://blog.hsfzxjy.site/haskell-fold/"/>
-    <id>http://blog.hsfzxjy.site/haskell-fold/</id>
+    <link href="http://blog.hsfzxjy.site/2018-11-10-haskell-fold/"/>
+    <id>http://blog.hsfzxjy.site/2018-11-10-haskell-fold/</id>
     <published>2018-11-09T16:00:00.000Z</published>
     <updated>2018-11-14T05:28:14.870Z</updated>
     
@@ -414,8 +414,8 @@
   
   <entry>
     <title>使用 Aria2 在 Ubuntu 中下载百度云资源</title>
-    <link href="http://blog.hsfzxjy.site/download-in-ubuntu-with-aria/"/>
-    <id>http://blog.hsfzxjy.site/download-in-ubuntu-with-aria/</id>
+    <link href="http://blog.hsfzxjy.site/2018-06-11-download-in-ubuntu-with-aria/"/>
+    <id>http://blog.hsfzxjy.site/2018-06-11-download-in-ubuntu-with-aria/</id>
     <published>2018-06-10T16:00:00.000Z</published>
     <updated>2018-06-11T05:08:04.832Z</updated>
     
@@ -443,8 +443,8 @@
   
   <entry>
     <title>从伪并行的 Python 多线程说起</title>
-    <link href="http://blog.hsfzxjy.site/python-gil-and-threads/"/>
-    <id>http://blog.hsfzxjy.site/python-gil-and-threads/</id>
+    <link href="http://blog.hsfzxjy.site/2018-03-10-python-gil-and-threads/"/>
+    <id>http://blog.hsfzxjy.site/2018-03-10-python-gil-and-threads/</id>
     <published>2018-03-09T16:00:00.000Z</published>
     <updated>2018-06-06T09:53:03.405Z</updated>
     
@@ -550,8 +550,8 @@
   
   <entry>
     <title>RMPE 论文读书笔记</title>
-    <link href="http://blog.hsfzxjy.site/RMPE-Notes/"/>
-    <id>http://blog.hsfzxjy.site/RMPE-Notes/</id>
+    <link href="http://blog.hsfzxjy.site/2018-03-08-RMPE-Notes/"/>
+    <id>http://blog.hsfzxjy.site/2018-03-08-RMPE-Notes/</id>
     <published>2018-03-07T16:00:00.000Z</published>
     <updated>2018-03-08T17:23:20.929Z</updated>
     
@@ -607,8 +607,8 @@
   
   <entry>
     <title>一个 Reentrant Error 引发的对 Python 信号机制的探索和思考</title>
-    <link href="http://blog.hsfzxjy.site/caveats-for-signal-handler-in-python/"/>
-    <id>http://blog.hsfzxjy.site/caveats-for-signal-handler-in-python/</id>
+    <link href="http://blog.hsfzxjy.site/2017-08-17-caveats-for-signal-handler-in-python/"/>
+    <id>http://blog.hsfzxjy.site/2017-08-17-caveats-for-signal-handler-in-python/</id>
     <published>2017-08-16T16:00:00.000Z</published>
     <updated>2018-03-08T17:23:20.897Z</updated>
     
@@ -718,8 +718,8 @@
   
   <entry>
     <title>Linux 文件权限</title>
-    <link href="http://blog.hsfzxjy.site/linux-file-permissions/"/>
-    <id>http://blog.hsfzxjy.site/linux-file-permissions/</id>
+    <link href="http://blog.hsfzxjy.site/2017-07-03-linux-file-permissions/"/>
+    <id>http://blog.hsfzxjy.site/2017-07-03-linux-file-permissions/</id>
     <published>2017-07-02T16:00:00.000Z</published>
     <updated>2018-03-08T17:23:20.861Z</updated>
     
@@ -767,8 +767,8 @@
   
   <entry>
     <title>HSFZMUN 4.0 部署小记</title>
-    <link href="http://blog.hsfzxjy.site/HSFZMUN-4.0-configuration/"/>
-    <id>http://blog.hsfzxjy.site/HSFZMUN-4.0-configuration/</id>
+    <link href="http://blog.hsfzxjy.site/2017-02-25-HSFZMUN-4.0-configuration/"/>
+    <id>http://blog.hsfzxjy.site/2017-02-25-HSFZMUN-4.0-configuration/</id>
     <published>2017-02-24T16:00:00.000Z</published>
     <updated>2018-03-08T17:23:20.829Z</updated>
     
@@ -852,8 +852,8 @@
   
   <entry>
     <title>午后雨·科大</title>
-    <link href="http://blog.hsfzxjy.site/raining-in-ustc/"/>
-    <id>http://blog.hsfzxjy.site/raining-in-ustc/</id>
+    <link href="http://blog.hsfzxjy.site/2016-08-22-raining-in-ustc/"/>
+    <id>http://blog.hsfzxjy.site/2016-08-22-raining-in-ustc/</id>
     <published>2016-08-21T16:00:00.000Z</published>
     <updated>2018-03-08T17:22:51.013Z</updated>
     
@@ -888,8 +888,8 @@
   
   <entry>
     <title>最后的雨夜·广州</title>
-    <link href="http://blog.hsfzxjy.site/leaving-guangzhou/"/>
-    <id>http://blog.hsfzxjy.site/leaving-guangzhou/</id>
+    <link href="http://blog.hsfzxjy.site/2016-08-18-leaving-guangzhou/"/>
+    <id>http://blog.hsfzxjy.site/2016-08-18-leaving-guangzhou/</id>
     <published>2016-08-17T16:00:00.000Z</published>
     <updated>2018-03-08T17:23:19.417Z</updated>
     
@@ -927,8 +927,8 @@
   
   <entry>
     <title>揭秘·变态的平方根倒数算法</title>
-    <link href="http://blog.hsfzxjy.site/uncover-the-secret-of-fast-inverse-square-root-algorithm/"/>
-    <id>http://blog.hsfzxjy.site/uncover-the-secret-of-fast-inverse-square-root-algorithm/</id>
+    <link href="http://blog.hsfzxjy.site/2016-08-03-uncover-the-secret-of-fast-inverse-square-root-algorithm/"/>
+    <id>http://blog.hsfzxjy.site/2016-08-03-uncover-the-secret-of-fast-inverse-square-root-algorithm/</id>
     <published>2016-08-02T16:00:00.000Z</published>
     <updated>2018-03-08T17:23:20.797Z</updated>
     
@@ -1071,8 +1071,8 @@
   
   <entry>
     <title>神坑·Python 装饰类无限递归</title>
-    <link href="http://blog.hsfzxjy.site/recursively-calling-when-decorating-a-python-class/"/>
-    <id>http://blog.hsfzxjy.site/recursively-calling-when-decorating-a-python-class/</id>
+    <link href="http://blog.hsfzxjy.site/2016-07-30-recursively-calling-when-decorating-a-python-class/"/>
+    <id>http://blog.hsfzxjy.site/2016-07-30-recursively-calling-when-decorating-a-python-class/</id>
     <published>2016-07-29T16:00:00.000Z</published>
     <updated>2018-03-08T17:23:20.761Z</updated>
     
@@ -1135,8 +1135,8 @@
   
   <entry>
     <title>Python “黑魔法” 之 Encoding &amp; Decoding</title>
-    <link href="http://blog.hsfzxjy.site/python-encoding-and-decoding/"/>
-    <id>http://blog.hsfzxjy.site/python-encoding-and-decoding/</id>
+    <link href="http://blog.hsfzxjy.site/2016-07-21-python-encoding-and-decoding/"/>
+    <id>http://blog.hsfzxjy.site/2016-07-21-python-encoding-and-decoding/</id>
     <published>2016-07-20T16:00:00.000Z</published>
     <updated>2018-03-08T17:23:20.729Z</updated>
     
