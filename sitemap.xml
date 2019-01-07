@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://blog.hsfzxjy.site/notitle/</loc>
+    
+    <lastmod>2019-01-07T11:01:50.143Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://blog.hsfzxjy.site/rust-sublime/</loc>
     
     <lastmod>2019-01-06T09:00:11.954Z</lastmod>
@@ -12,13 +19,6 @@
     <loc>http://blog.hsfzxjy.site/april-illness/</loc>
     
     <lastmod>2018-12-31T07:31:40.782Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/Psychologie-des-Foules-network-era/</loc>
-    
-    <lastmod>2018-12-23T17:06:27.447Z</lastmod>
     
   </url>
   
