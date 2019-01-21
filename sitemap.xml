@@ -2,93 +2,576 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://blog.hsfzxjy.site/2019-01-21-tapl-notes-untyped-arithmetic-expressions/</loc>
+    
+    <lastmod>2019-01-21T11:25:56.174Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://blog.hsfzxjy.site/2019-01-21-ss/</loc>
     
-    <lastmod>2019-01-21T08:59:08.997Z</lastmod>
+    <lastmod>2019-01-21T11:17:28.562Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2013-07-10-peeking-hongkong/</loc>
+    
+    <lastmod>2019-01-21T09:07:41.533Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2015-11-28-life-needs-discovery/</loc>
+    
+    <lastmod>2019-01-21T09:07:41.533Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2013-03-26-the-last-dinner/</loc>
+    
+    <lastmod>2019-01-21T09:07:41.533Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2015-03-03-ten-years/</loc>
+    
+    <lastmod>2019-01-21T09:07:41.189Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2015-05-08-that-starry-night/</loc>
+    
+    <lastmod>2019-01-21T09:07:41.189Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2015-06-12-secret/</loc>
+    
+    <lastmod>2019-01-21T09:07:41.189Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2013-01-13-sigh-for-house-moving/</loc>
+    
+    <lastmod>2019-01-21T09:07:41.189Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2015-10-04-hobby-or-needs/</loc>
+    
+    <lastmod>2019-01-21T09:07:41.189Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2015-10-18-letter-to-parents/</loc>
+    
+    <lastmod>2019-01-21T09:07:41.189Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2016-02-13-thinking-in-the-day-before-lunar-new-year-of-2016/</loc>
+    
+    <lastmod>2019-01-21T09:07:41.189Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2015-12-01-poems/</loc>
+    
+    <lastmod>2019-01-21T09:07:41.189Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2013-02-01-passer-by/</loc>
+    
+    <lastmod>2019-01-21T09:07:41.189Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2016-04-09-why-I-choose-to-climb-over-the-wall/</loc>
+    
+    <lastmod>2019-01-21T09:07:41.189Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2016-08-18-leaving-guangzhou/</loc>
+    
+    <lastmod>2019-01-21T09:07:41.189Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://blog.hsfzxjy.site/2019-01-07-notitle/</loc>
     
-    <lastmod>2019-01-21T04:44:30.216Z</lastmod>
+    <lastmod>2019-01-21T09:07:41.189Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://blog.hsfzxjy.site/2019-01-06-rust-sublime/</loc>
+    <loc>http://blog.hsfzxjy.site/2016-08-22-raining-in-ustc/</loc>
     
-    <lastmod>2019-01-06T09:00:11.954Z</lastmod>
+    <lastmod>2019-01-21T09:07:41.189Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://blog.hsfzxjy.site/2018-12-31-april-illness/</loc>
     
-    <lastmod>2018-12-31T07:31:40.782Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2018-12-15-haskell-state-monad/</loc>
-    
-    <lastmod>2018-12-15T09:16:19.096Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2018-12-14-haskell-monad/</loc>
-    
-    <lastmod>2018-12-15T08:27:43.637Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2018-11-18-haskell-applicative/</loc>
-    
-    <lastmod>2018-11-21T06:25:19.775Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2018-11-18-haskell-category-theory-and-functor/</loc>
-    
-    <lastmod>2018-11-18T08:55:22.260Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2018-11-16-haskell-data-type-newtype/</loc>
-    
-    <lastmod>2018-11-16T06:12:22.160Z</lastmod>
+    <lastmod>2019-01-21T09:07:41.189Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://blog.hsfzxjy.site/2018-11-10-haskell-fold/</loc>
     
-    <lastmod>2018-11-14T05:28:14.870Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2018-06-11-download-in-ubuntu-with-aria/</loc>
-    
-    <lastmod>2018-06-11T05:08:04.832Z</lastmod>
+    <lastmod>2019-01-21T09:06:18.425Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://blog.hsfzxjy.site/2018-03-10-python-gil-and-threads/</loc>
     
-    <lastmod>2018-06-06T09:53:03.405Z</lastmod>
+    <lastmod>2019-01-21T09:06:18.349Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2018-11-18-haskell-applicative/</loc>
+    
+    <lastmod>2019-01-21T09:06:18.349Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2016-08-03-uncover-the-secret-of-fast-inverse-square-root-algorithm/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.149Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2012-09-29-impression-for-delphi-OOP/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.149Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-10-01-/extended-gcd-algorithm/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.137Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-08-19-/mysqldump-without-lock/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.137Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-10-26-kruscal-and-prim/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-10-26-noip2013-day1-matches/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-11-02-RMQ-binary/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-11-02-lca-Tarjan/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-11-02-lca-tree-multiplier/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-11-01-tree-array/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-11-28-alter-mysql-character-set-under-ubuntu/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-11-29-solution-of-apt-get-error-hash-checksum-incorrect/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-12-13-add-custom-fonts-under-ubuntu/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-11-17-conclusion-of-noip2014/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-12-13-remove-broken-packages-under-ubuntu/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-12-29-sublime-text-2-installation-under-ubuntu/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2015-07-24-wisecity-conclusion/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2015-03-02-kill-processes-under-ubuntu/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-08-20-strange-extended-and-double-problem/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-09-22-noip2011-expression/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2015-07-24-how-to-fuck-a-bilk-site/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2015-09-18-why-are-so-many-programming-languages/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-09-23-uva437-the-tower-of-babylon/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-09-24-uva-11584-partitioning-by-palindromes/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-09-27-ubuntu-suddenly-no-wifi/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-09-27-uva12186-another-crisis-dynamic-arrays-in-pascal/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-09-29-uva10285-longest-run-on-a-snowboard/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2015-09-19-the-state-of-responsive-images-in-2015/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2015-03-31-solution-of-network-broken-down-per-20s-under-ubuntu/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2012-09-29-sharing-a-keyboard-hook-in-delphi/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2016-02-12-a-simple-javascript-template-language/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://blog.hsfzxjy.site/2016-02-10-meta-class-in-python/</loc>
     
-    <lastmod>2018-03-09T07:25:00.939Z</lastmod>
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-10-01-uva10285-cake-slicing/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2016-02-19-the-simplest-way-to-find-out-if-two-segments-are-intersected/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2016-06-05-alternative-key-maps-under-ubuntu/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2016-04-02-python-generator-coroutine/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2016-07-21-python-encoding-and-decoding/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2016-07-30-recursively-calling-when-decorating-a-python-class/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-10-01-uva11582-colossal-fibonacci-numbers/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-10-05-uva536-recovery/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-10-08-noip-senior-knowlegdes/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2017-02-25-HSFZMUN-4.0-configuration/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2017-07-03-linux-file-permissions/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2018-03-08-RMPE-Notes/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2018-06-11-download-in-ubuntu-with-aria/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2017-08-17-caveats-for-signal-handler-in-python/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-10-17-uva817-according-to-bartjens/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-10-15-uva225-golygons/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2018-11-16-haskell-data-type-newtype/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-10-05-uva12219-common-subexpression-elimination/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2018-11-18-haskell-category-theory-and-functor/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2018-12-14-haskell-monad/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2018-12-15-haskell-state-monad/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-10-18-uva11526-hn/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2019-01-06-rust-sublime/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-10-23-sublime-configuration-for-pascal/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-10-24-uva1647-computer-transformation/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-10-25-noip2011-day2-coefficient-calculate/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2015-04-19-backup-apt-get/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.hsfzxjy.site/2014-11-01-revelation-of-binary/</loc>
+    
+    <lastmod>2019-01-21T09:06:17.133Z</lastmod>
     
   </url>
   
@@ -103,482 +586,6 @@
     <loc>http://blog.hsfzxjy.site/about/index.html</loc>
     
     <lastmod>2018-03-09T06:42:53.978Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2016-06-05-alternative-key-maps-under-ubuntu/</loc>
-    
-    <lastmod>2018-03-08T17:55:00.193Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2015-04-19-backup-apt-get/</loc>
-    
-    <lastmod>2018-03-08T17:55:00.153Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2015-03-31-solution-of-network-broken-down-per-20s-under-ubuntu/</loc>
-    
-    <lastmod>2018-03-08T17:55:00.093Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2015-03-02-kill-processes-under-ubuntu/</loc>
-    
-    <lastmod>2018-03-08T17:55:00.069Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-12-29-sublime-text-2-installation-under-ubuntu/</loc>
-    
-    <lastmod>2018-03-08T17:55:00.037Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-12-13-remove-broken-packages-under-ubuntu/</loc>
-    
-    <lastmod>2018-03-08T17:55:00.013Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-12-13-add-custom-fonts-under-ubuntu/</loc>
-    
-    <lastmod>2018-03-08T17:54:59.977Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-11-29-solution-of-apt-get-error-hash-checksum-incorrect/</loc>
-    
-    <lastmod>2018-03-08T17:54:59.941Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-11-28-alter-mysql-character-set-under-ubuntu/</loc>
-    
-    <lastmod>2018-03-08T17:54:59.909Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-10-23-sublime-configuration-for-pascal/</loc>
-    
-    <lastmod>2018-03-08T17:54:59.885Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-08-19-/mysqldump-without-lock/</loc>
-    
-    <lastmod>2018-03-08T17:54:59.865Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-10-01-uva10285-cake-slicing/</loc>
-    
-    <lastmod>2018-03-08T17:23:21.013Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2018-03-08-RMPE-Notes/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.929Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2017-08-17-caveats-for-signal-handler-in-python/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.897Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2017-07-03-linux-file-permissions/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.861Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2017-02-25-HSFZMUN-4.0-configuration/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.829Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2016-08-03-uncover-the-secret-of-fast-inverse-square-root-algorithm/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.797Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2016-07-30-recursively-calling-when-decorating-a-python-class/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.761Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2016-07-21-python-encoding-and-decoding/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.729Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2016-04-02-python-generator-coroutine/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.685Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2016-02-19-the-simplest-way-to-find-out-if-two-segments-are-intersected/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.661Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2016-02-12-a-simple-javascript-template-language/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.637Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2015-09-19-the-state-of-responsive-images-in-2015/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.501Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2015-09-18-why-are-so-many-programming-languages/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.457Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2015-07-24-wisecity-conclusion/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.425Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2015-07-24-how-to-fuck-a-bilk-site/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.389Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-11-17-conclusion-of-noip2014/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.361Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-11-01-tree-array/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.309Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-11-02-lca-tree-multiplier/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.273Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-11-02-lca-Tarjan/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.241Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-11-02-RMQ-binary/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.205Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-11-01-revelation-of-binary/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.173Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-10-26-noip2013-day1-matches/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.141Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-10-26-kruscal-and-prim/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.105Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-10-25-noip2011-day2-coefficient-calculate/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.073Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-10-24-uva1647-computer-transformation/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.041Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-10-18-uva11526-hn/</loc>
-    
-    <lastmod>2018-03-08T17:23:20.009Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-10-17-uva817-according-to-bartjens/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.969Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-10-15-uva225-golygons/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.929Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-10-08-noip-senior-knowlegdes/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.897Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-10-05-uva536-recovery/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.861Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-10-05-uva12219-common-subexpression-elimination/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.829Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-10-01-uva11582-colossal-fibonacci-numbers/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.797Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-10-01-/extended-gcd-algorithm/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.729Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-09-29-uva10285-longest-run-on-a-snowboard/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.693Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-09-27-uva12186-another-crisis-dynamic-arrays-in-pascal/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.661Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-09-27-ubuntu-suddenly-no-wifi/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.625Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-09-24-uva-11584-partitioning-by-palindromes/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.593Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-09-23-uva437-the-tower-of-babylon/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.561Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-09-22-noip2011-expression/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.525Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2014-08-20-strange-extended-and-double-problem/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.493Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2012-09-29-sharing-a-keyboard-hook-in-delphi/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.469Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2012-09-29-impression-for-delphi-OOP/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.441Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2016-08-18-leaving-guangzhou/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.417Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2016-04-09-why-I-choose-to-climb-over-the-wall/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.393Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2016-02-13-thinking-in-the-day-before-lunar-new-year-of-2016/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.365Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2015-12-01-poems/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.333Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2015-11-28-life-needs-discovery/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.297Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2015-10-18-letter-to-parents/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.265Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2015-10-04-hobby-or-needs/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.233Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2015-06-12-secret/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.197Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2015-05-08-that-starry-night/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.165Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2015-03-03-ten-years/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.133Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2013-07-10-peeking-hongkong/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.105Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2013-03-26-the-last-dinner/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.081Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2013-02-01-passer-by/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.049Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2013-01-13-sigh-for-house-moving/</loc>
-    
-    <lastmod>2018-03-08T17:23:19.017Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2016-08-22-raining-in-ustc/</loc>
-    
-    <lastmod>2018-03-08T17:22:51.013Z</lastmod>
     
   </url>
   

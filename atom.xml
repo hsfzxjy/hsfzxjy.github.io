@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.hsfzxjy.site/"/>
-  <updated>2019-01-21T08:59:08.997Z</updated>
+  <updated>2019-01-21T11:25:56.174Z</updated>
   <id>http://blog.hsfzxjy.site/</id>
   
   <author>
@@ -16,15 +16,100 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>TaPL Notes -- Chapter 3 Untyped Arithmetic Expressions</title>
+    <link href="http://blog.hsfzxjy.site/2019-01-21-tapl-notes-untyped-arithmetic-expressions/"/>
+    <id>http://blog.hsfzxjy.site/2019-01-21-tapl-notes-untyped-arithmetic-expressions/</id>
+    <published>2019-01-21T10:40:00.000Z</published>
+    <updated>2019-01-21T11:25:56.174Z</updated>
+    
+    <content type="html"><![CDATA[<p>This chapter develop a small language of numbers and booleans, serving as a straightforward vehicle for the introduction of serveral fundamental concepts like, abstract syntax tree, evaluation and runtime errors.</p>
+<h2 id="Syntax"><a href="#Syntax" class="headerlink" title="Syntax"></a>Syntax</h2><h3 id="BNF-like-Definition"><a href="#BNF-like-Definition" class="headerlink" title="BNF-like Definition"></a>BNF-like Definition</h3><p>Terms of this language are defined as below:</p>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">t</span> <span class="symbol">:</span><span class="symbol">:</span>=</div><div class="line">    <span class="built_in">true</span></div><div class="line">    <span class="built_in">false</span></div><div class="line">    <span class="built_in">if</span> <span class="built_in">t</span> then <span class="built_in">t</span> else <span class="built_in">t</span></div><div class="line">    <span class="number">0</span></div><div class="line">    succ <span class="built_in">t</span></div><div class="line">    pred <span class="built_in">t</span></div><div class="line">    iszero <span class="built_in">t</span></div></pre></td></tr></table></figure>
+<p>where <code>t</code> is called <strong>meta-variable</strong>. At every point where the symbol <code>t</code> appears, we may substitute any terms.</p>
+<h3 id="Inductive-Definition"><a href="#Inductive-Definition" class="headerlink" title="Inductive Definition"></a>Inductive Definition</h3><p>The set of terms is the smallest set $T$ s.t.</p>
+<ol>
+<li>$\{0, true, false\} \subseteq T$</li>
+<li>if $t_1 \in T$, then ${succ\ t_1, pred\ t_1, iszero\ t_1} \subseteq T$</li>
+<li>if $t_1, t_2, t_3 \in T$, then $if\ t_1\ then\ t_2\ else\ t_3 \in T$</li>
+</ol>
+<h3 id="Concrete-Definition"><a href="#Concrete-Definition" class="headerlink" title="Concrete Definition"></a>Concrete Definition</h3><p>For each natural number $i$, define a set $S_i$ as follows:</p>
+<ul>
+<li>$S_0 = \phi$</li>
+<li>$S_{i+1} = \{0, true, false\} \cup \{succ\ t_1, pred\ t_1, iszero\ t_1 | t_1 \in S_i\} \cup \{if\ t_1\ then\ t_2\ else\ t_3 | t_j \in S_i\}$ </li>
+<li>$S = \cup_i S_i$</li>
+</ul>
+<p><strong>Three definition above are equivalent.</strong></p>
+<h2 id="Semantics"><a href="#Semantics" class="headerlink" title="Semantics"></a>Semantics</h2><p>The semantics of an language is how its terms are evaluated. Three approaches had been proposed to formalize semantics:</p>
+<ul>
+<li><strong>Operational Semantics (used here)</strong> specifies the behavior of a programming language by defining a simple abstract machine for it. This machine is “abstract” in the sense that it uses the terms of the language as its machine code, rather than some low-level microprocessor instruction set. For simple languages, a <em>state</em> of the machine is just a term, and the machine’s behavior is defined by a straition function that for each state, either gives the next state, or declares that the machine has halted. (字节码语义，Compare with languages like Python or Java)</li>
+<li><strong>Denotational Semantics</strong>. The meaning of a term is taken to be some mathematical object, instead of a sequence of machine states. Giving denotational semantics for a language consists of finding a collection of semantic domains and then defining an interpretation function mapping terms into elements of these domains.</li>
+<li><strong>Axiomatic semantics</strong> (omitted)</li>
+</ul>
+<h3 id="Semantics-with-only-Booleans"><a href="#Semantics-with-only-Booleans" class="headerlink" title="Semantics with only Booleans"></a>Semantics with only Booleans</h3><p>Firstly we consider a simpler situation where only booleans get involved.</p>
+<p>The evaluation process can be summarized as three rules:</p>
+<figure class="highlight sml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> <span class="literal">true</span> <span class="keyword">then</span> t2 <span class="keyword">else</span> t3 -&gt; t2   [<span class="type">E</span>-<span class="type">IFTRUE</span>]</div><div class="line"><span class="keyword">if</span> <span class="literal">false</span> <span class="keyword">then</span> t2 <span class="keyword">else</span> t3 -&gt; t3  [<span class="type">E</span>-<span class="type">IFFALSE</span>]</div><div class="line">t1 -&gt; t1' || <span class="keyword">if</span> t1 <span class="keyword">then</span> t2 <span class="keyword">else</span> t3 -&gt; <span class="keyword">if</span> t1' <span class="keyword">else</span> t2 <span class="keyword">then</span> t3 [<span class="type">E</span>-<span class="type">IF</span>]</div></pre></td></tr></table></figure>
+<p>A rule consists of one <em>conclusion</em> and zero or more <em>premises</em>. For example, in rule <code>E-IF</code>, <code>t1 -&gt; t1&#39;</code> is the premise and <code>if t1 then t2 else t3 -&gt; if t1&#39; else t2 then t3</code> the conclusion. </p>
+<blockquote>
+<p>Note that in textbook premises are written above conclusion with a horizontal line in the middle, but here I use a notation that is more convenient to type in.</p>
+</blockquote>
+<p>A subset of terms should be defined as <em>possible final results of evaluation</em>, which are called <strong>values</strong>. Here they are just the constants <code>true, false, 0</code>.</p>
+<blockquote>
+<p>Note that $\rightarrow$ can be viewed as a binary relation over $T$, i.e., a subset of $T \times T$.</p>
+<p>The third rule <code>E-IF</code> specifies the evaluation order of an expression, i.e., clauses are always evaluated after their guards.</p>
+</blockquote>
+<p><strong>DEFINITION instance of an inference rule</strong> An instance of an inference rule is obtained by consistently replacing each metavariable by the same term in the rule’s conclusion and all its premises (if any). e.g., <code>if true then true else (if false then false else false) -&gt; true</code> is an instance if <code>E-IFTRUE</code>.</p>
+<p><strong>DEFINITION satisfy</strong> A rule is satisfied by a relation if, for each instance of the rule, either the conclusion is in the relation or <strong>one of the premises is not</strong> (to ensure evaluation can proceed).</p>
+<p><strong>DEFINITION one-step evaluation relation</strong> denoted as $\rightarrow$, is the smallest binary relation on terms satisfying the three rules. When the pair <code>(t, t&#39;)</code> is in the relation, we say that <code>t -&gt; t&#39;</code> is <em>derivable</em>. (“smallest” implies that <code>t -&gt; t&#39;</code> is derivable iff it is justified by the rules).</p>
+<p><strong>DEFINITION normal form</strong> A term $t$ is in normal form if no evaluation rule applies to it.</p>
+<p>Facts:</p>
+<ul>
+<li>Every value is in normal form.</li>
+<li>When only booleans involved, every term in normal form is a value.</li>
+<li>Every term can be evaluated in values.</li>
+</ul>
+<h3 id="Semantics-with-Booleans-and-Numbers"><a href="#Semantics-with-Booleans-and-Numbers" class="headerlink" title="Semantics with Booleans and Numbers"></a>Semantics with Booleans and Numbers</h3><p>Now we let numbers in. Several new rules should be added:</p>
+<figure class="highlight sml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">t1 -&gt; t1' || succ t1 -&gt; succ t1'    [<span class="type">E</span>-<span class="type">SUCC</span>]</div><div class="line">pred <span class="number">0</span> -&gt; <span class="number">0</span>                         [<span class="type">E</span>-<span class="type">PREDZERO</span>]</div><div class="line">pred (succ nv1) -&gt; nv1              [<span class="type">E_PREDSUCC</span>]</div><div class="line">t1 -&gt; t1' || pred t1 -&gt; pred t1'    [<span class="type">E</span>-<span class="type">PRED</span>]</div><div class="line">iszero <span class="number">0</span> -&gt; <span class="literal">true</span>                    [<span class="type">E</span>-<span class="type">ISZERO</span>]</div><div class="line">iszero (succ nv1) -&gt; <span class="literal">false</span>          [<span class="type">E</span>-<span class="type">ISZEROSUCC</span>]</div><div class="line">t1 -&gt; t1' || iszero t1 -&gt; iszero t1'[<span class="type">E</span>-<span class="type">ISZERO</span>]</div></pre></td></tr></table></figure>
+<p>and new values:</p>
+<figure class="highlight bnf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">v ::= </div><div class="line">    ...</div><div class="line">    nv</div><div class="line"></div><div class="line">nv ::=</div><div class="line">    0</div><div class="line">    succ nv  # positive integer</div></pre></td></tr></table></figure>
+<p><strong>DEFINITION stuck term</strong> A closed term is stuck if it is in normal form but not a value. e.g. <code>if 0 then true else true</code> or <code>iszero false</code>.</p>
+<p>Stuckness gives us a simple notion of run-time error for this simple machine. Intuitively, it characterizes the situation where the operational semantics does not know what to do because the program has reached a “meaningless state”.</p>
+<blockquote>
+<p>Stuckness can be prevented by introducing a new term called $wrong$ and augment the opereational semantics with rules that explicitly generate $wrong$ ain all the situations where the present semantics gets stuck.</p>
+</blockquote>
+<h3 id="Evaluation-Theorems"><a href="#Evaluation-Theorems" class="headerlink" title="Evaluation Theorems"></a>Evaluation Theorems</h3><blockquote>
+<p>If $t \rightarrow t1$ and $t \rightarrow t2$, then $t1 = t2$. (Can be proved by performing induction on the structure of <code>t</code>)</p>
+</blockquote>
+<h3 id="Other-Forms-of-Evaluation-Relation"><a href="#Other-Forms-of-Evaluation-Relation" class="headerlink" title="Other Forms of Evaluation Relation"></a>Other Forms of Evaluation Relation</h3><p><strong>DEFINITION mutli-step evaluation</strong> $\rightarrow^*$ is the reflexive, transitive closure of one-step evaluation. </p>
+<blockquote>
+<p>If $t \rightarrow^\star t1$ and $t \rightarrow^\star t2$, where $t1$ and $t2$ are in normal form, then $t1 = t2$.</p>
+<p>For every term $t$ there is some normal form $t’$ s.t. $t \rightarrow^\star t’$.</p>
+</blockquote>
+<p><strong>DEFINITION big-step evaluation</strong> (omitted) formulates the notion of “this term evaluates to that final value”.</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;This chapter develop a small language of numbers and booleans, serving as a straightforward vehicle for the introduction of serveral fund
+    
+    </summary>
+    
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+    
+    
+      <category term="TaPL" scheme="http://blog.hsfzxjy.site/tags/TaPL/"/>
+    
+  </entry>
+  
+  <entry>
     <title>SS Configuration</title>
     <link href="http://blog.hsfzxjy.site/2019-01-21-ss/"/>
     <id>http://blog.hsfzxjy.site/2019-01-21-ss/</id>
-    <published>2019-01-20T16:00:00.000Z</published>
-    <updated>2019-01-21T08:59:08.997Z</updated>
+    <published>2019-01-21T08:50:00.000Z</published>
+    <updated>2019-01-21T11:17:28.562Z</updated>
     
     <content type="html"><![CDATA[<h2 id="SS-Client"><a href="#SS-Client" class="headerlink" title="SS Client"></a>SS Client</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ [sudo] pip3 install shadowsocks</div></pre></td></tr></table></figure>
 <p><code>/etc/ss.json</code>:</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    "server": "&lt;server ip&gt;",</div><div class="line">    "server_port": &lt;server port&gt;, // must be Number</div><div class="line">    "password": "&lt;password&gt;",</div><div class="line">    "local_address":"127.0.0.1",</div><div class="line">    "local_port":1081,</div><div class="line">    "timeout":300,</div><div class="line">    "method":"aes-256-cfb",</div><div class="line">    "fast_open":false</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="string">"server"</span>: <span class="string">"&lt;server ip&gt;"</span>,</div><div class="line">    <span class="string">"server_port"</span>: <span class="string">"&lt;server port&gt;"</span>, <span class="comment">// must be Number</span></div><div class="line">    <span class="string">"password"</span>: <span class="string">"&lt;password&gt;"</span>,</div><div class="line">    <span class="string">"local_address"</span>:<span class="string">"127.0.0.1"</span>,</div><div class="line">    <span class="string">"local_port"</span>:<span class="number">1081</span>,</div><div class="line">    <span class="string">"timeout"</span>:<span class="number">300</span>,</div><div class="line">    <span class="string">"method"</span>:<span class="string">"aes-256-cfb"</span>,</div><div class="line">    <span class="string">"fast_open"</span>:<span class="literal">false</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ [sudo] sslocal -c /etc/ss.json <span class="_">-d</span> start</div></pre></td></tr></table></figure>
 <h2 id="proxychains"><a href="#proxychains" class="headerlink" title="proxychains"></a>proxychains</h2><p>clone repository from <code>https://github.com/rofl0r/proxychains-ng</code>, <code>make &amp;&amp; sudo make install</code>.</p>
 <p>Append following lines to <code>/etc/proxychains.conf</code>:</p>
@@ -39,7 +124,7 @@
     
     </summary>
     
-      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
     
     
       <category term="SS" scheme="http://blog.hsfzxjy.site/tags/SS/"/>
@@ -53,7 +138,7 @@
     <link href="http://blog.hsfzxjy.site/2019-01-07-notitle/"/>
     <id>http://blog.hsfzxjy.site/2019-01-07-notitle/</id>
     <published>2019-01-06T16:00:00.000Z</published>
-    <updated>2019-01-21T04:44:30.216Z</updated>
+    <updated>2019-01-21T09:07:41.189Z</updated>
     
     <content type="html"><![CDATA[<p>前几天和阿三聚了一餐，这大概是一年到头来我们为数不多能好好聊天的时间。</p>
 <p>我们谈了很多，从考试到动漫到未来。令人惊讶的是，他表现出了一种忧虑，对未来的忧虑。在我看来这是很少见的。忧虑的一方面是关于短期的未来，有CSST面试的压力，以及成堆的考试；另一方面是更遥远的未来，暑研或是升学或是就业。再往前两天的团队聚餐上大家的讨论，关于资本寒冬的，关于机器学习的逐渐饱和，都给我们留下了深刻的印象。</p>
@@ -73,7 +158,7 @@
     
     </summary>
     
-      <category term="Essays" scheme="http://blog.hsfzxjy.site/categories/Essays/"/>
+      <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
     
     
   </entry>
@@ -83,7 +168,7 @@
     <link href="http://blog.hsfzxjy.site/2019-01-06-rust-sublime/"/>
     <id>http://blog.hsfzxjy.site/2019-01-06-rust-sublime/</id>
     <published>2019-01-05T16:00:00.000Z</published>
-    <updated>2019-01-06T09:00:11.954Z</updated>
+    <updated>2019-01-21T09:06:17.133Z</updated>
     
     <content type="html"><![CDATA[<h2 id="rustup-v-s-cargo"><a href="#rustup-v-s-cargo" class="headerlink" title="rustup v.s. cargo"></a>rustup v.s. cargo</h2><p>cargo 是 Rust <strong>最底层的</strong>包管理器，类似 npm 或 pip。</p>
 <p>rustup 是 Rust 的工具链管理器，允许开发者在多个不同版本的工具间切换。所谓工具不仅包括 rustc 和 cargo，还包括 rustfmt、racer 等一系列辅助开发的模块。类似于 Anaconda、Pipenv 之于 Python，或是 n 之于 Node.js。</p>
@@ -119,7 +204,7 @@
     
     </summary>
     
-      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
     
     
       <category term="Rust" scheme="http://blog.hsfzxjy.site/tags/Rust/"/>
@@ -131,7 +216,7 @@
     <link href="http://blog.hsfzxjy.site/2018-12-31-april-illness/"/>
     <id>http://blog.hsfzxjy.site/2018-12-31-april-illness/</id>
     <published>2018-12-30T16:00:00.000Z</published>
-    <updated>2018-12-31T07:31:40.782Z</updated>
+    <updated>2019-01-21T09:07:41.189Z</updated>
     
     <content type="html"><![CDATA[<p>四月，我大病了一场。先是呼吸时胸口隐隐作痛，我以为是运动伤害，毕竟始发时刚剧烈地骑完车。后而逐渐变成呼吸困难，镜子里的自己嘴唇发紫，睡觉时也像是有人扼着喉咙。我开始在傍晚时发烧。</p>
 <p>清明前后，春寒未散。宿舍已没有了暖气。清明节我在宿舍躺了两天，睡到饭点起来吃，吃完继续睡。两个舍友出去玩了，合肥一直在下雨，屋里甚是寒冷。</p>
@@ -151,7 +236,7 @@
     
     </summary>
     
-      <category term="Essays" scheme="http://blog.hsfzxjy.site/categories/Essays/"/>
+      <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
     
     
   </entry>
@@ -161,7 +246,7 @@
     <link href="http://blog.hsfzxjy.site/2018-12-15-haskell-state-monad/"/>
     <id>http://blog.hsfzxjy.site/2018-12-15-haskell-state-monad/</id>
     <published>2018-12-14T16:00:00.000Z</published>
-    <updated>2018-12-15T09:16:19.096Z</updated>
+    <updated>2019-01-21T09:06:17.133Z</updated>
     
     <content type="html"><![CDATA[<p>一个依赖于外部状态 <code>s</code> 的伪函数 <code>f&#39; :: a -&gt; b</code>，我们可以将其改写为 <code>f :: a -&gt; s -&gt; (b, s)</code> 使其良定。即，在输入输出中显式传递状态 <code>s</code>。现在，我们需要利用 Monad 将状态传递过程隐藏起来。</p>
 <p>注意到，输出值 <code>(b, s)</code> 中的末状态 <code>s</code> 不仅依赖于输入状态，更依赖于之前更改过状态的一系列函数及其逻辑。因此我们不能简单地将 Monad 定义为 <code>(a, s)</code> 类似的形式，否则两个函数用 <code>&gt;=&gt;</code> 结合的结果将与函数逻辑无关，这与我们的期望不符。</p>
@@ -183,7 +268,7 @@
     
     </summary>
     
-      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
     
     
       <category term="Haskell" scheme="http://blog.hsfzxjy.site/tags/Haskell/"/>
@@ -195,7 +280,7 @@
     <link href="http://blog.hsfzxjy.site/2018-12-14-haskell-monad/"/>
     <id>http://blog.hsfzxjy.site/2018-12-14-haskell-monad/</id>
     <published>2018-12-13T16:00:00.000Z</published>
-    <updated>2018-12-15T08:27:43.637Z</updated>
+    <updated>2019-01-21T09:06:17.133Z</updated>
     
     <content type="html"><![CDATA[<h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>pure functions 看似完美，但却不能模拟现实世界中的诸多任务。这是由于 pure functions 是良定的映射，对于特定的输入值会返回唯一的输出。这种模式在面对如下任务时会显得苍白无力：</p>
 <ul>
@@ -264,7 +349,7 @@
     
     </summary>
     
-      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
     
     
       <category term="Haskell" scheme="http://blog.hsfzxjy.site/tags/Haskell/"/>
@@ -276,7 +361,7 @@
     <link href="http://blog.hsfzxjy.site/2018-11-18-haskell-applicative/"/>
     <id>http://blog.hsfzxjy.site/2018-11-18-haskell-applicative/</id>
     <published>2018-11-18T02:29:00.000Z</published>
-    <updated>2018-11-21T06:25:19.775Z</updated>
+    <updated>2019-01-21T09:06:18.349Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Motivation"><a href="#Motivation" class="headerlink" title="Motivation"></a>Motivation</h2><p><code>Functor</code> solves the problem of mapping regular one-parameter functions into a sub-category, but that’s not easy for functions with more than one parameters.</p>
 <p>Let’s consider a function with two parameters <code>f :: a -&gt; b -&gt; c</code>, which can also read as <code>a -&gt; (b -&gt; c)</code>. Applying <code>fmap</code> on <code>f</code>, we will get <code>fmap f :: m a -&gt; m (b -&gt; c)</code>. There’s still some distance from what we want: <code>f&#39; :: m a -&gt; m b -&gt; m c</code>. To get <code>f&#39;</code>, we need a transform from <code>m (b -&gt; c)</code> to <code>m b -&gt; m c</code>. Here we denote it as <code>&lt;*&gt; :: m （b -&gt; c) -&gt; m b -&gt; m c</code>. We will later show that such transform is universal for functions with more parameters.</p>
@@ -303,7 +388,7 @@
     
     </summary>
     
-      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
     
     
       <category term="Haskell" scheme="http://blog.hsfzxjy.site/tags/Haskell/"/>
@@ -315,7 +400,7 @@
     <link href="http://blog.hsfzxjy.site/2018-11-18-haskell-category-theory-and-functor/"/>
     <id>http://blog.hsfzxjy.site/2018-11-18-haskell-category-theory-and-functor/</id>
     <published>2018-11-18T00:50:00.000Z</published>
-    <updated>2018-11-18T08:55:22.260Z</updated>
+    <updated>2019-01-21T09:06:17.133Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Category-Theory"><a href="#Category-Theory" class="headerlink" title="Category Theory"></a>Category Theory</h2><p>A category has three components:</p>
 <ul>
@@ -356,7 +441,7 @@
     
     </summary>
     
-      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
     
     
       <category term="Haskell" scheme="http://blog.hsfzxjy.site/tags/Haskell/"/>
@@ -368,7 +453,7 @@
     <link href="http://blog.hsfzxjy.site/2018-11-16-haskell-data-type-newtype/"/>
     <id>http://blog.hsfzxjy.site/2018-11-16-haskell-data-type-newtype/</id>
     <published>2018-11-15T16:00:00.000Z</published>
-    <updated>2018-11-16T06:12:22.160Z</updated>
+    <updated>2019-01-21T09:06:17.133Z</updated>
     
     <content type="html"><![CDATA[<p>新类型有自己的 data constructor （literals 可以看成特殊的 data constructor），由这一点来区分是否创建了新类型。</p>
 <ul>
@@ -389,7 +474,7 @@
     
     </summary>
     
-      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
     
     
       <category term="Haskell" scheme="http://blog.hsfzxjy.site/tags/Haskell/"/>
@@ -401,7 +486,7 @@
     <link href="http://blog.hsfzxjy.site/2018-11-10-haskell-fold/"/>
     <id>http://blog.hsfzxjy.site/2018-11-10-haskell-fold/</id>
     <published>2018-11-09T16:00:00.000Z</published>
-    <updated>2018-11-14T05:28:14.870Z</updated>
+    <updated>2019-01-21T09:06:18.425Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Prelude-foldl"><a href="#Prelude-foldl" class="headerlink" title="Prelude.foldl"></a>Prelude.foldl</h2><p><code>foldl</code> 为 left-associative folding。</p>
 <figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="title">foldl</span> :: (b -&gt; a -&gt; b) -&gt; b -&gt; [a] -&gt; b</div><div class="line"><span class="title">foldl</span> f acc [] = acc</div><div class="line"><span class="title">foldl</span> f acc (x:xs) = foldl f (f acc x) xs</div></pre></td></tr></table></figure>
@@ -438,7 +523,7 @@
     
     </summary>
     
-      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
     
     
       <category term="Haskell" scheme="http://blog.hsfzxjy.site/tags/Haskell/"/>
@@ -450,7 +535,7 @@
     <link href="http://blog.hsfzxjy.site/2018-06-11-download-in-ubuntu-with-aria/"/>
     <id>http://blog.hsfzxjy.site/2018-06-11-download-in-ubuntu-with-aria/</id>
     <published>2018-06-10T16:00:00.000Z</published>
-    <updated>2018-06-11T05:08:04.832Z</updated>
+    <updated>2019-01-21T09:06:17.133Z</updated>
     
     <content type="html"><![CDATA[<p>可以实现满带宽下载。</p>
 <h1 id="配置-Aria2"><a href="#配置-Aria2" class="headerlink" title="配置 Aria2"></a>配置 Aria2</h1><p>从 <a href="https://github.com/aria2/aria2/releases" target="_blank" rel="noopener">Github</a> 下载源码 <code>./configure &amp;&amp; make -j8 &amp;&amp; sudo make install</code>。</p>
@@ -467,7 +552,7 @@
     
     </summary>
     
-      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
     
     
       <category term="Ubuntu" scheme="http://blog.hsfzxjy.site/tags/Ubuntu/"/>
@@ -479,7 +564,7 @@
     <link href="http://blog.hsfzxjy.site/2018-03-10-python-gil-and-threads/"/>
     <id>http://blog.hsfzxjy.site/2018-03-10-python-gil-and-threads/</id>
     <published>2018-03-09T16:00:00.000Z</published>
-    <updated>2018-06-06T09:53:03.405Z</updated>
+    <updated>2019-01-21T09:06:18.349Z</updated>
     
     <content type="html"><![CDATA[<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><ul>
 <li>作者电脑 CPU 为 4 核，因此使用 4 个线程测试是合理的</li>
@@ -570,7 +655,7 @@
     
     </summary>
     
-      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
     
     
       <category term="Python" scheme="http://blog.hsfzxjy.site/tags/Python/"/>
@@ -586,7 +671,7 @@
     <link href="http://blog.hsfzxjy.site/2018-03-08-RMPE-Notes/"/>
     <id>http://blog.hsfzxjy.site/2018-03-08-RMPE-Notes/</id>
     <published>2018-03-07T16:00:00.000Z</published>
-    <updated>2018-03-08T17:23:20.929Z</updated>
+    <updated>2019-01-21T09:06:17.133Z</updated>
     
     <content type="html"><![CDATA[<p>论文地址：<a href="https://arxiv.org/pdf/1612.00137" target="_blank" rel="noopener">https://arxiv.org/pdf/1612.00137</a></p>
 <a id="more"></a>
@@ -629,7 +714,7 @@
     
     </summary>
     
-      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
     
     
       <category term="RMPE" scheme="http://blog.hsfzxjy.site/tags/RMPE/"/>
@@ -643,7 +728,7 @@
     <link href="http://blog.hsfzxjy.site/2017-08-17-caveats-for-signal-handler-in-python/"/>
     <id>http://blog.hsfzxjy.site/2017-08-17-caveats-for-signal-handler-in-python/</id>
     <published>2017-08-16T16:00:00.000Z</published>
-    <updated>2018-03-08T17:23:20.897Z</updated>
+    <updated>2019-01-21T09:06:17.133Z</updated>
     
     <content type="html"><![CDATA[<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>前几天工作时遇到了一个匪夷所思的问题。经过几次尝试后问题得以解决，但问题产生的原因却仍令人费解。查找 SO 无果，我决定翻看 Python 的源码。断断续续地研究了几天，终于恍然大悟。撰此文以记。</p>
 <a id="more"></a>
@@ -738,7 +823,7 @@
     
     </summary>
     
-      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
     
     
       <category term="Python" scheme="http://blog.hsfzxjy.site/tags/Python/"/>
@@ -754,7 +839,7 @@
     <link href="http://blog.hsfzxjy.site/2017-07-03-linux-file-permissions/"/>
     <id>http://blog.hsfzxjy.site/2017-07-03-linux-file-permissions/</id>
     <published>2017-07-02T16:00:00.000Z</published>
-    <updated>2018-03-08T17:23:20.861Z</updated>
+    <updated>2019-01-21T09:06:17.133Z</updated>
     
     <content type="html"><![CDATA[<h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><p>Linux 中的每一个文件都有其 <strong>所属用户</strong> 及 <strong>所属用户组</strong>，根据这两个属性可将文件访问者分为三类：<strong>所属用户自己</strong>、<strong>所属用户组中的用户</strong> 和 <strong>其他用户</strong>，我们可以针对不同的访问者设置不同的用户权限。</p>
 <p>“访问”可分为三类：<strong>读</strong>、<strong>写</strong> 与 <strong>执行</strong>。我们可以用 <code>ls -l</code> 命令查看一个文件的权限：</p>
@@ -789,7 +874,7 @@
     
     </summary>
     
-      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
     
     
       <category term="Linux" scheme="http://blog.hsfzxjy.site/tags/Linux/"/>
@@ -803,7 +888,7 @@
     <link href="http://blog.hsfzxjy.site/2017-02-25-HSFZMUN-4.0-configuration/"/>
     <id>http://blog.hsfzxjy.site/2017-02-25-HSFZMUN-4.0-configuration/</id>
     <published>2017-02-24T16:00:00.000Z</published>
-    <updated>2018-03-08T17:23:20.829Z</updated>
+    <updated>2019-01-21T09:06:17.133Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>技术流水账一篇，记录踩过的坑</p>
@@ -870,7 +955,7 @@
     
     </summary>
     
-      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
     
     
       <category term="Ubuntu" scheme="http://blog.hsfzxjy.site/tags/Ubuntu/"/>
@@ -888,7 +973,7 @@
     <link href="http://blog.hsfzxjy.site/2016-08-22-raining-in-ustc/"/>
     <id>http://blog.hsfzxjy.site/2016-08-22-raining-in-ustc/</id>
     <published>2016-08-21T16:00:00.000Z</published>
-    <updated>2018-03-08T17:22:51.013Z</updated>
+    <updated>2019-01-21T09:07:41.189Z</updated>
     
     <content type="html"><![CDATA[<p>从昏睡中惊醒——现在是下午，屋内却很昏暗。屋外，隐约有一阵持续的背景噪音，我拉开窗帘，只见白茫茫的一片。</p>
 <p>下雨了，而且是大暴雨。</p>
@@ -912,7 +997,7 @@
     
     </summary>
     
-      <category term="Essays" scheme="http://blog.hsfzxjy.site/categories/Essays/"/>
+      <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
     
     
       <category term="生活杂感" scheme="http://blog.hsfzxjy.site/tags/%E7%94%9F%E6%B4%BB%E6%9D%82%E6%84%9F/"/>
@@ -924,7 +1009,7 @@
     <link href="http://blog.hsfzxjy.site/2016-08-18-leaving-guangzhou/"/>
     <id>http://blog.hsfzxjy.site/2016-08-18-leaving-guangzhou/</id>
     <published>2016-08-17T16:00:00.000Z</published>
-    <updated>2018-03-08T17:23:19.417Z</updated>
+    <updated>2019-01-21T09:07:41.189Z</updated>
     
     <content type="html"><![CDATA[<p> 明天就要走了。</p>
 <p> 我贪婪地呼吸着这座城市，想要记住一切。</p>
@@ -951,7 +1036,7 @@
     
     </summary>
     
-      <category term="Essays" scheme="http://blog.hsfzxjy.site/categories/Essays/"/>
+      <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
     
     
       <category term="生活杂感" scheme="http://blog.hsfzxjy.site/tags/%E7%94%9F%E6%B4%BB%E6%9D%82%E6%84%9F/"/>
@@ -963,7 +1048,7 @@
     <link href="http://blog.hsfzxjy.site/2016-08-03-uncover-the-secret-of-fast-inverse-square-root-algorithm/"/>
     <id>http://blog.hsfzxjy.site/2016-08-03-uncover-the-secret-of-fast-inverse-square-root-algorithm/</id>
     <published>2016-08-02T16:00:00.000Z</published>
-    <updated>2018-03-08T17:23:20.797Z</updated>
+    <updated>2019-01-21T09:06:17.149Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>神的时代已离去<br>神的故事却化为传说<br>流落凡间<br>供凡人传颂、膜拜</p>
@@ -1088,74 +1173,10 @@
     
     </summary>
     
-      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
     
     
       <category term="Fast Inverse Square Root Algorithm" scheme="http://blog.hsfzxjy.site/tags/Fast-Inverse-Square-Root-Algorithm/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>神坑·Python 装饰类无限递归</title>
-    <link href="http://blog.hsfzxjy.site/2016-07-30-recursively-calling-when-decorating-a-python-class/"/>
-    <id>http://blog.hsfzxjy.site/2016-07-30-recursively-calling-when-decorating-a-python-class/</id>
-    <published>2016-07-29T16:00:00.000Z</published>
-    <updated>2018-03-08T17:23:20.761Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>《神坑》系列将会不定期更新一些可遇而不可求的坑<br>防止他人入坑，也防止自己再次入坑</p>
-</blockquote>
-<h2 id="简化版问题"><a href="#简化版问题" class="headerlink" title="简化版问题"></a>简化版问题</h2><p>现有两个 <code>View</code> 类：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">View</span><span class="params">(object)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">method</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="comment"># Do something...</span></div><div class="line">        <span class="keyword">pass</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ChildView</span><span class="params">(View)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">method</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="comment"># Do something else ...</span></div><div class="line">        super(ChildView, self).method()</div></pre></td></tr></table></figure>
-<p>以及一个用于修饰该类的装饰器函数 <code>register</code>——用于装饰类的装饰器很常见（如 <code>django.contrib.admin</code> 的 <code>register</code>），通常可极大地减少定义相似类时的工作量：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Mixin</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="keyword">pass</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">register</span><span class="params">(cls)</span>:</span></div><div class="line"></div><div class="line">    <span class="keyword">return</span> type(</div><div class="line">        <span class="string">'DecoratedView'</span>,</div><div class="line">        (Mixin, cls),</div><div class="line">        &#123;&#125;</div><div class="line">    )</div></pre></td></tr></table></figure>
-<p>这个装饰器为被装饰类附加上一个额外的父类 <code>Mixin</code>，以增添自定义的功能。</p>
-<p>完整的代码如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Mixin</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="keyword">pass</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">register</span><span class="params">(cls)</span>:</span></div><div class="line"></div><div class="line">    <span class="keyword">return</span> type(</div><div class="line">        cls.__name__,</div><div class="line">        (Mixin, cls),</div><div class="line">        &#123;&#125;</div><div class="line">    )</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">View</span><span class="params">(object)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">method</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="comment"># Do something...</span></div><div class="line">        <span class="keyword">pass</span></div><div class="line"></div><div class="line"><span class="meta">@register</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ChildView</span><span class="params">(View)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">method</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="comment"># Do something else ...</span></div><div class="line">        super(ChildView, self).method()</div></pre></td></tr></table></figure>
-<p>看上去似乎没什么问题。然而一旦调用 <code>View().method()</code>，却会报出诡异的 无限递归 错误：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ...</span></div><div class="line">File <span class="string">"test.py"</span>, line <span class="number">23</span>, <span class="keyword">in</span> method</div><div class="line">  super(ChildView, self).method()</div><div class="line">File <span class="string">"test.py"</span>, line <span class="number">23</span>, <span class="keyword">in</span> method</div><div class="line">  super(ChildView, self).method()</div><div class="line">File <span class="string">"test.py"</span>, line <span class="number">23</span>, <span class="keyword">in</span> method</div><div class="line">  super(ChildView, self).method()</div><div class="line">RuntimeError: maximum recursion depth exceeded <span class="keyword">while</span> calling a Python object</div></pre></td></tr></table></figure>
-<p>【一脸懵逼】</p>
-<h2 id="猜想-amp-验证"><a href="#猜想-amp-验证" class="headerlink" title="猜想 &amp; 验证"></a>猜想 &amp; 验证</h2><p>从 Traceback 中可以发现：是 <code>super(ChildView, self).method()</code> 在不停地调用自己——这着实让我吃了一惊，因为 <strong>按理说 <code>super</code> 应该沿着继承链查找父类</strong>，可为什么在这里 <code>super</code> 神秘地失效了呢？</p>
-<p>为了验证 <code>super(...).method</code> 的指向，可以尝试将该语句改为 <code>print(super(ChildView, self).method)</code>，并观察结果：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;bound method ChildView.method of &lt;__main__.ChildView object at <span class="number">0xb70fec6c</span>&gt;&gt;</div></pre></td></tr></table></figure>
-<p>输出表明： <strong><code>method</code> 的指向确实有误</strong>，此处本应为 <code>View.method</code>。</p>
-<p><code>super</code> 是 python 内置方法，肯定不会出错。那，会不会是 <code>super</code> 的参数有误呢？</p>
-<p><code>super</code> 的签名为 <code>super(cls, instance)</code>，宏观效果为 <strong>遍历 <code>cls</code> 的继承链查找父类方法，并以 <code>instance</code> 作为 <code>self</code> 进行调用</strong>。如今查找结果有误，说明 <strong>继承链是错误的</strong>，因而极有可能是 <code>cls</code> 出错。</p>
-<p>因此，有必要探测一下 <code>ChildView</code> 的指向。在 <code>method</code> 中加上一句： <code>print(ChildView)</code>：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;<span class="class"><span class="keyword">class</span> '<span class="title">__main__</span>.<span class="title">DecoratedView</span>'&gt;</span></div></pre></td></tr></table></figure>
-<p>原来，作用域中的 <code>ChildView</code> 已经被改变了。</p>
-<h2 id="真相"><a href="#真相" class="headerlink" title="真相"></a>真相</h2><p>一切都源于装饰器语法糖。我们回忆一下装饰器的等价语法：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@decorator</span></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Class</span>:</span></div><div class="line">    <span class="keyword">pass</span></div></pre></td></tr></table></figure>
-<p>等价于</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Class</span>:</span></div><div class="line">    <span class="keyword">pass</span></div><div class="line"></div><div class="line">Class = decorator(Class)</div></pre></td></tr></table></figure>
-<p>这说明：<strong>装饰器会更改该作用域内被装饰名称的指向</strong>。</p>
-<p>这本来没什么，但和 <code>super</code> 一起使用时却会出问题。通常情况下我们会将本类的名称传给 <code>super</code>（在这里为 <code>ChildView</code>），而本类名称和装饰器语法存在于同一作用域中，从而在装饰时被一同修改了（在本例中指向了子类 <code>DecoratedView</code>），进而使 <code>super(...).method</code> 指向了 <code>DecoratedView</code> 的最近祖先也就是 <code>ChildView</code> 自身的 <code>method</code> 方法，导致递归调用。</p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>找到了病因，就不难想到解决方法了。核心思路就是：<strong>不要更改被装饰名称的引用</strong>。</p>
-<p>如果你只是想在内部使用装饰后的新类，可以在装饰器方法中使用 <code>DecoratedView</code>，而在装饰器返回时 <code>return cls</code>，以保持引用不变：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">register</span><span class="params">(cls)</span>:</span></div><div class="line"></div><div class="line">    decorated = type(</div><div class="line">        <span class="string">'DecoratedView'</span>,</div><div class="line">        (Mixin, cls),</div><div class="line">        &#123;&#125;</div><div class="line">    )</div><div class="line"></div><div class="line">    <span class="comment"># Do something with decorated</span></div><div class="line"></div><div class="line">    <span class="keyword">return</span> cls</div></pre></td></tr></table></figure>
-<p>这种方法的缺点是：从外部无法使用 <code>ChildView.another_method</code> 调用 <code>Mixin</code> 上的方法。可如果真的有这样的需求，可以采用另一个解决方案：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">register</span><span class="params">(cls)</span>:</span></div><div class="line"></div><div class="line">    cls.another_method = Mixin.another_method</div><div class="line">    <span class="keyword">return</span> cls</div></pre></td></tr></table></figure>
-<p>即通过赋值的方式为 <code>cls</code> 添加 <code>Mixin</code> 上的新方法，缺点是较为繁琐。</p>
-<p>两种方法各有利弊，要根据实际场景权衡使用。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;《神坑》系列将会不定期更新一些可遇而不可求的坑&lt;br&gt;防止他人入坑，也防止自己再次入坑&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h2 id=&quot;简化版问题&quot;&gt;&lt;a href=&quot;#简化版问题&quot; class=&quot;headerlink&quot; title=&quot;简化版问
-    
-    </summary>
-    
-      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
-    
-    
-      <category term="Python" scheme="http://blog.hsfzxjy.site/tags/Python/"/>
-    
-      <category term="Decorator Pattern" scheme="http://blog.hsfzxjy.site/tags/Decorator-Pattern/"/>
-    
-      <category term="Infinite Recursion" scheme="http://blog.hsfzxjy.site/tags/Infinite-Recursion/"/>
     
   </entry>
   
