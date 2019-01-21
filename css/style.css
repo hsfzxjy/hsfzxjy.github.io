@@ -239,23 +239,27 @@ a:focus {
       font-family: "LatoWeb", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important; }
     .post .post-content p {
       text-indent: 2em; }
+    .post .post-content.noindent p {
+      text-indent: 0; }
     .post .post-content p a {
       color: #399f70 !important; }
       .post .post-content p a:hover, .post .post-content p a:active {
         color: #4bbf8a !important; }
     .post .post-content h1 {
-      font-size: 1.6em; }
+      font-size: 1.6em;
+      font-weight: bold; }
     .post .post-content h2 {
-      font-size: 1.5em; }
+      font-size: 1.5em;
+      font-weight: bold; }
     .post .post-content h3 {
-      font-size: 1.4em; }
+      font-size: 1.35em; }
     .post .post-content h4 {
-      font-size: 1.3em; }
+      font-size: 1.25em; }
     .post .post-content h5 {
-      font-size: 1.2em; }
+      font-size: 1.15em; }
     .post .post-content h6 {
-      font-size: 1.1em; }
-    .post .post-content h1, .post .post-content h2, .post .post-content h3, .post .post-content h4, .post .post-content h5, .post .post-content h6 {
+      font-size: 1.05em; }
+    .post .post-content h3, .post .post-content h4, .post .post-content h5, .post .post-content h6 {
       font-weight: normal; }
     .post .post-content h2, .post .post-content h3 {
       margin: 1.4em 0 1.1em; }
@@ -299,7 +303,7 @@ a:focus {
       border-radius: 3px;
       margin: 1em 0; }
       .post .post-content ul li, .post .post-content ol li {
-        text-indent: .5em; }
+        text-indent: 0; }
       .post .post-content ul ul, .post .post-content ol ul {
         margin: 0; }
     .post .post-content table {
