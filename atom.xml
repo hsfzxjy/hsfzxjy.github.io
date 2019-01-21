@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.hsfzxjy.site/"/>
-  <updated>2019-01-21T04:44:30.216Z</updated>
+  <updated>2019-01-21T08:59:08.997Z</updated>
   <id>http://blog.hsfzxjy.site/</id>
   
   <author>
@@ -14,6 +14,39 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>SS Configuration</title>
+    <link href="http://blog.hsfzxjy.site/2019-01-21-ss/"/>
+    <id>http://blog.hsfzxjy.site/2019-01-21-ss/</id>
+    <published>2019-01-20T16:00:00.000Z</published>
+    <updated>2019-01-21T08:59:08.997Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="SS-Client"><a href="#SS-Client" class="headerlink" title="SS Client"></a>SS Client</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ [sudo] pip3 install shadowsocks</div></pre></td></tr></table></figure>
+<p><code>/etc/ss.json</code>:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    "server": "&lt;server ip&gt;",</div><div class="line">    "server_port": &lt;server port&gt;, // must be Number</div><div class="line">    "password": "&lt;password&gt;",</div><div class="line">    "local_address":"127.0.0.1",</div><div class="line">    "local_port":1081,</div><div class="line">    "timeout":300,</div><div class="line">    "method":"aes-256-cfb",</div><div class="line">    "fast_open":false</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ [sudo] sslocal -c /etc/ss.json <span class="_">-d</span> start</div></pre></td></tr></table></figure>
+<h2 id="proxychains"><a href="#proxychains" class="headerlink" title="proxychains"></a>proxychains</h2><p>clone repository from <code>https://github.com/rofl0r/proxychains-ng</code>, <code>make &amp;&amp; sudo make install</code>.</p>
+<p>Append following lines to <code>/etc/proxychains.conf</code>:</p>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[ProxyList]</div><div class="line"><span class="meta"># add proxy here ...</span></div><div class="line"><span class="meta"># meanwile</span></div><div class="line"><span class="meta"># defaults set to "tor"</span></div><div class="line">socks5	<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>	<span class="number">1081</span></div></pre></td></tr></table></figure>
+<p>Usage: <code>proxychains [command]</code>.</p>
+<h2 id="Chrome-Addons"><a href="#Chrome-Addons" class="headerlink" title="Chrome Addons"></a>Chrome Addons</h2><p><code>SwitchyOmega</code>.</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;SS-Client&quot;&gt;&lt;a href=&quot;#SS-Client&quot; class=&quot;headerlink&quot; title=&quot;SS Client&quot;&gt;&lt;/a&gt;SS Client&lt;/h2&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td
+    
+    </summary>
+    
+      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
+    
+    
+      <category term="SS" scheme="http://blog.hsfzxjy.site/tags/SS/"/>
+    
+      <category term="proxychains" scheme="http://blog.hsfzxjy.site/tags/proxychains/"/>
+    
+  </entry>
   
   <entry>
     <title>一月七日杂感</title>
@@ -471,7 +504,7 @@
 <h2 id="GIL"><a href="#GIL" class="headerlink" title="GIL"></a>GIL</h2><h3 id="GIL-是什么"><a href="#GIL-是什么" class="headerlink" title="GIL 是什么"></a>GIL 是什么</h3><p>GIL 的全名是 the Global Interpreter Lock （全局解释锁），是常规 python 解释器（当然，有些解释器没有）的核心部件。我们看看官方的解释：</p>
 <blockquote>
 <p>The Python interpreter is not fully thread-safe. In order to support multi-threaded Python programs, there’s a global lock, called <strong>the global interpreter lock</strong> or <strong>GIL</strong>, that must be held by the current thread before it can safely access Python objects.</p>
-<p>– via <a href="https://docs.python.org/3/c-api/init.html#thread-state-and-the-global-interpreter-lock" target="_blank" rel="noopener">Python 3.6.4 Documentation</a></p>
+<p>— via <a href="https://docs.python.org/3/c-api/init.html#thread-state-and-the-global-interpreter-lock" target="_blank" rel="noopener">Python 3.6.4 Documentation</a></p>
 </blockquote>
 <p>可见，这是一个用于保护 Python 内部对象的全局锁（在进程空间中唯一），保障了解释器的线程安全。</p>
 <p>这里用一个形象的例子来说明 GIL 的必要性（对资源抢占问题非常熟悉的可以跳过不看）：</p>
@@ -555,13 +588,13 @@
     <published>2018-03-07T16:00:00.000Z</published>
     <updated>2018-03-08T17:23:20.929Z</updated>
     
-    <content type="html"><![CDATA[<p>论文地址：<a href="https://arxiv.org/pdf/1612.00137" target="_blank" rel="external">https://arxiv.org/pdf/1612.00137</a></p>
+    <content type="html"><![CDATA[<p>论文地址：<a href="https://arxiv.org/pdf/1612.00137" target="_blank" rel="noopener">https://arxiv.org/pdf/1612.00137</a></p>
 <a id="more"></a>
 <h1 id="现有的-Pose-Estimation-解决方案"><a href="#现有的-Pose-Estimation-解决方案" class="headerlink" title="现有的 Pose Estimation 解决方案"></a>现有的 Pose Estimation 解决方案</h1><h2 id="Single-Person-Pose-Estimation-SPPE"><a href="#Single-Person-Pose-Estimation-SPPE" class="headerlink" title="Single Person Pose Estimation (SPPE)"></a>Single Person Pose Estimation (SPPE)</h2><p>只尝试估计一个人的姿势。早期曾使用诸如随机森林等机器学习方法，近几年采用深度学习方案，大致有如下几种：</p>
 <ul>
 <li>基于 DNN 的</li>
 <li>基于 CNN 的（如 RMPE 使用的 Hourglass）</li>
-<li>其他架构，如 <a href="http://ieeexplore.ieee.org/document/6909610/" target="_blank" rel="external">DeepPose</a></li>
+<li>其他架构，如 <a href="http://ieeexplore.ieee.org/document/6909610/" target="_blank" rel="noopener">DeepPose</a></li>
 </ul>
 <p>局限：</p>
 <p>要求人能被精准定位，对人的位置十分敏感。</p>
@@ -583,16 +616,16 @@
 </ol>
 <h2 id="实现（测试期）"><a href="#实现（测试期）" class="headerlink" title="实现（测试期）"></a>实现（测试期）</h2><p>在 Pipeline 中，有两个组件 Object Detector 和 SPPE 是被泛化，可以使用任何解决方案。在测试时，作者使用了 VGG-based SSD-512 作为 Object Detector，及 Stacked Hourglass Model 作为 SPPE 的实现，以达到最大的性能。</p>
 <h2 id="新组件的必要性"><a href="#新组件的必要性" class="headerlink" title="新组件的必要性"></a>新组件的必要性</h2><p>较于传统的架构，RMPE 引入了 STN (及附属的 Parallel SPPE)、Proposals Generator 及 Pose NMS 这三个新组件。在作者分别移除了它们后，RMPE 的性能显著下降。可见这些组件引入的必要性。</p>
-<h1 id="相关组件"><a href="#相关组件" class="headerlink" title="相关组件"></a>相关组件</h1><h2 id="Spatial-Transformer-Network-STN"><a href="#Spatial-Transformer-Network-STN" class="headerlink" title="Spatial Transformer Network (STN)"></a>Spatial Transformer Network (STN)</h2><p>原始论文：<a href="https://arxiv.org/abs/1506.02025" target="_blank" rel="external">https://arxiv.org/abs/1506.02025</a></p>
+<h1 id="相关组件"><a href="#相关组件" class="headerlink" title="相关组件"></a>相关组件</h1><h2 id="Spatial-Transformer-Network-STN"><a href="#Spatial-Transformer-Network-STN" class="headerlink" title="Spatial Transformer Network (STN)"></a>Spatial Transformer Network (STN)</h2><p>原始论文：<a href="https://arxiv.org/abs/1506.02025" target="_blank" rel="noopener">https://arxiv.org/abs/1506.02025</a></p>
 <p>由 Localization Net、Grid Generator、Sampler 三部分组成，其中 Localization Net 为一个传统的 CNN。STN 可以被嵌入在具体任务的 CNN 中以增强其性能。STN 不需要额外的监督学习，随着原来的网络一起训练即可。</p>
-<h2 id="Stacked-Hourglass-Network"><a href="#Stacked-Hourglass-Network" class="headerlink" title="Stacked Hourglass Network"></a>Stacked Hourglass Network</h2><p>原始论文：<a href="https://arxiv.org/abs/1603.06937" target="_blank" rel="external">https://arxiv.org/abs/1603.06937</a></p>
+<h2 id="Stacked-Hourglass-Network"><a href="#Stacked-Hourglass-Network" class="headerlink" title="Stacked Hourglass Network"></a>Stacked Hourglass Network</h2><p>原始论文：<a href="https://arxiv.org/abs/1603.06937" target="_blank" rel="noopener">https://arxiv.org/abs/1603.06937</a></p>
 <p>Hourglass 是一个基于 CNN 的 SPPE。采用若干“沙漏状”模块（先自上而下降低分辨率，再自下而上采样）堆叠，相比其他 CNN 有更好的性能。</p>
-<h1 id="相关数据集"><a href="#相关数据集" class="headerlink" title="相关数据集"></a>相关数据集</h1><p>MPII Human Pose Dataset: <a href="http://human-pose.mpi-inf.mpg.de/" target="_blank" rel="external">http://human-pose.mpi-inf.mpg.de/</a></p>
+<h1 id="相关数据集"><a href="#相关数据集" class="headerlink" title="相关数据集"></a>相关数据集</h1><p>MPII Human Pose Dataset: <a href="http://human-pose.mpi-inf.mpg.de/" target="_blank" rel="noopener">http://human-pose.mpi-inf.mpg.de/</a></p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;论文地址：&lt;a href=&quot;https://arxiv.org/pdf/1612.00137&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;https://arxiv.org/pdf/1612.00137&lt;/a&gt;&lt;/p&gt;
+      &lt;p&gt;论文地址：&lt;a href=&quot;https://arxiv.org/pdf/1612.00137&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://arxiv.org/pdf/1612.00137&lt;/a&gt;&lt;/p&gt;
     
     </summary>
     
@@ -619,7 +652,7 @@
 <li>Ubuntu 16.04 (64 bit)</li>
 <li>Python 3.6.2</li>
 </ul>
-<p>使用的 C 源码可以从 <a href="https://www.python.org/ftp/python/3.6.2/Python-3.6.2.tgz" target="_blank" rel="external">Python 官网</a> 获取。</p>
+<p>使用的 C 源码可以从 <a href="https://www.python.org/ftp/python/3.6.2/Python-3.6.2.tgz" target="_blank" rel="noopener">Python 官网</a> 获取。</p>
 <h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>工作时用到了 celery 作为异步任务队列，为方便调试，我写了一个脚本用以启动/关闭 celery 主进程。代码简化后如下：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> sys</div><div class="line"><span class="keyword">import</span> subprocess</div><div class="line"><span class="comment"># ...</span></div><div class="line">celery_process = subprocess.Popen(</div><div class="line">    [<span class="string">'celery'</span>, <span class="string">'-A'</span>, <span class="string">'XXX'</span>, <span class="string">'worker'</span>],</div><div class="line">    stdout=subprocess.PIPE,</div><div class="line">    stderr=sys.stderr</div><div class="line">)</div><div class="line"><span class="keyword">try</span>:</div><div class="line">    <span class="comment"># Start and wait for server process</span></div><div class="line"><span class="keyword">except</span> KeyboardInterrupt:</div><div class="line">    <span class="comment"># Ctrl + C pressed</span></div><div class="line">    celery_process.terminate()</div><div class="line">    celery_process.wait()</div></pre></td></tr></table></figure>
 <p>代码启动了 celery worker，并尝试在捕获到 <code>KeyboardInterrupt</code> 异常时将其热关闭。</p>
@@ -630,11 +663,11 @@
 </ul>
 <p>这个结果大大出乎了我的意料。随机性异常是众多最难缠的问题之一，因为这常常意味着并发问题，涉及底层知识，病灶隐蔽，调试难度大，同时没有有效的手段判断问题是否彻底解决（可能只是降低了频率）。</p>
 <h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>异常信息中有两个词很关键：<code>reentrant</code> 和 <code>stdout</code>。<code>reentrant call</code> 说明有一个不可重入的函数被递归调用了；<code>stdout</code> 则指明了发生的地点和时机。初步可以判定：<strong>由于某种原因，有两股控制流在同时操控 <code>stdout</code></strong>。</p>
-<p>“可重入”是什么？根据 <a href="https://en.wikipedia.org/wiki/Reentrancy_%28computing%29" target="_blank" rel="external">Wikipedia</a> 的定义：<strong>如果一个子程序能在执行时被中断并在之后被正确地、安全地唤起，它就被称为可重入的</strong>。依赖于全局数据的过程是不可重入的，如 <code>printf</code>（依赖于全局文件描述符）、<code>malloc</code>（依赖与和堆相关的一系列数据结构）等函数。需要注意的是，可重入性（reentrant）与 线程安全性（thread-safe）并不等价，甚至不存在包含关系，<a href="https://en.wikipedia.org/wiki/Reentrancy_%28computing%29#Examples" target="_blank" rel="external">Wikipedia</a> 中给出了相关的反例。</p>
-<p>多次尝试后，出现了一条线索：有时候 <code>worker: Warm shutdown (MainProcess)</code> 这个字符串会被二次打印，时机不确定。这句话是 celery 将要热关闭时的提示语，二次出现只可能是主进程收到了第二个信号。阅读 <a href="http://docs.celeryproject.org/en/latest/userguide/workers.html#process-signals" target="_blank" rel="external">celery 的文档</a> 可知，<code>SIGINT</code> 和 <code>SIGTERM</code> 信号可以引发热关闭。回头浏览我的代码，其中只有一处发送了 <code>SIGTERM</code> 信号（<code>celery_process.terminate()</code>），至于另一个神秘的信号，我怀疑是 <code>SIGINT</code>。</p>
+<p>“可重入”是什么？根据 <a href="https://en.wikipedia.org/wiki/Reentrancy_%28computing%29" target="_blank" rel="noopener">Wikipedia</a> 的定义：<strong>如果一个子程序能在执行时被中断并在之后被正确地、安全地唤起，它就被称为可重入的</strong>。依赖于全局数据的过程是不可重入的，如 <code>printf</code>（依赖于全局文件描述符）、<code>malloc</code>（依赖与和堆相关的一系列数据结构）等函数。需要注意的是，可重入性（reentrant）与 线程安全性（thread-safe）并不等价，甚至不存在包含关系，<a href="https://en.wikipedia.org/wiki/Reentrancy_%28computing%29#Examples" target="_blank" rel="noopener">Wikipedia</a> 中给出了相关的反例。</p>
+<p>多次尝试后，出现了一条线索：有时候 <code>worker: Warm shutdown (MainProcess)</code> 这个字符串会被二次打印，时机不确定。这句话是 celery 将要热关闭时的提示语，二次出现只可能是主进程收到了第二个信号。阅读 <a href="http://docs.celeryproject.org/en/latest/userguide/workers.html#process-signals" target="_blank" rel="noopener">celery 的文档</a> 可知，<code>SIGINT</code> 和 <code>SIGTERM</code> 信号可以引发热关闭。回头浏览我的代码，其中只有一处发送了 <code>SIGTERM</code> 信号（<code>celery_process.terminate()</code>），至于另一个神秘的信号，我怀疑是 <code>SIGINT</code>。</p>
 <p>SO 一下，结果印证了我的猜想：</p>
 <blockquote>
-<p>If you are generating the SIGINT with Ctrl-C on a Unix system, then the signal is being sent to the entire process group.<br>– via <a href="https://stackoverflow.com/questions/6803395/child-process-receives-parents-sigint" target="_blank" rel="external">StackOverflow</a></p>
+<p>If you are generating the SIGINT with Ctrl-C on a Unix system, then the signal is being sent to the entire process group.<br>— via <a href="https://stackoverflow.com/questions/6803395/child-process-receives-parents-sigint" target="_blank" rel="noopener">StackOverflow</a></p>
 </blockquote>
 <p><code>SIGINT</code> 信号不仅会发送到父进程，而是会发到整个进程组，默认情况下包括了所有子进程。也就是说——在拦截了 <code>KeyboardInterrupt</code> 之后执行的 <code>celery_process.terminate()</code> 是多此一举，因为 <code>SIGINT</code> 信号也会被发送至 celery 主进程，同样会引起热关闭。代码稍作修改即可正常运行：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ...</span></div><div class="line"><span class="keyword">try</span>:</div><div class="line">    <span class="comment"># Start and wait for server process</span></div><div class="line"><span class="keyword">except</span> KeyboardInterrupt:</div><div class="line">    <span class="comment"># Ctrl + C pressed</span></div><div class="line">    <span class="keyword">pass</span></div><div class="line"><span class="keyword">else</span>:</div><div class="line">    <span class="comment"># Signal SIGTERM if no exception raised</span></div><div class="line">    celery_process.terminate()</div><div class="line"><span class="keyword">finally</span>:</div><div class="line">    <span class="comment"># Wait for it to avoid it becoming orphan</span></div><div class="line">    celery_process.wait()</div></pre></td></tr></table></figure>
@@ -648,11 +681,11 @@
 <h2 id="疑云又起"><a href="#疑云又起" class="headerlink" title="疑云又起"></a>疑云又起</h2><p>不幸的是，我的猜想很快被推翻了。</p>
 <p>在翻看 Python <code>signal</code> 模块的官方文档，我看到了如下叙述：</p>
 <blockquote>
-<p>A Python signal handler does not get executed inside the low-level (C) signal handler. Instead, the low-level signal handler sets a flag which tells the virtual machine to execute the corresponding Python signal handler at a later point(for example at the next bytecode instruction).<br>– via <a href="https://docs.python.org/3/library/signal.html?highlight=signal#execution-of-python-signal-handlers" target="_blank" rel="external">Python Documentation</a></p>
+<p>A Python signal handler does not get executed inside the low-level (C) signal handler. Instead, the low-level signal handler sets a flag which tells the virtual machine to execute the corresponding Python signal handler at a later point(for example at the next bytecode instruction).<br>— via <a href="https://docs.python.org/3/library/signal.html?highlight=signal#execution-of-python-signal-handlers" target="_blank" rel="noopener">Python Documentation</a></p>
 </blockquote>
 <p>也就是说，<strong>Python 中使用 <code>signal.signal</code> 注册的信号处理函数并不会在收到信号时立即执行，而只是简单做一个标记，将其延迟至之后的某个时机</strong>。这么做可以尽量快地结束异常控制流，减少其对被阻断进程的影响。</p>
 <p>这番表述可以说是推翻了我的猜想，因为 Signal Handler 中的 <code>print</code> 并没有在异常控制流中执行。那异常又是怎么产生的呢？</p>
-<p>文档说 Python Signal Handler 会被延后至某个时机进行，但并没有明示是什么时候。对于这个疑问，<a href="https://stackoverflow.com/questions/19699314/how-to-use-a-separate-thread-for-asynchronous-signal-handling-in-python" target="_blank" rel="external">这个提问的被采纳回答</a> 则斩钉截铁地将其具体化到了“某两个 Python 字节码之间”。</p>
+<p>文档说 Python Signal Handler 会被延后至某个时机进行，但并没有明示是什么时候。对于这个疑问，<a href="https://stackoverflow.com/questions/19699314/how-to-use-a-separate-thread-for-asynchronous-signal-handling-in-python" target="_blank" rel="noopener">这个提问的被采纳回答</a> 则斩钉截铁地将其具体化到了“某两个 Python 字节码之间”。</p>
 <p>我们知道，Python 程序在执行前会被编译成 Python 内定的字节码<br>（bytecode）,Python 虚拟机实际执行的正是这些字节码。倘若该回答是正确的，则立即有如下推论：<strong>在处理信号的过程中，字节码具有原子性（atomic）</strong>。也就是说，主线程总是在两个字节码之间决定是否转移控制流， 而 <strong>不会</strong> 出现以下情况：</p>
 <p><img src="/assets/caveats-for-signal-handler-in-python/bVS7EH" alt=""></p>
 <p>这很显然与我的程序结果相悖：<code>print</code> 与 <code>print</code> 所调用的 <code>io.BufferedWriter.write</code> 和 <code>io.BufferedWriter.flush</code> 都是用纯 C 代码编写的，对其的调用只消耗一条字节码（<code>CALL_FUNCTION</code> 或 <code>CALL_FUNCTION_KW</code>），在信号中断的影响下，这几个函数仍保持原子性，在时序图上互不重叠，更不会发生重入。</p>
@@ -708,9 +741,9 @@
       <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
     
     
-      <category term="POSIX" scheme="http://blog.hsfzxjy.site/tags/POSIX/"/>
-    
       <category term="Python" scheme="http://blog.hsfzxjy.site/tags/Python/"/>
+    
+      <category term="POSIX" scheme="http://blog.hsfzxjy.site/tags/POSIX/"/>
     
       <category term="Reentrancy" scheme="http://blog.hsfzxjy.site/tags/Reentrancy/"/>
     
@@ -957,7 +990,7 @@
 <li>右移（Right Shifting）指的是：将一个数表示成二进制之后整体向右移动一位，并抹去溢出的末位。如 $(4)_{10} &gt;&gt; 1=(100)_2 &gt;&gt; 1=(10)_2=(2)_{10}$。其效果等价为整除 2，但由于有 CPU 指令直接支持，速度比整除快若干个数量级。</li>
 <li>无论是实数还是整数，在计算机中只不过是一串二进制序列。因此一串二进制序列，既可以被看作一个实数，也可以被看作一个整数。</li>
 </ul>
-<p>这个算法得到的只是一个近似值。对于 $[0.01, max\_float]$ 内的所有浮点数，最大误差为 $0.175%$（见 <a href="https://en.wikipedia.org/wiki/Fast_inverse_square_root" target="_blank" rel="external">Accuracy</a>）。但它却比内置算法 <code>1.0/sqrt(x)</code> 快 4 倍，可谓瑕不掩瑜。</p>
+<p>这个算法得到的只是一个近似值。对于 $[0.01, max\_float]$ 内的所有浮点数，最大误差为 $0.175%$（见 <a href="https://en.wikipedia.org/wiki/Fast_inverse_square_root" target="_blank" rel="noopener">Accuracy</a>）。但它却比内置算法 <code>1.0/sqrt(x)</code> 快 4 倍，可谓瑕不掩瑜。</p>
 <p>那么，它究竟是怎么实现的呢？</p>
 <h2 id="牛顿法"><a href="#牛顿法" class="headerlink" title="牛顿法"></a>牛顿法</h2><p>我们从后面开始分析。</p>
 <p>从代码中可以看出：算法最后有两步相同的操作，像是在对一个数进行某种迭代。而其中的第二步被注释掉了，似乎是因为和性能损耗相比对结果的二次迭代意义不大，也说明 <strong>一次迭代的结果在误差允许范围内</strong>——这让人想到了牛顿法。</p>
@@ -968,8 +1001,7 @@
 </blockquote>
 <p>用牛顿法进行迭代，可以完成对解任意精度的数值逼近。下面我们尝试写出 $x=1 \over {\sqrt {a}}$的迭代式。</p>
 <p>令 $f(x)={ {1 \over x^2}-a}$，则有</p>
-<p>$$ x_{n+1}=x_n-{f(x_n) \over {f’(x_n)}} $$<br>$$ =x_n-{ { {1 \over x_n^2} -a} \over {-2 \over {x_n^3} } } $$<br>$$ ={3 \over 2}x_n - { {ax_n^3} \over 2} $$<br>$$ ={x_n}(1.5-{a \over 2}x_n^2)$$</p>
-<p>如果我们将$x_{n+1}$、$x_n$替换成$y$，将$a \over 2$替换成$x2$，可以发现和算法的最后一步是吻合的。由此可知：<strong>算法的最后确实采用了牛顿法</strong>。</p>
+<script type="math/tex; mode=display">x\_{n+1}=x\_n-{f(x\_n) \\over {f'(x\_n)}}</script><script type="math/tex; mode=display">=x\_n-{ { {1 \\over x\_n^2} -a} \\over {-2 \\over {x\_n^3} } }</script><script type="math/tex; mode=display">={3 \\over 2}x\_n - { {ax\_n^3} \\over 2}</script><script type="math/tex; mode=display">={x\_n}(1.5-{a \\over 2}x\_n^2)</script><p>如果我们将$x_{n+1}$、$x_n$替换成$y$，将$a \over 2$替换成$x2$，可以发现和算法的最后一步是吻合的。由此可知：<strong>算法的最后确实采用了牛顿法</strong>。</p>
 <p>也许你注意到：能解出 $1 \over {\sqrt a}$ 的方程不止这一条，迭代式的形式有很多。事实上，作者有意选择了这条方程——因为只有从这条方程得出的迭代式是 <strong>不用除法的</strong>。除法的性能十分糟糕，应该尽量避免。</p>
 <p>但是，牛顿法不是需要迭代多次的吗？怎么在这里只进行一次就足够精确了呢？</p>
 <p>牛顿法的收敛过程依赖于初值$x_1$的选取。若想一步到位，除非初值本身已经足够精确了。</p>
@@ -983,21 +1015,21 @@
 </ol>
 <p>有了上一节的分析，几乎可以肯定：这是为了得到 $1 \over {\sqrt {number} }$ 的一个粗略值，即应该有 $y \approx {1 \over {\sqrt {number} } }$。</p>
 <p>为了进一步的论证，我们首先要了解一个知识点：</p>
-<h3 id="IEEE-754-（浮点数储存标准）"><a href="#IEEE-754-（浮点数储存标准）" class="headerlink" title="IEEE 754 （浮点数储存标准）"></a>IEEE 754 （浮点数储存标准）</h3><p><a href="http://grouper.ieee.org/groups/754/" target="_blank" rel="external">IEEE 754: Standard for Binary Floating-Point Arithmetic</a></p>
-<p><a href="https://en.wikipedia.org/wiki/IEEE_floating_point" target="_blank" rel="external">IEEE floating point - Wikipedia</a></p>
+<h3 id="IEEE-754-（浮点数储存标准）"><a href="#IEEE-754-（浮点数储存标准）" class="headerlink" title="IEEE 754 （浮点数储存标准）"></a>IEEE 754 （浮点数储存标准）</h3><p><a href="http://grouper.ieee.org/groups/754/" target="_blank" rel="noopener">IEEE 754: Standard for Binary Floating-Point Arithmetic</a></p>
+<p><a href="https://en.wikipedia.org/wiki/IEEE_floating_point" target="_blank" rel="noopener">IEEE floating point - Wikipedia</a></p>
 <p>这是计算机内实数的储存标准。</p>
 <p>在本算法中，我们使用的是 32 位浮点数（即 用32个二进制位表示一个实数）。储存方式如下：</p>
 <blockquote>
-<p>对任意一个实数 $x$，总可以将其分解为如下形式：<br>$$ x=2^E \times (1+M)\ (E \in Z,M \in [0, 1))$$<br>则 32 个二进制位安排如下：<br>$$ S,EEEEEEEE,MMMMMMMMMMMMMMMMMMMMMM $$</p>
-<ul>
+<p>对任意一个实数 $x$，总可以将其分解为如下形式：</p>
+<script type="math/tex; mode=display">x=2^E \\times (1+M)\\ (E \\in Z,M \\in [0, 1))</script><p>则 32 个二进制位安排如下：</p>
+<script type="math/tex; mode=display">S,EEEEEEEE,MMMMMMMMMMMMMMMMMMMMMM</script><ul>
 <li>首位为符号位，取 <code>0</code> 为正数，取 <code>1</code> 为负数</li>
 <li>接下来 8 位为 <strong>带符号</strong> 指数。根据带符号数的储存方式，该数减去 127 才为真实的指数 $E$</li>
 <li>接下来 23 位为底数。是 $M$ 左移 23 位再取整的结果</li>
 </ul>
 </blockquote>
 <p>举个例子：将 $0.15625=(0.00101)_2$ 换算成浮点数：</p>
-<p>$$ 0.15625=+2^{-3}\times(1+0.25) $$</p>
-<p>则有：</p>
+<script type="math/tex; mode=display">0.15625=+2^{-3}\\times(1+0.25)</script><p>则有：</p>
 <ul>
 <li>符号位为 $0$</li>
 <li>$E=-3$，换算成带符号正数为 $-3+127=124=(01111100)_2$</li>
@@ -1013,13 +1045,10 @@
 <p>设想，如果我们能利用以上信息，轻易地转换 $x$ 和 $\log_2 x$，由 $\log_2 {1 \over {\sqrt x}}={-{1 \over 2}}{\log_2 x}$ 就可以求得 $1 \over {\sqrt x}$ 的值了。</p>
 <p>那么，$\log_2 x$ 该如何表示呢？且看以下变换。</p>
 <p>根据 IEEE 754，对于一个 $x=2^E \times (1+M)&gt;0$，如果我们将其 32 位浮点表示看作一个 32 位整数 $I$，则有</p>
-<p>$$I=2^{23}\times (E+127)+2^{23}\times M$$<br>$$=2^{23}\times (E+127+M)$$</p>
-<p>这个 $I$ 为已知量。通过已知量 $I$，我们可以得到已知量 $E+M$。</p>
+<script type="math/tex; mode=display">I=2^{23}\\times (E+127)+2^{23}\\times M</script><script type="math/tex; mode=display">=2^{23}\\times (E+127+M)</script><p>这个 $I$ 为已知量。通过已知量 $I$，我们可以得到已知量 $E+M$。</p>
 <p>而另一方面，</p>
-<p>$$ \log_2 x=\log_2 {2^E \times (1+M)} $$<br>$$ = E + \log_2(1+M) $$</p>
-<p>记</p>
-<p>$$ F(M) = M $$<br>$$ G(M) = \log_2(1+M) $$</p>
-<p><strong>注意到：当 $M\in[0,1)$ 时，$G(M)\in[0,1)$。同时观察图像可以发现 $G(M)$ 在此区间接近线性。</strong></p>
+<script type="math/tex; mode=display">\\log\_2 x=\\log\_2 {2^E \\times (1+M)}</script><script type="math/tex; mode=display">= E + \\log\_2(1+M)</script><p>记</p>
+<script type="math/tex; mode=display">F(M) = M</script><script type="math/tex; mode=display">G(M) = \\log\_2(1+M)</script><p><strong>注意到：当 $M\in[0,1)$ 时，$G(M)\in[0,1)$。同时观察图像可以发现 $G(M)$ 在此区间接近线性。</strong></p>
 <p><img src="/assets/log2_1_x_and_x.png" alt=""></p>
 <p>因此，我们可以通过上下移动 $F(M)$ 对 $G(M)$ 进行线性拟合。</p>
 <p>注意一下这个例子中的误差衡量标准：<strong>我们在尽量减小误差的同时，也要保证误差分布尽量均匀，从而最大误差要尽量小</strong>。</p>
@@ -1030,14 +1059,11 @@
 <p>易知：$|\Delta(0)|=|\Delta(1)|=\sigma$，另一个可能的极值点$M_0$满足$\Delta’(M_0)=0$，解得$M_0={1\over \ln 2}$</p>
 <p>当 $max\{|\Delta(M)|\}$ 最小时，必有：$\Delta(M_0)=\sigma$。解得 $\sigma=0.0430356660279671$。</p>
 <p>从而我们有：$ \log_2 (1+M) \approx M+\sigma $。进而：</p>
-<p>$$ I=2^{23}\times(E+M+127)$$<br>$$ = 2^{23}\times(127+E+M+\sigma-\sigma)$$<br>$$ \approx 2^{23}\times(127-\sigma+(E+\log_2(1+M)))$$<br>$$ = 2^{23}\times(127-\sigma+\log_2 x)$$</p>
-<p>则有：</p>
-<p>$$ {I \over 2^{23}} + \sigma - 127 \approx \log_2 x $$</p>
-<p>记 $r={1 \over {\sqrt x} }$ 对应的 $I$ 值为 $I_r$。则：</p>
-<p>$$ I_r \approx 2^{23}\times(127-\sigma+\log_2 m)$$<br>$$ = 2^{23}\times(127-\sigma-{1 \over 2}{\log_2 x})$$<br>$$ \approx 2^{23}\times(127-\sigma-{1 \over 2}({I \over 2^{23}} + \sigma - 127))$$<br>$$ = (127-\sigma)\times 2^{22} \times 3-{I \over 2}$$<br>$$ = (5f37bcb6)_{16}-{I \over 2}$$<br>$$ = (5f37bcb6)_{16}-(I &gt;&gt; 1)$$</p>
-<p>这便是步骤 3 的那个式子，神秘的常数终于出现了。</p>
+<script type="math/tex; mode=display">I=2^{23}\\times(E+M+127)</script><script type="math/tex; mode=display">= 2^{23}\\times(127+E+M+\\sigma-\\sigma)</script><script type="math/tex; mode=display">\\approx 2^{23}\\times(127-\\sigma+(E+\\log\_2(1+M)))</script><script type="math/tex; mode=display">= 2^{23}\\times(127-\\sigma+\\log\_2 x)</script><p>则有：</p>
+<script type="math/tex; mode=display">{I \\over 2^{23}} + \\sigma - 127 \\approx \\log\_2 x</script><p>记 $r={1 \over {\sqrt x} }$ 对应的 $I$ 值为 $I_r$。则：</p>
+<script type="math/tex; mode=display">I\_r \\approx 2^{23}\\times(127-\\sigma+\\log\_2 m)</script><script type="math/tex; mode=display">= 2^{23}\\times(127-\\sigma-{1 \\over 2}{\\log\_2 x})</script><script type="math/tex; mode=display">\\approx 2^{23}\\times(127-\\sigma-{1 \\over 2}({I \\over 2^{23}} + \\sigma - 127))</script><script type="math/tex; mode=display">= (127-\\sigma)\\times 2^{22} \\times 3-{I \\over 2}</script><script type="math/tex; mode=display">= (5f37bcb6)\_{16}-{I \\over 2}</script><script type="math/tex; mode=display">= (5f37bcb6)\_{16}-(I >> 1)</script><p>这便是步骤 3 的那个式子，神秘的常数终于出现了。</p>
 <p>这里算得的常数和原算法有一些不同，主要是 $\sigma$ 取值差异造成的。如果我们取 $\sigma= 0.0450466$ 就会得到原算法的常数。作者选取了后者，应该是综合考虑了牛顿法迭代产生的误差。我没有深入研究——事实上，在允许范围内微调 $\sigma$ 不会对精度和速度产生显著影响。</p>
-<h2 id="Lomont-的另一种诠释"><a href="#Lomont-的另一种诠释" class="headerlink" title="Lomont 的另一种诠释"></a>Lomont 的另一种诠释</h2><p>尽管 Quake Engine 的源码直到 2005 年才被公开，这个算法却在 2000 年左右即为人们所知。2003 年，数学家 Chris Lomont 曾写过一篇<a href="http://www.lomont.org/Math/Papers/2003/InvSqrt.pdf" target="_blank" rel="external">论文</a>讨论过这一常数的由来。他采用了另一种不同的方法。</p>
+<h2 id="Lomont-的另一种诠释"><a href="#Lomont-的另一种诠释" class="headerlink" title="Lomont 的另一种诠释"></a>Lomont 的另一种诠释</h2><p>尽管 Quake Engine 的源码直到 2005 年才被公开，这个算法却在 2000 年左右即为人们所知。2003 年，数学家 Chris Lomont 曾写过一篇<a href="http://www.lomont.org/Math/Papers/2003/InvSqrt.pdf" target="_blank" rel="noopener">论文</a>讨论过这一常数的由来。他采用了另一种不同的方法。</p>
 <p>Lomont 也发现 <code>i  = 0x5f3759df - ( i &gt;&gt; 1 )</code> 实为 $1 \over {\sqrt x}$ 的粗略逼近，但他没有深究这个式子背后的数学含义，而是将此常数泛化为一个变量 $R$，通过最小化其与 $1 \over {\sqrt x}$ 的误差，反解出常数 $R$，其中运用的一些技巧值得品味。</p>
 <p>有趣的是，他在论文中提供了另一个他认为最佳的常数 <code>5f375a86</code>，并通过实测证实了他的想法。但此常数只是以毫厘之差险胜原算法（一次迭代 $0.175228$ vs $0.175124$，二次迭代 $4.66 \times 10^{-4}$ vs $4.65437 \times 10^{-4}$）。Lomont 在论文中表达了他的惊讶，这个实验同时也使那位不知名的作者（传闻说是 Quake 的作者 Carmack，然而他自己不承认）更加扑朔迷离。</p>
 <h2 id="总结-amp-推广"><a href="#总结-amp-推广" class="headerlink" title="总结 &amp; 推广"></a>总结 &amp; 推广</h2><p>这个算法的核心其实很简单：先使用某种手段近似估计解，再用牛顿法迭代增加精确度。同时，它也启示我们： <strong>浮点数表示和对数之间存在某种联系</strong>，而对数恰是我们简化计算的利器。</p>
@@ -1046,8 +1072,8 @@
 <p>也许<br>他真的是神</p>
 </blockquote>
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
-<li><a href="https://en.wikipedia.org/wiki/Fast_inverse_square_root" target="_blank" rel="external">Fast inverse square root - Wikipedia</a></li>
-<li><a href="http://www.lomont.org/Math/Papers/2003/InvSqrt.pdf" target="_blank" rel="external">FAST INVERSE SQUARE ROOT - CHRIS LOMONT</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Fast_inverse_square_root" target="_blank" rel="noopener">Fast inverse square root - Wikipedia</a></li>
+<li><a href="http://www.lomont.org/Math/Papers/2003/InvSqrt.pdf" target="_blank" rel="noopener">FAST INVERSE SQUARE ROOT - CHRIS LOMONT</a></li>
 </ul>
 ]]></content>
     
@@ -1130,105 +1156,6 @@
       <category term="Decorator Pattern" scheme="http://blog.hsfzxjy.site/tags/Decorator-Pattern/"/>
     
       <category term="Infinite Recursion" scheme="http://blog.hsfzxjy.site/tags/Infinite-Recursion/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python “黑魔法” 之 Encoding &amp; Decoding</title>
-    <link href="http://blog.hsfzxjy.site/2016-07-21-python-encoding-and-decoding/"/>
-    <id>http://blog.hsfzxjy.site/2016-07-21-python-encoding-and-decoding/</id>
-    <published>2016-07-20T16:00:00.000Z</published>
-    <updated>2018-03-08T17:23:20.729Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><blockquote>
-<ul>
-<li>本文为科普文</li>
-<li>本文中的例子在 Ubuntu 14.04 / Python 2.7.11 下运行成功，Python 3+ 的接口有些许不同，需要读者自行转换</li>
-</ul>
-</blockquote>
-<h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>先看一段代码：</p>
-<p><code>example.py</code>：<br><figure class="highlight gauss"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta"># -*- coding=yi -*-</span></div><div class="line"></div><div class="line">从 math 导入 <span class="built_in">sin</span>, <span class="built_in">pi</span></div><div class="line"></div><div class="line">打印 '<span class="built_in">sin</span>(<span class="built_in">pi</span>) =', <span class="built_in">sin</span>(<span class="built_in">pi</span>)</div></pre></td></tr></table></figure></p>
-<p>这是什么？！是 Python 吗？可以运行吗？——想必你会问。</p>
-<p>我可以明确告诉你：这不是 Python，<strong>但它可以用 Python 解释器运行</strong>。当然，如果你愿意，可以叫它 “Yython” （易语言 + Python）。</p>
-<p><img src="//sf.gg/img/bVzuHw" alt=""></p>
-<p>怎么做到的？也许你已经注意到第一行的奇怪注释——没错，秘密全在这里。</p>
-<p>这种黑魔法，还要从 <a href="https://www.python.org/dev/peps/pep-0263/" target="_blank" rel="external">PEP 263</a> 说起。</p>
-<a id="more"></a>
-<h2 id="古老的-PEP-263"><a href="#古老的-PEP-263" class="headerlink" title="古老的 PEP 263"></a>古老的 PEP 263</h2><p>我相信 99% 的中国 Python 开发者都曾经为一个问题而头疼——字符编码。那是每个初学者的梦靥。</p>
-<p>还记得那天吗？当你试图用代码向它示好：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">print</span> <span class="string">'你好'</span></div></pre></td></tr></table></figure>
-<p>它却给你当头一棒：</p>
-<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SyntaxError: Non-<span class="built_in">ASCII character</span> '\xe4' <span class="keyword">in</span> <span class="built_in">file</span> chi.py <span class="keyword">on</span> line <span class="number">1</span>, <span class="keyword">but</span> no encoding declared</div></pre></td></tr></table></figure>
-<p>【一脸懵逼】</p>
-<p>于是，你上网查找解决方案。很快，你便有了答案：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*- coding=utf-8 -*-</span></div><div class="line"></div><div class="line"><span class="keyword">print</span> <span class="string">'你好'</span></div></pre></td></tr></table></figure>
-<p>其中第一行的注释用于指定解析该文件的编码。</p>
-<p>这个特新来自 2001 年的 <a href="https://www.python.org/dev/peps/pep-0263/" target="_blank" rel="external">PEP 263 – Defining Python Source Code Encodings</a>，它的出现是为了解决一个反响广泛的问题：</p>
-<blockquote>
-<p>In Python 2.1, Unicode literals can only be written using the<br>    Latin-1 based encoding “unicode-escape”. This makes the<br>    programming environment rather unfriendly to Python users who live<br>    and work in non-Latin-1 locales such as many of the Asian<br>    countries. Programmers can write their 8-bit strings using the<br>    favorite encoding, but are bound to the “unicode-escape” encoding<br>    for Unicode literals.</p>
-</blockquote>
-<p>Python 默认用 ASCII 编码解析文件，给 15 年前的非英文世界开发者造成了不小的困扰——看来 Guido 老爹有些个人主义，设计时只考虑到了英文世界。</p>
-<p>提案者设想：<strong>使用一种特殊的文件首注释，用于指定代码的编码</strong>。这个注释的正则原型是这样的：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">^[<span class="string"> \t\v</span>]<span class="emphasis">*#.*</span>?coding[<span class="string">:=</span>][<span class="symbol"> \t</span>]*([-_.a-zA-Z0-9]+)</div></pre></td></tr></table></figure>
-<p>也就是说 <code># -*- coding=utf-8 -*-</code> 并不是唯一的写法，只是 Emacs 推荐写法而已。诸如 <code># coding=utf-8</code>、<code># encoding: utf-8</code> 都是合法的——因此你不必惊讶于他人编码声明与你不同。</p>
-<p>正则的捕获组 <code>([-_.a-zA-Z0-9]+)</code> 将会被用作查找编码的名称，查找到的编码信息会被用于解码文件。也就是说，<code>import example</code> 背后其实相当于有如下转换过程：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">with</span> open(<span class="string">'example.py'</span>, <span class="string">'r'</span>) <span class="keyword">as</span> f:</div><div class="line">    content = f.read()</div><div class="line">    encoding = extract_encoding_info(content) <span class="comment"># 解析首注释</span></div><div class="line">    exec(content.decode(encoding))</div></pre></td></tr></table></figure>
-<p>问题其实又回到我们常用的 <code>str.encode</code> 和 <code>str.decode</code> 上来了。</p>
-<p>可 Python 怎么这么强大？！几乎所有编码它都认得！这是怎么做到的？是标准库？还是内置于解释器中？</p>
-<p>一切，都是 <code>codecs</code> 模块在起作用。</p>
-<h2 id="codecs"><a href="#codecs" class="headerlink" title="codecs"></a>codecs</h2><p><code>codecs</code> 算是较为冷门的一个模块，更为常用的是 <code>str</code> 的 <code>encode</code>/<code>decode</code> 的方法——但它们本质都是对 <code>codecs</code> 的调用。</p>
-<p>打开 <code>/path/to/your/python/lib/encodings/</code> 目录，你会发现有许多以编码名称命名的 <code>.py</code> 文件，如 <code>utf_8.py</code>、<code>latin_1.py</code>。这些都是系统预定义的编码系统，实现了应对各种编码的逻辑——也就是说：编码系统其实也是普通的模块。</p>
-<p>除了内置的编码，用户也可以 <strong>自行定义编码系统</strong>。<code>codecs</code> 暴露了一个 <code>register</code> 函数，用于注册自定义编码。<code>register</code> 签名如下：</p>
-<blockquote>
-<p><strong>codecs.register(search_function)</strong><br>Register a codec search function. Search functions are expected to take one argument, the encoding name in all lower case letters, and return a CodecInfo object having the following attributes:</p>
-<ul>
-<li>name: The name of the encoding;</li>
-<li>encode: The stateless encoding function;</li>
-<li>decode: The stateless decoding function;</li>
-<li>incrementalencoder: An incremental encoder class or factory function;</li>
-<li>incrementaldecoder: An incremental decoder class or factory function;</li>
-<li>streamwriter: A stream writer class or factory function;</li>
-<li>streamreader: A stream reader class or factory function.</li>
-</ul>
-</blockquote>
-<p><code>encode</code> 和 <code>decode</code> 是无状态的编码/解码的函数，简单说就是：前一个被编解码的字符串与后一个没有关联。如果你想用 <code>codecs</code> 系统进行语法树解析，解析逻辑最好不要写在这里，因为代码的连续性无法被保证；<code>incremental*</code> 则是有状态的解析类，能弥补 <code>encode</code>、<code>decode</code> 的不足；<code>stream*</code> 是流相关的解析类，行为通常与 <code>encode</code>/<code>decode</code> 相同。</p>
-<p>关于这六个对象的具体写法，可以参考 <code>/path/to/your/python/lib/encodings/rot_13.py</code>，该文件实现了一个简单的密码系统。</p>
-<p>那么，是时候揭开真相了。</p>
-<h2 id="所谓的-“Yython”"><a href="#所谓的-“Yython”" class="headerlink" title="所谓的 “Yython”"></a>所谓的 “Yython”</h2><p>黑魔法其实并不神秘，照猫画虎定义好相应的接口即可。作为例子，这里只处理用到的关键字：</p>
-<p><code>yi.py</code>：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># encoding=utf8</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> codecs</div><div class="line"></div><div class="line">yi_map = &#123;</div><div class="line">    <span class="string">u'从'</span>: <span class="string">'from'</span>,</div><div class="line">    <span class="string">u'导入'</span>: <span class="string">'import'</span>,</div><div class="line">    <span class="string">u'打印'</span>: <span class="string">'print'</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">encode</span><span class="params">(input)</span>:</span></div><div class="line">    <span class="keyword">for</span> key, value <span class="keyword">in</span> yi_map.items():</div><div class="line">        input = input.replace(value, key)</div><div class="line"></div><div class="line">    <span class="keyword">return</span> input.encode(<span class="string">'utf8'</span>)</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">decode</span><span class="params">(input)</span>:</span></div><div class="line">    input = input.decode(<span class="string">'utf8'</span>)</div><div class="line">    <span class="keyword">for</span> key, value <span class="keyword">in</span> yi_map.items():</div><div class="line">        input = input.replace(key, value)</div><div class="line"></div><div class="line">    <span class="keyword">return</span> input</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Codec</span><span class="params">(codecs.Codec)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">encode</span><span class="params">(self, input, errors=<span class="string">"strict"</span>)</span>:</span></div><div class="line">        input = encode(input)</div><div class="line"></div><div class="line">        <span class="keyword">return</span> (input, len(input))</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decode</span><span class="params">(self, input, errors=<span class="string">"strict"</span>)</span>:</span></div><div class="line">        input = decode(input)</div><div class="line"></div><div class="line">        <span class="keyword">return</span> (input, len(input))</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">IncrementalEncoder</span><span class="params">(codecs.IncrementalEncoder)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">encode</span><span class="params">(self, input, final=False)</span>:</span></div><div class="line">        <span class="keyword">return</span> encode(input)</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">IncrementalDecoder</span><span class="params">(codecs.IncrementalDecoder)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decode</span><span class="params">(self, input, final=False)</span>:</span></div><div class="line">        <span class="keyword">return</span> decode(input)</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">StreamWriter</span><span class="params">(Codec, codecs.StreamWriter)</span>:</span></div><div class="line">    <span class="keyword">pass</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">StreamReader</span><span class="params">(Codec, codecs.StreamReader)</span>:</span></div><div class="line">    <span class="keyword">pass</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">register_entry</span><span class="params">(encoding)</span>:</span></div><div class="line">    <span class="keyword">return</span> codecs.CodecInfo(</div><div class="line">        name=<span class="string">'yi'</span>,</div><div class="line">        encode=Codec().encode,</div><div class="line">        decode=Codec().decode,</div><div class="line">        incrementalencoder=IncrementalEncoder,</div><div class="line">        incrementaldecoder=IncrementalDecoder,</div><div class="line">        streamwriter=StreamWriter,</div><div class="line">        streamreader=StreamReader</div><div class="line">    ) <span class="keyword">if</span> encoding == <span class="string">'yi'</span> <span class="keyword">else</span> <span class="keyword">None</span></div></pre></td></tr></table></figure>
-<p>在命令行里注册一下，就可以看到激动人心的结果了：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> codecs, yi</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>codecs.register(yi.register_entry)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> example</div><div class="line">sin(pi) = <span class="number">1.22464679915e-16</span></div></pre></td></tr></table></figure>
-<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>有时，对习以为常的东西深入了解一下，说不定会有惊人的发现。</p>
-<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ul>
-<li><a href="https://docs.python.org/2.7/library/codecs.html" target="_blank" rel="external">codecs - Codec registry and base classes</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;写在前面&quot;&gt;&lt;a href=&quot;#写在前面&quot; class=&quot;headerlink&quot; title=&quot;写在前面&quot;&gt;&lt;/a&gt;写在前面&lt;/h2&gt;&lt;blockquote&gt;
-&lt;ul&gt;
-&lt;li&gt;本文为科普文&lt;/li&gt;
-&lt;li&gt;本文中的例子在 Ubuntu 14.04 / Python 2.7.11 下运行成功，Python 3+ 的接口有些许不同，需要读者自行转换&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/blockquote&gt;
-&lt;h2 id=&quot;引子&quot;&gt;&lt;a href=&quot;#引子&quot; class=&quot;headerlink&quot; title=&quot;引子&quot;&gt;&lt;/a&gt;引子&lt;/h2&gt;&lt;p&gt;先看一段代码：&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;example.py&lt;/code&gt;：&lt;br&gt;&lt;figure class=&quot;highlight gauss&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;# -*- coding=yi -*-&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;从 math 导入 &lt;span class=&quot;built_in&quot;&gt;sin&lt;/span&gt;, &lt;span class=&quot;built_in&quot;&gt;pi&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;打印 &#39;&lt;span class=&quot;built_in&quot;&gt;sin&lt;/span&gt;(&lt;span class=&quot;built_in&quot;&gt;pi&lt;/span&gt;) =&#39;, &lt;span class=&quot;built_in&quot;&gt;sin&lt;/span&gt;(&lt;span class=&quot;built_in&quot;&gt;pi&lt;/span&gt;)&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;这是什么？！是 Python 吗？可以运行吗？——想必你会问。&lt;/p&gt;
-&lt;p&gt;我可以明确告诉你：这不是 Python，&lt;strong&gt;但它可以用 Python 解释器运行&lt;/strong&gt;。当然，如果你愿意，可以叫它 “Yython” （易语言 + Python）。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;//sf.gg/img/bVzuHw&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;怎么做到的？也许你已经注意到第一行的奇怪注释——没错，秘密全在这里。&lt;/p&gt;
-&lt;p&gt;这种黑魔法，还要从 &lt;a href=&quot;https://www.python.org/dev/peps/pep-0263/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;PEP 263&lt;/a&gt; 说起。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Coding" scheme="http://blog.hsfzxjy.site/categories/Coding/"/>
-    
-    
-      <category term="codecs" scheme="http://blog.hsfzxjy.site/tags/codecs/"/>
-    
-      <category term="Python" scheme="http://blog.hsfzxjy.site/tags/Python/"/>
     
   </entry>
   

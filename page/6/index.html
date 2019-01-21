@@ -1,7 +1,89 @@
-<a id="rocket" href="#top" class="show"></a><html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/><meta content="telephone=no" name="format-detection"/><meta name="description"/><title>thoughts of hsfzxjy</title><link rel="stylesheet" type="text/css" href="/css/normalize.css"/><link rel="stylesheet" type="text/css" href="/css/pure-min.css"/><link rel="stylesheet" type="text/css" href="/css/grids-responsive-min.css"/><link rel="stylesheet" type="text/css" href="/css/style.css"/><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"/><link rel="alternate" type="application/atom+xml" href="/atom.xml"/></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">thoughts of hsfzxjy</h1><a id="logo" href="/">thoughts of hsfzxjy</a><p class="description"></p><iframe src="https://ghbtns.com/github-btn.html?user=hsfzxjy&amp;type=follow&amp;count=true" frameborder="0" scrolling="0" width="170px" height="20px" class="github-btn"></iframe></div><div id="nav-menu"><a href="/" class="current"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Coding/"><i class="icon-code"></i><span>Coding</span></a><a href="/categories/Essays/"><i class="icon-life"></i><span>Essays</span></a><a href="/about/"><i class="icon-about"></i><span>Me</span></a><a href="/aggr/"><i class="icon-history"></i><span>Index</span></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h2 class="post-title"><a href="/2014-11-02-RMQ-binary/">RMQ（二进制方法）</a></h2><div class="post-meta">2014-11-02</div><span data-disqus-identifier="2014-11-02-RMQ-binary/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
+<a id="rocket" href="#top" class="show"></a><html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/><meta content="telephone=no" name="format-detection"/><meta name="description"/><title>thoughts of hsfzxjy</title><link rel="stylesheet" type="text/css" href="/css/normalize.css"/><link rel="stylesheet" type="text/css" href="/css/pure-min.css"/><link rel="stylesheet" type="text/css" href="/css/grids-responsive-min.css"/><link rel="stylesheet" type="text/css" href="/css/style.css"/><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"/><link rel="alternate" type="application/atom+xml" href="/atom.xml"/></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">thoughts of hsfzxjy</h1><a id="logo" href="/">thoughts of hsfzxjy</a><p class="description"></p><iframe src="https://ghbtns.com/github-btn.html?user=hsfzxjy&amp;type=follow&amp;count=true" frameborder="0" scrolling="0" width="170px" height="20px" class="github-btn"></iframe></div><div id="nav-menu"><a href="/" class="current"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Coding/"><i class="icon-code"></i><span>Coding</span></a><a href="/categories/Essays/"><i class="icon-life"></i><span>Essays</span></a><a href="/about/"><i class="icon-about"></i><span>Me</span></a><a href="/aggr/"><i class="icon-history"></i><span>Index</span></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h2 class="post-title"><a href="/2014-11-02-lca-tree-multiplier/">LCA树上倍增</a></h2><div class="post-meta">2014-11-02</div><span data-disqus-identifier="2014-11-02-lca-tree-multiplier/" class="disqus-comment-count"></span><div class="post-content"><pre><code>var
+    a: array [1..100, 1..100] of boolean;
+    depth: array [1..100] of longint;
+    father: array [1..100, 0..16] of longint;
+    n, m, i, x, y: longint;
+    root: longint;
+
+procedure dfs(x: longint);
+var
+    i: longint;
+    j: longint;
+begin
+    depth[x] := depth[father[x][0]]+1;
+    j := 1;
+    while 1&lt;&lt;j&lt;=depth[x]-1 do
+    begin
+        father[x][j] := father[father[x][j-1]][j-1];
+        inc(j);
+    end;
+    for i := 1 to n do
+    begin
+        if not a[x][i] or (father[x][0] = i) then continue;
+        father[i][0] := x;
+        dfs(i);
+    end;
+end;
+
+procedure swap(var x, y: longint);
+var
+    t: longint;
+begin
+    t := x;
+    x := y;
+    y := t;
+end;
+
+function lca(x, y: longint): longint;
+var
+    t, j: longint;
+begin
+    if depth[x] &lt; depth[y] then
+        swap(x, y);
+
+    t := depth[x] - depth[y];
+    for j := 0 to 15 do
+        if t and (1&lt;&lt;j) &lt;&gt; 0 then
+            x := father[x][j];
+    if x = y then
+        exit(x);
+    for j := 15 downto 0 do
+        if father[x][j] &lt;&gt; father[y][j] then
+        begin
+            x := father[x][j];
+            y := father[y][j];
+        end;
+    lca := father[x][0];
+end;
+
+begin
+    assign(input, &#39;main.in&#39;); reset(input);
+    assign(output, &#39;main.out&#39;); rewrite(output);
+
+    read(n, m);
+    for i := 1 to m do
+    begin
+        read(x, y);
+        a[x, y] := true;
+        a[y, x] := true;
+    end;
+    read(root);
+    father[root][0] := root;
+    dfs(root);
+    while not eof do
+    begin
+        read(x, y);
+        writeln(lca(x, y));
+    end;
+
+    close(input); close(output);
+end.
+</code></pre></div></div><div class="post"><h2 class="post-title"><a href="/2014-11-02-RMQ-binary/">RMQ（二进制方法）</a></h2><div class="post-meta">2014-11-02</div><span data-disqus-identifier="2014-11-02-RMQ-binary/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
 <p>问题描述：已知数组a以及若干个查询(x, y)，求a[x~y]之间的最小值。</p>
 </blockquote>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>不难发现：若取t使得$2^t\leq y-x+1$且$2^{t+1}&gt;y-x+1$，则有：<br>$$[x, x+t]\bigcup[y-t+1,y]=[x,y]$$<br>运用二进制的思想，我们只需预处理出$i~i+2^k-1$之间的最小值，即可快速完成查询。设dp[i][j]为$i~i+2^j-1$之间的最小值，则有：<br>$$dp[i][j]=min(dp[i][j-1],dp[i+2^{j-1}][j-1])$$。</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>不难发现：若取t使得$2^t\leq y-x+1$且$2^{t+1}&gt;y-x+1$，则有：</p>
+<script type="math/tex; mode=display">[x, x+t]\bigcup[y-t+1,y]=[x,y]</script><p>运用二进制的思想，我们只需预处理出$i~i+2^k-1$之间的最小值，即可快速完成查询。设dp[i][j]为$i~i+2^j-1$之间的最小值，则有：</p>
+<p><script type="math/tex">dp[i][j]=min(dp[i][j-1],dp[i+2^{j-1}][j-1])</script>。</p>
 <h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a><strong>Code</strong></h2><pre><code>var
     a: array [1..100000] of longint;
     dp: array [1..100000, 0..20] of longint;
@@ -39,8 +121,8 @@ var
     x, y: longint;
 
 begin
-    assign(input, &apos;main.in&apos;); reset(input);
-    assign(output, &apos;main.out&apos;); rewrite(output);
+    assign(input, &#39;main.in&#39;); reset(input);
+    assign(output, &#39;main.out&#39;); rewrite(output);
 
     readln(n);
     for i := 1 to n do read(a[i]);
@@ -53,7 +135,7 @@ begin
 
     close(input); close(output);
 end.
-</code></pre></div></div><div class="post"><h2 class="post-title"><a href="/2014-11-01-tree-array/">树状数组</a></h2><div class="post-meta">2014-11-01</div><span data-disqus-identifier="2014-11-01-tree-array/" class="disqus-comment-count"></span><div class="post-content"><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a><strong>介绍</strong></h2><p>所谓树状数组，就是将线性的数组预处理成树状的结构以降低时间复杂度。先来看一幅经典的图： <img src="/assets/TArry1.jpg" alt="enter image description here"><br>其中的a数组为原生数组，c数组为辅助数组，计算方式为： $$c_1=a<em>1——{(1)}</em>{10}={(1)}_2$$ $$c_2=a_2+c<em>1——{(2)}</em>{10}={(10)}_2$$ $$\ldots$$ 不难发现，c[k]存储的实际上是从k开始向前数k的二进制表示中右边第一个1所代表的数字个元素的和。这样写的好处便是可以利用位运算轻松计算sum。上代码。</p>
+</code></pre></div></div><div class="post"><h2 class="post-title"><a href="/2014-11-01-tree-array/">树状数组</a></h2><div class="post-meta">2014-11-01</div><span data-disqus-identifier="2014-11-01-tree-array/" class="disqus-comment-count"></span><div class="post-content"><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a><strong>介绍</strong></h2><p>所谓树状数组，就是将线性的数组预处理成树状的结构以降低时间复杂度。先来看一幅经典的图： <img src="/assets/TArry1.jpg" alt="enter image description here"><br>其中的a数组为原生数组，c数组为辅助数组，计算方式为： <script type="math/tex">c_1=a_1——{(1)}_{10}={(1)}_2</script> <script type="math/tex">c_2=a_2+c_1——{(2)}_{10}={(10)}_2</script> <script type="math/tex">\ldots</script> 不难发现，c[k]存储的实际上是从k开始向前数k的二进制表示中右边第一个1所代表的数字个元素的和。这样写的好处便是可以利用位运算轻松计算sum。上代码。</p>
 <h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a><strong>Code</strong></h2><pre><code>var
     n, i: longint;
     a, c: array [1..10000] of longint;
@@ -93,8 +175,8 @@ var
     x,y: longint;
 
 begin
-    assign(input, &apos;main.in&apos;); reset(input);
-    assign(output, &apos;main.out&apos;); rewrite(output);
+    assign(input, &#39;main.in&#39;); reset(input);
+    assign(output, &#39;main.out&#39;); rewrite(output);
 
     readln(n);
     for i := 1 to n do
@@ -130,7 +212,7 @@ end.
 <li><a href="/archives/324">LCA&amp;树上倍增</a></li>
 </ol>
 </div></div><div class="post"><h2 class="post-title"><a href="/2014-10-26-kruscal-and-prim/">最小生成树（Kruscal &amp; Prim）</a></h2><div class="post-meta">2014-10-26</div><span data-disqus-identifier="2014-10-26-kruscal-and-prim/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
-<p>测试位置：<a href="http://codevs.cn/problem/1078/" target="_blank" rel="external">WikiOI1078</a></p>
+<p>测试位置：<a href="http://codevs.cn/problem/1078/" target="_blank" rel="noopener">WikiOI1078</a></p>
 </blockquote>
 <pre><code>type
     TEdge = record
@@ -302,8 +384,8 @@ begin
 end;
 
 begin
-    assign(input, &apos;main.in&apos;); reset(input);
-    assign(output, &apos;main.out&apos;); rewrite(output);
+    assign(input, &#39;main.in&#39;); reset(input);
+    assign(output, &#39;main.out&#39;); rewrite(output);
 
     readln(n);
     for i := 1 to n do
@@ -429,8 +511,8 @@ begin
 end;
 
 begin
-    assign(input, &apos;main.in&apos;); reset(input);
-    assign(output, &apos;main.out&apos;); rewrite(output);
+    assign(input, &#39;main.in&#39;); reset(input);
+    assign(output, &#39;main.out&#39;); rewrite(output);
 
     readln(n);
     for i := 1 to n do
@@ -458,7 +540,7 @@ end.
 </code></pre></div></div><div class="post"><h2 class="post-title"><a href="/2014-10-25-noip2011-day2-coefficient-calculate/">NOIP2011 Day2 计算系数：快速求组合数</a></h2><div class="post-meta">2014-10-25</div><span data-disqus-identifier="2014-10-25-noip2011-day2-coefficient-calculate/" class="disqus-comment-count"></span><div class="post-content"><h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a><strong>题目大意</strong></h2><blockquote>
 <p>输入a, b, k, n, m，计算$a^n\times b^m\times C_k^n$模10007的余数。</p>
 </blockquote>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>对于幂数的计算并不难，关键在于对组合数$C_n^k$的计算。<br>通常来说，组合数的计算一般是这样的：$$C_n^k=\frac{n}{k}\times\frac{n-1}{k-1}\times\ldots\times\frac{n-k+1}{1}$$ 这对于单精度的计算来说是十分快捷的，但如果要对结果取模的话就不起作用了——<strong>取模运算对于除法不成立</strong>。因此只能另辟蹊径了。<br>注意到<strong>加减乘法对于取模都是成立的</strong>，从而想到：能否将组合数转化成加法？<br>自然而然，想到了组合恒等式：$$C<em>n^k=C</em>{n-1}^{k}+C_{n-1}^{k-1}$$ 思路到此完成。</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>对于幂数的计算并不难，关键在于对组合数$C<em>n^k$的计算。<br>通常来说，组合数的计算一般是这样的：<script type="math/tex">C_n^k=\frac{n}{k}\times\frac{n-1}{k-1}\times\ldots\times\frac{n-k+1}{1}</script> 这对于单精度的计算来说是十分快捷的，但如果要对结果取模的话就不起作用了——<strong>取模运算对于除法不成立</strong>。因此只能另辟蹊径了。<br>注意到<strong>加减乘法对于取模都是成立的</strong>，从而想到：能否将组合数转化成加法？<br>自然而然，想到了组合恒等式：$$C_n^k=C</em>{n-1}^{k}+C_{n-1}^{k-1}$$ 思路到此完成。</p>
 <h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a><strong>Code</strong></h2><pre><code>const
     modn = 10007;
 var
@@ -497,8 +579,8 @@ var
     ans: int64;
 
 begin
-    assign(input, &apos;main.in&apos;); reset(input);
-    assign(output, &apos;main.out&apos;); rewrite(output);
+    assign(input, &#39;main.in&#39;); reset(input);
+    assign(output, &#39;main.out&#39;); rewrite(output);
 
     readln(a, b, k, n, m);
     a := a mod modn;
@@ -513,9 +595,13 @@ begin
     close(input); close(output);
 end.
 </code></pre></div></div><div class="post"><h2 class="post-title"><a href="/2014-10-24-uva1647-computer-transformation/">UVa1647 Computer Transformation</a></h2><div class="post-meta">2014-10-24</div><span data-disqus-identifier="2014-10-24-uva1647-computer-transformation/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
-<p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;category=825&amp;page=show_problem&amp;problem=4522" target="_blank" rel="external">Link</a> 耗时：0.679s</p>
+<p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;category=825&amp;page=show_problem&amp;problem=4522" target="_blank" rel="noopener">Link</a> 耗时：0.679s</p>
 </blockquote>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>本质上，这是一道求数列通项的题目。我们列出前几个字符串：<br>$$01,$$<br>$$1001,$$<br>$$01101001,$$<br>$$1001011001101001,$$<br>$$\ldots$$<br>如果用$S_i$表示第i个字符串中“00”的个数，则有：<br>$$S_1=0,\ S_2=1,\ S_3=1,\ S_4=3,\ S_5=5,\ S_6=11,\ldots$$<br>经过观察可以发现有如下规律：<br>$$S<em>n=2\times S</em>{n-1}+{(-1)}^n$$<br>求通项就简单了，换个元即可：<br>$$S_n=\frac{1}{3}[{(-1)}^n+2^{n-1}]$$<br>程序采用高精度实现。</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>本质上，这是一道求数列通项的题目。我们列出前几个字符串：</p>
+<script type="math/tex; mode=display">01,</script><script type="math/tex; mode=display">1001,</script><script type="math/tex; mode=display">01101001,</script><script type="math/tex; mode=display">1001011001101001,</script><script type="math/tex; mode=display">\ldots</script><p>如果用$S_i$表示第i个字符串中“00”的个数，则有：</p>
+<script type="math/tex; mode=display">S_1=0,\ S_2=1,\ S_3=1,\ S_4=3,\ S_5=5,\ S_6=11,\ldots</script><p>经过观察可以发现有如下规律：</p>
+<script type="math/tex; mode=display">S_n=2\times S_{n-1}+{(-1)}^n</script><p>求通项就简单了，换个元即可：</p>
+<script type="math/tex; mode=display">S_n=\frac{1}{3}[{(-1)}^n+2^{n-1}]</script><p>程序采用高精度实现。</p>
 <h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a><strong>Code</strong></h2><pre><code>const
     JINDU = 100000;
 var
@@ -526,7 +612,7 @@ var
     t: longint;
 begin
     if x = 0 then
-        write(&apos;00000&apos;)
+        write(&#39;00000&#39;)
     else
     begin
         t := JINDU;
@@ -589,8 +675,8 @@ begin
 end;
 
 begin
-    assign(input, &apos;main.in&apos;); reset(input);
-    assign(output, &apos;main.out&apos;); rewrite(output);
+    assign(input, &#39;main.in&#39;); reset(input);
+    assign(output, &#39;main.out&#39;); rewrite(output);
 
     while not eof do
     begin
@@ -638,9 +724,9 @@ end.
     }
 }
 </code></pre></div></div><div class="post"><h2 class="post-title"><a href="/2014-10-18-uva11526-hn/">UVa11526 H(n)</a></h2><div class="post-meta">2014-10-18</div><span data-disqus-identifier="2014-10-18-uva11526-hn/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
-<p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;page=show_problem&amp;category=27&amp;problem=2521&amp;mosmsg=Submission%20received%20with%20ID%2014374168" target="_blank" rel="external">Link</a> 耗时：2.232s</p>
+<p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;page=show_problem&amp;category=27&amp;problem=2521&amp;mosmsg=Submission%20received%20with%20ID%2014374168" target="_blank" rel="noopener">Link</a> 耗时：2.232s</p>
 </blockquote>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>粗看题目，不过就是要求这样一个式子：$\sum<em>{i=1}^n{[\frac{n}{i}]}$的值。但<strong>注意到</strong>：题目给的数据范围极大，有$2^{31}-1$之多，若遍历计算，则时间复杂度为$O(n)$，将严重超时，不可取。<br>而事实上，通过尝试我们可以发现：$\sum</em>{i=1}^{n}{[\frac{n}{i}]}=2*\sum<em>{i=1}^{\sqrt n}{[\frac{n}{i}]}-{[\sqrt n]}^2$，这是一个重要的结论。因为这条式子一旦成立，时间复杂度即可从$O(n)$降为$O(\sqrt n)$，这是一个极为可观的改善。下面我们来证明一下这个结论：<br>事实上，$$\sum</em>{i=[{\sqrt n}]+1}^{n}{[\frac{n}{i}]}$$ $$=1\times(n-[\frac{n}{2}])+2\times([\frac{n}{2}]-[\frac{n}{3}])+\ldots+[\sqrt{n}]\times([\frac{n}{\sqrt{n}}]-{[\frac{n}{\sqrt n}+1]})$$ $$=n+[\frac{n}{2}]+[\frac{n}{3}]+\ldots+[\frac{n}{\sqrt n}]-[\sqrt n]\times[\frac{n}{[\sqrt n]+1}]$$ $$=\sum_{i=1}^{[\sqrt n]}{[\frac{n}{i}]}-{[\sqrt n]}^2$$ 从而，命题得证。</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>粗看题目，不过就是要求这样一个式子：$\sum<em>{i=1}^n{[\frac{n}{i}]}$的值。但<strong>注意到</strong>：题目给的数据范围极大，有$2^{31}-1$之多，若遍历计算，则时间复杂度为$O(n)$，将严重超时，不可取。<br>而事实上，通过尝试我们可以发现：$\sum</em>{i=1}^{n}{[\frac{n}{i}]}=2*\sum<em>{i=1}^{\sqrt n}{[\frac{n}{i}]}-{[\sqrt n]}^2$，这是一个重要的结论。因为这条式子一旦成立，时间复杂度即可从$O(n)$降为$O(\sqrt n)$，这是一个极为可观的改善。下面我们来证明一下这个结论：<br>事实上，$$\sum</em>{i=[{\sqrt n}]+1}^{n}{[\frac{n}{i}]}<script type="math/tex">$$=1\times(n-[\frac{n}{2}])+2\times([\frac{n}{2}]-[\frac{n}{3}])+\ldots+[\sqrt{n}]\times([\frac{n}{\sqrt{n}}]-{[\frac{n}{\sqrt n}+1]})</script> <script type="math/tex">=n+[\frac{n}{2}]+[\frac{n}{3}]+\ldots+[\frac{n}{\sqrt n}]-[\sqrt n]\times[\frac{n}{[\sqrt n]+1}]</script> <script type="math/tex">=\sum_{i=1}^{[\sqrt n]}{[\frac{n}{i}]}-{[\sqrt n]}^2</script> 从而，命题得证。</p>
 <h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a><strong>Code</strong></h2><pre><code>var
     n, _, i: longint;
 
@@ -660,8 +746,8 @@ begin
 end;
 
 begin
-    assign(input, &apos;main.in&apos;); reset(input);
-    assign(output, &apos;main.out&apos;); rewrite(output);
+    assign(input, &#39;main.in&#39;); reset(input);
+    assign(output, &#39;main.out&#39;); rewrite(output);
 
     readln(_);
     while _ &gt; 0 do
@@ -677,130 +763,7 @@ begin
     close(input);
     close(output);
 end.
-</code></pre></div></div><div class="post"><h2 class="post-title"><a href="/2014-10-17-uva817-according-to-bartjens/">UVa817 According to Bartjens</a></h2><div class="post-meta">2014-10-17</div><span data-disqus-identifier="2014-10-17-uva817-according-to-bartjens/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
-<p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;page=show_problem&amp;category=10&amp;problem=758&amp;mosmsg=Submission%20received%20with%20ID%2014367065" target="_blank" rel="external">Link</a> 状态：<strong>WA</strong></p>
-</blockquote>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>做了两个小时，很可惜最终还是WA了。非常奇怪——和网上的C++代码运行结果完全一样，但却WA了。不过，在这里我还是记录一下解题的过程。<br>这道题数据量很小，直接爆搜每个空位，用*, +, -, #0来代表符号或不填。</p>
-<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a><strong>Code</strong></h2><pre><code>const
-    operators: array [1..4] of char = (&apos;*&apos;, &apos;+&apos;, &apos;-&apos;, #0); //符号
-var
-    s: string;
-    _, n: integer;
-    op: array [0..10] of char;
-    yes: Boolean;
-
-function toValue(ch: char): integer;
-begin
-    exit(ord(ch) - ord(&apos;0&apos;));
-end;
-
-procedure calcAndPrint;
-var
-    numtop, opstop: Integer;  //数字栈，符号栈
-    num: array [1..10] of longint;
-    ops: array [1..10] of char;
-    i: integer;
-begin
-    i := 1;
-    numtop := 1;
-    num[numtop] := toValue(s[1]);
-    opstop := 0;
-    while i &lt;= n do
-    begin
-        while (i &lt; n) and (op[i] = #0) do
-        begin
-            inc(i);
-            num[numtop] := num[numtop] * 10 + toValue(s[i]);
-        end;
-        if (op[i] in [&apos;+&apos;, &apos;-&apos;]) or (i &gt;= n) then
-        begin
-            while (opstop &gt; 0) and (ops[opstop] = &apos;*&apos;) do
-            begin
-                dec(opstop);
-                num[numtop - 1] := num[numtop] * num[numtop -1];
-                dec(numtop);
-            end;
-        end;
-        if i &gt;= n then break;
-        inc(opstop);
-        ops[opstop] := op[i];
-        inc(i);
-        inc(numtop);
-        num[numtop] := toValue(s[i]);
-    end;
-    i := 1;
-    while i &lt; numtop do
-    begin
-        if ops[i] = &apos;+&apos; then
-            num[i+1] := num[i] + num[i+1]
-        else
-            num[i+1] := num[i] - num[i+1];
-        inc(i);
-    end;
-    if (num[numtop] = 2000) and (opstop &gt; 0) then
-    begin
-        yes := True;
-        write(&apos;  &apos;);
-        for i := 1 to n do
-        begin
-            write(s[i]);
-            if op[i] &lt;&gt; #0  then
-                write(op[i]);
-        end;
-        writeln(&apos;=&apos;);
-    end;
-end;
-
-procedure dfs(t: integer); //搜索第t个位置
-var
-    i: Integer;
-    ch: char;
-begin
-    if t = n then
-    begin
-        calcAndPrint;
-        exit;
-    end;
-    for i := 1 to 4 do
-    begin
-        ch := operators[i];
-        if (ch = #0) and (s[t] = &apos;0&apos;) and ((t = 1) or (t &gt; 1) and (op[t-1] &lt;&gt; #0)) then continue;
-        op[t] := ch;
-        dfs(t+1);
-    end;
-end;
-
-var
-    i: Integer;
-
-begin
-    assign(input, &apos;main.in&apos;); reset(input);
-    assign(output, &apos;main.out&apos;); rewrite(output);
-
-    readln(s);
-    _ := 0;
-    while not eof and (s[1] &lt;&gt; &apos;=&apos;) do
-    begin
-        i := 1;
-        while not (s[i] in [&apos;0&apos;..&apos;9&apos;, &apos;=&apos;]) do
-        begin
-            inc(i);
-        end;
-        delete(s, 1, i-1);
-        n := pos(&apos;=&apos;, s) - 1;
-        inc(_);
-        writeln(&apos;Problem &apos;, _);
-        yes := False;
-        fillchar(op, sizeof(op), 0);
-        dfs(1);
-        if not yes then
-            writeln(&apos;  IMPOSSIBLE&apos;);
-        readln(s);
-    end;
-
-    close(input); close(output);
-end.
-</code></pre></div></div><div class="page-navigator"><a href="/page/5/" class="pre">Previous</a><a href="/page/7/" class="next">Next</a></div><!--if theme.disqus--><!--    script(id='dsq-count-scr' src='//#{theme.disqus}.disqus.com/count.js' async)--></div></div><div class="pure-u-1-4"><div id="sidebar"><div class="widget"><div class="widget-title">Navigations</div><ul><li><a href="/archives/" class="widget-item"><i class="icon-archives"></i><span>Archives</span></a></li><li><a href="/works/" class="widget-item"><i class="icon-works"></i><span>Masterpieces</span></a></li><li><a href="/atom.xml" class="widget-item"><i class="icon-rss"></i><span>RSS</span></a></li></ul></div><div class="widget"><div class="widget-title">Categories</div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Coding/">Coding</a><span class="category-list-count">63</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Essays/">Essays</a><span class="category-list-count">17</span></li></ul></div><div class="widget"><div class="widget-title">Tags</div><div class="tagcloud"><a href="/tags/黑魔法/" style="font-size: 15px;">黑魔法</a> <a href="/tags/诗/" style="font-size: 15px;">诗</a> <a href="/tags/生活杂感/" style="font-size: 15px;">生活杂感</a> <a href="/tags/游记/" style="font-size: 15px;">游记</a> <a href="/tags/杂谈/" style="font-size: 15px;">杂谈</a> <a href="/tags/数论/" style="font-size: 15px;">数论</a> <a href="/tags/成人礼/" style="font-size: 15px;">成人礼</a> <a href="/tags/总结/" style="font-size: 15px;">总结</a> <a href="/tags/不经意间的感动/" style="font-size: 15px;">不经意间的感动</a> <a href="/tags/codecs/" style="font-size: 15px;">codecs</a> <a href="/tags/apt-get/" style="font-size: 15px;">apt-get</a> <a href="/tags/WiseCity/" style="font-size: 15px;">WiseCity</a> <a href="/tags/Win32/" style="font-size: 15px;">Win32</a> <a href="/tags/Web-Design/" style="font-size: 15px;">Web Design</a> <a href="/tags/Unit-Test/" style="font-size: 15px;">Unit Test</a> <a href="/tags/Ubuntu/" style="font-size: 15px;">Ubuntu</a> <a href="/tags/UVa/" style="font-size: 15px;">UVa</a> <a href="/tags/Translation/" style="font-size: 15px;">Translation</a> <a href="/tags/Sublime-Text/" style="font-size: 15px;">Sublime Text</a> <a href="/tags/String-Template/" style="font-size: 15px;">String Template</a> <a href="/tags/Search/" style="font-size: 15px;">Search</a> <a href="/tags/Rust/" style="font-size: 15px;">Rust</a> <a href="/tags/Regular-Expression/" style="font-size: 15px;">Regular Expression</a> <a href="/tags/Reentrancy/" style="font-size: 15px;">Reentrancy</a> <a href="/tags/RMPE/" style="font-size: 15px;">RMPE</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Pruning/" style="font-size: 15px;">Pruning</a> <a href="/tags/Pascal/" style="font-size: 15px;">Pascal</a> <a href="/tags/POSIX/" style="font-size: 15px;">POSIX</a> <a href="/tags/OOP/" style="font-size: 15px;">OOP</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/NOIP/" style="font-size: 15px;">NOIP</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/Multi-Threading/" style="font-size: 15px;">Multi-Threading</a> <a href="/tags/Meta-Classes/" style="font-size: 15px;">Meta Classes</a> <a href="/tags/Merge-Sort/" style="font-size: 15px;">Merge Sort</a> <a href="/tags/Machine-Learning/" style="font-size: 15px;">Machine Learning</a> <a href="/tags/MST/" style="font-size: 15px;">MST</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/LCA/" style="font-size: 15px;">LCA</a> <a href="/tags/JavaScript/" style="font-size: 15px;">JavaScript</a> <a href="/tags/Infinite-Recursion/" style="font-size: 15px;">Infinite Recursion</a> <a href="/tags/Haskell/" style="font-size: 15px;">Haskell</a> <a href="/tags/Generator/" style="font-size: 15px;">Generator</a> <a href="/tags/GIL/" style="font-size: 15px;">GIL</a> <a href="/tags/Front-End/" style="font-size: 15px;">Front End</a> <a href="/tags/Font/" style="font-size: 15px;">Font</a> <a href="/tags/Float-Number/" style="font-size: 15px;">Float Number</a> <a href="/tags/File-Permissions/" style="font-size: 15px;">File Permissions</a> <a href="/tags/Fast-Inverse-Square-Root-Algorithm/" style="font-size: 15px;">Fast Inverse Square Root Algorithm</a> <a href="/tags/Django-Channels/" style="font-size: 15px;">Django Channels</a> <a href="/tags/Django/" style="font-size: 15px;">Django</a> <a href="/tags/Delphi/" style="font-size: 15px;">Delphi</a> <a href="/tags/Decorator-Pattern/" style="font-size: 15px;">Decorator Pattern</a> <a href="/tags/DDos/" style="font-size: 15px;">DDos</a> <a href="/tags/Coroutine/" style="font-size: 15px;">Coroutine</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 15px;">Binary Indexed Tree</a> <a href="/tags/Automatic-Test/" style="font-size: 15px;">Automatic Test</a></div></div><div class="widget"><div class="widget-title">Recent Articles</div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019-01-07-notitle/">一月七日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-01-06-rust-sublime/">Sublime 配置 Rust 环境</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-12-31-april-illness/">四月·病</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-12-15-haskell-state-monad/">Haskell 笔记：State Monad</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-12-14-haskell-monad/">Haskell 笔记：Monad 引论</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-11-18-haskell-applicative/">Haskell 笔记：Applicative</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-11-18-haskell-category-theory-and-functor/">Haskell 笔记：Category Theory and Functor</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-11-16-haskell-data-type-newtype/">Haskell 笔记：data, type, newtype</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-11-10-haskell-fold/">Haskell 笔记：folds</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-06-11-download-in-ubuntu-with-aria/">使用 Aria2 在 Ubuntu 中下载百度云资源</a></li></ul></div><div class="widget"><div class="widget-title">Recent Comments</div><script type="text/javascript" src="//hsfzxjy.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div></div></div></div><div id="footer">© <a href="/" rel="nofollow">thoughts of hsfzxjy.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></body><script src="/js/jquery.min.js"></script>
+</code></pre></div></div><div class="page-navigator"><a href="/page/5/" class="pre">Previous</a><a href="/page/7/" class="next">Next</a></div><!--if theme.disqus--><!--    script(id='dsq-count-scr' src='//#{theme.disqus}.disqus.com/count.js' async)--></div></div><div class="pure-u-1-4"><div id="sidebar"><div class="widget"><div class="widget-title">Navigations</div><ul><li><a href="/archives/" class="widget-item"><i class="icon-archives"></i><span>Archives</span></a></li><li><a href="/works/" class="widget-item"><i class="icon-works"></i><span>Masterpieces</span></a></li><li><a href="/atom.xml" class="widget-item"><i class="icon-rss"></i><span>RSS</span></a></li></ul></div><div class="widget"><div class="widget-title">Categories</div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Coding/">Coding</a><span class="category-list-count">64</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Essays/">Essays</a><span class="category-list-count">17</span></li></ul></div><div class="widget"><div class="widget-title">Tags</div><div class="tagcloud"><a href="/tags/黑魔法/" style="font-size: 15px;">黑魔法</a> <a href="/tags/诗/" style="font-size: 15px;">诗</a> <a href="/tags/生活杂感/" style="font-size: 15px;">生活杂感</a> <a href="/tags/游记/" style="font-size: 15px;">游记</a> <a href="/tags/杂谈/" style="font-size: 15px;">杂谈</a> <a href="/tags/数论/" style="font-size: 15px;">数论</a> <a href="/tags/成人礼/" style="font-size: 15px;">成人礼</a> <a href="/tags/总结/" style="font-size: 15px;">总结</a> <a href="/tags/不经意间的感动/" style="font-size: 15px;">不经意间的感动</a> <a href="/tags/proxychains/" style="font-size: 15px;">proxychains</a> <a href="/tags/codecs/" style="font-size: 15px;">codecs</a> <a href="/tags/apt-get/" style="font-size: 15px;">apt-get</a> <a href="/tags/WiseCity/" style="font-size: 15px;">WiseCity</a> <a href="/tags/Win32/" style="font-size: 15px;">Win32</a> <a href="/tags/Web-Design/" style="font-size: 15px;">Web Design</a> <a href="/tags/Unit-Test/" style="font-size: 15px;">Unit Test</a> <a href="/tags/Ubuntu/" style="font-size: 15px;">Ubuntu</a> <a href="/tags/UVa/" style="font-size: 15px;">UVa</a> <a href="/tags/Translation/" style="font-size: 15px;">Translation</a> <a href="/tags/Sublime-Text/" style="font-size: 15px;">Sublime Text</a> <a href="/tags/String-Template/" style="font-size: 15px;">String Template</a> <a href="/tags/Search/" style="font-size: 15px;">Search</a> <a href="/tags/SS/" style="font-size: 15px;">SS</a> <a href="/tags/Rust/" style="font-size: 15px;">Rust</a> <a href="/tags/Regular-Expression/" style="font-size: 15px;">Regular Expression</a> <a href="/tags/Reentrancy/" style="font-size: 15px;">Reentrancy</a> <a href="/tags/RMPE/" style="font-size: 15px;">RMPE</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Pruning/" style="font-size: 15px;">Pruning</a> <a href="/tags/Pascal/" style="font-size: 15px;">Pascal</a> <a href="/tags/POSIX/" style="font-size: 15px;">POSIX</a> <a href="/tags/OOP/" style="font-size: 15px;">OOP</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/NOIP/" style="font-size: 15px;">NOIP</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/Multi-Threading/" style="font-size: 15px;">Multi-Threading</a> <a href="/tags/Meta-Classes/" style="font-size: 15px;">Meta Classes</a> <a href="/tags/Merge-Sort/" style="font-size: 15px;">Merge Sort</a> <a href="/tags/Machine-Learning/" style="font-size: 15px;">Machine Learning</a> <a href="/tags/MST/" style="font-size: 15px;">MST</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/LCA/" style="font-size: 15px;">LCA</a> <a href="/tags/JavaScript/" style="font-size: 15px;">JavaScript</a> <a href="/tags/Infinite-Recursion/" style="font-size: 15px;">Infinite Recursion</a> <a href="/tags/Haskell/" style="font-size: 15px;">Haskell</a> <a href="/tags/Generator/" style="font-size: 15px;">Generator</a> <a href="/tags/GIL/" style="font-size: 15px;">GIL</a> <a href="/tags/Front-End/" style="font-size: 15px;">Front End</a> <a href="/tags/Font/" style="font-size: 15px;">Font</a> <a href="/tags/Float-Number/" style="font-size: 15px;">Float Number</a> <a href="/tags/File-Permissions/" style="font-size: 15px;">File Permissions</a> <a href="/tags/Fast-Inverse-Square-Root-Algorithm/" style="font-size: 15px;">Fast Inverse Square Root Algorithm</a> <a href="/tags/Django-Channels/" style="font-size: 15px;">Django Channels</a> <a href="/tags/Django/" style="font-size: 15px;">Django</a> <a href="/tags/Delphi/" style="font-size: 15px;">Delphi</a> <a href="/tags/Decorator-Pattern/" style="font-size: 15px;">Decorator Pattern</a> <a href="/tags/DDos/" style="font-size: 15px;">DDos</a> <a href="/tags/Coroutine/" style="font-size: 15px;">Coroutine</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 15px;">Binary Indexed Tree</a> <a href="/tags/Automatic-Test/" style="font-size: 15px;">Automatic Test</a></div></div><div class="widget"><div class="widget-title">Recent Articles</div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019-01-21-ss/">SS Configuration</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-01-07-notitle/">一月七日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-01-06-rust-sublime/">Sublime 配置 Rust 环境</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-12-31-april-illness/">四月·病</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-12-15-haskell-state-monad/">Haskell 笔记：State Monad</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-12-14-haskell-monad/">Haskell 笔记：Monad 引论</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-11-18-haskell-applicative/">Haskell 笔记：Applicative</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-11-18-haskell-category-theory-and-functor/">Haskell 笔记：Category Theory and Functor</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-11-16-haskell-data-type-newtype/">Haskell 笔记：data, type, newtype</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-11-10-haskell-fold/">Haskell 笔记：folds</a></li></ul></div><div class="widget"><div class="widget-title">Recent Comments</div><script type="text/javascript" src="//hsfzxjy.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div></div></div></div><div id="footer">© <a href="/" rel="nofollow">thoughts of hsfzxjy.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></body><script src="/js/jquery.min.js"></script>
 <script src="/js/totop.js"></script>
 <script src="/js/adjust-wechat.js"></script><script src="/js/fancybox.pack.js"></script><link rel="stylesheet" href="/css/jquery.fancybox.css"><script>$(document).ready(function() {
     $('img').each(function() {
