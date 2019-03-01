@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.hsfzxjy.site/"/>
-  <updated>2019-02-12T14:25:55.793Z</updated>
+  <updated>2019-03-01T16:40:41.426Z</updated>
   <id>http://blog.hsfzxjy.site/</id>
   
   <author>
@@ -14,6 +14,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>三月一日杂感</title>
+    <link href="http://blog.hsfzxjy.site/2019-03-01-notitle/"/>
+    <id>http://blog.hsfzxjy.site/2019-03-01-notitle/</id>
+    <published>2019-02-28T16:00:00.000Z</published>
+    <updated>2019-03-01T16:40:41.426Z</updated>
+    
+    <content type="html"><![CDATA[<p>我是怎么想的呢？我应该是喜欢她了。她看起来像是一个单纯的女孩，长得可爱，有些呆，总是一副样子很努力的样子。我们有共同的话题，应该可以谈得来，虽然谈话常因为关系不够深入而戛然而止。</p>
+<p>她是怎么想的呢？她专心起来很少注意周围，我们有许多次出现在同一个场所，但她很少注意到我。看她朋友圈，大学时应该是有过被人纠缠的烦恼。她成绩不是很理想，为未来烦恼着。</p>
+<p>我希求的是一段相互平等的关系，两人的能力和价值观不应该有太大的差距，两人的走近不应该妨碍各自的理想。我不希望我的另一半为了我而放弃自己一直追求的东西。伴侣就是伴侣，不是任何一方的附属品，也不应被任何一方「占有」。如果坚持这个理念，我们的关系想来是不会长久的，至少我走的路，我要去的地方，她不会想去。</p>
+<p>那么，就让这段关系不要开始？这或许是一个好选择。我们的认识源于偶然，一年中保持着模糊的朋友关系。进一步发展，如果她不接受，那我就会陷入尴尬的境地；就算接受，毕业时也是要告别的。没有开始，就不会有结束。</p>
+<p>但或许，我只是个胆小鬼罢了。</p>
+<p>天性の弱虫さ</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;我是怎么想的呢？我应该是喜欢她了。她看起来像是一个单纯的女孩，长得可爱，有些呆，总是一副样子很努力的样子。我们有共同的话题，应该可以谈得来，虽然谈话常因为关系不够深入而戛然而止。&lt;/p&gt;
+&lt;p&gt;她是怎么想的呢？她专心起来很少注意周围，我们有许多次出现在同一个场所，但她很少注
+    
+    </summary>
+    
+      <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>二月十一日杂感</title>
@@ -1017,42 +1044,6 @@
       <category term="Django Channels" scheme="http://blog.hsfzxjy.site/tags/Django-Channels/"/>
     
       <category term="Nginx" scheme="http://blog.hsfzxjy.site/tags/Nginx/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>午后雨·科大</title>
-    <link href="http://blog.hsfzxjy.site/2016-08-22-raining-in-ustc/"/>
-    <id>http://blog.hsfzxjy.site/2016-08-22-raining-in-ustc/</id>
-    <published>2016-08-21T16:00:00.000Z</published>
-    <updated>2019-01-21T09:07:41.189Z</updated>
-    
-    <content type="html"><![CDATA[<p>从昏睡中惊醒——现在是下午，屋内却很昏暗。屋外，隐约有一阵持续的背景噪音，我拉开窗帘，只见白茫茫的一片。</p>
-<p>下雨了，而且是大暴雨。</p>
-<p>打开窗，一股辛辣扑面而至——雨和着尘土的气息，再熟悉不过了。伴随着辛辣，一种沁人心脾的清凉涌入屋内，稀释着绿军衣挥发的氨味，一同驱走的，还有午后应有的烦躁。</p>
-<p>八月的这里，原来可以不那么热。</p>
-<p>一直以为，旱和热是这里夏天的常态。走出机场时，第一感受，也是几天来唯一的感受，便是热——无风的热，黏人；无云的热，灼人。想到将在这样的地方生活，心中顿生怯意——</p>
-<p>但现在看来，似乎并不那么糟。</p>
-<p>合上窗，雨声再次成为背景音。白色的水汽慢慢爬上玻璃，模糊了摇曳的树，漫水的街，雨中的整个世界。</p>
-<p>这一幕似乎很熟悉。</p>
-<p>没错，在更早些的时候，当我还在另一个校园时。那是个多雨的城市，雨大而急。记忆中，不知有多少次，也是透过模糊的窗，看着屋外湿透的一切。</p>
-<p>面对暴雨，心中有过埋怨，有过恐惧，有过敬畏——但此时，我却体会到了偶遇老友般的亲切。</p>
-<p>在陌生的校园，我又遇到了熟悉的雨。</p>
-<p>我开始喜欢这里了。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;从昏睡中惊醒——现在是下午，屋内却很昏暗。屋外，隐约有一阵持续的背景噪音，我拉开窗帘，只见白茫茫的一片。&lt;/p&gt;
-&lt;p&gt;下雨了，而且是大暴雨。&lt;/p&gt;
-&lt;p&gt;打开窗，一股辛辣扑面而至——雨和着尘土的气息，再熟悉不过了。伴随着辛辣，一种沁人心脾的清凉涌入屋内，稀释着绿军衣挥发
-    
-    </summary>
-    
-      <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
-    
-    
-      <category term="生活杂感" scheme="http://blog.hsfzxjy.site/tags/%E7%94%9F%E6%B4%BB%E6%9D%82%E6%84%9F/"/>
     
   </entry>
   
