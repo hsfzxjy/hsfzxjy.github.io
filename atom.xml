@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.hsfzxjy.site/"/>
-  <updated>2019-03-01T16:40:41.426Z</updated>
+  <updated>2019-03-10T08:25:12.361Z</updated>
   <id>http://blog.hsfzxjy.site/</id>
   
   <author>
@@ -14,6 +14,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>可视化 Correlation</title>
+    <link href="http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/"/>
+    <id>http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/</id>
+    <published>2019-03-09T16:00:00.000Z</published>
+    <updated>2019-03-10T08:25:12.361Z</updated>
+    
+    <content type="html"><![CDATA[<p>假设有一个 <code>N x M</code> 的矩阵 <code>A</code>，为 N 个 <code>1 x M</code> 向量的集合。则</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">A_corr = np.corrcoef(A)  <span class="comment"># shape: (N, N)</span></div></pre></td></tr></table></figure>
+<p>可以得到 <code>A</code> 的相关系数矩阵。使用 <code>plt.matshow(A_corr)</code> 即可可视化矩阵。</p>
+<p>如果 <code>N</code> 过大，可以使用柱状图的方式统计 <code>A_corr</code> 中落在各个区间的元素的个数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 取上三角阵，忽略对角元素</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">corr_matrix_to_array</span><span class="params">(corr_mat)</span>:</span></div><div class="line">    N = corr_mat.shape[<span class="number">0</span>]</div><div class="line">    <span class="keyword">return</span> np.array([corr_mat[i][j] <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, N) <span class="keyword">for</span> j <span class="keyword">in</span> range(i + <span class="number">1</span>, N)])</div><div class="line"></div><div class="line">plt.hist(corr_matrix_to_array(A_corr), bins=np.linspace(<span class="number">-1</span>, <span class="number">1</span>, N_bins))  <span class="comment"># N_bins 为区间个数</span></div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;假设有一个 &lt;code&gt;N x M&lt;/code&gt; 的矩阵 &lt;code&gt;A&lt;/code&gt;，为 N 个 &lt;code&gt;1 x M&lt;/code&gt; 向量的集合。则&lt;/p&gt;
+&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;g
+    
+    </summary>
+    
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>三月一日杂感</title>
@@ -959,91 +985,6 @@
       <category term="Linux" scheme="http://blog.hsfzxjy.site/tags/Linux/"/>
     
       <category term="File Permissions" scheme="http://blog.hsfzxjy.site/tags/File-Permissions/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>HSFZMUN 4.0 部署小记</title>
-    <link href="http://blog.hsfzxjy.site/2017-02-25-HSFZMUN-4.0-configuration/"/>
-    <id>http://blog.hsfzxjy.site/2017-02-25-HSFZMUN-4.0-configuration/</id>
-    <published>2017-02-24T16:00:00.000Z</published>
-    <updated>2019-01-21T09:06:17.133Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote>
-<p>技术流水账一篇，记录踩过的坑</p>
-</blockquote>
-<h2 id="Channels-异构"><a href="#Channels-异构" class="headerlink" title="Channels 异构"></a>Channels 异构</h2><p>Django Channels 官方文档宣称 channels 的最佳配置是使用其自带的服务器组件 Daphne，但在开发中我发现 daphne 处理普通请求比在 WSGI 架构下慢了好几倍，更何况使用 daphne 派发静态文件是十分不切实际的。于是我将 <code>http.request</code> 和 <code>websocket.*</code> 两个 channel 解耦，前者使用 nginx 配合 uwsgi 处理，后者使用 nginx 反向代理至 daphne 处理。这样一来便可充分利用两种架构的优势。</p>
-<p><strong>旧架构：</strong></p>
-<p><img src="/assets/django-channels-configuration/old-arch.png" alt=""></p>
-<p><strong>新架构：</strong></p>
-<p><img src="/assets/django-channels-configuration/new-arch.png" alt=""></p>
-<a id="more"></a>
-<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><ul>
-<li>Ubuntu Server 16.04（与开发环境相同）</li>
-<li>python 3.5.2</li>
-<li>virtualenv &amp; virtualenvwrapper</li>
-<li>nginx</li>
-<li>uwsgi</li>
-<li>redis（作为缓存和 Channel Layer）</li>
-</ul>
-<h2 id="Channels-Session-based-Authentication"><a href="#Channels-Session-based-Authentication" class="headerlink" title="Channels Session-based Authentication"></a>Channels Session-based Authentication</h2><p>channels 有提供基于 HTTP Session 的认证方式，但由于 websocket 和 http 在此不是同域请求（端口号不同），主域名下的 cookies 不会随 websocket 请求发送。故在发起 websocket 链接时要带上一个 GET 参数 <code>session_key</code>。在模板中该参数可由 <code>{ {request.session.session_key} }</code> 获得。</p>
-<h2 id="uwsgi"><a href="#uwsgi" class="headerlink" title="uwsgi"></a>uwsgi</h2><p>安装：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo pip install uwsgi <span class="comment"># 全局安装</span></div></pre></td></tr></table></figure>
-<p>编写配置文件 <code>/etc/uwsgi/sites/hsfzmun.ini</code>：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="section">[uwsgi]</span></div><div class="line"><span class="attr">uid</span> = git</div><div class="line"><span class="attr">chdir</span> = /home/git/hsfzmun/server</div><div class="line"><span class="attr">module</span> = config.wsgi:application</div><div class="line"><span class="attr">home</span> = /home/git/virtualenvs/hsfzmun # Virtualenv 路径</div><div class="line"><span class="attr">master</span> = <span class="literal">true</span></div><div class="line"><span class="attr">processes</span> = <span class="number">10</span></div><div class="line"><span class="attr">socket</span> = /var/www/hsfzmun.sock # 使用 Unix Socket 与 nginx 通信</div><div class="line"><span class="attr">chmod-socket</span> = <span class="number">666</span></div><div class="line"><span class="attr">vacuum</span> = <span class="literal">true</span></div></pre></td></tr></table></figure>
-<p>配置 systemd 服务（<code>uwsgi.service</code>）：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="section">[Unit]</span></div><div class="line"><span class="attr">Description</span>=uWSGI Module</div><div class="line"><span class="section"></span></div><div class="line">[Service]</div><div class="line"><span class="attr">ExecStartPre</span>=/bin/bash -c <span class="string">'mkdir -p /run/uwsgi; chown git:www-data /run/uwsgi'</span></div><div class="line"><span class="attr">ExecStart</span>=/usr/local/bin/uwsgi --emperor /etc/uwsgi/sites --touch-reload=/home/git/hsfzmun/server/uwsgi_params</div><div class="line"><span class="attr">Restart</span>=always</div><div class="line"><span class="attr">KillSignal</span>=SIGQUIT</div><div class="line"><span class="attr">Type</span>=notify</div><div class="line"><span class="attr">NotifyAccess</span>=all</div><div class="line"><span class="section"></span></div><div class="line">[Install]</div><div class="line"><span class="attr">WantedBy</span>=multi-user.target</div></pre></td></tr></table></figure>
-<p>uwsgi 有个优点：可以通过 <code>--touch-reload</code> 参数简洁地重启服务，这样只需一条 <code>touch</code> 命令便可以完成新代码的部署。</p>
-<h2 id="daphne"><a href="#daphne" class="headerlink" title="daphne"></a>daphne</h2><p>daphne 有两个模块：Interface Server 和 Workers。前者负责处理 Websocket、long-polling 等请求，并将其抽象化为 channels 传递给 Workers，Workers 则负责执行具体的业务逻辑。这么做有一个好处就是 <strong>降低了底层与业务逻辑的耦合度，即使业务层崩溃也不会使连接断开，同时也减少了新代码部署对整个系统的印象</strong>。部署新代码时只需重启 Workers 即可。</p>
-<p><code>daphnei.service</code>：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="section">[Unit]</span></div><div class="line"><span class="attr">Description</span>=Daphne Interface Server</div><div class="line"><span class="section"></span></div><div class="line">[Service]</div><div class="line"><span class="attr">ExecStart</span>=/home/git/cmd/daphnei</div><div class="line"><span class="attr">Restart</span>=always</div><div class="line"><span class="attr">KillSignal</span>=SIGQUIT</div><div class="line"><span class="attr">Type</span>=simple</div><div class="line"><span class="attr">NotifyAccess</span>=all</div><div class="line"><span class="section"></span></div><div class="line">[Install]</div><div class="line"><span class="attr">WantedBy</span>=multi-user.target</div></pre></td></tr></table></figure>
-<p><code>daphnew.service</code>：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="section">[Unit]</span></div><div class="line"><span class="attr">Description</span>=Daphne Worker</div><div class="line"><span class="section"></span></div><div class="line">[Service]</div><div class="line"><span class="attr">ExecStart</span>=/home/git/cmd/daphnew</div><div class="line"><span class="attr">Type</span>=simple</div><div class="line"><span class="attr">KillSignal</span>=SIGQUIT</div><div class="line"><span class="attr">Restart</span>=always</div><div class="line"><span class="attr">NotifyAccess</span>=all</div><div class="line"><span class="section"></span></div><div class="line">[Install]</div><div class="line"><span class="attr">WantedBy</span>=multi-user.target</div></pre></td></tr></table></figure>
-<p><strong>此处踩了一个坑</strong>：起初 <code>Type</code> 处的值是 <code>Notify</code>，因为我是仿照 <code>uwsgi.service</code> 编写这两个文件的。<code>Notify</code> 型服务要求主进程自行通知 <code>systemd</code> 自己的启动/停止状态，但 daphne 没有这样的机制，从而导致 <code>systemctl</code> 阻塞，并以 90 秒为周期不断重启服务。幸好 StackOverflow 上的大神指出了这个错误。</p>
-<p>这里我将具体的服务脚本独立出来，因为 <code>ExecStart</code> 不支持编写多行语句。</p>
-<p><code>cmd/daphnei</code>：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"><span class="built_in">cd</span> /home/git/hsfzmun/server</div><div class="line">/home/git/virtualenvs/hsfzmun/bin/daphne -b 0.0.0.0 -p 8001 -v2 config.asgi:channel_layer --access-log=/var/www/daphnei.log</div></pre></td></tr></table></figure>
-<p><code>cmd/daphnew</code>：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"><span class="built_in">cd</span> /home/git/hsfzmun/server</div><div class="line">/home/git/virtualenvs/hsfzmun/bin/python manage.py runworker --threads 5 --only-channels=websocket.*</div></pre></td></tr></table></figure>
-<p><strong>此处 daphne 有个 bug</strong>：理论上 verbosity 不应该影响程序的行为，但如果不加 <code>-v2</code> 参数 nginx 会报 <code>502 Bad Gateway</code>。</p>
-<h2 id="nginx"><a href="#nginx" class="headerlink" title="nginx"></a>nginx</h2><p>此处的难点是反向代理 websockets，因为 nginx 默认不识别 websocket 协议。为了能正确指定协议头，只能将所有 websocket 请求路由到某一子路径下。</p>
-<p><code>nginx.service</code>：</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="section">server</span> &#123;</div><div class="line">  <span class="attribute">listen</span> <span class="number">80</span>;</div><div class="line">  <span class="attribute">server_name</span> &lt;ip&gt; product;</div><div class="line"></div><div class="line">  <span class="comment"># 静态文件</span></div><div class="line">  <span class="attribute">location</span> /static &#123;</div><div class="line">    <span class="attribute">alias</span> /var/www/static;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment"># 用户上传的文件</span></div><div class="line">  <span class="attribute">location</span> /m &#123;</div><div class="line">    <span class="attribute">alias</span> /var/www/media;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment"># uwsgi 反向代理</span></div><div class="line">  <span class="attribute">location</span> / &#123;</div><div class="line">    <span class="attribute">include</span> /var/www/uwsgi_params;</div><div class="line">    <span class="attribute">uwsgi_pass</span> unix:/var/www/hsfzmun.sock;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment"># daphne 反向代理</span></div><div class="line">  <span class="attribute">location</span> /ws &#123;</div><div class="line">    <span class="attribute">proxy_pass</span> http://0.0.0.0:8001;</div><div class="line">    <span class="attribute">proxy_http_version</span> <span class="number">1</span>.<span class="number">1</span>;</div><div class="line">    <span class="attribute">proxy_set_header</span> Upgrade <span class="variable">$http_upgrade</span>;</div><div class="line">    <span class="attribute">proxy_set_header</span> Connection <span class="string">"upgrade"</span>;</div><div class="line"></div><div class="line">    <span class="attribute">proxy_redirect</span>     <span class="literal">off</span>;</div><div class="line">    <span class="attribute">proxy_set_header</span>   Host <span class="variable">$host</span>;</div><div class="line">    <span class="attribute">proxy_set_header</span>   X-Real-IP <span class="variable">$remote_addr</span>;</div><div class="line">    <span class="attribute">proxy_set_header</span>   X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</div><div class="line">    <span class="attribute">proxy_set_header</span>   X-Forwarded-Host <span class="variable">$server_name</span>;</div><div class="line">    <span class="attribute">proxy_read_timeout</span>  <span class="number">36000s</span>;</div><div class="line">    <span class="attribute">proxy_send_timeout</span>  <span class="number">36000s</span>;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="Git-自动化部署"><a href="#Git-自动化部署" class="headerlink" title="Git 自动化部署"></a>Git 自动化部署</h2><p>去年的 WiseCity 3.0 采用 Github 中转的方式进行部署，这对 Github 的稳定性有很高的要求。这次则将生产服务器作为 Git Server，使用 Git Hooks 进行自动化部署，大大提高了生产效率。</p>
-<p>创建 git 用户：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ useradd git</div><div class="line">$ passwd git</div></pre></td></tr></table></figure>
-<p>设置 SSH authorized_keys（略）。</p>
-<p>创建仓库：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> ~</div><div class="line">$ git init --bare hsfzmun.git</div></pre></td></tr></table></figure>
-<p>创建钩子 <code>hooks/post-receive</code>：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"><span class="comment"># Checkout Repository</span></div><div class="line">GIT_WORK_TREE=/home/git/hsfzmun git checkout <span class="_">-f</span></div><div class="line"></div><div class="line"><span class="comment"># Activate Virtualenv</span></div><div class="line"><span class="built_in">cd</span> /home/git/hsfzmun/server</div><div class="line"><span class="built_in">export</span> LC_ALL=C</div><div class="line"><span class="built_in">export</span> VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3</div><div class="line"><span class="built_in">export</span> WORKON_HOME=~/virtualenvs</div><div class="line"><span class="built_in">source</span> /usr/<span class="built_in">local</span>/bin/virtualenvwrapper.sh</div><div class="line">workon hsfzmun</div><div class="line"></div><div class="line"><span class="comment"># Internationalization</span></div><div class="line">./manage.py compilemessages</div><div class="line"></div><div class="line"><span class="comment"># Collect Static Files</span></div><div class="line">./manage.py collectstatic --noinput</div><div class="line"></div><div class="line"><span class="comment"># Migrate Databases</span></div><div class="line">./manage.py migrate</div><div class="line"></div><div class="line"><span class="comment"># Restart uWSGI</span></div><div class="line">touch ./uwsgi_params</div><div class="line"></div><div class="line"><span class="comment"># Restart Daphne Workers</span></div><div class="line">sudo systemctl restart daphnew --no-block</div><div class="line"></div><div class="line"><span class="built_in">echo</span> <span class="string">"All operations done."</span></div></pre></td></tr></table></figure>
-<p>此钩子会在每次 push 之后执行，自动更新静态文件和数据库表并重启相关服务。</p>
-<p>本地添加远程仓库（略）。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;技术流水账一篇，记录踩过的坑&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h2 id=&quot;Channels-异构&quot;&gt;&lt;a href=&quot;#Channels-异构&quot; class=&quot;headerlink&quot; title=&quot;Channels 异构&quot;&gt;&lt;/a&gt;Channels 异构&lt;/h2&gt;&lt;p&gt;Django Channels 官方文档宣称 channels 的最佳配置是使用其自带的服务器组件 Daphne，但在开发中我发现 daphne 处理普通请求比在 WSGI 架构下慢了好几倍，更何况使用 daphne 派发静态文件是十分不切实际的。于是我将 &lt;code&gt;http.request&lt;/code&gt; 和 &lt;code&gt;websocket.*&lt;/code&gt; 两个 channel 解耦，前者使用 nginx 配合 uwsgi 处理，后者使用 nginx 反向代理至 daphne 处理。这样一来便可充分利用两种架构的优势。&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;旧架构：&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/assets/django-channels-configuration/old-arch.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;新架构：&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/assets/django-channels-configuration/new-arch.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
-    
-    
-      <category term="Ubuntu" scheme="http://blog.hsfzxjy.site/tags/Ubuntu/"/>
-    
-      <category term="Django" scheme="http://blog.hsfzxjy.site/tags/Django/"/>
-    
-      <category term="Django Channels" scheme="http://blog.hsfzxjy.site/tags/Django-Channels/"/>
-    
-      <category term="Nginx" scheme="http://blog.hsfzxjy.site/tags/Nginx/"/>
     
   </entry>
   
