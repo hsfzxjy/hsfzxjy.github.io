@@ -1,4 +1,188 @@
-<a id="rocket" href="#top" class="show"></a><html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/><meta content="telephone=no" name="format-detection"/><meta name="description"/><title>thoughts of hsfzxjy</title><link rel="stylesheet" type="text/css" href="/css/normalize.css"/><link rel="stylesheet" type="text/css" href="/css/pure-min.css"/><link rel="stylesheet" type="text/css" href="/css/grids-responsive-min.css"/><link rel="stylesheet" type="text/css" href="/css/style.css"/><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"/><link rel="alternate" type="application/atom+xml" href="/atom.xml"/></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">thoughts of hsfzxjy</h1><a id="logo" href="/">thoughts of hsfzxjy</a><p class="description"></p><iframe src="https://ghbtns.com/github-btn.html?user=hsfzxjy&amp;type=follow&amp;count=true" frameborder="0" scrolling="0" width="170px" height="20px" class="github-btn"></iframe></div><div id="nav-menu"><a href="/" class="current"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Tech/"><i class="icon-code"></i><span>Tech</span></a><a href="/categories/Soliloquy/"><i class="icon-life"></i><span>Soliloquy</span></a><a href="/about/"><i class="icon-about"></i><span>Me</span></a><a href="/aggr/"><i class="icon-history"></i><span>Index</span></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h2 class="post-title"><a href="/2014-10-26-noip2013-day1-matches/">NOIP2013 Day1 火柴排队：快速求逆序对</a></h2><div class="post-meta">2014-10-26</div><span data-disqus-identifier="2014-10-26-noip2013-day1-matches/" class="disqus-comment-count"></span><div class="post-content"><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a><strong>题目</strong></h2><blockquote>
+<a id="rocket" href="#top" class="show"></a><html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/><meta content="yes" name="apple-mobile-web-app-capable"/><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/><meta content="telephone=no" name="format-detection"/><meta name="description"/><title>thoughts of hsfzxjy</title><link rel="stylesheet" type="text/css" href="/css/normalize.css"/><link rel="stylesheet" type="text/css" href="/css/pure-min.css"/><link rel="stylesheet" type="text/css" href="/css/grids-responsive-min.css"/><link rel="stylesheet" type="text/css" href="/css/style.css"/><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"/><link rel="alternate" type="application/atom+xml" href="/atom.xml"/></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">thoughts of hsfzxjy</h1><a id="logo" href="/">thoughts of hsfzxjy</a><p class="description"></p><iframe src="https://ghbtns.com/github-btn.html?user=hsfzxjy&amp;type=follow&amp;count=true" frameborder="0" scrolling="0" width="170px" height="20px" class="github-btn"></iframe></div><div id="nav-menu"><a href="/" class="current"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Tech/"><i class="icon-code"></i><span>Tech</span></a><a href="/categories/Soliloquy/"><i class="icon-life"></i><span>Soliloquy</span></a><a href="/about/"><i class="icon-about"></i><span>Me</span></a><a href="/aggr/"><i class="icon-history"></i><span>Index</span></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h2 class="post-title"><a href="/2014-10-26-kruscal-and-prim/">最小生成树（Kruscal &amp; Prim）</a></h2><div class="post-meta">2014-10-26</div><span data-disqus-identifier="2014-10-26-kruscal-and-prim/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
+<p>测试位置：<a href="http://codevs.cn/problem/1078/" target="_blank" rel="noopener">WikiOI1078</a></p>
+</blockquote>
+<pre><code>type
+    TEdge = record
+        start, terminal: longint;
+        weight: int64;
+    end;
+    TEdgeArr = array of TEdge;
+
+operator &lt;(e1, e2: TEdge)res: boolean;
+begin
+    res := e1.weight &lt; e2.weight;
+end;
+
+operator &gt;(e1, e2: TEdge)res: Boolean;
+begin
+    res := e1.weight &gt; e2.weight;
+end;
+
+procedure SortEdge(A: TEdgeArr; l, r: longint);
+var
+    i, j: longint;
+    t, m: TEdge;
+begin
+    i := l; j := r; m := A[(i+j) &gt;&gt; 1];
+    repeat
+        while A[i]&lt;m do inc(i);
+        while A[j]&gt;m do dec(j);
+        if i&lt;=j then
+        begin
+            t := A[i];
+            A[i] := A[j];
+            A[j] := t;
+            inc(i); dec(j);
+        end;
+    until i&gt;j;
+    if i&lt;r then SortEdge(A, i, r);
+    if l&lt;j then SortEdge(A, l, j);
+end;
+
+const
+    INF: int64 = 1&lt;&lt;60 div 3;
+var
+    map: array [1..100, 1..100] of int64;
+    n, i, j: longint;
+
+{
+    @param x: 起始搜索节点
+    算法思想：用一个数组维护从各个未加入顶点到
+    树的最短边长度，操作n次，每次将距离最短的
+    边加入到树中，并更新与之相邻的点的距离值。
+}
+
+function prim(x: longint): int64;
+{
+    lowest: 储存各个节点到树的最短距离
+    visited: 标记是否已加入树中
+}
+var
+    lowest: array [1..100] of int64;
+    visited: array [1..100] of boolean;
+    min: int64;
+    i, j, minindex: longint;
+begin
+    fillchar(visited, sizeof(visited), 0);
+    visited[x] := true;
+
+    //先将初始节点加入树中，更新lowest
+    for i := 1 to n do
+        lowest[i] := map[i, x];
+
+    prim := 0;
+    for i := 2 to n do
+    begin
+        min := INF;
+
+        //找出树到外部节点最短的一条边
+        //并将该边加入树中
+        for j := 1 to n do
+            if (not visited[j]) and (min &gt; lowest[j]) then
+            begin
+                min := lowest[j];
+                minindex := j;
+            end;
+        visited[minindex] := true;
+        prim := prim + min;
+
+        //对新加入的那个节点，
+        //更新与其相邻的未加入树的节点的lowest值
+        for j := 1 to n do
+        begin
+            if visited[j] then continue;
+            if map[j, minindex] &lt; lowest[j] then
+                lowest[j] := map[j, minindex];
+        end;
+    end;
+end;
+
+{
+    算法思想：
+    1\. 先将边按照长度排序。
+    2\. 遍历所有的边，若该边的两个顶点都在树中则跳过；
+    否则将其加入树中。
+}
+
+function Kruscal: int64;
+var
+    Edges: TEdgeArr;
+    //并查集，储存自己的父亲，若自己为根结点则为自己
+    //这是一种常用的写法：否则如果存成0的话，想把两棵
+    //树并在一起需要多一步判断。
+    UnionSet: array [0..100] of longint;
+    i: longint;
+
+    procedure InitEdges; //将邻接矩阵转化为边数组。
+    var
+        i, j: longint;
+        E: TEdge;
+    begin
+        for i := 1 to n do
+            for j := 1 to i-1 do
+            begin
+                E.start := i;
+                E.terminal := j;
+                E.weight := map[i, j];
+                SetLength(Edges, Length(Edges)+1);
+                Edges[High(Edges)] := E;
+            end;
+        SortEdge(Edges, Low(Edges), High(Edges));
+    end;
+
+    //寻找自己的根节点，并把自己直接连到根结点上。
+    function Find(x: longint): longint;
+    var
+        root: longint;
+    begin
+        root := x;
+        while root &lt;&gt; UnionSet[root] do
+            root := UnionSet[root];
+        UnionSet[x] := root;
+        exit(root);
+    end;
+
+    //尝试将边的两个顶点并在一个并查集中，如果两个
+    //顶点都在同一个集合中则返回False，否则执行合
+    //并操作。
+    function Union(x, y: longint): boolean;
+    var
+        px, py: longint;
+    begin
+        px := Find(x);
+        py := Find(y);
+        if px = py then
+            exit(False);
+        UnionSet[px] := py;
+        exit(True);
+    end;
+
+begin
+    Kruscal := 0;
+    fillchar(UnionSet, sizeof(UnionSet), 0);
+    InitEdges;
+    for i := 1 to n do
+        UnionSet[i] := i;
+    for i := Low(Edges) to High(Edges) do
+        if Union(Edges[i].start, Edges[i].terminal) then
+        begin
+            Kruscal := Kruscal + Edges[i].weight;
+        end;
+end;
+
+begin
+    assign(input, &#39;main.in&#39;); reset(input);
+    assign(output, &#39;main.out&#39;); rewrite(output);
+
+    readln(n);
+    for i := 1 to n do
+        for j := 1 to n do
+            read(map[i, j]);
+    writeln(Kruscal);
+
+    close(input); close(output);
+end.
+</code></pre></div></div><div class="post"><h2 class="post-title"><a href="/2014-10-26-noip2013-day1-matches/">NOIP2013 Day1 火柴排队：快速求逆序对</a></h2><div class="post-meta">2014-10-26</div><span data-disqus-identifier="2014-10-26-noip2013-day1-matches/" class="disqus-comment-count"></span><div class="post-content"><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a><strong>题目</strong></h2><blockquote>
 <p>涵涵有两盒火柴，每盒装有 n 根火柴，每根火柴都有一个高度。现在将每盒中的火柴各自排成一列，同一列火柴的高度互不相同，两列火柴之间的距离定义为：$\sum_{i=1}^{n}{(a_i-b_i)^2}$<br>，其中 ai表示第一列火柴中第 i 个火柴的高度，bi表示第二列火柴中第 i 个火柴的高度。<br>每列火柴中相邻两根火柴的位置都可以交换，请你通过交换使得两列火柴之间的距离最小。请问得到这个最小的距离，最少需要交换多少次？如果这个数字太大，请输出这个最小交换次数对 99,999,997 取模的结果。</p>
 </blockquote>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>这真是一道好题——断断续续想了几天才完全AC。<br>事实上，由排序不等式可知：</p>
@@ -822,66 +1006,7 @@ begin
   end;
   close(input); close(output);
 end.
-</code></pre></div></div><div class="post"><h2 class="post-title"><a href="/2014-10-05-uva536-recovery/">UVa536 Recovery</a></h2><div class="post-meta">2014-10-05</div><span data-disqus-identifier="2014-10-05-uva536-recovery/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
-<p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;category=7&amp;page=show_problem&amp;problem=477" target="_blank" rel="noopener">Link</a> 耗时: 0.012s</p>
-</blockquote>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>真是疯玩了几天，脑袋都残了，一道弱智题做了近一个小时。</p>
-<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h2><pre><code>var
-    pre, mid, s: string;
-    tree: array [1..50] of record
-        l, r: integer;
-        ch: char;
-    end;
-    cur: integer;
-function init: integer;
-var
-    m: integer;
-begin
-    readln(s);
-    m := length(s) &gt;&gt; 1 + 1;
-    pre := Copy(s, 1, m-1);
-    mid := Copy(s, m+1, length(s));
-    init := m-1;
-end;
-function build(l1, l2, r2: integer): integer;
-var
-    m,len: integer;
-    t: integer;
-begin
-    if l2 &gt; r2 then exit(0); //该子树不存在。**这个地方坑了我很久**
-    inc(cur);
-    t := cur;      // 这里也坑了我，当下面构造完左右子树后，cur已经变了，所以要缓存起来
-    build := t;
-    tree[t].ch := pre[l1];
-    if r2-l2 = 0 then //叶节点
-        exit;
-    m := pos(pre[l1], mid); //在中序遍历中找根节点
-    len := m - l2;
-    tree[t].l := build(l1+1, l2, m-1); //构造左子树
-    tree[t].r := build(l1+len+1, m+1, r2); //构造右子树
-end;
-procedure print(x: integer);
-begin
-    if x = 0 then exit;
-    print(tree[x].l);
-    print(tree[x].r);
-    write(tree[x].ch);
-end;
-begin
-    assign(input, &#39;main.in&#39;); reset(input);
-    assign(output, &#39;main.out&#39;); rewrite(output);
-    while not eof do
-    begin
-        fillchar(tree, sizeof(tree), 0);
-        cur := 0;
-        build(1, 1, init);
-        print(1);
-        writeln;
-    end;
-    close(input);
-    close(output);
-end.
-</code></pre></div></div><div class="page-navigator"><a href="/page/6/" class="pre">Previous</a><a href="/page/8/" class="next">Next</a></div><!--if theme.disqus--><!--    script(id='dsq-count-scr' src='//#{theme.disqus}.disqus.com/count.js' async)--></div></div><div class="pure-u-1-4"><div id="sidebar"><div class="widget"><div class="widget-title">Navigations</div><ul><li><a href="/archives/" class="widget-item"><i class="icon-archives"></i><span>Archives</span></a></li><li><a href="/works/" class="widget-item"><i class="icon-works"></i><span>Masterpieces</span></a></li><li><a href="/atom.xml" class="widget-item"><i class="icon-rss"></i><span>RSS</span></a></li></ul></div><div class="widget"><div class="widget-title">Categories</div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Soliloquy/">Soliloquy</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tech/">Tech</a><span class="category-list-count">66</span></li></ul></div><div class="widget"><div class="widget-title">Tags</div><div class="tagcloud"><a href="/tags/黑魔法/" style="font-size: 15px;">黑魔法</a> <a href="/tags/诗/" style="font-size: 15px;">诗</a> <a href="/tags/生活杂感/" style="font-size: 15px;">生活杂感</a> <a href="/tags/游记/" style="font-size: 15px;">游记</a> <a href="/tags/杂谈/" style="font-size: 15px;">杂谈</a> <a href="/tags/数论/" style="font-size: 15px;">数论</a> <a href="/tags/成人礼/" style="font-size: 15px;">成人礼</a> <a href="/tags/总结/" style="font-size: 15px;">总结</a> <a href="/tags/不经意间的感动/" style="font-size: 15px;">不经意间的感动</a> <a href="/tags/proxychains/" style="font-size: 15px;">proxychains</a> <a href="/tags/codecs/" style="font-size: 15px;">codecs</a> <a href="/tags/apt-get/" style="font-size: 15px;">apt-get</a> <a href="/tags/WiseCity/" style="font-size: 15px;">WiseCity</a> <a href="/tags/Win32/" style="font-size: 15px;">Win32</a> <a href="/tags/Web-Design/" style="font-size: 15px;">Web Design</a> <a href="/tags/Unit-Test/" style="font-size: 15px;">Unit Test</a> <a href="/tags/Ubuntu/" style="font-size: 15px;">Ubuntu</a> <a href="/tags/UVa/" style="font-size: 15px;">UVa</a> <a href="/tags/Translation/" style="font-size: 15px;">Translation</a> <a href="/tags/TaPL/" style="font-size: 15px;">TaPL</a> <a href="/tags/Sublime-Text/" style="font-size: 15px;">Sublime Text</a> <a href="/tags/String-Template/" style="font-size: 15px;">String Template</a> <a href="/tags/Search/" style="font-size: 15px;">Search</a> <a href="/tags/SS/" style="font-size: 15px;">SS</a> <a href="/tags/Rust/" style="font-size: 15px;">Rust</a> <a href="/tags/Regular-Expression/" style="font-size: 15px;">Regular Expression</a> <a href="/tags/Reentrancy/" style="font-size: 15px;">Reentrancy</a> <a href="/tags/RMPE/" style="font-size: 15px;">RMPE</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Pruning/" style="font-size: 15px;">Pruning</a> <a href="/tags/Pascal/" style="font-size: 15px;">Pascal</a> <a href="/tags/POSIX/" style="font-size: 15px;">POSIX</a> <a href="/tags/OOP/" style="font-size: 15px;">OOP</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/NOIP/" style="font-size: 15px;">NOIP</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/Multi-Threading/" style="font-size: 15px;">Multi-Threading</a> <a href="/tags/Meta-Classes/" style="font-size: 15px;">Meta Classes</a> <a href="/tags/Merge-Sort/" style="font-size: 15px;">Merge Sort</a> <a href="/tags/Machine-Learning/" style="font-size: 15px;">Machine Learning</a> <a href="/tags/MST/" style="font-size: 15px;">MST</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/LCA/" style="font-size: 15px;">LCA</a> <a href="/tags/JavaScript/" style="font-size: 15px;">JavaScript</a> <a href="/tags/Infinite-Recursion/" style="font-size: 15px;">Infinite Recursion</a> <a href="/tags/Haskell/" style="font-size: 15px;">Haskell</a> <a href="/tags/Generator/" style="font-size: 15px;">Generator</a> <a href="/tags/GIL/" style="font-size: 15px;">GIL</a> <a href="/tags/Front-End/" style="font-size: 15px;">Front End</a> <a href="/tags/Font/" style="font-size: 15px;">Font</a> <a href="/tags/Float-Number/" style="font-size: 15px;">Float Number</a> <a href="/tags/File-Permissions/" style="font-size: 15px;">File Permissions</a> <a href="/tags/Fast-Inverse-Square-Root-Algorithm/" style="font-size: 15px;">Fast Inverse Square Root Algorithm</a> <a href="/tags/Django-Channels/" style="font-size: 15px;">Django Channels</a> <a href="/tags/Django/" style="font-size: 15px;">Django</a> <a href="/tags/Delphi/" style="font-size: 15px;">Delphi</a> <a href="/tags/Decorator-Pattern/" style="font-size: 15px;">Decorator Pattern</a> <a href="/tags/DDos/" style="font-size: 15px;">DDos</a> <a href="/tags/Coroutine/" style="font-size: 15px;">Coroutine</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 15px;">Binary Indexed Tree</a> <a href="/tags/Automatic-Test/" style="font-size: 15px;">Automatic Test</a></div></div><div class="widget"><div class="widget-title">Recent Articles</div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019-03-10-correlation-matrix/">可视化 Correlation</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-03-01-notitle/">三月一日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-02-11-notitle/">二月十一日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-01-26-notitle/">一月二十六日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-01-21-tapl-notes-untyped-arithmetic-expressions/">TaPL Notes -- Chapter 3 Untyped Arithmetic Expressions</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-01-21-ss/">SS Configuration</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-01-07-notitle/">一月七日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-01-06-rust-sublime/">Sublime 配置 Rust 环境</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-12-31-april-illness/">四月·病</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-12-15-haskell-state-monad/">Haskell 笔记：State Monad</a></li></ul></div><div class="widget"><div class="widget-title">Recent Comments</div><script type="text/javascript" src="//hsfzxjy.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div></div></div></div><div id="footer">© <a href="/" rel="nofollow">thoughts of hsfzxjy.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></body><script src="/js/jquery.min.js"></script>
+</code></pre></div></div><div class="page-navigator"><a href="/page/6/" class="pre">Previous</a><a href="/page/8/" class="next">Next</a></div><!--if theme.disqus--><!--    script(id='dsq-count-scr' src='//#{theme.disqus}.disqus.com/count.js' async)--></div></div><div class="pure-u-1-4"><div id="sidebar"><div class="widget"><div class="widget-title">Navigations</div><ul><li><a href="/archives/" class="widget-item"><i class="icon-archives"></i><span>Archives</span></a></li><li><a href="/works/" class="widget-item"><i class="icon-works"></i><span>Masterpieces</span></a></li><li><a href="/atom.xml" class="widget-item"><i class="icon-rss"></i><span>RSS</span></a></li></ul></div><div class="widget"><div class="widget-title">Categories</div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Soliloquy/">Soliloquy</a><span class="category-list-count">21</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tech/">Tech</a><span class="category-list-count">66</span></li></ul></div><div class="widget"><div class="widget-title">Tags</div><div class="tagcloud"><a href="/tags/黑魔法/" style="font-size: 15px;">黑魔法</a> <a href="/tags/诗/" style="font-size: 15px;">诗</a> <a href="/tags/生活杂感/" style="font-size: 15px;">生活杂感</a> <a href="/tags/游记/" style="font-size: 15px;">游记</a> <a href="/tags/杂谈/" style="font-size: 15px;">杂谈</a> <a href="/tags/数论/" style="font-size: 15px;">数论</a> <a href="/tags/成人礼/" style="font-size: 15px;">成人礼</a> <a href="/tags/总结/" style="font-size: 15px;">总结</a> <a href="/tags/不经意间的感动/" style="font-size: 15px;">不经意间的感动</a> <a href="/tags/proxychains/" style="font-size: 15px;">proxychains</a> <a href="/tags/codecs/" style="font-size: 15px;">codecs</a> <a href="/tags/apt-get/" style="font-size: 15px;">apt-get</a> <a href="/tags/WiseCity/" style="font-size: 15px;">WiseCity</a> <a href="/tags/Win32/" style="font-size: 15px;">Win32</a> <a href="/tags/Web-Design/" style="font-size: 15px;">Web Design</a> <a href="/tags/Unit-Test/" style="font-size: 15px;">Unit Test</a> <a href="/tags/Ubuntu/" style="font-size: 15px;">Ubuntu</a> <a href="/tags/UVa/" style="font-size: 15px;">UVa</a> <a href="/tags/Translation/" style="font-size: 15px;">Translation</a> <a href="/tags/TaPL/" style="font-size: 15px;">TaPL</a> <a href="/tags/Sublime-Text/" style="font-size: 15px;">Sublime Text</a> <a href="/tags/String-Template/" style="font-size: 15px;">String Template</a> <a href="/tags/Search/" style="font-size: 15px;">Search</a> <a href="/tags/SS/" style="font-size: 15px;">SS</a> <a href="/tags/Rust/" style="font-size: 15px;">Rust</a> <a href="/tags/Regular-Expression/" style="font-size: 15px;">Regular Expression</a> <a href="/tags/Reentrancy/" style="font-size: 15px;">Reentrancy</a> <a href="/tags/RMPE/" style="font-size: 15px;">RMPE</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Pruning/" style="font-size: 15px;">Pruning</a> <a href="/tags/Pascal/" style="font-size: 15px;">Pascal</a> <a href="/tags/POSIX/" style="font-size: 15px;">POSIX</a> <a href="/tags/OOP/" style="font-size: 15px;">OOP</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/NOIP/" style="font-size: 15px;">NOIP</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/Multi-Threading/" style="font-size: 15px;">Multi-Threading</a> <a href="/tags/Meta-Classes/" style="font-size: 15px;">Meta Classes</a> <a href="/tags/Merge-Sort/" style="font-size: 15px;">Merge Sort</a> <a href="/tags/Machine-Learning/" style="font-size: 15px;">Machine Learning</a> <a href="/tags/MST/" style="font-size: 15px;">MST</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/LCA/" style="font-size: 15px;">LCA</a> <a href="/tags/JavaScript/" style="font-size: 15px;">JavaScript</a> <a href="/tags/Infinite-Recursion/" style="font-size: 15px;">Infinite Recursion</a> <a href="/tags/Haskell/" style="font-size: 15px;">Haskell</a> <a href="/tags/Generator/" style="font-size: 15px;">Generator</a> <a href="/tags/GIL/" style="font-size: 15px;">GIL</a> <a href="/tags/Front-End/" style="font-size: 15px;">Front End</a> <a href="/tags/Font/" style="font-size: 15px;">Font</a> <a href="/tags/Float-Number/" style="font-size: 15px;">Float Number</a> <a href="/tags/File-Permissions/" style="font-size: 15px;">File Permissions</a> <a href="/tags/Fast-Inverse-Square-Root-Algorithm/" style="font-size: 15px;">Fast Inverse Square Root Algorithm</a> <a href="/tags/Django-Channels/" style="font-size: 15px;">Django Channels</a> <a href="/tags/Django/" style="font-size: 15px;">Django</a> <a href="/tags/Delphi/" style="font-size: 15px;">Delphi</a> <a href="/tags/Decorator-Pattern/" style="font-size: 15px;">Decorator Pattern</a> <a href="/tags/DDos/" style="font-size: 15px;">DDos</a> <a href="/tags/Coroutine/" style="font-size: 15px;">Coroutine</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 15px;">Binary Indexed Tree</a> <a href="/tags/Automatic-Test/" style="font-size: 15px;">Automatic Test</a></div></div><div class="widget"><div class="widget-title">Recent Articles</div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019-03-10-notitle/">三月十日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-03-10-correlation-matrix/">可视化 Correlation</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-03-01-notitle/">三月一日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-02-11-notitle/">二月十一日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-01-26-notitle/">一月二十六日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-01-21-tapl-notes-untyped-arithmetic-expressions/">TaPL Notes -- Chapter 3 Untyped Arithmetic Expressions</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-01-21-ss/">SS Configuration</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-01-07-notitle/">一月七日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-01-06-rust-sublime/">Sublime 配置 Rust 环境</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-12-31-april-illness/">四月·病</a></li></ul></div><div class="widget"><div class="widget-title">Recent Comments</div><script type="text/javascript" src="//hsfzxjy.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div></div></div></div><div id="footer">© <a href="/" rel="nofollow">thoughts of hsfzxjy.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></body><script src="/js/jquery.min.js"></script>
 <script src="/js/totop.js"></script>
 <script src="/js/adjust-wechat.js"></script><script src="/js/fancybox.pack.js"></script><link rel="stylesheet" href="/css/jquery.fancybox.css"><script>$(document).ready(function() {
     $('img').each(function() {

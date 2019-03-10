@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.hsfzxjy.site/"/>
-  <updated>2019-03-10T08:27:49.905Z</updated>
+  <updated>2019-03-10T11:14:22.330Z</updated>
   <id>http://blog.hsfzxjy.site/</id>
   
   <author>
@@ -14,6 +14,36 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>三月十日杂感</title>
+    <link href="http://blog.hsfzxjy.site/2019-03-10-notitle/"/>
+    <id>http://blog.hsfzxjy.site/2019-03-10-notitle/</id>
+    <published>2019-03-09T16:00:00.000Z</published>
+    <updated>2019-03-10T11:14:22.330Z</updated>
+    
+    <content type="html"><![CDATA[<p>我还是说出了那句话。我们走到一起，已经有七天了。</p>
+<p>起初并没有表白的想法。当晚看完电影后，两人都有微妙的感觉，但直到最后也没有表露心意。「就当做又一次平常的约电影好了」目送她进楼时我想。看电影时没有说出来，她回去了我就更说不出来了——我认为我们当时还是普通朋友关系，表白显得太唐突了。我兴奋又失落地回到宿舍。兴奋的是我们之间的关系貌似又近了一些，失落的是这样下去大概率是没有结果的。</p>
+<p>但当晚，她接连发了几条动态，内容和语气都暗示了她对我的好感，只是和我一样，缺乏勇气。两个相互有好感却又没有恋爱经验的人（当然这是我后来知道的），就要这样还未开始便结束了彼此的关系，这怕是上天对胆小鬼的惩罚吧。</p>
+<p>但转机在第二天出现了。DJW 在察觉到情况后开始疯狂怂恿我，整整一天没有停过。那天可以说是过得浑浑噩噩的，我的脑海中像是有两只军队在对战，想法瞬息万变，完全没有精力处理其他的事情。可到了晚上，一切开始明晰起来——我下定了决心要表白。我花了很长时间拟好台词，准备应对各种可能出现的情况。</p>
+<p>表白时，我的心脏就像要炸裂一般。起初她感到震惊，表现出了一点犹豫，但最后还是欣然接受了，决定试着和我交往。这在我预想中已经是很好的结果了，在此之前，我从来没想过会被人喜欢。就算是对方有着朦胧的感觉，对我而言也是超幸福的一件事。</p>
+<p>这一周过得是非常开心的。我们开始一起吃饭，一起自习，一起走在回宿舍的路上。我陪她看电影，她喜欢的夏目友人帐；我请她的闺蜜吃饭；我们去游览女生节的活动；她送了我亲手编织的心形绳结；我们一起在操场的草坪上看星星。随着时间的流逝，她也慢慢不那么拘束，我们正在变成人们口中所说的情侣。</p>
+<p>有时我也在后悔，没有更早地表露自己的心意。一年前我们就认识了，走到一起却又花了这么长的时间。大学时光已经过了四分之三，如果更早地在一起，说不定会有更多美好的回忆。我感到自责，觉得自己浪费了她的时间。</p>
+<p>未来，未来又怎么样呢？她想留在本校，我却要去追逐自己真正的理想。站在这个时间节点看我们终要分开的。如果她愿意，也可以异地恋——这很痛苦，但却是最好的结果。这是我一直以来最大的顾虑，也是之前阻碍我表白的一个重要原因。每每想起这件事，我的心里又不由得有些失落。</p>
+<p>但不管怎么样，一切都开始了。这个时间点不算太晚，未来还可以选择。我希望我接下来能扮演好这个角色。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;我还是说出了那句话。我们走到一起，已经有七天了。&lt;/p&gt;
+&lt;p&gt;起初并没有表白的想法。当晚看完电影后，两人都有微妙的感觉，但直到最后也没有表露心意。「就当做又一次平常的约电影好了」目送她进楼时我想。看电影时没有说出来，她回去了我就更说不出来了——我认为我们当时还是普通朋友关
+    
+    </summary>
+    
+      <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>可视化 Correlation</title>
@@ -936,55 +966,6 @@
       <category term="POSIX" scheme="http://blog.hsfzxjy.site/tags/POSIX/"/>
     
       <category term="Reentrancy" scheme="http://blog.hsfzxjy.site/tags/Reentrancy/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Linux 文件权限</title>
-    <link href="http://blog.hsfzxjy.site/2017-07-03-linux-file-permissions/"/>
-    <id>http://blog.hsfzxjy.site/2017-07-03-linux-file-permissions/</id>
-    <published>2017-07-02T16:00:00.000Z</published>
-    <updated>2019-01-21T09:06:17.133Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><p>Linux 中的每一个文件都有其 <strong>所属用户</strong> 及 <strong>所属用户组</strong>，根据这两个属性可将文件访问者分为三类：<strong>所属用户自己</strong>、<strong>所属用户组中的用户</strong> 和 <strong>其他用户</strong>，我们可以针对不同的访问者设置不同的用户权限。</p>
-<p>“访问”可分为三类：<strong>读</strong>、<strong>写</strong> 与 <strong>执行</strong>。我们可以用 <code>ls -l</code> 命令查看一个文件的权限：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ touch <span class="built_in">test</span></div><div class="line">$ ls <span class="_">-l</span> <span class="built_in">test</span></div><div class="line">-rw-rw-r-- 1 hsfzxjy hsfzxjy 0 Jul  3 23:44 <span class="built_in">test</span></div></pre></td></tr></table></figure>
-<p>首部的 <code>-rw-rw-r--</code> 即为文件的权限位。权限应该分为四部分来看：<code>-/rw-/rw-/r--</code>。第一部分标志文件的类型，如 普通文件（<code>-</code>）、目录（<code>d</code>）、UNIX 套接字（<code>s</code>）、符号链接（<code>l</code>）、块设备（<code>b</code>）等等。接下来的三个部分依次代表 <strong>所属用户</strong>、<strong>所属用户组</strong>、<strong>其他用户</strong> 的权限，每部分由三个标志位组成：<strong>读标志位</strong>、<strong>写标志位</strong>、<strong>执行标志位</strong>。</p>
-<h1 id="目录的权限"><a href="#目录的权限" class="headerlink" title="目录的权限"></a>目录的权限</h1><p>目录是一种特殊的文件，因此也拥有文件权限的概念，但权限的语义与普通文件稍有差异：</p>
-<ul>
-<li>读：读取目录下文件列表，相关命令如 <code>ls</code></li>
-<li>写：创建、删除目录下的文件，相关命令如 <code>touch</code>（当文件不存在时）、<code>rm</code> 等</li>
-<li>执行：进入目录，相关命令如 <code>cd</code></li>
-</ul>
-<h1 id="特殊权限"><a href="#特殊权限" class="headerlink" title="特殊权限"></a>特殊权限</h1><p>出于某些特殊目的，Linux 中存在两个特殊的权限位：粘滞位（<code>t</code>）、Set Id（<code>s</code>）。这两个权限可以 <strong>叠加</strong> 在执行权限位上，其中 Set Id 可以置于 <strong>所属用户</strong> 和 <strong>所属用户组</strong> 的权限组上，而 粘滞位 只能置于 <strong>其他用户</strong> 权限组上。当特殊权限被设置时，执行权限位上即会显示 <code>s/t</code> （已有 <code>x</code> 权限）或 <code>S/T</code> （尚未有 <code>x</code> 权限）。</p>
-<h2 id="粘滞位"><a href="#粘滞位" class="headerlink" title="粘滞位"></a>粘滞位</h2><p>粘滞位的作用是 <strong>防止他人误删自己的文件</strong>。当某个目录的其他用户权限组有 <code>w</code> 权限时，系统中的其他用户即可随意删除目录中的文件。而一旦叠加上 <code>t</code> 权限，只有文件的所有者方能删除文件。一个经典的例子是 <code>/tmp</code>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ ls <span class="_">-l</span> /</div><div class="line">drwxrwxrwt  13 root root 12288 Jul  4 00:15 tmp/</div></pre></td></tr></table></figure>
-<h2 id="Set-Id"><a href="#Set-Id" class="headerlink" title="Set Id"></a>Set Id</h2><p>Linux 中的进程也有自己所属用户与用户组。一般而言，进程的所属用户即为其发起者，但这会引起一些麻烦。一个例子是 <code>passwd</code> 命令，该命令需要修改属于 <code>root</code> 用户的系统文件以保存密码，倘若进程所属用户即为所属者，此功能则无法实现。</p>
-<p>Set Id 权限的作用是：在文件被执行时，将其有效用户/用户组设置为文件的用户/用户组，而不是当前执行者。下面是一个演示：</p>
-<p>设当前用户为 <code>hsfzxjy</code>，我们在 <code>/tmp</code> 下创建一个 <code>test</code> 文件，并删去其他用户的 <code>r</code> 权限：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> /tmp</div><div class="line">$ <span class="built_in">echo</span> <span class="built_in">test</span> text &gt; <span class="built_in">test</span></div><div class="line">$ chmod o-r <span class="built_in">test</span></div><div class="line">$ ll <span class="built_in">test</span></div><div class="line">-rw-rw---- 1 hsfzxjy hsfzxjy 0 Jul  4 00:28 <span class="built_in">test</span></div></pre></td></tr></table></figure>
-<p>由于 <code>test</code> 文件的所属用户是 <code>hsfzxjy</code>，其他用户没有权限读取其中的内容：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ sudo -u mysql cat <span class="built_in">test</span></div><div class="line">cat: <span class="built_in">test</span>: Permission denied</div></pre></td></tr></table></figure>
-<p>现在我们修改一下 <code>cat</code> 命令的权限，为了不影响系统文件，我们拷贝一份 <code>cat</code> 副本至当前目录：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ cp /bin/cat .</div><div class="line">$ chmod u+s cat</div><div class="line">$ ll cat</div><div class="line">-rwsr-xr-x 1 hsfzxjy hsfzxjy 52080 Jul  4 00:34 cat*</div></pre></td></tr></table></figure>
-<p>再以 <code>mysql</code> 的身份执行命令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ sudo -u mysql ./cat <span class="built_in">test</span></div><div class="line"><span class="built_in">test</span> text</div></pre></td></tr></table></figure>
-<p>可见 <code>./cat</code> 在执行时所属用户是 <code>hsfzxjy</code>。我们可以使用 <code>ps</code> 命令更清楚地看到这点：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ sudo -u mysql cat</div><div class="line"><span class="comment"># 在另一个终端中</span></div><div class="line">$ ps -eo euser,ruser,comm | grep cat</div><div class="line">mysql    mysql    cat</div><div class="line"></div><div class="line"><span class="comment"># -----------</span></div><div class="line"></div><div class="line">$ sudo -u mysql ./cat</div><div class="line"><span class="comment"># 在另一个终端中</span></div><div class="line">$ ps -eo euser,ruser,comm | grep cat</div><div class="line">hsfzxjy  mysql    cat</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;概念&quot;&gt;&lt;a href=&quot;#概念&quot; class=&quot;headerlink&quot; title=&quot;概念&quot;&gt;&lt;/a&gt;概念&lt;/h1&gt;&lt;p&gt;Linux 中的每一个文件都有其 &lt;strong&gt;所属用户&lt;/strong&gt; 及 &lt;strong&gt;所属用户组&lt;/strong&gt;，根据这两个属
-    
-    </summary>
-    
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
-    
-    
-      <category term="Linux" scheme="http://blog.hsfzxjy.site/tags/Linux/"/>
-    
-      <category term="File Permissions" scheme="http://blog.hsfzxjy.site/tags/File-Permissions/"/>
     
   </entry>
   
