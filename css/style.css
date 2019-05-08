@@ -8,6 +8,15 @@
 @font-face {
   font-family: "life-saver";
   src: url("../fonts/LifeSavers-Regular.ttf"); }
+/*
+ * Kokoro (Japanese) https://fonts.google.com/earlyaccess
+ */
+@font-face {
+  font-family: 'Kokoro';
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/kokoro/Kokoro-Regular.eot");
+  src: url("../fonts/kokoro/Kokoro-Regular.eot?#iefix") format("embedded-opentype"), url("../fonts/kokoro/Kokoro-Regular.woff2") format("woff2"), url("../fonts/kokoro/Kokoro-Regular.woff") format("woff"), url("../fonts/kokoro/Kokoro-Regular.ttf") format("truetype"); }
 /* Webfont: Lato-Regular */
 @font-face {
   font-family: 'LatoWeb';
@@ -97,7 +106,8 @@ a:focus {
       color: #777; }
   #header .site-name .description {
     margin: .2em 0 0;
-    color: #999; }
+    color: #999;
+    font-family: Kokoro; }
   #header .site-name .github-btn {
     margin: 20px 0; }
   #header #nav-menu {
