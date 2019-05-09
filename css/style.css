@@ -8,6 +8,11 @@
 @font-face {
   font-family: "life-saver";
   src: url("../fonts/LifeSavers-Regular.ttf"); }
+@font-face {
+  font-family: 'Sawarabi-Mincho';
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/sawarabi-mincho-medium.ttf") format("truetype"); }
 /*
  * Kokoro (Japanese) https://fonts.google.com/earlyaccess
  */
@@ -105,9 +110,9 @@ a:focus {
     #header .site-name #logo span, #header .site-name #logo:hover {
       color: #777; }
   #header .site-name .description {
-    margin: .2em 0 0;
+    margin: 1em 0 0 0;
     color: #999;
-    font-family: Kokoro; }
+    font-family: 'Sawarabi-Mincho'; }
   #header .site-name .github-btn {
     margin: 20px 0; }
   #header #nav-menu {

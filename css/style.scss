@@ -14,6 +14,28 @@
     src: url("../fonts/LifeSavers-Regular.ttf");
 }
 
+@font-face {
+  font-family: 'Sawarabi-Mincho';
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/sawarabi-mincho-medium.ttf") format("truetype");
+}
+
+
+/*
+ * Kokoro (Japanese) https://fonts.google.com/earlyaccess
+ */
+@font-face {
+  font-family: 'Kokoro';
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/kokoro/Kokoro-Regular.eot");
+  src: url("../fonts/kokoro/Kokoro-Regular.eot?#iefix") format('embedded-opentype'),
+       url("../fonts/kokoro/Kokoro-Regular.woff2") format('woff2'),
+       url("../fonts/kokoro/Kokoro-Regular.woff") format('woff'),
+       url("../fonts/kokoro/Kokoro-Regular.ttf") format('truetype');
+}
+
 /* Webfont: Lato-Regular */@font-face {
     font-family: 'LatoWeb';
     src: url('../fonts/Lato/Lato-Regular.eot'); /* IE9 Compat Modes */
@@ -130,8 +152,9 @@ a:focus {
             }
         }
         .description {
-            margin: .2em 0 0;
+            margin: 1em 0 0 0;
             color: #999;
+            font-family: 'Sawarabi-Mincho';
         }
 
         .github-btn {
