@@ -99,22 +99,24 @@ a:focus {
   text-align: left;
   border-bottom: 1px solid #ddd;
   position: relative; }
-  #header .site-name h1 {
-    padding: 0;
-    margin: 0;
-    height: 0;
-    overflow: hidden; }
-  #header .site-name #logo {
-    font: bold 38px/1.12 "life-saver", "Times New Roman", Georgia, Times, sans-serif !important;
-    color: #555; }
-    #header .site-name #logo span, #header .site-name #logo:hover {
-      color: #777; }
-  #header .site-name .description {
-    margin: 1em 0 0 0;
-    color: #999;
-    font-family: 'Sawarabi-Mincho'; }
-  #header .site-name .github-btn {
-    margin: 20px 0; }
+  #header .site-name {
+    text-align: center; }
+    #header .site-name h1 {
+      padding: 0;
+      margin: 0;
+      height: 0;
+      overflow: hidden; }
+    #header .site-name #logo {
+      font: bold 38px/1.12 "life-saver", "Times New Roman", Georgia, Times, sans-serif !important;
+      color: #555; }
+      #header .site-name #logo span, #header .site-name #logo:hover {
+        color: #777; }
+    #header .site-name .description {
+      margin: 1em 0 0 0;
+      color: #999;
+      font-family: 'Sawarabi-Mincho'; }
+    #header .site-name .github-btn {
+      margin: 20px 0; }
   #header #nav-menu {
     margin: 10px 0 -1px;
     padding: 0; }
