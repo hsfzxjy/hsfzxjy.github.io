@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.hsfzxjy.site/"/>
-  <updated>2019-03-10T11:14:22.330Z</updated>
+  <updated>2019-06-19T11:59:19.115Z</updated>
   <id>http://blog.hsfzxjy.site/</id>
   
   <author>
@@ -14,6 +14,101 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Rc and RefCell</title>
+    <link href="http://blog.hsfzxjy.site/2019-06-19-rc-refcell-pattern/"/>
+    <id>http://blog.hsfzxjy.site/2019-06-19-rc-refcell-pattern/</id>
+    <published>2019-06-18T16:00:00.000Z</published>
+    <updated>2019-06-19T11:59:19.115Z</updated>
+    
+    <content type="html"><![CDATA[<p>假设我们要创建一个 <code>Cursor&lt;T&gt;</code> 类型，内部保持一个对 <code>T</code> 的 mutable reference。<code>Cursor&lt;T&gt;</code> 有一个方法 <code>.dup()</code> 用于生成新的 <code>Cursor</code> 对象，并让新旧对象共享对 <code>T</code> 的引用。考虑如下实现：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Cursor</span></span>&lt;<span class="symbol">'a</span>, T&gt; &#123;</div><div class="line">    obj: &amp;<span class="symbol">'a</span> <span class="keyword">mut</span> T,</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">impl</span>&lt;<span class="symbol">'a</span>, T&gt; Cursor&lt;<span class="symbol">'a</span>, T&gt; &#123;</div><div class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(t: &amp;<span class="symbol">'a</span> <span class="keyword">mut</span> T) -&gt; Cursor&lt;<span class="symbol">'a</span>, T&gt; &#123;</div><div class="line">        Cursor &#123; obj: t &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dup</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; Cursor&lt;T&gt; &#123;</div><div class="line">        Cursor &#123; obj: <span class="keyword">self</span>.obj &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这里 <code>.dup()</code> 没有设计成 self-consuming 的形式，因为我们常有这样的需求：创建多个游标对象，使其持有对同一个外部对象的引用，同时每个游标对象也有自己独立的内部状态。但这样的实现有一个问题，即无法链式调用。考虑如下代码：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</div><div class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> i = <span class="number">1</span>;</div><div class="line">    <span class="keyword">let</span> a = Cursor::new(&amp;<span class="keyword">mut</span> i).dup();</div><div class="line">    <span class="built_in">println!</span>(<span class="string">"&#123;:?&#125;"</span>, a.obj);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>编译后报错：</p>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">   |</div><div class="line"><span class="type">21</span> |     <span class="type">let</span> a = Cursor::new(&amp;mut i).dup();</div><div class="line">   |             <span class="type">^^^^^^^^^^^^^^^^^^^      - temporary</span> value is freed <span class="built_in">at</span> the <span class="keyword">end</span> of this statement</div><div class="line">   |             <span class="type">|</span></div><div class="line">   |             creates a temporary which is freed while still <span class="built_in">in</span> use</div><div class="line"><span class="number">22</span> |     <span class="type">println</span>!(<span class="string">"&#123;:?&#125;"</span>, a.obj);</div><div class="line">   |                      <span class="type">----- borrow</span> later used here</div><div class="line">   |</div><div class="line">   <span class="type">= note</span>: consider <span class="built_in">using</span> a `<span class="keyword">let</span>` binding to create a longer lived value</div></pre></td></tr></table></figure>
+<p>为了分析这个现象的原因，我们尝试把 <code>.dup()</code> 的签名展开：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">dup</span></span>&lt;<span class="symbol">'a</span>&gt;(&amp;<span class="symbol">'a</span> <span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; Cursor&lt;<span class="symbol">'a</span>, T&gt; &#123;&#125;</div></pre></td></tr></table></figure>
+<p><code>.dup()</code> 其实有一个隐式要求，即 <code>self</code> 要至少有与新对象一样长的 lifetime。但上面的调用实际为：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> a = &#123;</div><div class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> __a = Cursor::new(&amp;<span class="keyword">mut</span> i);</div><div class="line">    __a.dup()</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>临时变量 <code>__a</code> 的 lifetime 仅为如上两行的 block，但 <code>__a.dup()</code> 的 lifetime 会延伸至 block 之外。为解决这个问题，我们可以把链式调用拆成两行写：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> <span class="keyword">mut</span> a = Cursor::new(&amp;<span class="keyword">mut</span> i);</div><div class="line"><span class="keyword">let</span> a = a.dup();</div></pre></td></tr></table></figure>
+<p>但这样失去了链式调用的优雅。如果执着于链式调用，我们可以额外实现一个 self-consuming 的方法 <code>.into_dup()</code>：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">into_dup</span></span>(<span class="keyword">self</span>) -&gt; Cursor&lt;<span class="symbol">'a</span>, T&gt; &#123;</div><div class="line">    Cursor &#123; obj: <span class="keyword">self</span>.obj &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>.into_dup()</code> 将 <code>self</code> 的内容移入新对象中，消除了共享引用的问题，从而允许我们使用链式调用 <code>Cursor::new(&amp;mut i).into_dup()</code>。</p>
+<h2 id="使用-Rc"><a href="#使用-Rc" class="headerlink" title="　使用 Rc"></a>　使用 Rc</h2><p>但上面的做法依然不够优雅。我们不希望为所有方法都实现一个 self-consuming 的版本。事实上，带引用计数的 smart pointer 可能会更适合这个场景。我们尝试用 <code>std::rc::Rc</code> 作进一步的改进。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">use</span> std::rc::Rc;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Cursor</span></span>&lt;T&gt; &#123;</div><div class="line">    obj: Rc&lt;T&gt;,</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">impl</span>&lt;<span class="symbol">'a</span>, T&gt; Cursor&lt;T&gt; &#123;</div><div class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(t: &amp;Rc&lt;T&gt;) -&gt; Cursor&lt;T&gt; &#123;</div><div class="line">        Cursor &#123; obj: t.clone() &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dup</span></span>(&amp;<span class="keyword">self</span>) -&gt; Cursor&lt;T&gt; &#123;</div><div class="line">        Cursor &#123;</div><div class="line">            obj: <span class="keyword">self</span>.obj.clone(),</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>Rc</code> 的使用降低了 lifetime 的限制，我们不再需要显式声明 lifetime。以上实现允许我们正常地使用链式调用：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</div><div class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> i = Rc::new(<span class="number">1</span>);</div><div class="line">    <span class="keyword">let</span> a = Cursor::new(&amp;i).dup();</div><div class="line">    <span class="built_in">println!</span>(<span class="string">"i: &#123;:?&#125; a.obj: &#123;:?&#125;"</span>, a.obj, i);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Output</span></div><div class="line"><span class="comment">// i: 1 a.obj: 1</span></div></pre></td></tr></table></figure>
+<p>很好，现在我们尝试从外部修改 <code>i</code> 的值：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</div><div class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> i = Rc::new(<span class="number">1</span>);</div><div class="line">    <span class="keyword">let</span> a = Cursor::new(&amp;i).dup();</div><div class="line">    *Rc::get_mut(&amp;<span class="keyword">mut</span> i).unwrap() = <span class="number">2</span>;</div><div class="line">    <span class="built_in">println!</span>(<span class="string">"i: &#123;:?&#125; a.obj: &#123;:?&#125;"</span>, a.obj, i);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>Rc</code> 内部对象的 mutable reference 不能简单地通过 dereferencing 得到，我们必须使用 <code>Rc::get_mut(rc)</code> 或者 <code>Rc::make_mut(rc)</code> （写时拷贝，在此不适用）。以上代码可以通过编译，但是会有运行时 panic：</p>
+<figure class="highlight sml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">thread <span class="symbol">'main'</span> panicked at <span class="symbol">'called</span> <span class="type">`Option</span>::unwrap<span class="literal">()</span>` on a <span class="type">`None</span>` value', src/libcore/<span class="built_in">option</span>.rs:<span class="number">347</span>:<span class="number">21</span></div></pre></td></tr></table></figure>
+<p>为什么 <code>Rc::get_mut</code> 返回了 <code>None</code>？我们看一看文档中关于这个函数的描述：</p>
+<blockquote>
+<p>Returns a mutable reference to the inner value, if there are no other <code>Rc</code> or <code>Weak</code> pointers to the same value.<br>Returns <code>None</code> otherwise, because it is not safe to mutate a shared value.</p>
+</blockquote>
+<p>也就是说，当且仅当没有其他 <code>Rc</code> 引用内部对象时，<code>Rc::get_mut</code> 才会返回相应的 mutable reference。而在上面的代码中，我们实际上有两个 <code>Rc</code> 引用了内部对象（另一个为 <code>a.obj</code>）。这和 borrow checker 的行为类似，只不过相应的检查被移到了运行时。</p>
+<p>从另一个角度看，<code>Rc&lt;T&gt;</code> 和 reference 很类似：</p>
+<ul>
+<li>任一时刻允许出现多个 <code>Rc&lt;T&gt;</code>，<code>Rc&lt;T&gt;</code> 支持直接 dereference 得到内部的值。（和 任一时刻可以有多个 immutable reference <code>&amp;T</code> 相比较）</li>
+<li>当且仅当只有唯一 <code>Rc&lt;T&gt;</code> 时，<code>Rc::get_mut</code> 才能成功。（和 <code>&amp;mut T</code> 唯一且不能和 <code>&amp;T</code> 共存相比较）。</li>
+</ul>
+<p>这其中的问题是，<code>Rc&lt;T&gt;</code> 一旦存在就相当于出现了一个对 <code>T</code> 的 「immutable reference」，但事实上对内部 <code>T</code> 的读取可能只占 <code>Rc&lt;T&gt;</code> 整个生命周期的很小一部分（甚至没有），由此排挤掉 mutable reference 未免过于苛刻了。</p>
+<p>但是，我们仍然是需要 <code>Rc</code> 的，因为只有它可以实现共享引用。为解决这个问题，我们要求 <code>Rc&lt;T&gt;</code> 的内部对象 <code>T</code> 可以在不 mutably borrow 的情况下被更改。这就需要 <code>RefCell</code> 的辅助。</p>
+<h2 id="RefCell-与-Interior-Mutability-Pattern"><a href="#RefCell-与-Interior-Mutability-Pattern" class="headerlink" title="RefCell 与 Interior Mutability Pattern"></a>RefCell 与 Interior Mutability Pattern</h2><p>什么是 Interior Mutability Pattern？</p>
+<p>Rust 中比较恼人的一点是，可变性具有「传染性」。即若想更改一个对象的一部分，必须持有整个对象的 mutable reference，这对一个有很多互不相关的内部状态的对象来说很不友好。当然很多时候这并不意味着设计的「坏味道」，而是 borrow checker 过于谨慎导致的。为了适应更一般的设计，我们有时需要将对象的可变性隐藏起来，也就是说，在仅持有对象的 immutable reference 的情况下也可以对对象的某一部分进行修改。这就是所谓的 Interior Mutability Pattern。</p>
+<p><code>RefCell</code> 可以实现这一功能。其提供了 <code>.borrow()</code> 和 <code>.borrow_mut()</code> 方法用于借出 immutable 和 mutable reference。这两个函数的参数都是 <code>(&amp;self)</code>，因此不需要 <code>RefCell</code> 本身的（编译时的） mutability。当然，骗过了 borrow checker 并不意味着我们可以突破 Borrowing 的规则——<code>.borrow()</code> 和 <code>.borrow_mut()</code> 在相应情况下还是会 panic，但只要足够谨慎就不会有问题。</p>
+<h2 id="Rc-RefCell"><a href="#Rc-RefCell" class="headerlink" title="Rc + RefCell"></a>Rc + RefCell</h2><p>我们可以用 <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> 组合出自由度接近 Raw Pointer 的智能指针。一方面 <code>Rc</code> 提供了共享引用的功能；另一方面，<code>RefCell</code> 在必要时才会出借 <code>T</code> 的引用，同时也在运行时检查 Borrowing 规则。这实际上「打破了」<code>Rc</code> 「存在即持有引用」的限制，赋予了程序更多的灵活性。</p>
+<p>最后看一下使用 <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> 改写的代码：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">use</span> std::cell::RefCell;</div><div class="line"><span class="keyword">use</span> std::rc::Rc;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Cursor</span></span>&lt;T&gt; &#123;</div><div class="line">    obj: Rc&lt;RefCell&lt;T&gt;&gt;,</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">impl</span>&lt;<span class="symbol">'a</span>, T&gt; Cursor&lt;T&gt; &#123;</div><div class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(t: &amp;Rc&lt;RefCell&lt;T&gt;&gt;) -&gt; Cursor&lt;T&gt; &#123;</div><div class="line">        Cursor &#123; obj: t.clone() &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dup</span></span>(&amp;<span class="keyword">self</span>) -&gt; Cursor&lt;T&gt; &#123;</div><div class="line">        Cursor &#123;</div><div class="line">            obj: <span class="keyword">self</span>.obj.clone(),</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</div><div class="line">    <span class="keyword">let</span> i = Rc::new(RefCell::new(<span class="number">1</span>));</div><div class="line">    <span class="keyword">let</span> a = Cursor::new(&amp;i).dup();</div><div class="line">    *i.borrow_mut() = <span class="number">2</span>;</div><div class="line">    <span class="built_in">println!</span>(<span class="string">"i: &#123;:?&#125; a.obj: &#123;:?&#125;"</span>, a.obj, i);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>以上代码可以正确并安全地运行。注意到 <code>Rc</code> 一层基本是透明的，这是 <code>Deref</code> trait 的作用。我们直接可以用 <code>i.borrow_mut</code> 访问到 <code>RefCell</code> 上的 <code>borrow_mut</code> 方法。</p>
+<p>如果我们再加一句</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</div><div class="line">    <span class="keyword">let</span> i = Rc::new(RefCell::new(<span class="number">1</span>));</div><div class="line">    <span class="keyword">let</span> a = Cursor::new(&amp;i).dup();</div><div class="line">    <span class="keyword">let</span> _<span class="keyword">ref</span> = i.borrow();</div><div class="line">    *i.borrow_mut() = <span class="number">2</span>;</div><div class="line">    <span class="built_in">println!</span>(<span class="string">"i: &#123;:?&#125; a.obj: &#123;:?&#125;"</span>, a.obj, i);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>则仍可以通过编译，但是运行时会 panic:</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">thread <span class="string">'main'</span> panicked at <span class="string">'already borrowed: BorrowMutError'</span>, src<span class="regexp">/libcore/</span>result.<span class="string">rs:</span><span class="number">999</span>:<span class="number">5</span></div></pre></td></tr></table></figure>
+<p>因为这违反了 Borrowing 的规则—— mutable reference 和 immutable reference 同时存在了。某种意义上讲，尽管共享了引用，<code>Rc&lt;RefCell&lt;T&gt;&gt;</code> 还是比裸指针安全的。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;假设我们要创建一个 &lt;code&gt;Cursor&amp;lt;T&amp;gt;&lt;/code&gt; 类型，内部保持一个对 &lt;code&gt;T&lt;/code&gt; 的 mutable reference。&lt;code&gt;Cursor&amp;lt;T&amp;gt;&lt;/code&gt; 有一个方法 &lt;code&gt;.dup()&lt;/cod
+    
+    </summary>
+    
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+    
+    
+      <category term="rust" scheme="http://blog.hsfzxjy.site/tags/rust/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>可视化 Correlation</title>
+    <link href="http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/"/>
+    <id>http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/</id>
+    <published>2019-03-09T16:00:00.000Z</published>
+    <updated>2019-03-10T08:27:49.905Z</updated>
+    
+    <content type="html"><![CDATA[<p>假设有一个 <code>N x M</code> 的矩阵 <code>A</code>，为 N 个 <code>1 x M</code> 向量的集合。则</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">A_corr = np.corrcoef(A)  <span class="comment"># shape: (N, N)</span></div></pre></td></tr></table></figure>
+<p>可以得到 <code>A</code> 的相关系数矩阵。使用 <code>plt.matshow(A_corr)</code> 即可可视化矩阵。</p>
+<p>如果 <code>N</code> 过大，可以使用柱状图的方式统计 <code>A_corr</code> 中落在各个区间的元素的个数：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 取上三角阵，忽略对角元素</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">corr_matrix_to_array</span><span class="params">(corr_mat)</span>:</span></div><div class="line">    N = corr_mat.shape[<span class="number">0</span>]</div><div class="line">    <span class="keyword">return</span> np.array([corr_mat[i][j] <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, N) <span class="keyword">for</span> j <span class="keyword">in</span> range(i + <span class="number">1</span>, N)])</div><div class="line"></div><div class="line">plt.hist(corr_matrix_to_array(A_corr), bins=np.linspace(<span class="number">-1</span>, <span class="number">1</span>, N_bins))  <span class="comment"># N_bins 为区间个数</span></div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;假设有一个 &lt;code&gt;N x M&lt;/code&gt; 的矩阵 &lt;code&gt;A&lt;/code&gt;，为 N 个 &lt;code&gt;1 x M&lt;/code&gt; 向量的集合。则&lt;/p&gt;
+&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;g
+    
+    </summary>
+    
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>三月十日杂感</title>
@@ -41,32 +136,6 @@
     </summary>
     
       <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>可视化 Correlation</title>
-    <link href="http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/"/>
-    <id>http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/</id>
-    <published>2019-03-09T16:00:00.000Z</published>
-    <updated>2019-03-10T08:27:49.905Z</updated>
-    
-    <content type="html"><![CDATA[<p>假设有一个 <code>N x M</code> 的矩阵 <code>A</code>，为 N 个 <code>1 x M</code> 向量的集合。则</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">A_corr = np.corrcoef(A)  <span class="comment"># shape: (N, N)</span></div></pre></td></tr></table></figure>
-<p>可以得到 <code>A</code> 的相关系数矩阵。使用 <code>plt.matshow(A_corr)</code> 即可可视化矩阵。</p>
-<p>如果 <code>N</code> 过大，可以使用柱状图的方式统计 <code>A_corr</code> 中落在各个区间的元素的个数：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 取上三角阵，忽略对角元素</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">corr_matrix_to_array</span><span class="params">(corr_mat)</span>:</span></div><div class="line">    N = corr_mat.shape[<span class="number">0</span>]</div><div class="line">    <span class="keyword">return</span> np.array([corr_mat[i][j] <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, N) <span class="keyword">for</span> j <span class="keyword">in</span> range(i + <span class="number">1</span>, N)])</div><div class="line"></div><div class="line">plt.hist(corr_matrix_to_array(A_corr), bins=np.linspace(<span class="number">-1</span>, <span class="number">1</span>, N_bins))  <span class="comment"># N_bins 为区间个数</span></div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;假设有一个 &lt;code&gt;N x M&lt;/code&gt; 的矩阵 &lt;code&gt;A&lt;/code&gt;，为 N 个 &lt;code&gt;1 x M&lt;/code&gt; 向量的集合。则&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;g
-    
-    </summary>
-    
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
     
     
   </entry>
@@ -855,117 +924,6 @@
       <category term="RMPE" scheme="http://blog.hsfzxjy.site/tags/RMPE/"/>
     
       <category term="Machine Learning" scheme="http://blog.hsfzxjy.site/tags/Machine-Learning/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>一个 Reentrant Error 引发的对 Python 信号机制的探索和思考</title>
-    <link href="http://blog.hsfzxjy.site/2017-08-17-caveats-for-signal-handler-in-python/"/>
-    <id>http://blog.hsfzxjy.site/2017-08-17-caveats-for-signal-handler-in-python/</id>
-    <published>2017-08-16T16:00:00.000Z</published>
-    <updated>2019-01-21T09:06:17.133Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>前几天工作时遇到了一个匪夷所思的问题。经过几次尝试后问题得以解决，但问题产生的原因却仍令人费解。查找 SO 无果，我决定翻看 Python 的源码。断断续续地研究了几天，终于恍然大悟。撰此文以记。</p>
-<a id="more"></a>
-<p>本文环境：</p>
-<ul>
-<li>Ubuntu 16.04 (64 bit)</li>
-<li>Python 3.6.2</li>
-</ul>
-<p>使用的 C 源码可以从 <a href="https://www.python.org/ftp/python/3.6.2/Python-3.6.2.tgz" target="_blank" rel="noopener">Python 官网</a> 获取。</p>
-<h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>工作时用到了 celery 作为异步任务队列，为方便调试，我写了一个脚本用以启动/关闭 celery 主进程。代码简化后如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> sys</div><div class="line"><span class="keyword">import</span> subprocess</div><div class="line"><span class="comment"># ...</span></div><div class="line">celery_process = subprocess.Popen(</div><div class="line">    [<span class="string">'celery'</span>, <span class="string">'-A'</span>, <span class="string">'XXX'</span>, <span class="string">'worker'</span>],</div><div class="line">    stdout=subprocess.PIPE,</div><div class="line">    stderr=sys.stderr</div><div class="line">)</div><div class="line"><span class="keyword">try</span>:</div><div class="line">    <span class="comment"># Start and wait for server process</span></div><div class="line"><span class="keyword">except</span> KeyboardInterrupt:</div><div class="line">    <span class="comment"># Ctrl + C pressed</span></div><div class="line">    celery_process.terminate()</div><div class="line">    celery_process.wait()</div></pre></td></tr></table></figure>
-<p>代码启动了 celery worker，并尝试在捕获到 <code>KeyboardInterrupt</code> 异常时将其热关闭。</p>
-<p>初看上去没什么问题。然而实际测试时却发生了十分诡异的事情：按下 <code>Ctrl+C</code> 后，程序 <strong>偶尔</strong> 会抛出这样的异常：<code>RuntimeError: reentrant call inside &lt;_io.BufferedWriter name=&#39;&lt;stdout&gt;&#39;&gt;</code>。诡异之处有两点：</p>
-<ul>
-<li>异常发生的时机有随机性</li>
-<li>异常的 traceback 指向 celery 包，也就是说这是在 celery 主进程内部发生的异常</li>
-</ul>
-<p>这个结果大大出乎了我的意料。随机性异常是众多最难缠的问题之一，因为这常常意味着并发问题，涉及底层知识，病灶隐蔽，调试难度大，同时没有有效的手段判断问题是否彻底解决（可能只是降低了频率）。</p>
-<h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>异常信息中有两个词很关键：<code>reentrant</code> 和 <code>stdout</code>。<code>reentrant call</code> 说明有一个不可重入的函数被递归调用了；<code>stdout</code> 则指明了发生的地点和时机。初步可以判定：<strong>由于某种原因，有两股控制流在同时操控 <code>stdout</code></strong>。</p>
-<p>“可重入”是什么？根据 <a href="https://en.wikipedia.org/wiki/Reentrancy_%28computing%29" target="_blank" rel="noopener">Wikipedia</a> 的定义：<strong>如果一个子程序能在执行时被中断并在之后被正确地、安全地唤起，它就被称为可重入的</strong>。依赖于全局数据的过程是不可重入的，如 <code>printf</code>（依赖于全局文件描述符）、<code>malloc</code>（依赖与和堆相关的一系列数据结构）等函数。需要注意的是，可重入性（reentrant）与 线程安全性（thread-safe）并不等价，甚至不存在包含关系，<a href="https://en.wikipedia.org/wiki/Reentrancy_%28computing%29#Examples" target="_blank" rel="noopener">Wikipedia</a> 中给出了相关的反例。</p>
-<p>多次尝试后，出现了一条线索：有时候 <code>worker: Warm shutdown (MainProcess)</code> 这个字符串会被二次打印，时机不确定。这句话是 celery 将要热关闭时的提示语，二次出现只可能是主进程收到了第二个信号。阅读 <a href="http://docs.celeryproject.org/en/latest/userguide/workers.html#process-signals" target="_blank" rel="noopener">celery 的文档</a> 可知，<code>SIGINT</code> 和 <code>SIGTERM</code> 信号可以引发热关闭。回头浏览我的代码，其中只有一处发送了 <code>SIGTERM</code> 信号（<code>celery_process.terminate()</code>），至于另一个神秘的信号，我怀疑是 <code>SIGINT</code>。</p>
-<p>SO 一下，结果印证了我的猜想：</p>
-<blockquote>
-<p>If you are generating the SIGINT with Ctrl-C on a Unix system, then the signal is being sent to the entire process group.<br>— via <a href="https://stackoverflow.com/questions/6803395/child-process-receives-parents-sigint" target="_blank" rel="noopener">StackOverflow</a></p>
-</blockquote>
-<p><code>SIGINT</code> 信号不仅会发送到父进程，而是会发到整个进程组，默认情况下包括了所有子进程。也就是说——在拦截了 <code>KeyboardInterrupt</code> 之后执行的 <code>celery_process.terminate()</code> 是多此一举，因为 <code>SIGINT</code> 信号也会被发送至 celery 主进程，同样会引起热关闭。代码稍作修改即可正常运行：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ...</span></div><div class="line"><span class="keyword">try</span>:</div><div class="line">    <span class="comment"># Start and wait for server process</span></div><div class="line"><span class="keyword">except</span> KeyboardInterrupt:</div><div class="line">    <span class="comment"># Ctrl + C pressed</span></div><div class="line">    <span class="keyword">pass</span></div><div class="line"><span class="keyword">else</span>:</div><div class="line">    <span class="comment"># Signal SIGTERM if no exception raised</span></div><div class="line">    celery_process.terminate()</div><div class="line"><span class="keyword">finally</span>:</div><div class="line">    <span class="comment"># Wait for it to avoid it becoming orphan</span></div><div class="line">    celery_process.wait()</div></pre></td></tr></table></figure>
-<h2 id="猜测"><a href="#猜测" class="headerlink" title="猜测"></a>猜测</h2><p>UNIX 信号处理是一个相当奇葩的过程——当进程收到一个信号时，内核会选择一条线程（以一定的规则），中断其当前控制流，将控制流强行转给信号处理函数，待其执行完毕后再将控制流交还给原线程。时序图如下：</p>
-<p><img src="/assets/caveats-for-signal-handler-in-python/bVS7gW" alt=""></p>
-<p>由于控制流转换发生在同一条线程上，许多线程间同步机制会失效甚至报错。因此信号处理函数的编写要比线程函数更加严格，对同一个文件输出是被禁止并且无解的，因为很可能会发生这样的事情：</p>
-<p><img src="/assets/caveats-for-signal-handler-in-python/bVS7nP" alt=""></p>
-<p>而且这个问题不能通过加锁来解决（因为是在同一个线程中，会死锁）。</p>
-<p>因此，我猜测异常发生时的事件时序是这样的：在 <code>print</code> 未执行完时中断，又在信号处理函数中调用 print，触发了重入检测，引起 <code>RuntimeError</code>：</p>
-<p><img src="/assets/caveats-for-signal-handler-in-python/bVS831" alt=""></p>
-<h2 id="疑云又起"><a href="#疑云又起" class="headerlink" title="疑云又起"></a>疑云又起</h2><p>不幸的是，我的猜想很快被推翻了。</p>
-<p>在翻看 Python <code>signal</code> 模块的官方文档，我看到了如下叙述：</p>
-<blockquote>
-<p>A Python signal handler does not get executed inside the low-level (C) signal handler. Instead, the low-level signal handler sets a flag which tells the virtual machine to execute the corresponding Python signal handler at a later point(for example at the next bytecode instruction).<br>— via <a href="https://docs.python.org/3/library/signal.html?highlight=signal#execution-of-python-signal-handlers" target="_blank" rel="noopener">Python Documentation</a></p>
-</blockquote>
-<p>也就是说，<strong>Python 中使用 <code>signal.signal</code> 注册的信号处理函数并不会在收到信号时立即执行，而只是简单做一个标记，将其延迟至之后的某个时机</strong>。这么做可以尽量快地结束异常控制流，减少其对被阻断进程的影响。</p>
-<p>这番表述可以说是推翻了我的猜想，因为 Signal Handler 中的 <code>print</code> 并没有在异常控制流中执行。那异常又是怎么产生的呢？</p>
-<p>文档说 Python Signal Handler 会被延后至某个时机进行，但并没有明示是什么时候。对于这个疑问，<a href="https://stackoverflow.com/questions/19699314/how-to-use-a-separate-thread-for-asynchronous-signal-handling-in-python" target="_blank" rel="noopener">这个提问的被采纳回答</a> 则斩钉截铁地将其具体化到了“某两个 Python 字节码之间”。</p>
-<p>我们知道，Python 程序在执行前会被编译成 Python 内定的字节码<br>（bytecode）,Python 虚拟机实际执行的正是这些字节码。倘若该回答是正确的，则立即有如下推论：<strong>在处理信号的过程中，字节码具有原子性（atomic）</strong>。也就是说，主线程总是在两个字节码之间决定是否转移控制流， 而 <strong>不会</strong> 出现以下情况：</p>
-<p><img src="/assets/caveats-for-signal-handler-in-python/bVS7EH" alt=""></p>
-<p>这很显然与我的程序结果相悖：<code>print</code> 与 <code>print</code> 所调用的 <code>io.BufferedWriter.write</code> 和 <code>io.BufferedWriter.flush</code> 都是用纯 C 代码编写的，对其的调用只消耗一条字节码（<code>CALL_FUNCTION</code> 或 <code>CALL_FUNCTION_KW</code>），在信号中断的影响下，这几个函数仍保持原子性，在时序图上互不重叠，更不会发生重入。</p>
-<p><img src="/assets/caveats-for-signal-handler-in-python/bVS7ag" alt=""></p>
-<p>因此，<strong>除了在两个字节码之间，应该还有其他时机唤起了 Python Signal Handler</strong>。</p>
-<p>至此，问题已触及 Python 的地板了，需向更底层挖掘才能找到答案。</p>
-<h2 id="深入源码"><a href="#深入源码" class="headerlink" title="深入源码"></a>深入源码</h2><p>信号注册逻辑位于 <code>Modules/signalmodule.c</code> 文件中。 313 行的 <code>signal_handler</code> 是信号处理函数的最外层包装，由系统调用 <code>signal</code> 或 <code>sigaction</code> 注册至内核，并在信号发生时被内核回调，是异常控制流的入口。<code>signal_handler</code> 主要调用了 239 行处的 <code>trip_signal</code> 函数，其中有这样一段代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Handlers[sig_num].tripped = <span class="number">1</span>;</div><div class="line"></div><div class="line"><span class="keyword">if</span> (!is_tripped) &#123;</div><div class="line">    is_tripped = <span class="number">1</span>;</div><div class="line">    Py_AddPendingCall(checksignals_witharg, <span class="literal">NULL</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这段代码便是文档中所说的逻辑：做标记并延后 Python Signal Handler。其中 <code>checksignals_witharg</code> 即为被延后调用的函数，位于 192 行，核心代码只有一句：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span></span></div><div class="line"><span class="title">checksignals_witharg</span><span class="params">(<span class="keyword">void</span> * unused)</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> PyErr_CheckSignals();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><code>PyErr_CheckSignals</code> 位于 1511 行：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span></span></div><div class="line"><span class="title">PyErr_CheckSignals</span><span class="params">(<span class="keyword">void</span>)</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> i;</div><div class="line">    PyObject *f;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!is_tripped)</div><div class="line">        <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> WITH_THREAD</span></div><div class="line">    <span class="keyword">if</span> (PyThread_get_thread_ident() != main_thread)</div><div class="line">        <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"></div><div class="line">    is_tripped = <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!(f = (PyObject *)PyEval_GetFrame()))</div><div class="line">        f = Py_None;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt; NSIG; i++) &#123;</div><div class="line">        <span class="keyword">if</span> (Handlers[i].tripped) &#123;</div><div class="line">            PyObject *result = <span class="literal">NULL</span>;</div><div class="line">            PyObject *arglist = Py_BuildValue(<span class="string">"(iO)"</span>, i, f);</div><div class="line">            Handlers[i].tripped = <span class="number">0</span>;</div><div class="line"></div><div class="line">            <span class="keyword">if</span> (arglist) &#123;</div><div class="line">                result = PyEval_CallObject(Handlers[i].func,</div><div class="line">                                           arglist);</div><div class="line">                Py_DECREF(arglist);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (!result)</div><div class="line">                <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line"></div><div class="line">            Py_DECREF(result);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>可见，这个函数便是异步回调的最里层，包含了执行 Python Signal Handler 的逻辑。</p>
-<p>至此我们可以发现，整个 Python 中有两个办法可以唤起 Python Signal Handler，一个是调用 <code>checksignals_witharg</code>，另一个是调用 <code>PyErr_CheckSignals</code>。前者只是后者的简单封包。</p>
-<p><code>checksignals_witharg</code> 在 Python 源码中只出现了一次（不包括定义，下同），没有被直接调用的迹象。但需要注意的是，<code>checksignals_witharg</code> 曾被当做 <code>Py_AddPendingCall</code> 的参数，<code>Py_AddPendingCall</code> 所做的工作时将其加入到一个全局队列中。与之对应的出队操作是 <code>Py_MakePendingCalls</code>，位于 <code>Python/ceval.c</code> 的 464 行。此函数会间接调用 <code>checksignals_witharg</code>，在 Python 源码中被调用了 3 次：</p>
-<ul>
-<li><code>Modules/_threadmodule.c</code> 52 行的 <code>acquire_timed</code></li>
-<li><code>Modules/main.c</code> 310 行的 <code>run_file</code></li>
-<li><code>Python/ceval.c</code> 722 行的 <code>_PyEval_EvalFrameDefault</code></li>
-</ul>
-<p>值得注意的是，<code>_PyEval_EvalFrameDefault</code> 是一个长达 2600 多行的状态机，是解析字节码的核心逻辑所在。此处调用出现于状态机主循环开始处——这印证了上面回答中的部分说法，即 Python 会在两个字节码中间唤起 Python Signal Hanlder。</p>
-<p>而 <code>PyErr_CheckSignals</code> 在 Python 源码中出现了 80 多处，遍布 Python 的各个模块中——这说明该回答的另一半说法是错误的：<strong>除了在两个字节码之间，Python 还可能在其他角落唤起 Python Signal Handler</strong>。其中有两处值得注意，它们都位于 <code>Modules/_io/bufferedio.c</code> 中：</p>
-<ul>
-<li>1884 行的 <code>_bufferedwriter_flush_unlocked</code></li>
-<li>1939 行的 <code>_io_BufferedWriter_write_impl</code></li>
-</ul>
-<p>这两个函数是 <code>io.BufferedWriter</code> 类的底层实现，会被 <code>print</code> 间接调用。仔细观察可以发现，它们都有着相似的结构：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ENTER_BUFFERED(self)</div><div class="line"><span class="comment">// ...</span></div><div class="line">PyErr_CheckSignals();</div><div class="line"><span class="comment">// ...</span></div><div class="line">LEAVE_BUFFERED(self)</div></pre></td></tr></table></figure>
-<p><code>ENTER_BUFFERED</code> 是一个宏，会尝试申请无阻塞线程锁以保证函数不会被重入：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> ENTER_BUFFERED(self) \</span></div><div class="line">    ( (PyThread_acquire_lock(self-&gt;lock, 0) ? \</div><div class="line">       1 : _enter_buffered_busy(self)) \</div><div class="line">     &amp;&amp; (self-&gt;owner = PyThread_get_thread_ident(), 1) )</div></pre></td></tr></table></figure>
-<p><img src="/assets/caveats-for-signal-handler-in-python/bVS9AJ" alt=""></p>
-<p>至此，真相已经大白了。</p>
-<h2 id="真相"><a href="#真相" class="headerlink" title="真相"></a>真相</h2><p>当信号中断发生在 <code>_bufferedwriter_flush_unlocked</code> 或 <code>_io_BufferedWriter_write_impl</code> 中时，这两个函数中的 <code>PyErr_CheckSignals</code> 会直接唤起 Python Signal Handler，而此时由 <code>ENTER_BUFFERED</code> 上的锁尚未解开，若 Python Signal Handler 中又有 <code>print</code> 函数调用，则会导致再次 <code>ENTER_BUFFERED</code> 上锁失败，从而抛出异常。时序图如下：</p>
-<p><img src="/assets/caveats-for-signal-handler-in-python/bVS9lQ" alt=""></p>
-<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>为什么不将 Python Signal Handler 调用的地点统一在一个地方，而是散布在程序的各处呢？阅读相关代码，我认为有两点原因：</p>
-<ul>
-<li>信号中断会使某些系统调用行为异常，从而使系统调用的调用者不知如何处理，此时需要调用 Signal Handler 进行可能的状态恢复。一个例子是 <code>write</code> 系统调用，信号中断会导致数据部分写回，与此相关的一大批 I/O 函数（包括出问题的 <code>_bufferedwriter_flush_unlocked</code> 和 <code>_io_BufferedWriter_write_impl</code>）便只能相应地调用 <code>PyErr_CheckSignals</code>。</li>
-<li>某些函数需要做计算密集型任务，为了防止 Python Signal Handler 的调用被过长地延后（其实主要是为了及时响应键盘中断，防止程序无法从前台结束），必须适时地检查并调用 Python Signal Handler。一个例子是 <code>Objects/longobject.c</code> 中的诸函数，<code>longobject.c</code> 定义了 Python 特有的无限长整型，其相关的运算可能耗时相当长，必须做这样的处理。</li>
-</ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
-<li>Python Signal Handler 的调用会被延后，但时机不止在两个字节码之间，而是可能出现在任何地方。</li>
-<li>由于第一条，Python Signal Handler 中尽量都使用 <strong>可重入的</strong> 的函数，以避免奇怪的问题。可重入性可以从文档获知，也可以结合定义由源码推断出来。</li>
-<li>有疑问，翻源码。人会说谎，代码不会。</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;写在前面&quot;&gt;&lt;a href=&quot;#写在前面&quot; class=&quot;headerlink&quot; title=&quot;写在前面&quot;&gt;&lt;/a&gt;写在前面&lt;/h2&gt;&lt;p&gt;前几天工作时遇到了一个匪夷所思的问题。经过几次尝试后问题得以解决，但问题产生的原因却仍令人费解。查找 SO 无果，我决定翻看 Python 的源码。断断续续地研究了几天，终于恍然大悟。撰此文以记。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
-    
-    
-      <category term="Python" scheme="http://blog.hsfzxjy.site/tags/Python/"/>
-    
-      <category term="POSIX" scheme="http://blog.hsfzxjy.site/tags/POSIX/"/>
-    
-      <category term="Reentrancy" scheme="http://blog.hsfzxjy.site/tags/Reentrancy/"/>
     
   </entry>
   
