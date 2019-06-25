@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.hsfzxjy.site/"/>
-  <updated>2019-06-23T08:01:44.020Z</updated>
+  <updated>2019-06-25T02:13:45.921Z</updated>
   <id>http://blog.hsfzxjy.site/</id>
   
   <author>
@@ -20,29 +20,30 @@
     <link href="http://blog.hsfzxjy.site/2019-06-23-rc-refcell-pattern/"/>
     <id>http://blog.hsfzxjy.site/2019-06-23-rc-refcell-pattern/</id>
     <published>2019-06-22T16:00:00.000Z</published>
-    <updated>2019-06-23T08:01:44.020Z</updated>
+    <updated>2019-06-25T02:13:45.921Z</updated>
     
-    <content type="html"><![CDATA[<p>Say we need a <code>Cursor&lt;T&gt;</code> type, which should contain a mutable reference to <code>T</code>. The type has a method <code>.dup()</code> that creates a new instance of <code>Cursor&lt;T&gt;</code> while sharing the reference between new and old instances. This is common in database driver designing, where users may expect to have multiple cursors alive at the same time, which own references to the same connection object. Below is a possible implementation:<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Cursor</span></span>&lt;<span class="symbol">'a</span>, T&gt; &#123;</div><div class="line">    obj: &amp;<span class="symbol">'a</span> <span class="keyword">mut</span> T,</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">impl</span>&lt;<span class="symbol">'a</span>, T&gt; Cursor&lt;<span class="symbol">'a</span>, T&gt; &#123;</div><div class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(t: &amp;<span class="symbol">'a</span> <span class="keyword">mut</span> T) -&gt; Cursor&lt;<span class="symbol">'a</span>, T&gt; &#123;</div><div class="line">        Cursor &#123; obj: t &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dup</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; Cursor&lt;T&gt; &#123;</div><div class="line">        Cursor &#123; obj: <span class="keyword">self</span>.obj &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</div><div class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> i = <span class="number">1</span>;</div><div class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> cursor_a = Cursor::new(&amp;<span class="keyword">mut</span> i);</div><div class="line">    <span class="keyword">let</span> _cursor_b = cursor_a.dup();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>Looks perfect and neat, and luckily Rust compiler did not complains. As a freshman to Rust like me it’s difficult to keep compiler silent, especially when playing with references. But when I try to chain up the constructor and <code>.dup()</code>, the compiler screams:</p>
+    <content type="html"><![CDATA[<p>Say we need a <code>Cursor&lt;T&gt;</code> type, which should contain a mutable reference to <code>T</code>. The type has a method <code>.dup()</code> that will create a new instance of <code>Cursor&lt;T&gt;</code> while sharing the reference between new and old instances. This is common in database driver designing, where users might expect to have multiple cursors alive simultaneously, owning references to the same connection object. A possible implementation might look like:<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Cursor</span></span>&lt;<span class="symbol">'a</span>, T&gt; &#123;</div><div class="line">    obj: &amp;<span class="symbol">'a</span> <span class="keyword">mut</span> T,</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">impl</span>&lt;<span class="symbol">'a</span>, T&gt; Cursor&lt;<span class="symbol">'a</span>, T&gt; &#123;</div><div class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(t: &amp;<span class="symbol">'a</span> <span class="keyword">mut</span> T) -&gt; Cursor&lt;<span class="symbol">'a</span>, T&gt; &#123;</div><div class="line">        Cursor &#123; obj: t &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dup</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; Cursor&lt;T&gt; &#123;</div><div class="line">        Cursor &#123; obj: <span class="keyword">self</span>.obj &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</div><div class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> i = <span class="number">1</span>;</div><div class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> cursor_a = Cursor::new(&amp;<span class="keyword">mut</span> i);</div><div class="line">    <span class="keyword">let</span> _cursor_b = cursor_a.dup();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Perfect and neat, and luckily Rust compiler did not complain. As a Rust freshman, like me, it’s not easy to keep compiler silent all the time, especially when playing with references. But once I try to chain up the constructor and <code>.dup()</code>, the compiler screams:<br><a id="more"></a></p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</div><div class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> i = <span class="number">1</span>;</div><div class="line">    <span class="keyword">let</span> a = Cursor::new(&amp;<span class="keyword">mut</span> i).dup();</div><div class="line">    <span class="built_in">println!</span>(<span class="string">"&#123;:?&#125;"</span>, a.obj);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <figure class="highlight coq"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">   |</div><div class="line"><span class="type">21</span> |     <span class="type">let</span> a = Cursor::new(&amp;mut i).dup();</div><div class="line">   |             <span class="type">^^^^^^^^^^^^^^^^^^^      - temporary</span> value is freed <span class="built_in">at</span> the <span class="keyword">end</span> of this statement</div><div class="line">   |             <span class="type">|</span></div><div class="line">   |             creates a temporary which is freed while still <span class="built_in">in</span> use</div><div class="line"><span class="number">22</span> |     <span class="type">println</span>!(<span class="string">"&#123;:?&#125;"</span>, a.obj);</div><div class="line">   |                      <span class="type">----- borrow</span> later used here</div><div class="line">   |</div><div class="line">   <span class="type">= note</span>: consider <span class="built_in">using</span> a `<span class="keyword">let</span>` binding to create a longer lived value</div></pre></td></tr></table></figure>
-<p>Scary and confusing. In other languages such as Python, splitting the calling or chaining them should have no difference, but Rust sometimes rejects the latter one. To figure out the problem, let’s write the signature of <code>.dup()</code> in a more verbose way:<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">dup</span></span>&lt;<span class="symbol">'a</span>&gt;(&amp;<span class="symbol">'a</span> <span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; Cursor&lt;<span class="symbol">'a</span>, T&gt; &#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>It’s confusing. In most languages such as Python, either splitting the calling or chaining them should have no difference, but Rust sometimes rejects the latter one.</p>
+<p>To figure out the problem, let’s write the signature of <code>.dup()</code> in a more verbose way:<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">dup</span></span>&lt;<span class="symbol">'a</span>&gt;(&amp;<span class="symbol">'a</span> <span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; Cursor&lt;<span class="symbol">'a</span>, T&gt; &#123;</div><div class="line">    <span class="comment">// ...</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>Rust compiler allows us to elide the lifetime specifier <code>&#39;a</code>. The signature implies that <code>self</code> should live at least as long as the returned object. But the chaining is in fact something like:<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> a = &#123;</div><div class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> __a = Cursor::new(&amp;<span class="keyword">mut</span> i);</div><div class="line">    __a.dup()</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
-<p>The temporary variable <code>__a</code> lives only in the block, and is dropped at the end of it. But the result of <code>__a.dup()</code> is passed out of the block, so it has a longer lifetime than <code>__a</code>. This conflicts with the signature. To solve it, we may write a self-consuming version of <code>.dup()</code>, say <code>.into_dup()</code>:<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">into_dup</span></span>(<span class="keyword">self</span>) -&gt; Cursor&lt;<span class="symbol">'a</span>, T&gt; &#123;</div><div class="line">    Cursor &#123; obj: <span class="keyword">self</span>.obj &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>The temporary variable <code>__a</code> lives only in the block, and is dropped at the end of it. But the result of <code>__a.dup()</code> is passed out of the block, and thus it has a longer lifetime than <code>__a</code>. This conflicts with the signature. To fix it, we might instead use a self-consuming version of <code>.dup()</code>, say <code>.into_dup()</code>:<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">into_dup</span></span>(<span class="keyword">self</span>) -&gt; Cursor&lt;<span class="symbol">'a</span>, T&gt; &#123;</div><div class="line">    Cursor &#123; obj: <span class="keyword">self</span>.obj &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p><code>.into_dup()</code> moves all content in <code>self</code> into the new object, and makes no implication on the lifetime. Now we can write code like <code>Cursor::new(&amp;mut i).into_dup()</code>.</p>
 <h2 id="Rc"><a href="#Rc" class="headerlink" title="Rc"></a>Rc</h2><p>However, the solution above is not satisfactory enough. Apparently we don’t want to make a self-consuming version for each method, just in order to please the compiler. In fact, a smart pointer with reference counting may be more suitable for the job. So let’s rewrite it using <code>std::rc::Rc</code>:<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">use</span> std::rc::Rc;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Cursor</span></span>&lt;T&gt; &#123;</div><div class="line">    obj: Rc&lt;T&gt;,</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">impl</span>&lt;T&gt; Cursor&lt;T&gt; &#123;</div><div class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(t: &amp;Rc&lt;T&gt;) -&gt; Cursor&lt;T&gt; &#123;</div><div class="line">        Cursor &#123; obj: t.clone() &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dup</span></span>(&amp;<span class="keyword">self</span>) -&gt; Cursor&lt;T&gt; &#123;</div><div class="line">        Cursor &#123;</div><div class="line">            obj: <span class="keyword">self</span>.obj.clone(),</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>An <code>Rc</code> instance can be regarded as a wrapper for a pointer (or reference), and cloning the instance is in fact duplicating the pointer. But from the perspective of compiler, there’s no borrowing involved, and no more need for explicit lifetime declarations in <code>struct</code> and <code>impl</code>. We can now use method chaining as we expect:<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</div><div class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> i = Rc::new(<span class="number">1</span>);</div><div class="line">    <span class="keyword">let</span> a = Cursor::new(&amp;i).dup();</div><div class="line">    <span class="built_in">println!</span>(<span class="string">"i: &#123;:?&#125; a.obj: &#123;:?&#125;"</span>, a.obj, i);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Output</span></div><div class="line"><span class="comment">// i: 1 a.obj: 1</span></div></pre></td></tr></table></figure></p>
-<p>Great! Looks like that <code>Rc</code> is an helper which relaxes the constraints of references, and allow us to do more flexible reference sharing. </p>
+<p>An <code>Rc</code> instance could be regarded as a wrapper for a pointer (or reference), and cloning the instance implies duplicating the pointer. But from the perspective of compiler, there’s no borrowing involved, and no more need for explicit lifetime declarations in <code>struct</code> and <code>impl</code>. We can now use method chaining as expected:<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</div><div class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> i = Rc::new(<span class="number">1</span>);</div><div class="line">    <span class="keyword">let</span> a = Cursor::new(&amp;i).dup();</div><div class="line">    <span class="built_in">println!</span>(<span class="string">"i: &#123;:?&#125; a.obj: &#123;:?&#125;"</span>, a.obj, i);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Output</span></div><div class="line"><span class="comment">// i: 1 a.obj: 1</span></div></pre></td></tr></table></figure></p>
+<p>Great! Looks like that <code>Rc</code> is an helper which relaxes the constraints of references, and allow us to do more flexible reference sharing.</p>
 <p>Now let’s try something else — mutating the target through a reference:<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</div><div class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> i = Rc::new(<span class="number">1</span>);</div><div class="line">    <span class="keyword">let</span> a = Cursor::new(&amp;i).dup();</div><div class="line">    *Rc::get_mut(&amp;<span class="keyword">mut</span> i).unwrap() = <span class="number">2</span>;</div><div class="line">    <span class="built_in">println!</span>(<span class="string">"i: &#123;:?&#125; a.obj: &#123;:?&#125;"</span>, a.obj, i);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>We can directly dereference an <code>Rc&lt;T&gt;</code> instance to read the inner value as <code>Rc</code> implements the <code>Deref</code> trait. But when we want to mutably dereference it, we need to use <code>Rc::get_mut</code>. The function returns an <code>Option&lt;&amp;mut T&gt;</code> instead of simply <code>&amp;mut T</code>. This may be wierd at the first sight, since <code>Rc</code> objects <strong>own</strong> the target, and you can come up with no occasion that the reference may become invalid. Let’s just ignore it now and compile the code. The compiler complains nothing. But when we run the code, we get a panic:<br><figure class="highlight sml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">thread <span class="symbol">'main'</span> panicked at <span class="symbol">'called</span> <span class="type">`Option</span>::unwrap<span class="literal">()</span>` on a <span class="type">`None</span>` value', src/libcore/<span class="built_in">option</span>.rs:<span class="number">347</span>:<span class="number">21</span></div></pre></td></tr></table></figure></p>
-<p>The fact is that <code>Rc::get_mut</code> indeed returns a <code>None</code>! This implies that a mutable reference is not available at that time. Let’s turn to the docs for help:</p>
+<p>We can read the inner value by directly dereferencing an <code>Rc&lt;T&gt;</code> instance, as <code>Rc</code> implements the <code>Deref</code> trait. But when we want to mutably dereference it, we need to use <code>Rc::get_mut</code>. The function returns an <code>Option&lt;&amp;mut T&gt;</code> instead of simply <code>&amp;mut T</code>. This may be wierd at the first sight, since <code>Rc</code> objects <strong>own</strong> the target, and you can come up with no occasion that the reference might become invalid. Let’s just ignore it now and compile the code. The compiler complains nothing. But when we run the code, it panics:<br><figure class="highlight sml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">thread <span class="symbol">'main'</span> panicked at <span class="symbol">'called</span> <span class="type">`Option</span>::unwrap<span class="literal">()</span>` on a <span class="type">`None</span>` value', src/libcore/<span class="built_in">option</span>.rs:<span class="number">347</span>:<span class="number">21</span></div></pre></td></tr></table></figure></p>
+<p>The fact is that <code>Rc::get_mut</code> indeed returns a <code>None</code>! For some reason a mutable reference is not available at that time. Let’s turn to the docs for help:</p>
 <blockquote>
 <p>(<code>Rc::get_mut</code>) Returns a mutable reference to the inner value, if there are no other <code>Rc</code> or <code>Weak</code> pointers to the same value.<br>(<code>Rc::get_mut</code>) Returns <code>None</code> otherwise, because it is not safe to mutate a shared value.</p>
 </blockquote>
-<p><code>Rc::get_mut</code> will check if there’s other <code>Rc</code> or <code>Weak</code> instances referencing the target, and fails (returns <code>None</code>) if so. In the code above, we actually has two <code>Rc</code> instances, <code>i</code> and <code>a.obj</code>, referencing the inner value, so <code>Rc::get_mut</code> denies the borrow. Seems like it’s just another borrow checker! Except that <code>Rc</code> do the checking at runtime. We may make a quick comparison between <code>Rc</code>s and references:</p>
+<p><code>Rc::get_mut</code> will ensure there’s no other <code>Rc</code> or <code>Weak</code> instances referencing the target, and fails (returns <code>None</code>) otherwise. In the code above, we actually has two <code>Rc</code> instances, <code>i</code> and <code>a.obj</code>, referencing the inner value, so <code>Rc::get_mut</code> denies the borrow. Seems like it’s just another borrow checker! Except that <code>Rc</code> do the checking at runtime. We may make a quick comparison between <code>Rc</code>s and references:</p>
 <p><code>Rc</code>:</p>
 <ul>
-<li>At any moment there may exists several <code>Rc&lt;T&gt;</code> instances referencing the same inner value. We can use <code>*</code> to directly deference one of them to immutably access the inner value.</li>
+<li>At any moment there may exists several <code>Rc&lt;T&gt;</code> instances referencing the same inner value. One can use <code>*</code> to directly deference one of them to immutably access the inner value.</li>
 <li>An <code>Rc&lt;T&gt;</code> instance can be mutably dereferenced if and only if it is the only instance referencing the target.</li>
 </ul>
 <p>Reference:</p>
@@ -51,15 +52,15 @@
 <li>An <code>&amp;mut T</code> to <code>v</code> can exist, if and only if there is no other reference to <code>v</code>.</li>
 </ul>
 <p>Yeah, Rust is safe… But is our design wrong? Not really. We may just misuse the underlying structure.</p>
-<p>The problem is, the existence of an <code>Rc&lt;T&gt;</code> instance implies an “immutable reference” to the inner value, which blocks us from mutably accessing the target. This is not exactly what we want. Usually we hold a reference to an object because we <strong>may</strong> (mutably or immutably) reference to it. The read/write actions may just occupy a very short period in the whole lifetime of our program. It will be better if some structures do the checking when we are really about to read the inner value. </p>
-<h2 id="RefCell-and-Interior-Mutability-Pattern"><a href="#RefCell-and-Interior-Mutability-Pattern" class="headerlink" title="RefCell and Interior Mutability Pattern"></a>RefCell and Interior Mutability Pattern</h2><p>But we still need <code>Rc</code>, since it’s almost the only choice for reference sharing. The trick is that we should find some ways <strong>to mutate the inner value, with only an immutable reference given by <code>Rc&lt;T&gt;</code></strong>. </p>
-<p>What Rust annoys us is that, mutability is “infectious”. If we want to modify a part of an object, we must have a mutable reference to the whole object. It’s inconvenient for objects that consist of several indepedent parts. Such design is not always bad, but it does not work well with the borrow checker. For more generic designs, we sometimes may want to hide the mutability, so that we can mutate the object with only immutable reference given. This is what we called Interior Mutability Pattern in Rust.</p>
-<p><code>RefCell</code> is designed to compete the job. A <code>RefCell</code> instance has <code>.borrow()</code> and <code>.borrow_mut()</code> method for corresponding borrowing. Both the two methods have parameter <code>&amp;self</code>, so there is no requirement for the instance’s compile-time mutability. However, it will still panic if the borrowing break the rules, but for most of the time we can use it with no bothers.</p>
+<p>The problem is, the existence of an <code>Rc&lt;T&gt;</code> instance implies an “immutable reference” to the inner value, which blocks out mutable access to the target. However, this is not exactly what we want. Usually we hold a reference to an object because it <strong>may</strong> be (mutably or immutably) referenced in the future. The read/write actions may just occupy a very short period in the whole lifetime of program. It would be better if the checking is done at the time the inner value is going to be read.</p>
+<h2 id="RefCell-and-Interior-Mutability-Pattern"><a href="#RefCell-and-Interior-Mutability-Pattern" class="headerlink" title="RefCell and Interior Mutability Pattern"></a>RefCell and Interior Mutability Pattern</h2><p>But we still need <code>Rc</code>, since it’s almost the only choice for reference sharing. The trick is that we should find some ways <strong>to mutate the inner value, while only given an immutable reference</strong>.</p>
+<p>What makes Rust annoying is that, the concept mutability is “infectious”. If one want to modify a part of an object, he must have a mutable reference to the whole object. It’s inconvenient for objects which consist of several independent parts. Such design is not always bad, but it does not play well with the borrow checker. For more generic designs, sometimes mutability of an object should be hidden, so that we can mutate the object with only immutable reference given. This is what we called Interior Mutability Pattern in Rust.</p>
+<p><code>RefCell</code> is designed to compete the job. A <code>RefCell</code> instance has <code>.borrow()</code> and <code>.borrow_mut()</code> method for corresponding borrowing. Both the two methods have parameter <code>&amp;self</code>, so there’s no requirement for the instance’s compile-time mutability. However, it will still panic if the borrowing break the rules, but for most of the time we can use it with no bothers.</p>
 <h2 id="Rc-RefCell"><a href="#Rc-RefCell" class="headerlink" title="Rc + RefCell"></a>Rc + RefCell</h2><p>Let’s use <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> to rewrite our code:<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">use</span> std::cell::RefCell;</div><div class="line"><span class="keyword">use</span> std::rc::Rc;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Cursor</span></span>&lt;T&gt; &#123;</div><div class="line">    obj: Rc&lt;RefCell&lt;T&gt;&gt;,</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">impl</span>&lt;T&gt; Cursor&lt;T&gt; &#123;</div><div class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(t: &amp;Rc&lt;RefCell&lt;T&gt;&gt;) -&gt; Cursor&lt;T&gt; &#123;</div><div class="line">        Cursor &#123; obj: t.clone() &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dup</span></span>(&amp;<span class="keyword">self</span>) -&gt; Cursor&lt;T&gt; &#123;</div><div class="line">        Cursor &#123;</div><div class="line">            obj: <span class="keyword">self</span>.obj.clone(),</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</div><div class="line">    <span class="keyword">let</span> i = Rc::new(RefCell::new(<span class="number">1</span>));</div><div class="line">    <span class="keyword">let</span> a = Cursor::new(&amp;i).dup();</div><div class="line">    *i.borrow_mut() = <span class="number">2</span>;</div><div class="line">    <span class="built_in">println!</span>(<span class="string">"i: &#123;:?&#125; a.obj: &#123;:?&#125;"</span>, a.obj, i);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>The declaration may look a bit verbose, but, it did work! We can now sharing the reference between objects, and we can also mutate the inner value through a mutable borrowing. Note that because of the automatic dereference behavior in Rust, the <code>Rc</code> layer is in fact transparent and we can write code like <code>i.borrow_mut()</code>. This saves us from becoming overly verbose.</p>
+<p>The declaration may look a bit verbose, but, it did work! We can now share the reference between objects, and as well mutate the inner value through a mutable borrowing. Note that because of the automatic dereference behavior in Rust, the <code>Rc</code> layer is in fact transparent and we can write code like <code>i.borrow_mut()</code>. This saves us from becoming overly verbose.</p>
 <p>Now if we add an additional line:<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</div><div class="line">    <span class="keyword">let</span> i = Rc::new(RefCell::new(<span class="number">1</span>));</div><div class="line">    <span class="keyword">let</span> a = Cursor::new(&amp;i).dup();</div><div class="line">    <span class="keyword">let</span> _<span class="keyword">ref</span> = i.borrow();  <span class="comment">// Another borrow here</span></div><div class="line">    *i.borrow_mut() = <span class="number">2</span>;</div><div class="line">    <span class="built_in">println!</span>(<span class="string">"i: &#123;:?&#125; a.obj: &#123;:?&#125;"</span>, a.obj, i);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>The code still compiles, but we get a panic at runtime:<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">thread <span class="string">'main'</span> panicked at <span class="string">'already borrowed: BorrowMutError'</span>, src<span class="regexp">/libcore/</span>result.<span class="string">rs:</span><span class="number">999</span>:<span class="number">5</span></div></pre></td></tr></table></figure></p>
-<p>Since at the moment of <code>i.borrow_mut()</code>, we already had another immutable borrowing <code>_ref</code>, which break the rules. From this we know that <code>RefCell</code> still do the checking, and it’s safe enough to use.</p>
+<p>The program still compiles, but will panic at runtime:<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">thread <span class="string">'main'</span> panicked at <span class="string">'already borrowed: BorrowMutError'</span>, src<span class="regexp">/libcore/</span>result.<span class="string">rs:</span><span class="number">999</span>:<span class="number">5</span></div></pre></td></tr></table></figure></p>
+<p>Since at the moment of <code>i.borrow_mut()</code>, there already exists another immutable borrowing <code>_ref</code>, which break the rules. The example shows that <code>RefCell</code> still do the checking at runtime, so it’s safe enough to use.</p>
 <h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ul>
 <li><a href="https://doc.rust-lang.org/std/rc/struct.Rc.html#method.get_mut" target="_blank" rel="noopener"><code>Rc::get_mut</code></a></li>
 <li><a href="https://doc.rust-lang.org/book/ch15-05-interior-mutability.html" target="_blank" rel="noopener"><code>RefCell&lt;T&gt;</code> and the Interior Mutability Pattern
@@ -69,7 +70,8 @@
     
     <summary type="html">
     
-      &lt;p&gt;Say we need a &lt;code&gt;Cursor&amp;lt;T&amp;gt;&lt;/code&gt; type, which should contain a mutable reference to &lt;code&gt;T&lt;/code&gt;. The type has a method &lt;code&gt;
+      &lt;p&gt;Say we need a &lt;code&gt;Cursor&amp;lt;T&amp;gt;&lt;/code&gt; type, which should contain a mutable reference to &lt;code&gt;T&lt;/code&gt;. The type has a method &lt;code&gt;.dup()&lt;/code&gt; that will create a new instance of &lt;code&gt;Cursor&amp;lt;T&amp;gt;&lt;/code&gt; while sharing the reference between new and old instances. This is common in database driver designing, where users might expect to have multiple cursors alive simultaneously, owning references to the same connection object. A possible implementation might look like:&lt;br&gt;&lt;figure class=&quot;highlight rust&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;7&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;8&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;9&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;10&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;11&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;12&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;13&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;14&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;15&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;16&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;17&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;18&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;19&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;Cursor&lt;/span&gt;&lt;/span&gt;&amp;lt;&lt;span class=&quot;symbol&quot;&gt;&#39;a&lt;/span&gt;, T&amp;gt; &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    obj: &amp;amp;&lt;span class=&quot;symbol&quot;&gt;&#39;a&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;mut&lt;/span&gt; T,&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;impl&lt;/span&gt;&amp;lt;&lt;span class=&quot;symbol&quot;&gt;&#39;a&lt;/span&gt;, T&amp;gt; Cursor&amp;lt;&lt;span class=&quot;symbol&quot;&gt;&#39;a&lt;/span&gt;, T&amp;gt; &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;new&lt;/span&gt;&lt;/span&gt;(t: &amp;amp;&lt;span class=&quot;symbol&quot;&gt;&#39;a&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;mut&lt;/span&gt; T) -&amp;gt; Cursor&amp;lt;&lt;span class=&quot;symbol&quot;&gt;&#39;a&lt;/span&gt;, T&amp;gt; &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        Cursor &amp;#123; obj: t &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;dup&lt;/span&gt;&lt;/span&gt;(&amp;amp;&lt;span class=&quot;keyword&quot;&gt;mut&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;) -&amp;gt; Cursor&amp;lt;T&amp;gt; &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;        Cursor &amp;#123; obj: &lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;.obj &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;main&lt;/span&gt;&lt;/span&gt;() &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;mut&lt;/span&gt; i = &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;mut&lt;/span&gt; cursor_a = Cursor::new(&amp;amp;&lt;span class=&quot;keyword&quot;&gt;mut&lt;/span&gt; i);&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; _cursor_b = cursor_a.dup();&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&amp;#125;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;Perfect and neat, and luckily Rust compiler did not complain. As a Rust freshman, like me, it’s not easy to keep compiler silent all the time, especially when playing with references. But once I try to chain up the constructor and &lt;code&gt;.dup()&lt;/code&gt;, the compiler screams:&lt;br&gt;
     
     </summary>
     
@@ -81,41 +83,16 @@
   </entry>
   
   <entry>
-    <title>可视化 Correlation</title>
-    <link href="http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/"/>
-    <id>http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/</id>
-    <published>2019-03-09T16:00:00.000Z</published>
-    <updated>2019-03-10T08:27:49.905Z</updated>
-    
-    <content type="html"><![CDATA[<p>假设有一个 <code>N x M</code> 的矩阵 <code>A</code>，为 N 个 <code>1 x M</code> 向量的集合。则</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">A_corr = np.corrcoef(A)  <span class="comment"># shape: (N, N)</span></div></pre></td></tr></table></figure>
-<p>可以得到 <code>A</code> 的相关系数矩阵。使用 <code>plt.matshow(A_corr)</code> 即可可视化矩阵。</p>
-<p>如果 <code>N</code> 过大，可以使用柱状图的方式统计 <code>A_corr</code> 中落在各个区间的元素的个数：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 取上三角阵，忽略对角元素</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">corr_matrix_to_array</span><span class="params">(corr_mat)</span>:</span></div><div class="line">    N = corr_mat.shape[<span class="number">0</span>]</div><div class="line">    <span class="keyword">return</span> np.array([corr_mat[i][j] <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, N) <span class="keyword">for</span> j <span class="keyword">in</span> range(i + <span class="number">1</span>, N)])</div><div class="line"></div><div class="line">plt.hist(corr_matrix_to_array(A_corr), bins=np.linspace(<span class="number">-1</span>, <span class="number">1</span>, N_bins))  <span class="comment"># N_bins 为区间个数</span></div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;假设有一个 &lt;code&gt;N x M&lt;/code&gt; 的矩阵 &lt;code&gt;A&lt;/code&gt;，为 N 个 &lt;code&gt;1 x M&lt;/code&gt; 向量的集合。则&lt;/p&gt;
-&lt;figure class=&quot;highlight python&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;g
-    
-    </summary>
-    
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
-    
-    
-  </entry>
-  
-  <entry>
     <title>三月十日杂感</title>
     <link href="http://blog.hsfzxjy.site/2019-03-10-notitle/"/>
     <id>http://blog.hsfzxjy.site/2019-03-10-notitle/</id>
     <published>2019-03-09T16:00:00.000Z</published>
-    <updated>2019-03-10T11:14:22.330Z</updated>
+    <updated>2019-06-25T01:34:31.929Z</updated>
     
     <content type="html"><![CDATA[<p>我还是说出了那句话。我们走到一起，已经有七天了。</p>
 <p>起初并没有表白的想法。当晚看完电影后，两人都有微妙的感觉，但直到最后也没有表露心意。「就当做又一次平常的约电影好了」目送她进楼时我想。看电影时没有说出来，她回去了我就更说不出来了——我认为我们当时还是普通朋友关系，表白显得太唐突了。我兴奋又失落地回到宿舍。兴奋的是我们之间的关系貌似又近了一些，失落的是这样下去大概率是没有结果的。</p>
 <p>但当晚，她接连发了几条动态，内容和语气都暗示了她对我的好感，只是和我一样，缺乏勇气。两个相互有好感却又没有恋爱经验的人（当然这是我后来知道的），就要这样还未开始便结束了彼此的关系，这怕是上天对胆小鬼的惩罚吧。</p>
+<a id="more"></a>
 <p>但转机在第二天出现了。DJW 在察觉到情况后开始疯狂怂恿我，整整一天没有停过。那天可以说是过得浑浑噩噩的，我的脑海中像是有两只军队在对战，想法瞬息万变，完全没有精力处理其他的事情。可到了晚上，一切开始明晰起来——我下定了决心要表白。我花了很长时间拟好台词，准备应对各种可能出现的情况。</p>
 <p>表白时，我的心脏就像要炸裂一般。起初她感到震惊，表现出了一点犹豫，但最后还是欣然接受了，决定试着和我交往。这在我预想中已经是很好的结果了，在此之前，我从来没想过会被人喜欢。就算是对方有着朦胧的感觉，对我而言也是超幸福的一件事。</p>
 <p>这一周过得是非常开心的。我们开始一起吃饭，一起自习，一起走在回宿舍的路上。我陪她看电影，她喜欢的夏目友人帐；我请她的闺蜜吃饭；我们去游览女生节的活动；她送了我亲手编织的心形绳结；我们一起在操场的草坪上看星星。随着时间的流逝，她也慢慢不那么拘束，我们正在变成人们口中所说的情侣。</p>
@@ -127,11 +104,36 @@
     <summary type="html">
     
       &lt;p&gt;我还是说出了那句话。我们走到一起，已经有七天了。&lt;/p&gt;
-&lt;p&gt;起初并没有表白的想法。当晚看完电影后，两人都有微妙的感觉，但直到最后也没有表露心意。「就当做又一次平常的约电影好了」目送她进楼时我想。看电影时没有说出来，她回去了我就更说不出来了——我认为我们当时还是普通朋友关
+&lt;p&gt;起初并没有表白的想法。当晚看完电影后，两人都有微妙的感觉，但直到最后也没有表露心意。「就当做又一次平常的约电影好了」目送她进楼时我想。看电影时没有说出来，她回去了我就更说不出来了——我认为我们当时还是普通朋友关系，表白显得太唐突了。我兴奋又失落地回到宿舍。兴奋的是我们之间的关系貌似又近了一些，失落的是这样下去大概率是没有结果的。&lt;/p&gt;
+&lt;p&gt;但当晚，她接连发了几条动态，内容和语气都暗示了她对我的好感，只是和我一样，缺乏勇气。两个相互有好感却又没有恋爱经验的人（当然这是我后来知道的），就要这样还未开始便结束了彼此的关系，这怕是上天对胆小鬼的惩罚吧。&lt;/p&gt;
     
     </summary>
     
       <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Visualing Correlation</title>
+    <link href="http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/"/>
+    <id>http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/</id>
+    <published>2019-03-09T16:00:00.000Z</published>
+    <updated>2019-06-25T01:29:37.709Z</updated>
+    
+    <content type="html"><![CDATA[<p>Say we have a matrix <code>A</code> of shape <code>N x M</code>, which can be viewed as a collection of N vectors of shape <code>1 x M</code>. The code below gives us the correlation matrix of <code>A</code>:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">A_corr = np.corrcoef(A)  <span class="comment"># shape: (N, N)</span></div></pre></td></tr></table></figure></p>
+<p>To visualize it, just use <code>plt.matshow(A_corr)</code>.</p>
+<p>If <code>N</code> is so large that the figure could not provide a clear insight, we might alternatively use histograms like this:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">corr_matrix_to_array</span><span class="params">(corr_mat)</span>:</span></div><div class="line">    N = corr_mat.shape[<span class="number">0</span>]</div><div class="line">    <span class="keyword">return</span> np.array([corr_mat[i][j] <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, N) <span class="keyword">for</span> j <span class="keyword">in</span> range(i + <span class="number">1</span>, N)])</div><div class="line"></div><div class="line">plt.hist(corr_matrix_to_array(A_corr), bins=np.linspace(<span class="number">-1</span>, <span class="number">1</span>, N_bins))</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Say we have a matrix &lt;code&gt;A&lt;/code&gt; of shape &lt;code&gt;N x M&lt;/code&gt;, which can be viewed as a collection of N vectors of shape &lt;code&gt;1 x M&lt;/c
+    
+    </summary>
+    
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
     
     
   </entry>
@@ -216,91 +218,6 @@
   </entry>
   
   <entry>
-    <title>TaPL Notes -- Chapter 3 Untyped Arithmetic Expressions</title>
-    <link href="http://blog.hsfzxjy.site/2019-01-21-tapl-notes-untyped-arithmetic-expressions/"/>
-    <id>http://blog.hsfzxjy.site/2019-01-21-tapl-notes-untyped-arithmetic-expressions/</id>
-    <published>2019-01-21T10:40:00.000Z</published>
-    <updated>2019-01-21T11:25:56.174Z</updated>
-    
-    <content type="html"><![CDATA[<p>This chapter develop a small language of numbers and booleans, serving as a straightforward vehicle for the introduction of serveral fundamental concepts like, abstract syntax tree, evaluation and runtime errors.</p>
-<h2 id="Syntax"><a href="#Syntax" class="headerlink" title="Syntax"></a>Syntax</h2><h3 id="BNF-like-Definition"><a href="#BNF-like-Definition" class="headerlink" title="BNF-like Definition"></a>BNF-like Definition</h3><p>Terms of this language are defined as below:</p>
-<figure class="highlight excel"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">t</span> <span class="symbol">:</span><span class="symbol">:</span>=</div><div class="line">    <span class="built_in">true</span></div><div class="line">    <span class="built_in">false</span></div><div class="line">    <span class="built_in">if</span> <span class="built_in">t</span> then <span class="built_in">t</span> else <span class="built_in">t</span></div><div class="line">    <span class="number">0</span></div><div class="line">    succ <span class="built_in">t</span></div><div class="line">    pred <span class="built_in">t</span></div><div class="line">    iszero <span class="built_in">t</span></div></pre></td></tr></table></figure>
-<p>where <code>t</code> is called <strong>meta-variable</strong>. At every point where the symbol <code>t</code> appears, we may substitute any terms.</p>
-<h3 id="Inductive-Definition"><a href="#Inductive-Definition" class="headerlink" title="Inductive Definition"></a>Inductive Definition</h3><p>The set of terms is the smallest set $T$ s.t.</p>
-<ol>
-<li>$\{0, true, false\} \subseteq T$</li>
-<li>if $t_1 \in T$, then ${succ\ t_1, pred\ t_1, iszero\ t_1} \subseteq T$</li>
-<li>if $t_1, t_2, t_3 \in T$, then $if\ t_1\ then\ t_2\ else\ t_3 \in T$</li>
-</ol>
-<h3 id="Concrete-Definition"><a href="#Concrete-Definition" class="headerlink" title="Concrete Definition"></a>Concrete Definition</h3><p>For each natural number $i$, define a set $S_i$ as follows:</p>
-<ul>
-<li>$S_0 = \phi$</li>
-<li>$S_{i+1} = \{0, true, false\} \cup \{succ\ t_1, pred\ t_1, iszero\ t_1 | t_1 \in S_i\} \cup \{if\ t_1\ then\ t_2\ else\ t_3 | t_j \in S_i\}$ </li>
-<li>$S = \cup_i S_i$</li>
-</ul>
-<p><strong>Three definition above are equivalent.</strong></p>
-<h2 id="Semantics"><a href="#Semantics" class="headerlink" title="Semantics"></a>Semantics</h2><p>The semantics of an language is how its terms are evaluated. Three approaches had been proposed to formalize semantics:</p>
-<ul>
-<li><strong>Operational Semantics (used here)</strong> specifies the behavior of a programming language by defining a simple abstract machine for it. This machine is “abstract” in the sense that it uses the terms of the language as its machine code, rather than some low-level microprocessor instruction set. For simple languages, a <em>state</em> of the machine is just a term, and the machine’s behavior is defined by a straition function that for each state, either gives the next state, or declares that the machine has halted. (字节码语义，Compare with languages like Python or Java)</li>
-<li><strong>Denotational Semantics</strong>. The meaning of a term is taken to be some mathematical object, instead of a sequence of machine states. Giving denotational semantics for a language consists of finding a collection of semantic domains and then defining an interpretation function mapping terms into elements of these domains.</li>
-<li><strong>Axiomatic semantics</strong> (omitted)</li>
-</ul>
-<h3 id="Semantics-with-only-Booleans"><a href="#Semantics-with-only-Booleans" class="headerlink" title="Semantics with only Booleans"></a>Semantics with only Booleans</h3><p>Firstly we consider a simpler situation where only booleans get involved.</p>
-<p>The evaluation process can be summarized as three rules:</p>
-<figure class="highlight sml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> <span class="literal">true</span> <span class="keyword">then</span> t2 <span class="keyword">else</span> t3 -&gt; t2   [<span class="type">E</span>-<span class="type">IFTRUE</span>]</div><div class="line"><span class="keyword">if</span> <span class="literal">false</span> <span class="keyword">then</span> t2 <span class="keyword">else</span> t3 -&gt; t3  [<span class="type">E</span>-<span class="type">IFFALSE</span>]</div><div class="line">t1 -&gt; t1' || <span class="keyword">if</span> t1 <span class="keyword">then</span> t2 <span class="keyword">else</span> t3 -&gt; <span class="keyword">if</span> t1' <span class="keyword">else</span> t2 <span class="keyword">then</span> t3 [<span class="type">E</span>-<span class="type">IF</span>]</div></pre></td></tr></table></figure>
-<p>A rule consists of one <em>conclusion</em> and zero or more <em>premises</em>. For example, in rule <code>E-IF</code>, <code>t1 -&gt; t1&#39;</code> is the premise and <code>if t1 then t2 else t3 -&gt; if t1&#39; else t2 then t3</code> the conclusion. </p>
-<blockquote>
-<p>Note that in textbook premises are written above conclusion with a horizontal line in the middle, but here I use a notation that is more convenient to type in.</p>
-</blockquote>
-<p>A subset of terms should be defined as <em>possible final results of evaluation</em>, which are called <strong>values</strong>. Here they are just the constants <code>true, false, 0</code>.</p>
-<blockquote>
-<p>Note that $\rightarrow$ can be viewed as a binary relation over $T$, i.e., a subset of $T \times T$.</p>
-<p>The third rule <code>E-IF</code> specifies the evaluation order of an expression, i.e., clauses are always evaluated after their guards.</p>
-</blockquote>
-<p><strong>DEFINITION instance of an inference rule</strong> An instance of an inference rule is obtained by consistently replacing each metavariable by the same term in the rule’s conclusion and all its premises (if any). e.g., <code>if true then true else (if false then false else false) -&gt; true</code> is an instance if <code>E-IFTRUE</code>.</p>
-<p><strong>DEFINITION satisfy</strong> A rule is satisfied by a relation if, for each instance of the rule, either the conclusion is in the relation or <strong>one of the premises is not</strong> (to ensure evaluation can proceed).</p>
-<p><strong>DEFINITION one-step evaluation relation</strong> denoted as $\rightarrow$, is the smallest binary relation on terms satisfying the three rules. When the pair <code>(t, t&#39;)</code> is in the relation, we say that <code>t -&gt; t&#39;</code> is <em>derivable</em>. (“smallest” implies that <code>t -&gt; t&#39;</code> is derivable iff it is justified by the rules).</p>
-<p><strong>DEFINITION normal form</strong> A term $t$ is in normal form if no evaluation rule applies to it.</p>
-<p>Facts:</p>
-<ul>
-<li>Every value is in normal form.</li>
-<li>When only booleans involved, every term in normal form is a value.</li>
-<li>Every term can be evaluated in values.</li>
-</ul>
-<h3 id="Semantics-with-Booleans-and-Numbers"><a href="#Semantics-with-Booleans-and-Numbers" class="headerlink" title="Semantics with Booleans and Numbers"></a>Semantics with Booleans and Numbers</h3><p>Now we let numbers in. Several new rules should be added:</p>
-<figure class="highlight sml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">t1 -&gt; t1' || succ t1 -&gt; succ t1'    [<span class="type">E</span>-<span class="type">SUCC</span>]</div><div class="line">pred <span class="number">0</span> -&gt; <span class="number">0</span>                         [<span class="type">E</span>-<span class="type">PREDZERO</span>]</div><div class="line">pred (succ nv1) -&gt; nv1              [<span class="type">E_PREDSUCC</span>]</div><div class="line">t1 -&gt; t1' || pred t1 -&gt; pred t1'    [<span class="type">E</span>-<span class="type">PRED</span>]</div><div class="line">iszero <span class="number">0</span> -&gt; <span class="literal">true</span>                    [<span class="type">E</span>-<span class="type">ISZERO</span>]</div><div class="line">iszero (succ nv1) -&gt; <span class="literal">false</span>          [<span class="type">E</span>-<span class="type">ISZEROSUCC</span>]</div><div class="line">t1 -&gt; t1' || iszero t1 -&gt; iszero t1'[<span class="type">E</span>-<span class="type">ISZERO</span>]</div></pre></td></tr></table></figure>
-<p>and new values:</p>
-<figure class="highlight bnf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">v ::= </div><div class="line">    ...</div><div class="line">    nv</div><div class="line"></div><div class="line">nv ::=</div><div class="line">    0</div><div class="line">    succ nv  # positive integer</div></pre></td></tr></table></figure>
-<p><strong>DEFINITION stuck term</strong> A closed term is stuck if it is in normal form but not a value. e.g. <code>if 0 then true else true</code> or <code>iszero false</code>.</p>
-<p>Stuckness gives us a simple notion of run-time error for this simple machine. Intuitively, it characterizes the situation where the operational semantics does not know what to do because the program has reached a “meaningless state”.</p>
-<blockquote>
-<p>Stuckness can be prevented by introducing a new term called $wrong$ and augment the opereational semantics with rules that explicitly generate $wrong$ ain all the situations where the present semantics gets stuck.</p>
-</blockquote>
-<h3 id="Evaluation-Theorems"><a href="#Evaluation-Theorems" class="headerlink" title="Evaluation Theorems"></a>Evaluation Theorems</h3><blockquote>
-<p>If $t \rightarrow t1$ and $t \rightarrow t2$, then $t1 = t2$. (Can be proved by performing induction on the structure of <code>t</code>)</p>
-</blockquote>
-<h3 id="Other-Forms-of-Evaluation-Relation"><a href="#Other-Forms-of-Evaluation-Relation" class="headerlink" title="Other Forms of Evaluation Relation"></a>Other Forms of Evaluation Relation</h3><p><strong>DEFINITION mutli-step evaluation</strong> $\rightarrow^*$ is the reflexive, transitive closure of one-step evaluation. </p>
-<blockquote>
-<p>If $t \rightarrow^\star t1$ and $t \rightarrow^\star t2$, where $t1$ and $t2$ are in normal form, then $t1 = t2$.</p>
-<p>For every term $t$ there is some normal form $t’$ s.t. $t \rightarrow^\star t’$.</p>
-</blockquote>
-<p><strong>DEFINITION big-step evaluation</strong> (omitted) formulates the notion of “this term evaluates to that final value”.</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;This chapter develop a small language of numbers and booleans, serving as a straightforward vehicle for the introduction of serveral fund
-    
-    </summary>
-    
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
-    
-    
-      <category term="TaPL" scheme="http://blog.hsfzxjy.site/tags/TaPL/"/>
-    
-  </entry>
-  
-  <entry>
     <title>SS Configuration</title>
     <link href="http://blog.hsfzxjy.site/2019-01-21-ss/"/>
     <id>http://blog.hsfzxjy.site/2019-01-21-ss/</id>
@@ -364,61 +281,14 @@
   </entry>
   
   <entry>
-    <title>Sublime 配置 Rust 环境</title>
-    <link href="http://blog.hsfzxjy.site/2019-01-06-rust-sublime/"/>
-    <id>http://blog.hsfzxjy.site/2019-01-06-rust-sublime/</id>
-    <published>2019-01-05T16:00:00.000Z</published>
-    <updated>2019-01-21T09:06:17.133Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="rustup-v-s-cargo"><a href="#rustup-v-s-cargo" class="headerlink" title="rustup v.s. cargo"></a>rustup v.s. cargo</h2><p>cargo 是 Rust <strong>最底层的</strong>包管理器，类似 npm 或 pip。</p>
-<p>rustup 是 Rust 的工具链管理器，允许开发者在多个不同版本的工具间切换。所谓工具不仅包括 rustc 和 cargo，还包括 rustfmt、racer 等一系列辅助开发的模块。类似于 Anaconda、Pipenv 之于 Python，或是 n 之于 Node.js。</p>
-<p>Rust 的工具链默认存在于 <code>~/.cargo/bin</code> 中，rustup 会用代理脚本覆盖其中的可执行文件，从而用户可以通过命令行标志方便地切换版本。</p>
-<h2 id="stable-v-s-beta-v-s-nightly"><a href="#stable-v-s-beta-v-s-nightly" class="headerlink" title="stable v.s. beta v.s. nightly"></a>stable v.s. beta v.s. nightly</h2><p>Rust 官方默认提供三个通道，稳定性依次递降，即时性依次递增。当然，还有众多的第三方版本。</p>
-<p>Rust 工具链普遍有一个标志 <code>+&lt;channel&gt;</code> 用于注明通道版本，如：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ rustc +nighly --version</div><div class="line">rustc 1.33.0-nightly (68fe5182c 2019-01-05)</div><div class="line">$ rustc +stable --version</div><div class="line">rustc 1.31.1 (b6c32da9b 2018-12-18)</div></pre></td></tr></table></figure>
-<h2 id="Sublime-配置"><a href="#Sublime-配置" class="headerlink" title="Sublime 配置"></a>Sublime 配置</h2><p>我们希望让 Sublime 支持如下功能：</p>
-<ol>
-<li>Auto Formatting</li>
-<li>Auto Completement</li>
-<li>Check on Save</li>
-</ol>
-<p>为此需要两个插件：</p>
-<ul>
-<li>Rust Enhanced（提供 3）</li>
-<li>Anaconda Rust（提供 1 和 2）</li>
-</ul>
-<h3 id="Rust-Enhanced"><a href="#Rust-Enhanced" class="headerlink" title="Rust Enhanced"></a>Rust Enhanced</h3><p>直接安装即可。</p>
-<h3 id="Anaconda-Rust"><a href="#Anaconda-Rust" class="headerlink" title="Anaconda Rust"></a>Anaconda Rust</h3><p>官方版本停更了，<code>rustfmt</code> 相关功能有一些问题。为此需要使用我修改过的版本：<a href="https://github.com/hsfzxjy/anaconda_rust" target="_blank" rel="noopener">https://github.com/hsfzxjy/anaconda_rust</a> 。</p>
-<p>依赖 <code>rustfmt</code> 和 <code>racer</code>。</p>
-<h4 id="racer"><a href="#racer" class="headerlink" title="racer"></a>racer</h4><p><code>racer</code> 需要 <code>nightly</code> 版本，用以下脚本安装：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ cargo +nightly install racer</div></pre></td></tr></table></figure>
-<p>此方法需要本地编译，时间比较久。</p>
-<p>自动补全的完成还需要一份 Rust 库的源码，可以从<a href="https://forge.rust-lang.org/other-installation-methods.html" target="_blank" rel="noopener">这个页面</a> 下载。</p>
-<p>解压完成后需要配置 <code>Anaconda Rust</code> 插件的 <code>rust_src_path</code> 选项。</p>
-<h4 id="rustfmt"><a href="#rustfmt" class="headerlink" title="rustfmt"></a>rustfmt</h4><p><code>rustfmt</code> 支持使用 <code>rustup</code> 安装，更省时间：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ rustup component add rustfmt-preview</div></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;rustup-v-s-cargo&quot;&gt;&lt;a href=&quot;#rustup-v-s-cargo&quot; class=&quot;headerlink&quot; title=&quot;rustup v.s. cargo&quot;&gt;&lt;/a&gt;rustup v.s. cargo&lt;/h2&gt;&lt;p&gt;cargo 是 Rust
-    
-    </summary>
-    
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
-    
-    
-      <category term="Rust" scheme="http://blog.hsfzxjy.site/tags/Rust/"/>
-    
-  </entry>
-  
-  <entry>
     <title>四月·病</title>
     <link href="http://blog.hsfzxjy.site/2018-12-31-april-illness/"/>
     <id>http://blog.hsfzxjy.site/2018-12-31-april-illness/</id>
     <published>2018-12-30T16:00:00.000Z</published>
-    <updated>2019-01-21T09:07:41.189Z</updated>
+    <updated>2019-06-25T01:36:02.609Z</updated>
     
-    <content type="html"><![CDATA[<p>四月，我大病了一场。先是呼吸时胸口隐隐作痛，我以为是运动伤害，毕竟始发时刚剧烈地骑完车。后而逐渐变成呼吸困难，镜子里的自己嘴唇发紫，睡觉时也像是有人扼着喉咙。我开始在傍晚时发烧。</p>
+    <content type="html"><![CDATA[<a id="more"></a>
+<p>四月，我大病了一场。先是呼吸时胸口隐隐作痛，我以为是运动伤害，毕竟始发时刚剧烈地骑完车。后而逐渐变成呼吸困难，镜子里的自己嘴唇发紫，睡觉时也像是有人扼着喉咙。我开始在傍晚时发烧。</p>
 <p>清明前后，春寒未散。宿舍已没有了暖气。清明节我在宿舍躺了两天，睡到饭点起来吃，吃完继续睡。两个舍友出去玩了，合肥一直在下雨，屋里甚是寒冷。</p>
 <p>躺在床上，我不停查找着可能的病源。我是个不轻易上医院的人，但这突如其来的状况着实让我害怕。我想在相关疾病的列表中寻求安慰，希望只是一场小病。为什么不上医院呢？去医院一切就定下来了，无论结果是好是坏。但如果不去，就还有无数的可能。我总是这么想。</p>
 <p>入夜时，我也会想，如果这真是糟糕的病又该怎么办呢？我在一个陌生的城市，一切都会变得麻烦；我的人生才刚刚开始，还有很多事没有做。诸如此类我想了很多很多，从黄昏到夜深，混杂着不安与飘忽不定的希冀入睡，再到早晨。</p>
@@ -431,8 +301,9 @@
     
     <summary type="html">
     
-      &lt;p&gt;四月，我大病了一场。先是呼吸时胸口隐隐作痛，我以为是运动伤害，毕竟始发时刚剧烈地骑完车。后而逐渐变成呼吸困难，镜子里的自己嘴唇发紫，睡觉时也像是有人扼着喉咙。我开始在傍晚时发烧。&lt;/p&gt;
-&lt;p&gt;清明前后，春寒未散。宿舍已没有了暖气。清明节我在宿舍躺了两天，睡到饭点起来吃，吃
+      &lt;a id=&quot;more&quot;&gt;&lt;/a&gt;
+&lt;p&gt;四月，我大病了一场。先是呼吸时胸口隐隐作痛，我以为是运动伤害，毕竟始发时刚剧烈地骑完车。后而逐渐变成呼吸困难，镜子里的自己嘴唇发紫，睡觉时也像是有人扼着喉咙。我开始在傍晚时发烧。&lt;/p&gt;
+&lt;p&gt;清明前后，春寒未散。宿舍已没有了暖气。清明节
     
     </summary>
     
@@ -920,6 +791,166 @@
       <category term="RMPE" scheme="http://blog.hsfzxjy.site/tags/RMPE/"/>
     
       <category term="Machine Learning" scheme="http://blog.hsfzxjy.site/tags/Machine-Learning/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>一个 Reentrant Error 引发的对 Python 信号机制的探索和思考</title>
+    <link href="http://blog.hsfzxjy.site/2017-08-17-caveats-for-signal-handler-in-python/"/>
+    <id>http://blog.hsfzxjy.site/2017-08-17-caveats-for-signal-handler-in-python/</id>
+    <published>2017-08-16T16:00:00.000Z</published>
+    <updated>2019-01-21T09:06:17.133Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>前几天工作时遇到了一个匪夷所思的问题。经过几次尝试后问题得以解决，但问题产生的原因却仍令人费解。查找 SO 无果，我决定翻看 Python 的源码。断断续续地研究了几天，终于恍然大悟。撰此文以记。</p>
+<a id="more"></a>
+<p>本文环境：</p>
+<ul>
+<li>Ubuntu 16.04 (64 bit)</li>
+<li>Python 3.6.2</li>
+</ul>
+<p>使用的 C 源码可以从 <a href="https://www.python.org/ftp/python/3.6.2/Python-3.6.2.tgz" target="_blank" rel="noopener">Python 官网</a> 获取。</p>
+<h2 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h2><p>工作时用到了 celery 作为异步任务队列，为方便调试，我写了一个脚本用以启动/关闭 celery 主进程。代码简化后如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> sys</div><div class="line"><span class="keyword">import</span> subprocess</div><div class="line"><span class="comment"># ...</span></div><div class="line">celery_process = subprocess.Popen(</div><div class="line">    [<span class="string">'celery'</span>, <span class="string">'-A'</span>, <span class="string">'XXX'</span>, <span class="string">'worker'</span>],</div><div class="line">    stdout=subprocess.PIPE,</div><div class="line">    stderr=sys.stderr</div><div class="line">)</div><div class="line"><span class="keyword">try</span>:</div><div class="line">    <span class="comment"># Start and wait for server process</span></div><div class="line"><span class="keyword">except</span> KeyboardInterrupt:</div><div class="line">    <span class="comment"># Ctrl + C pressed</span></div><div class="line">    celery_process.terminate()</div><div class="line">    celery_process.wait()</div></pre></td></tr></table></figure>
+<p>代码启动了 celery worker，并尝试在捕获到 <code>KeyboardInterrupt</code> 异常时将其热关闭。</p>
+<p>初看上去没什么问题。然而实际测试时却发生了十分诡异的事情：按下 <code>Ctrl+C</code> 后，程序 <strong>偶尔</strong> 会抛出这样的异常：<code>RuntimeError: reentrant call inside &lt;_io.BufferedWriter name=&#39;&lt;stdout&gt;&#39;&gt;</code>。诡异之处有两点：</p>
+<ul>
+<li>异常发生的时机有随机性</li>
+<li>异常的 traceback 指向 celery 包，也就是说这是在 celery 主进程内部发生的异常</li>
+</ul>
+<p>这个结果大大出乎了我的意料。随机性异常是众多最难缠的问题之一，因为这常常意味着并发问题，涉及底层知识，病灶隐蔽，调试难度大，同时没有有效的手段判断问题是否彻底解决（可能只是降低了频率）。</p>
+<h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>异常信息中有两个词很关键：<code>reentrant</code> 和 <code>stdout</code>。<code>reentrant call</code> 说明有一个不可重入的函数被递归调用了；<code>stdout</code> 则指明了发生的地点和时机。初步可以判定：<strong>由于某种原因，有两股控制流在同时操控 <code>stdout</code></strong>。</p>
+<p>“可重入”是什么？根据 <a href="https://en.wikipedia.org/wiki/Reentrancy_%28computing%29" target="_blank" rel="noopener">Wikipedia</a> 的定义：<strong>如果一个子程序能在执行时被中断并在之后被正确地、安全地唤起，它就被称为可重入的</strong>。依赖于全局数据的过程是不可重入的，如 <code>printf</code>（依赖于全局文件描述符）、<code>malloc</code>（依赖与和堆相关的一系列数据结构）等函数。需要注意的是，可重入性（reentrant）与 线程安全性（thread-safe）并不等价，甚至不存在包含关系，<a href="https://en.wikipedia.org/wiki/Reentrancy_%28computing%29#Examples" target="_blank" rel="noopener">Wikipedia</a> 中给出了相关的反例。</p>
+<p>多次尝试后，出现了一条线索：有时候 <code>worker: Warm shutdown (MainProcess)</code> 这个字符串会被二次打印，时机不确定。这句话是 celery 将要热关闭时的提示语，二次出现只可能是主进程收到了第二个信号。阅读 <a href="http://docs.celeryproject.org/en/latest/userguide/workers.html#process-signals" target="_blank" rel="noopener">celery 的文档</a> 可知，<code>SIGINT</code> 和 <code>SIGTERM</code> 信号可以引发热关闭。回头浏览我的代码，其中只有一处发送了 <code>SIGTERM</code> 信号（<code>celery_process.terminate()</code>），至于另一个神秘的信号，我怀疑是 <code>SIGINT</code>。</p>
+<p>SO 一下，结果印证了我的猜想：</p>
+<blockquote>
+<p>If you are generating the SIGINT with Ctrl-C on a Unix system, then the signal is being sent to the entire process group.<br>— via <a href="https://stackoverflow.com/questions/6803395/child-process-receives-parents-sigint" target="_blank" rel="noopener">StackOverflow</a></p>
+</blockquote>
+<p><code>SIGINT</code> 信号不仅会发送到父进程，而是会发到整个进程组，默认情况下包括了所有子进程。也就是说——在拦截了 <code>KeyboardInterrupt</code> 之后执行的 <code>celery_process.terminate()</code> 是多此一举，因为 <code>SIGINT</code> 信号也会被发送至 celery 主进程，同样会引起热关闭。代码稍作修改即可正常运行：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># ...</span></div><div class="line"><span class="keyword">try</span>:</div><div class="line">    <span class="comment"># Start and wait for server process</span></div><div class="line"><span class="keyword">except</span> KeyboardInterrupt:</div><div class="line">    <span class="comment"># Ctrl + C pressed</span></div><div class="line">    <span class="keyword">pass</span></div><div class="line"><span class="keyword">else</span>:</div><div class="line">    <span class="comment"># Signal SIGTERM if no exception raised</span></div><div class="line">    celery_process.terminate()</div><div class="line"><span class="keyword">finally</span>:</div><div class="line">    <span class="comment"># Wait for it to avoid it becoming orphan</span></div><div class="line">    celery_process.wait()</div></pre></td></tr></table></figure>
+<h2 id="猜测"><a href="#猜测" class="headerlink" title="猜测"></a>猜测</h2><p>UNIX 信号处理是一个相当奇葩的过程——当进程收到一个信号时，内核会选择一条线程（以一定的规则），中断其当前控制流，将控制流强行转给信号处理函数，待其执行完毕后再将控制流交还给原线程。时序图如下：</p>
+<p><img src="/assets/caveats-for-signal-handler-in-python/bVS7gW" alt=""></p>
+<p>由于控制流转换发生在同一条线程上，许多线程间同步机制会失效甚至报错。因此信号处理函数的编写要比线程函数更加严格，对同一个文件输出是被禁止并且无解的，因为很可能会发生这样的事情：</p>
+<p><img src="/assets/caveats-for-signal-handler-in-python/bVS7nP" alt=""></p>
+<p>而且这个问题不能通过加锁来解决（因为是在同一个线程中，会死锁）。</p>
+<p>因此，我猜测异常发生时的事件时序是这样的：在 <code>print</code> 未执行完时中断，又在信号处理函数中调用 print，触发了重入检测，引起 <code>RuntimeError</code>：</p>
+<p><img src="/assets/caveats-for-signal-handler-in-python/bVS831" alt=""></p>
+<h2 id="疑云又起"><a href="#疑云又起" class="headerlink" title="疑云又起"></a>疑云又起</h2><p>不幸的是，我的猜想很快被推翻了。</p>
+<p>在翻看 Python <code>signal</code> 模块的官方文档，我看到了如下叙述：</p>
+<blockquote>
+<p>A Python signal handler does not get executed inside the low-level (C) signal handler. Instead, the low-level signal handler sets a flag which tells the virtual machine to execute the corresponding Python signal handler at a later point(for example at the next bytecode instruction).<br>— via <a href="https://docs.python.org/3/library/signal.html?highlight=signal#execution-of-python-signal-handlers" target="_blank" rel="noopener">Python Documentation</a></p>
+</blockquote>
+<p>也就是说，<strong>Python 中使用 <code>signal.signal</code> 注册的信号处理函数并不会在收到信号时立即执行，而只是简单做一个标记，将其延迟至之后的某个时机</strong>。这么做可以尽量快地结束异常控制流，减少其对被阻断进程的影响。</p>
+<p>这番表述可以说是推翻了我的猜想，因为 Signal Handler 中的 <code>print</code> 并没有在异常控制流中执行。那异常又是怎么产生的呢？</p>
+<p>文档说 Python Signal Handler 会被延后至某个时机进行，但并没有明示是什么时候。对于这个疑问，<a href="https://stackoverflow.com/questions/19699314/how-to-use-a-separate-thread-for-asynchronous-signal-handling-in-python" target="_blank" rel="noopener">这个提问的被采纳回答</a> 则斩钉截铁地将其具体化到了“某两个 Python 字节码之间”。</p>
+<p>我们知道，Python 程序在执行前会被编译成 Python 内定的字节码<br>（bytecode）,Python 虚拟机实际执行的正是这些字节码。倘若该回答是正确的，则立即有如下推论：<strong>在处理信号的过程中，字节码具有原子性（atomic）</strong>。也就是说，主线程总是在两个字节码之间决定是否转移控制流， 而 <strong>不会</strong> 出现以下情况：</p>
+<p><img src="/assets/caveats-for-signal-handler-in-python/bVS7EH" alt=""></p>
+<p>这很显然与我的程序结果相悖：<code>print</code> 与 <code>print</code> 所调用的 <code>io.BufferedWriter.write</code> 和 <code>io.BufferedWriter.flush</code> 都是用纯 C 代码编写的，对其的调用只消耗一条字节码（<code>CALL_FUNCTION</code> 或 <code>CALL_FUNCTION_KW</code>），在信号中断的影响下，这几个函数仍保持原子性，在时序图上互不重叠，更不会发生重入。</p>
+<p><img src="/assets/caveats-for-signal-handler-in-python/bVS7ag" alt=""></p>
+<p>因此，<strong>除了在两个字节码之间，应该还有其他时机唤起了 Python Signal Handler</strong>。</p>
+<p>至此，问题已触及 Python 的地板了，需向更底层挖掘才能找到答案。</p>
+<h2 id="深入源码"><a href="#深入源码" class="headerlink" title="深入源码"></a>深入源码</h2><p>信号注册逻辑位于 <code>Modules/signalmodule.c</code> 文件中。 313 行的 <code>signal_handler</code> 是信号处理函数的最外层包装，由系统调用 <code>signal</code> 或 <code>sigaction</code> 注册至内核，并在信号发生时被内核回调，是异常控制流的入口。<code>signal_handler</code> 主要调用了 239 行处的 <code>trip_signal</code> 函数，其中有这样一段代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Handlers[sig_num].tripped = <span class="number">1</span>;</div><div class="line"></div><div class="line"><span class="keyword">if</span> (!is_tripped) &#123;</div><div class="line">    is_tripped = <span class="number">1</span>;</div><div class="line">    Py_AddPendingCall(checksignals_witharg, <span class="literal">NULL</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这段代码便是文档中所说的逻辑：做标记并延后 Python Signal Handler。其中 <code>checksignals_witharg</code> 即为被延后调用的函数，位于 192 行，核心代码只有一句：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span></span></div><div class="line"><span class="title">checksignals_witharg</span><span class="params">(<span class="keyword">void</span> * unused)</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">return</span> PyErr_CheckSignals();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>PyErr_CheckSignals</code> 位于 1511 行：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span></span></div><div class="line"><span class="title">PyErr_CheckSignals</span><span class="params">(<span class="keyword">void</span>)</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">int</span> i;</div><div class="line">    PyObject *f;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!is_tripped)</div><div class="line">        <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> WITH_THREAD</span></div><div class="line">    <span class="keyword">if</span> (PyThread_get_thread_ident() != main_thread)</div><div class="line">        <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"></div><div class="line">    is_tripped = <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!(f = (PyObject *)PyEval_GetFrame()))</div><div class="line">        f = Py_None;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (i = <span class="number">1</span>; i &lt; NSIG; i++) &#123;</div><div class="line">        <span class="keyword">if</span> (Handlers[i].tripped) &#123;</div><div class="line">            PyObject *result = <span class="literal">NULL</span>;</div><div class="line">            PyObject *arglist = Py_BuildValue(<span class="string">"(iO)"</span>, i, f);</div><div class="line">            Handlers[i].tripped = <span class="number">0</span>;</div><div class="line"></div><div class="line">            <span class="keyword">if</span> (arglist) &#123;</div><div class="line">                result = PyEval_CallObject(Handlers[i].func,</div><div class="line">                                           arglist);</div><div class="line">                Py_DECREF(arglist);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (!result)</div><div class="line">                <span class="keyword">return</span> <span class="number">-1</span>;</div><div class="line"></div><div class="line">            Py_DECREF(result);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可见，这个函数便是异步回调的最里层，包含了执行 Python Signal Handler 的逻辑。</p>
+<p>至此我们可以发现，整个 Python 中有两个办法可以唤起 Python Signal Handler，一个是调用 <code>checksignals_witharg</code>，另一个是调用 <code>PyErr_CheckSignals</code>。前者只是后者的简单封包。</p>
+<p><code>checksignals_witharg</code> 在 Python 源码中只出现了一次（不包括定义，下同），没有被直接调用的迹象。但需要注意的是，<code>checksignals_witharg</code> 曾被当做 <code>Py_AddPendingCall</code> 的参数，<code>Py_AddPendingCall</code> 所做的工作时将其加入到一个全局队列中。与之对应的出队操作是 <code>Py_MakePendingCalls</code>，位于 <code>Python/ceval.c</code> 的 464 行。此函数会间接调用 <code>checksignals_witharg</code>，在 Python 源码中被调用了 3 次：</p>
+<ul>
+<li><code>Modules/_threadmodule.c</code> 52 行的 <code>acquire_timed</code></li>
+<li><code>Modules/main.c</code> 310 行的 <code>run_file</code></li>
+<li><code>Python/ceval.c</code> 722 行的 <code>_PyEval_EvalFrameDefault</code></li>
+</ul>
+<p>值得注意的是，<code>_PyEval_EvalFrameDefault</code> 是一个长达 2600 多行的状态机，是解析字节码的核心逻辑所在。此处调用出现于状态机主循环开始处——这印证了上面回答中的部分说法，即 Python 会在两个字节码中间唤起 Python Signal Hanlder。</p>
+<p>而 <code>PyErr_CheckSignals</code> 在 Python 源码中出现了 80 多处，遍布 Python 的各个模块中——这说明该回答的另一半说法是错误的：<strong>除了在两个字节码之间，Python 还可能在其他角落唤起 Python Signal Handler</strong>。其中有两处值得注意，它们都位于 <code>Modules/_io/bufferedio.c</code> 中：</p>
+<ul>
+<li>1884 行的 <code>_bufferedwriter_flush_unlocked</code></li>
+<li>1939 行的 <code>_io_BufferedWriter_write_impl</code></li>
+</ul>
+<p>这两个函数是 <code>io.BufferedWriter</code> 类的底层实现，会被 <code>print</code> 间接调用。仔细观察可以发现，它们都有着相似的结构：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ENTER_BUFFERED(self)</div><div class="line"><span class="comment">// ...</span></div><div class="line">PyErr_CheckSignals();</div><div class="line"><span class="comment">// ...</span></div><div class="line">LEAVE_BUFFERED(self)</div></pre></td></tr></table></figure>
+<p><code>ENTER_BUFFERED</code> 是一个宏，会尝试申请无阻塞线程锁以保证函数不会被重入：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> ENTER_BUFFERED(self) \</span></div><div class="line">    ( (PyThread_acquire_lock(self-&gt;lock, 0) ? \</div><div class="line">       1 : _enter_buffered_busy(self)) \</div><div class="line">     &amp;&amp; (self-&gt;owner = PyThread_get_thread_ident(), 1) )</div></pre></td></tr></table></figure>
+<p><img src="/assets/caveats-for-signal-handler-in-python/bVS9AJ" alt=""></p>
+<p>至此，真相已经大白了。</p>
+<h2 id="真相"><a href="#真相" class="headerlink" title="真相"></a>真相</h2><p>当信号中断发生在 <code>_bufferedwriter_flush_unlocked</code> 或 <code>_io_BufferedWriter_write_impl</code> 中时，这两个函数中的 <code>PyErr_CheckSignals</code> 会直接唤起 Python Signal Handler，而此时由 <code>ENTER_BUFFERED</code> 上的锁尚未解开，若 Python Signal Handler 中又有 <code>print</code> 函数调用，则会导致再次 <code>ENTER_BUFFERED</code> 上锁失败，从而抛出异常。时序图如下：</p>
+<p><img src="/assets/caveats-for-signal-handler-in-python/bVS9lQ" alt=""></p>
+<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>为什么不将 Python Signal Handler 调用的地点统一在一个地方，而是散布在程序的各处呢？阅读相关代码，我认为有两点原因：</p>
+<ul>
+<li>信号中断会使某些系统调用行为异常，从而使系统调用的调用者不知如何处理，此时需要调用 Signal Handler 进行可能的状态恢复。一个例子是 <code>write</code> 系统调用，信号中断会导致数据部分写回，与此相关的一大批 I/O 函数（包括出问题的 <code>_bufferedwriter_flush_unlocked</code> 和 <code>_io_BufferedWriter_write_impl</code>）便只能相应地调用 <code>PyErr_CheckSignals</code>。</li>
+<li>某些函数需要做计算密集型任务，为了防止 Python Signal Handler 的调用被过长地延后（其实主要是为了及时响应键盘中断，防止程序无法从前台结束），必须适时地检查并调用 Python Signal Handler。一个例子是 <code>Objects/longobject.c</code> 中的诸函数，<code>longobject.c</code> 定义了 Python 特有的无限长整型，其相关的运算可能耗时相当长，必须做这样的处理。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>Python Signal Handler 的调用会被延后，但时机不止在两个字节码之间，而是可能出现在任何地方。</li>
+<li>由于第一条，Python Signal Handler 中尽量都使用 <strong>可重入的</strong> 的函数，以避免奇怪的问题。可重入性可以从文档获知，也可以结合定义由源码推断出来。</li>
+<li>有疑问，翻源码。人会说谎，代码不会。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;写在前面&quot;&gt;&lt;a href=&quot;#写在前面&quot; class=&quot;headerlink&quot; title=&quot;写在前面&quot;&gt;&lt;/a&gt;写在前面&lt;/h2&gt;&lt;p&gt;前几天工作时遇到了一个匪夷所思的问题。经过几次尝试后问题得以解决，但问题产生的原因却仍令人费解。查找 SO 无果，我决定翻看 Python 的源码。断断续续地研究了几天，终于恍然大悟。撰此文以记。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+    
+    
+      <category term="Python" scheme="http://blog.hsfzxjy.site/tags/Python/"/>
+    
+      <category term="POSIX" scheme="http://blog.hsfzxjy.site/tags/POSIX/"/>
+    
+      <category term="Reentrancy" scheme="http://blog.hsfzxjy.site/tags/Reentrancy/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux 文件权限</title>
+    <link href="http://blog.hsfzxjy.site/2017-07-03-linux-file-permissions/"/>
+    <id>http://blog.hsfzxjy.site/2017-07-03-linux-file-permissions/</id>
+    <published>2017-07-02T16:00:00.000Z</published>
+    <updated>2019-01-21T09:06:17.133Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><p>Linux 中的每一个文件都有其 <strong>所属用户</strong> 及 <strong>所属用户组</strong>，根据这两个属性可将文件访问者分为三类：<strong>所属用户自己</strong>、<strong>所属用户组中的用户</strong> 和 <strong>其他用户</strong>，我们可以针对不同的访问者设置不同的用户权限。</p>
+<p>“访问”可分为三类：<strong>读</strong>、<strong>写</strong> 与 <strong>执行</strong>。我们可以用 <code>ls -l</code> 命令查看一个文件的权限：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ touch <span class="built_in">test</span></div><div class="line">$ ls <span class="_">-l</span> <span class="built_in">test</span></div><div class="line">-rw-rw-r-- 1 hsfzxjy hsfzxjy 0 Jul  3 23:44 <span class="built_in">test</span></div></pre></td></tr></table></figure>
+<p>首部的 <code>-rw-rw-r--</code> 即为文件的权限位。权限应该分为四部分来看：<code>-/rw-/rw-/r--</code>。第一部分标志文件的类型，如 普通文件（<code>-</code>）、目录（<code>d</code>）、UNIX 套接字（<code>s</code>）、符号链接（<code>l</code>）、块设备（<code>b</code>）等等。接下来的三个部分依次代表 <strong>所属用户</strong>、<strong>所属用户组</strong>、<strong>其他用户</strong> 的权限，每部分由三个标志位组成：<strong>读标志位</strong>、<strong>写标志位</strong>、<strong>执行标志位</strong>。</p>
+<h1 id="目录的权限"><a href="#目录的权限" class="headerlink" title="目录的权限"></a>目录的权限</h1><p>目录是一种特殊的文件，因此也拥有文件权限的概念，但权限的语义与普通文件稍有差异：</p>
+<ul>
+<li>读：读取目录下文件列表，相关命令如 <code>ls</code></li>
+<li>写：创建、删除目录下的文件，相关命令如 <code>touch</code>（当文件不存在时）、<code>rm</code> 等</li>
+<li>执行：进入目录，相关命令如 <code>cd</code></li>
+</ul>
+<h1 id="特殊权限"><a href="#特殊权限" class="headerlink" title="特殊权限"></a>特殊权限</h1><p>出于某些特殊目的，Linux 中存在两个特殊的权限位：粘滞位（<code>t</code>）、Set Id（<code>s</code>）。这两个权限可以 <strong>叠加</strong> 在执行权限位上，其中 Set Id 可以置于 <strong>所属用户</strong> 和 <strong>所属用户组</strong> 的权限组上，而 粘滞位 只能置于 <strong>其他用户</strong> 权限组上。当特殊权限被设置时，执行权限位上即会显示 <code>s/t</code> （已有 <code>x</code> 权限）或 <code>S/T</code> （尚未有 <code>x</code> 权限）。</p>
+<h2 id="粘滞位"><a href="#粘滞位" class="headerlink" title="粘滞位"></a>粘滞位</h2><p>粘滞位的作用是 <strong>防止他人误删自己的文件</strong>。当某个目录的其他用户权限组有 <code>w</code> 权限时，系统中的其他用户即可随意删除目录中的文件。而一旦叠加上 <code>t</code> 权限，只有文件的所有者方能删除文件。一个经典的例子是 <code>/tmp</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ ls <span class="_">-l</span> /</div><div class="line">drwxrwxrwt  13 root root 12288 Jul  4 00:15 tmp/</div></pre></td></tr></table></figure>
+<h2 id="Set-Id"><a href="#Set-Id" class="headerlink" title="Set Id"></a>Set Id</h2><p>Linux 中的进程也有自己所属用户与用户组。一般而言，进程的所属用户即为其发起者，但这会引起一些麻烦。一个例子是 <code>passwd</code> 命令，该命令需要修改属于 <code>root</code> 用户的系统文件以保存密码，倘若进程所属用户即为所属者，此功能则无法实现。</p>
+<p>Set Id 权限的作用是：在文件被执行时，将其有效用户/用户组设置为文件的用户/用户组，而不是当前执行者。下面是一个演示：</p>
+<p>设当前用户为 <code>hsfzxjy</code>，我们在 <code>/tmp</code> 下创建一个 <code>test</code> 文件，并删去其他用户的 <code>r</code> 权限：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> /tmp</div><div class="line">$ <span class="built_in">echo</span> <span class="built_in">test</span> text &gt; <span class="built_in">test</span></div><div class="line">$ chmod o-r <span class="built_in">test</span></div><div class="line">$ ll <span class="built_in">test</span></div><div class="line">-rw-rw---- 1 hsfzxjy hsfzxjy 0 Jul  4 00:28 <span class="built_in">test</span></div></pre></td></tr></table></figure>
+<p>由于 <code>test</code> 文件的所属用户是 <code>hsfzxjy</code>，其他用户没有权限读取其中的内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ sudo -u mysql cat <span class="built_in">test</span></div><div class="line">cat: <span class="built_in">test</span>: Permission denied</div></pre></td></tr></table></figure>
+<p>现在我们修改一下 <code>cat</code> 命令的权限，为了不影响系统文件，我们拷贝一份 <code>cat</code> 副本至当前目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ cp /bin/cat .</div><div class="line">$ chmod u+s cat</div><div class="line">$ ll cat</div><div class="line">-rwsr-xr-x 1 hsfzxjy hsfzxjy 52080 Jul  4 00:34 cat*</div></pre></td></tr></table></figure>
+<p>再以 <code>mysql</code> 的身份执行命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ sudo -u mysql ./cat <span class="built_in">test</span></div><div class="line"><span class="built_in">test</span> text</div></pre></td></tr></table></figure>
+<p>可见 <code>./cat</code> 在执行时所属用户是 <code>hsfzxjy</code>。我们可以使用 <code>ps</code> 命令更清楚地看到这点：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ sudo -u mysql cat</div><div class="line"><span class="comment"># 在另一个终端中</span></div><div class="line">$ ps -eo euser,ruser,comm | grep cat</div><div class="line">mysql    mysql    cat</div><div class="line"></div><div class="line"><span class="comment"># -----------</span></div><div class="line"></div><div class="line">$ sudo -u mysql ./cat</div><div class="line"><span class="comment"># 在另一个终端中</span></div><div class="line">$ ps -eo euser,ruser,comm | grep cat</div><div class="line">hsfzxjy  mysql    cat</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;概念&quot;&gt;&lt;a href=&quot;#概念&quot; class=&quot;headerlink&quot; title=&quot;概念&quot;&gt;&lt;/a&gt;概念&lt;/h1&gt;&lt;p&gt;Linux 中的每一个文件都有其 &lt;strong&gt;所属用户&lt;/strong&gt; 及 &lt;strong&gt;所属用户组&lt;/strong&gt;，根据这两个属
+    
+    </summary>
+    
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+    
+    
+      <category term="Linux" scheme="http://blog.hsfzxjy.site/tags/Linux/"/>
+    
+      <category term="File Permissions" scheme="http://blog.hsfzxjy.site/tags/File-Permissions/"/>
     
   </entry>
   

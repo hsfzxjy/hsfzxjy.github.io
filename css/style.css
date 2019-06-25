@@ -286,9 +286,7 @@ a:focus {
       margin: 0 0 1.234em; }
       .post .post-content p code {
         display: inline;
-        margin: 0 5px;
-        padding: 3px 5px;
-        border: 1px solid #ddd; }
+        font-size: .8em; }
       .post .post-content p a {
         color: #01579f;
         padding-bottom: 2px;
@@ -318,7 +316,8 @@ a:focus {
       overflow: auto;
       padding: .5em 2.4em;
       border-radius: 3px;
-      margin: 1em 0; }
+      margin: 0;
+      margin-bottom: 1.234em; }
       .post .post-content ul li, .post .post-content ol li {
         text-indent: 0; }
       .post .post-content ul ul, .post .post-content ol ul {

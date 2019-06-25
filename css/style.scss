@@ -394,9 +394,7 @@ a:focus {
             margin: 0 0 1.234em;
             code {
                 display: inline;
-                margin: 0 5px;
-                padding: 3px 5px;
-                border: 1px solid #ddd;
+                font-size: .8em;
             }
             a {
                 color: #01579f;
@@ -435,7 +433,8 @@ a:focus {
             overflow: auto;
             padding: .5em 2.4em;
             border-radius: 3px;
-            margin: 1em 0;
+            margin: 0;
+            margin-bottom: 1.234em;
             li {
                 text-indent: 0;
             }
