@@ -55,7 +55,7 @@ begin
 
     close(input); close(output);
 end.
-</code></pre></div></div><div class="post"><h2 class="post-title"><a href="/2014-10-24-uva1647-computer-transformation/">UVa1647 Computer Transformation</a></h2><div class="post-meta">2014-10-24</div><span data-disqus-identifier="2014-10-24-uva1647-computer-transformation/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
+</code></pre></div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-24-uva1647-computer-transformation/">UVa1647 Computer Transformation</a></h2><div class="post-meta">2014-10-24</div><span data-disqus-identifier="2014-10-24-uva1647-computer-transformation/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
 <p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;category=825&amp;page=show_problem&amp;problem=4522" target="_blank" rel="noopener">Link</a> 耗时：0.679s</p>
 </blockquote>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>本质上，这是一道求数列通项的题目。我们列出前几个字符串：</p>
@@ -162,7 +162,7 @@ begin
 
     close(input); close(output);
 end.
-</code></pre></div></div><div class="post"><h2 class="post-title"><a href="/2014-10-23-sublime-configuration-for-pascal/">Sublime configuration for Pascal</a></h2><div class="post-meta">2014-10-23</div><span data-disqus-identifier="2014-10-23-sublime-configuration-for-pascal/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
+</code></pre></div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-23-sublime-configuration-for-pascal/">Sublime configuration for Pascal</a></h2><div class="post-meta">2014-10-23</div><span data-disqus-identifier="2014-10-23-sublime-configuration-for-pascal/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
 <p>鉴于U盘中Sublime的配置常常莫名其妙地消失，在此将其记录一下。</p>
 </blockquote>
 <h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a><strong>Code</strong></h2><pre><code>{
@@ -184,7 +184,7 @@ end.
         &quot;path&quot;: &quot;/usr/local/bin:/usr/bin:/bin:${path}&quot;
     }
 }
-</code></pre></div></div><div class="post"><h2 class="post-title"><a href="/2014-10-18-uva11526-hn/">UVa11526 H(n)</a></h2><div class="post-meta">2014-10-18</div><span data-disqus-identifier="2014-10-18-uva11526-hn/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
+</code></pre></div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-18-uva11526-hn/">UVa11526 H(n)</a></h2><div class="post-meta">2014-10-18</div><span data-disqus-identifier="2014-10-18-uva11526-hn/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
 <p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;page=show_problem&amp;category=27&amp;problem=2521&amp;mosmsg=Submission%20received%20with%20ID%2014374168" target="_blank" rel="noopener">Link</a> 耗时：2.232s</p>
 </blockquote>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>粗看题目，不过就是要求这样一个式子：$\sum<em>{i=1}^n{[\frac{n}{i}]}$的值。但<strong>注意到</strong>：题目给的数据范围极大，有$2^{31}-1$之多，若遍历计算，则时间复杂度为$O(n)$，将严重超时，不可取。<br>而事实上，通过尝试我们可以发现：$\sum</em>{i=1}^{n}{[\frac{n}{i}]}=2*\sum<em>{i=1}^{\sqrt n}{[\frac{n}{i}]}-{[\sqrt n]}^2$，这是一个重要的结论。因为这条式子一旦成立，时间复杂度即可从$O(n)$降为$O(\sqrt n)$，这是一个极为可观的改善。下面我们来证明一下这个结论：<br>事实上，$$\sum</em>{i=[{\sqrt n}]+1}^{n}{[\frac{n}{i}]}<script type="math/tex">$$=1\times(n-[\frac{n}{2}])+2\times([\frac{n}{2}]-[\frac{n}{3}])+\ldots+[\sqrt{n}]\times([\frac{n}{\sqrt{n}}]-{[\frac{n}{\sqrt n}+1]})</script> <script type="math/tex">=n+[\frac{n}{2}]+[\frac{n}{3}]+\ldots+[\frac{n}{\sqrt n}]-[\sqrt n]\times[\frac{n}{[\sqrt n]+1}]</script> <script type="math/tex">=\sum_{i=1}^{[\sqrt n]}{[\frac{n}{i}]}-{[\sqrt n]}^2</script> 从而，命题得证。</p>
@@ -224,7 +224,7 @@ begin
     close(input);
     close(output);
 end.
-</code></pre></div></div><div class="post"><h2 class="post-title"><a href="/2014-10-17-uva817-according-to-bartjens/">UVa817 According to Bartjens</a></h2><div class="post-meta">2014-10-17</div><span data-disqus-identifier="2014-10-17-uva817-according-to-bartjens/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
+</code></pre></div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-17-uva817-according-to-bartjens/">UVa817 According to Bartjens</a></h2><div class="post-meta">2014-10-17</div><span data-disqus-identifier="2014-10-17-uva817-according-to-bartjens/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
 <p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;page=show_problem&amp;category=10&amp;problem=758&amp;mosmsg=Submission%20received%20with%20ID%2014367065" target="_blank" rel="noopener">Link</a> 状态：<strong>WA</strong></p>
 </blockquote>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>做了两个小时，很可惜最终还是WA了。非常奇怪——和网上的C++代码运行结果完全一样，但却WA了。不过，在这里我还是记录一下解题的过程。<br>这道题数据量很小，直接爆搜每个空位，用*, +, -, #0来代表符号或不填。</p>
@@ -347,7 +347,7 @@ begin
 
     close(input); close(output);
 end.
-</code></pre></div></div><div class="post"><h2 class="post-title"><a href="/2014-10-15-uva225-golygons/">UVa225 Golygons</a></h2><div class="post-meta">2014-10-15</div><span data-disqus-identifier="2014-10-15-uva225-golygons/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
+</code></pre></div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-15-uva225-golygons/">UVa225 Golygons</a></h2><div class="post-meta">2014-10-15</div><span data-disqus-identifier="2014-10-15-uva225-golygons/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
 <p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;page=show_problem&amp;category=4&amp;problem=161&amp;mosmsg=Submission%20received%20with%20ID%2014355705" target="_blank" rel="noopener">Link</a> 耗时：0.699s</p>
 </blockquote>
 <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a><strong>思路</strong></h2><p><code>dfs(t, x, y, d, s)</code>表示当前走了t步，在(x,y)，上一个方向为d，s为一个求和用的辅助变量。<br>当前位置无法走完剩下的路时直接回溯。可节省接近2s的时间。<br><strong>ps: 这道题虽然没有明说每个城市只走一次，但它的确那样判了，这一点坑了我好久。</strong></p>
@@ -439,7 +439,7 @@ begin
 
     close(input); close(output);
 end.
-</code></pre></div></div><div class="post"><h2 class="post-title"><a href="/2014-10-08-noip-senior-knowlegdes/">NOIP初赛基础知识</a></h2><div class="post-meta">2014-10-08</div><span data-disqus-identifier="2014-10-08-noip-senior-knowlegdes/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
+</code></pre></div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-08-noip-senior-knowlegdes/">NOIP初赛基础知识</a></h2><div class="post-meta">2014-10-08</div><span data-disqus-identifier="2014-10-08-noip-senior-knowlegdes/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
 <p>从今天起至10月11日，持续连载。</p>
 </blockquote>
 <h2 id="关于计算机"><a href="#关于计算机" class="headerlink" title="关于计算机"></a><strong>关于计算机</strong></h2><h3 id="ENIAC"><a href="#ENIAC" class="headerlink" title="ENIAC"></a><strong>ENIAC</strong></h3><ul>
@@ -494,7 +494,7 @@ end.
 <li>NOIP官网：<strong><a href="http://www.noi.cn/" target="_blank" rel="noopener">http://www.noi.cn/</a></strong>。</li>
 <li>中国互联网信息中心的缩写：<strong>CNNIC</strong>。</li>
 </ul>
-</div></div><div class="post"><h2 class="post-title"><a href="/2014-10-05-uva12219-common-subexpression-elimination/">UVa12219 Common Subexpression Elimination</a></h2><div class="post-meta">2014-10-05</div><span data-disqus-identifier="2014-10-05-uva12219-common-subexpression-elimination/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
+</div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-05-uva12219-common-subexpression-elimination/">UVa12219 Common Subexpression Elimination</a></h2><div class="post-meta">2014-10-05</div><span data-disqus-identifier="2014-10-05-uva12219-common-subexpression-elimination/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
 <p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;page=show_problem&amp;problem=3371" target="_blank" rel="noopener">Link</a> 状态：<strong>Runtime Error</strong></p>
 </blockquote>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这题做的可真够久的，整整三个小时。但即便如此，还是只过了一部分的点，另一部分报运行时错误——估计是哈希表设计的不太好。但这确实是一道好题，因此，在睡觉前决定记录一下。</p>
@@ -680,7 +680,7 @@ begin
   end;
   close(input); close(output);
 end.
-</code></pre></div></div><div class="post"><h2 class="post-title"><a href="/2014-10-05-uva536-recovery/">UVa536 Recovery</a></h2><div class="post-meta">2014-10-05</div><span data-disqus-identifier="2014-10-05-uva536-recovery/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
+</code></pre></div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-05-uva536-recovery/">UVa536 Recovery</a></h2><div class="post-meta">2014-10-05</div><span data-disqus-identifier="2014-10-05-uva536-recovery/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
 <p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;category=7&amp;page=show_problem&amp;problem=477" target="_blank" rel="noopener">Link</a> 耗时: 0.012s</p>
 </blockquote>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>真是疯玩了几天，脑袋都残了，一道弱智题做了近一个小时。</p>
@@ -739,7 +739,7 @@ begin
     close(input);
     close(output);
 end.
-</code></pre></div></div><div class="post"><h2 class="post-title"><a href="/2014-10-01-uva11582-colossal-fibonacci-numbers/">UVa11582 Colossal Fibonacci Numbers! &amp;&amp; 大数操作</a></h2><div class="post-meta">2014-10-01</div><span data-disqus-identifier="2014-10-01-uva11582-colossal-fibonacci-numbers/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
+</code></pre></div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-01-uva11582-colossal-fibonacci-numbers/">UVa11582 Colossal Fibonacci Numbers! &amp;&amp; 大数操作</a></h2><div class="post-meta">2014-10-01</div><span data-disqus-identifier="2014-10-01-uva11582-colossal-fibonacci-numbers/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
 <p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;page=show_problem&amp;category=27&amp;problem=2629&amp;mosmsg=Submission%20received%20with%20ID%2014290914" target="_blank" rel="noopener">Link</a> 耗时：0.139s</p>
 </blockquote>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这道题的主要思路就是打表，看看Fibonacci数列模n几个一循环。但由于这题给的数太大了，从而在细节上耗了很久。在此记录一下：</p>

@@ -5,7 +5,7 @@
 </ul>
 </blockquote>
 <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>先看一段代码：</p>
-<p><code>example.py</code>：<br><figure class="highlight gauss"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta"># -*- Tech=yi -*-</span></div><div class="line"></div><div class="line">从 math 导入 <span class="built_in">sin</span>, <span class="built_in">pi</span></div><div class="line"></div><div class="line">打印 '<span class="built_in">sin</span>(<span class="built_in">pi</span>) =', <span class="built_in">sin</span>(<span class="built_in">pi</span>)</div></pre></td></tr></table></figure></p>
+<p><code>example.py</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># -*- Tech=yi -*-</div><div class="line"></div><div class="line">从 math 导入 sin, pi</div><div class="line"></div><div class="line">打印 &apos;sin(pi) =&apos;, sin(pi)</div></pre></td></tr></table></figure></p>
 <p>这是什么？！是 Python 吗？可以运行吗？——想必你会问。</p>
 <p>我可以明确告诉你：这不是 Python，<strong>但它可以用 Python 解释器运行</strong>。当然，如果你愿意，可以叫它 “Yython” （易语言 + Python）。</p>
 <p><img src="//sf.gg/img/bVzuHw" alt=""></p>
@@ -16,7 +16,7 @@
 <p>还记得那天吗？当你试图用代码向它示好：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">print</span> <span class="string">'你好'</span></div></pre></td></tr></table></figure>
 <p>它却给你当头一棒：</p>
-<figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SyntaxError: Non-<span class="built_in">ASCII character</span> '\xe4' <span class="keyword">in</span> <span class="built_in">file</span> chi.py <span class="keyword">on</span> line <span class="number">1</span>, <span class="keyword">but</span> no enTech declared</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SyntaxError: Non-ASCII character &apos;\xe4&apos; in file chi.py on line 1, but no enTech declared</div></pre></td></tr></table></figure>
 <p>【一脸懵逼】</p>
 <p>于是，你上网查找解决方案。很快，你便有了答案：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*- Tech=utf-8 -*-</span></div><div class="line"></div><div class="line"><span class="keyword">print</span> <span class="string">'你好'</span></div></pre></td></tr></table></figure>
@@ -27,7 +27,7 @@
 </blockquote>
 <p>Python 默认用 ASCII 编码解析文件，给 15 年前的非英文世界开发者造成了不小的困扰——看来 Guido 老爹有些个人主义，设计时只考虑到了英文世界。</p>
 <p>提案者设想：<strong>使用一种特殊的文件首注释，用于指定代码的编码</strong>。这个注释的正则原型是这样的：</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">^[<span class="string"> \t\v</span>]<span class="emphasis">*#.*</span>?Tech[<span class="string">:=</span>][<span class="symbol"> \t</span>]*([-_.a-zA-Z0-9]+)</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">^[ \t\v]*#.*?Tech[:=][ \t]*([-_.a-zA-Z0-9]+)</div></pre></td></tr></table></figure>
 <p>也就是说 <code># -*- Tech=utf-8 -*-</code> 并不是唯一的写法，只是 Emacs 推荐写法而已。诸如 <code># Tech=utf-8</code>、<code># enTech: utf-8</code> 都是合法的——因此你不必惊讶于他人编码声明与你不同。</p>
 <p>正则的捕获组 <code>([-_.a-zA-Z0-9]+)</code> 将会被用作查找编码的名称，查找到的编码信息会被用于解码文件。也就是说，<code>import example</code> 背后其实相当于有如下转换过程：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">with</span> open(<span class="string">'example.py'</span>, <span class="string">'r'</span>) <span class="keyword">as</span> f:</div><div class="line">    content = f.read()</div><div class="line">    enTech = extract_enTech_info(content) <span class="comment"># 解析首注释</span></div><div class="line">    exec(content.decode(enTech))</div></pre></td></tr></table></figure>

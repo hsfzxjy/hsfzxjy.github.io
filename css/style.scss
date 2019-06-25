@@ -271,13 +271,47 @@ a:focus {
 
 .post {
     padding: 25px 0 15px;
+
+    > hr {
+        line-height: 1em;
+        position: relative;
+        outline: 0;
+        border: 0;
+        color: black;
+        text-align: center;
+        height: 1.5em;
+        opacity: .5;
+        box-sizing: content-box;
+
+        &:before {
+            content: '';
+            background: linear-gradient(to right, transparent, #818078, transparent);
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+        }
+
+        &:after {
+            content: '§';
+            position: relative;
+            display: inline-block;
+            color: black;
+            padding: 0 .5em;
+            line-height: 1.5em;
+            color: #818078;
+            background-color: $bk-color;
+        }
+    }
+
     .post-title {
         margin: 0;
         color: #555;
         text-align: center;
         padding: 0;
         padding-top: 2em;
-        border-top: 2px dashed darken($bk-color, 30%);
+        // border-top: 1px dotted darken($bk-color, 30%);
         font-size: 30px;
         font-weight: 300;
 
