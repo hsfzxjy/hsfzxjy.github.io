@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.hsfzxjy.site/"/>
-  <updated>2019-06-25T02:22:52.705Z</updated>
+  <updated>2019-06-26T05:43:15.655Z</updated>
   <id>http://blog.hsfzxjy.site/</id>
   
   <author>
@@ -16,11 +16,45 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Option::as_ref</title>
+    <link href="http://blog.hsfzxjy.site/2019-06-26-option-as_ref/"/>
+    <id>http://blog.hsfzxjy.site/2019-06-26-option-as_ref/</id>
+    <published>2019-06-25T16:00:00.000Z</published>
+    <updated>2019-06-26T05:43:15.655Z</updated>
+    
+    <content type="html"><![CDATA[<p>Let’s consider the following function:<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">use</span> std::ptr::NonNull;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">transform</span></span>&lt;T&gt;(option: &amp;<span class="built_in">Option</span>&lt;NonNull&lt;T&gt;&gt;) -&gt; <span class="built_in">Option</span>&lt;&amp;T&gt; &#123;</div><div class="line">    option.map(|x| <span class="keyword">unsafe</span> &#123; x.as_ref() &#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>The function <code>transform</code> takes in an <code>Option&lt;NonNull&lt;T&gt;&gt;</code> as input, and convert the inner pointer to immutable reference <code>&amp;T</code> if available. The method <code>NonNull::as_ref()</code> is marked unsafe so we need an <code>unsafe</code> block. The snippet didn’t compile well however:<br><a id="more"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">error[E0515]: cannot return value referencing function parameter `x`</div><div class="line"> --&gt; src/main.rs:6:29</div><div class="line">  |</div><div class="line">6 |     option.map(|x| unsafe &#123; x.as_ref() &#125;)</div><div class="line">  |                             -^^^^^^^^^</div><div class="line">  |                             |</div><div class="line">  |                             returns a value referencing data owned by the current function</div><div class="line">  |                             `x` is borrowed here</div></pre></td></tr></table></figure></p>
+<p>This is a common mistake when transforming <code>Option</code>s. To address the problem, we may try to write down the signatures of relevant functions and see how the values flow down:<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">Option</span>::<span class="title">map</span></span>&lt;T, F&gt;(<span class="keyword">self</span>, f: F) -&gt; <span class="built_in">Option</span>&lt;&amp;T&gt; </div><div class="line">    <span class="keyword">where</span> F: <span class="built_in">FnOnce</span>(NonNull&lt;T&gt;) -&gt; <span class="built_in">Option</span>&lt;&amp;T&gt;</div><div class="line">&#123;&#125;</div><div class="line"></div><div class="line"><span class="comment">// which implies:</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">__closure</span></span>&lt;T&gt;(x: NonNull&lt;T&gt;) -&gt; &amp;T &#123;&#125;</div><div class="line"></div><div class="line"><span class="keyword">unsafe</span> <span class="function"><span class="keyword">fn</span> <span class="title">NonNull</span>::<span class="title">as_ref</span></span>&lt;T, <span class="symbol">'a</span>&gt;(&amp;<span class="symbol">'a</span> <span class="keyword">self</span>) -&gt; &amp;<span class="symbol">'a</span> T &#123;&#125;</div></pre></td></tr></table></figure></p>
+<p>Here <code>__closure</code> denotes the closure <code>Option::map</code> takes. </p>
+<p>Note that <code>Option::map</code> is a self-consuming method. During the calling, <code>option</code> is destructured, and the inner value with type <code>NonNull&lt;T&gt;</code> flows into <code>__closure</code>. The closure, however, consumes its parameter too, so finally <code>x</code> would have a lifetime limited in the closure. This is what <code>data owned by the current function</code> in the error message means.</p>
+<p>Now let’s look into the closure. Inside we call <code>NonNull::as_ref()</code> to convert a pointer into a reference, which assumes the pointer should live as long as the returned reference. This could not be satisfied, since <code>x</code> the pointer only lives in the closure, but the reference would be passed out of the closure. Thus the compiler complains.</p>
+<p>We can always use <code>Option::as_ref()</code> to solve this type of issues. The function has signature as below:<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">Option</span>::<span class="title">as_ref</span></span>&lt;T&gt;(&amp;<span class="keyword">self</span>) -&gt; <span class="built_in">Option</span>&lt;&amp;T&gt; &#123;&#125;</div></pre></td></tr></table></figure></p>
+<p>Calling <code>.as_ref()</code> on an <code>Option&lt;T&gt;</code> instance, say <code>x</code>, will return another Option with type <code>Option&lt;&amp;T&gt;</code>, say <code>ref_x</code>, which have the reference to the inner value of <code>x</code>. It’s worth noting that <code>.as_ref()</code> takes <code>x</code> by reference, so no consuming happens here. Now we can perform <code>.map()</code> or <code>.unwrap()</code> on <code>ref_x</code> to extract the inner <code>&amp;T</code>, and call non-consuming methods on it (e.g., <code>NonNull::as_ref</code>). <code>ref_x</code> will still be dropped after that, but it does not matter, since all it have is a reference.</p>
+<p>We can correct our code like this:<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">transform</span></span>&lt;T&gt;(option: &amp;<span class="built_in">Option</span>&lt;NonNull&lt;T&gt;&gt;) -&gt; <span class="built_in">Option</span>&lt;&amp;T&gt; &#123;</div><div class="line">    option</div><div class="line">        .as_ref()  <span class="comment">// Note here</span></div><div class="line">        .map(|x| <span class="keyword">unsafe</span> &#123; x.as_ref() &#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Let’s consider the following function:&lt;br&gt;&lt;figure class=&quot;highlight rust&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;use&lt;/span&gt; std::ptr::NonNull;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;transform&lt;/span&gt;&lt;/span&gt;&amp;lt;T&amp;gt;(option: &amp;amp;&lt;span class=&quot;built_in&quot;&gt;Option&lt;/span&gt;&amp;lt;NonNull&amp;lt;T&amp;gt;&amp;gt;) -&amp;gt; &lt;span class=&quot;built_in&quot;&gt;Option&lt;/span&gt;&amp;lt;&amp;amp;T&amp;gt; &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    option.map(|x| &lt;span class=&quot;keyword&quot;&gt;unsafe&lt;/span&gt; &amp;#123; x.as_ref() &amp;#125;)&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&amp;#125;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;The function &lt;code&gt;transform&lt;/code&gt; takes in an &lt;code&gt;Option&amp;lt;NonNull&amp;lt;T&amp;gt;&amp;gt;&lt;/code&gt; as input, and convert the inner pointer to immutable reference &lt;code&gt;&amp;amp;T&lt;/code&gt; if available. The method &lt;code&gt;NonNull::as_ref()&lt;/code&gt; is marked unsafe so we need an &lt;code&gt;unsafe&lt;/code&gt; block. The snippet didn’t compile well however:&lt;br&gt;
+    
+    </summary>
+    
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+    
+    
+      <category term="rust" scheme="http://blog.hsfzxjy.site/tags/rust/"/>
+    
+      <category term="lifetime" scheme="http://blog.hsfzxjy.site/tags/lifetime/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Rc and RefCell tricks</title>
     <link href="http://blog.hsfzxjy.site/2019-06-23-rc-refcell-pattern/"/>
     <id>http://blog.hsfzxjy.site/2019-06-23-rc-refcell-pattern/</id>
     <published>2019-06-22T16:00:00.000Z</published>
-    <updated>2019-06-25T02:22:52.705Z</updated>
+    <updated>2019-06-26T04:55:40.046Z</updated>
     
     <content type="html"><![CDATA[<p>Say we need a <code>Cursor&lt;T&gt;</code> type, which should contain a mutable reference to <code>T</code>. The type has a method <code>.dup()</code> that will create a new instance of <code>Cursor&lt;T&gt;</code> while sharing the reference between new and old instances. This is common in database driver designing, where users might expect to have multiple cursors alive simultaneously, owning references to the same connection object. A possible implementation might look like:<br><figure class="highlight rust"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Cursor</span></span>&lt;<span class="symbol">'a</span>, T&gt; &#123;</div><div class="line">    obj: &amp;<span class="symbol">'a</span> <span class="keyword">mut</span> T,</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">impl</span>&lt;<span class="symbol">'a</span>, T&gt; Cursor&lt;<span class="symbol">'a</span>, T&gt; &#123;</div><div class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">new</span></span>(t: &amp;<span class="symbol">'a</span> <span class="keyword">mut</span> T) -&gt; Cursor&lt;<span class="symbol">'a</span>, T&gt; &#123;</div><div class="line">        Cursor &#123; obj: t &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">dup</span></span>(&amp;<span class="keyword">mut</span> <span class="keyword">self</span>) -&gt; Cursor&lt;T&gt; &#123;</div><div class="line">        Cursor &#123; obj: <span class="keyword">self</span>.obj &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</div><div class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> i = <span class="number">1</span>;</div><div class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> cursor_a = Cursor::new(&amp;<span class="keyword">mut</span> i);</div><div class="line">    <span class="keyword">let</span> _cursor_b = cursor_a.dup();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>Perfect and neat, and luckily Rust compiler did not complain. As a Rust freshman, like me, it’s not easy to keep compiler silent all the time, especially when playing with references. But once I try to chain up the constructor and <code>.dup()</code>, the compiler screams:<br><a id="more"></a></p>
@@ -80,6 +114,32 @@
     
       <category term="rust" scheme="http://blog.hsfzxjy.site/tags/rust/"/>
     
+      <category term="lifetime" scheme="http://blog.hsfzxjy.site/tags/lifetime/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Visualing Correlation</title>
+    <link href="http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/"/>
+    <id>http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/</id>
+    <published>2019-03-09T16:00:00.000Z</published>
+    <updated>2019-06-25T01:29:37.709Z</updated>
+    
+    <content type="html"><![CDATA[<p>Say we have a matrix <code>A</code> of shape <code>N x M</code>, which can be viewed as a collection of N vectors of shape <code>1 x M</code>. The code below gives us the correlation matrix of <code>A</code>:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">A_corr = np.corrcoef(A)  <span class="comment"># shape: (N, N)</span></div></pre></td></tr></table></figure></p>
+<p>To visualize it, just use <code>plt.matshow(A_corr)</code>.</p>
+<p>If <code>N</code> is so large that the figure could not provide a clear insight, we might alternatively use histograms like this:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">corr_matrix_to_array</span><span class="params">(corr_mat)</span>:</span></div><div class="line">    N = corr_mat.shape[<span class="number">0</span>]</div><div class="line">    <span class="keyword">return</span> np.array([corr_mat[i][j] <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, N) <span class="keyword">for</span> j <span class="keyword">in</span> range(i + <span class="number">1</span>, N)])</div><div class="line"></div><div class="line">plt.hist(corr_matrix_to_array(A_corr), bins=np.linspace(<span class="number">-1</span>, <span class="number">1</span>, N_bins))</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Say we have a matrix &lt;code&gt;A&lt;/code&gt; of shape &lt;code&gt;N x M&lt;/code&gt;, which can be viewed as a collection of N vectors of shape &lt;code&gt;1 x M&lt;/c
+    
+    </summary>
+    
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+    
+    
   </entry>
   
   <entry>
@@ -110,30 +170,6 @@
     </summary>
     
       <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Visualing Correlation</title>
-    <link href="http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/"/>
-    <id>http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/</id>
-    <published>2019-03-09T16:00:00.000Z</published>
-    <updated>2019-06-25T01:29:37.709Z</updated>
-    
-    <content type="html"><![CDATA[<p>Say we have a matrix <code>A</code> of shape <code>N x M</code>, which can be viewed as a collection of N vectors of shape <code>1 x M</code>. The code below gives us the correlation matrix of <code>A</code>:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">A_corr = np.corrcoef(A)  <span class="comment"># shape: (N, N)</span></div></pre></td></tr></table></figure></p>
-<p>To visualize it, just use <code>plt.matshow(A_corr)</code>.</p>
-<p>If <code>N</code> is so large that the figure could not provide a clear insight, we might alternatively use histograms like this:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">corr_matrix_to_array</span><span class="params">(corr_mat)</span>:</span></div><div class="line">    N = corr_mat.shape[<span class="number">0</span>]</div><div class="line">    <span class="keyword">return</span> np.array([corr_mat[i][j] <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, N) <span class="keyword">for</span> j <span class="keyword">in</span> range(i + <span class="number">1</span>, N)])</div><div class="line"></div><div class="line">plt.hist(corr_matrix_to_array(A_corr), bins=np.linspace(<span class="number">-1</span>, <span class="number">1</span>, N_bins))</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Say we have a matrix &lt;code&gt;A&lt;/code&gt; of shape &lt;code&gt;N x M&lt;/code&gt;, which can be viewed as a collection of N vectors of shape &lt;code&gt;1 x M&lt;/c
-    
-    </summary>
-    
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
     
     
   </entry>
@@ -902,55 +938,6 @@
       <category term="POSIX" scheme="http://blog.hsfzxjy.site/tags/POSIX/"/>
     
       <category term="Reentrancy" scheme="http://blog.hsfzxjy.site/tags/Reentrancy/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Linux 文件权限</title>
-    <link href="http://blog.hsfzxjy.site/2017-07-03-linux-file-permissions/"/>
-    <id>http://blog.hsfzxjy.site/2017-07-03-linux-file-permissions/</id>
-    <published>2017-07-02T16:00:00.000Z</published>
-    <updated>2019-01-21T09:06:17.133Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><p>Linux 中的每一个文件都有其 <strong>所属用户</strong> 及 <strong>所属用户组</strong>，根据这两个属性可将文件访问者分为三类：<strong>所属用户自己</strong>、<strong>所属用户组中的用户</strong> 和 <strong>其他用户</strong>，我们可以针对不同的访问者设置不同的用户权限。</p>
-<p>“访问”可分为三类：<strong>读</strong>、<strong>写</strong> 与 <strong>执行</strong>。我们可以用 <code>ls -l</code> 命令查看一个文件的权限：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ touch <span class="built_in">test</span></div><div class="line">$ ls <span class="_">-l</span> <span class="built_in">test</span></div><div class="line">-rw-rw-r-- 1 hsfzxjy hsfzxjy 0 Jul  3 23:44 <span class="built_in">test</span></div></pre></td></tr></table></figure>
-<p>首部的 <code>-rw-rw-r--</code> 即为文件的权限位。权限应该分为四部分来看：<code>-/rw-/rw-/r--</code>。第一部分标志文件的类型，如 普通文件（<code>-</code>）、目录（<code>d</code>）、UNIX 套接字（<code>s</code>）、符号链接（<code>l</code>）、块设备（<code>b</code>）等等。接下来的三个部分依次代表 <strong>所属用户</strong>、<strong>所属用户组</strong>、<strong>其他用户</strong> 的权限，每部分由三个标志位组成：<strong>读标志位</strong>、<strong>写标志位</strong>、<strong>执行标志位</strong>。</p>
-<h1 id="目录的权限"><a href="#目录的权限" class="headerlink" title="目录的权限"></a>目录的权限</h1><p>目录是一种特殊的文件，因此也拥有文件权限的概念，但权限的语义与普通文件稍有差异：</p>
-<ul>
-<li>读：读取目录下文件列表，相关命令如 <code>ls</code></li>
-<li>写：创建、删除目录下的文件，相关命令如 <code>touch</code>（当文件不存在时）、<code>rm</code> 等</li>
-<li>执行：进入目录，相关命令如 <code>cd</code></li>
-</ul>
-<h1 id="特殊权限"><a href="#特殊权限" class="headerlink" title="特殊权限"></a>特殊权限</h1><p>出于某些特殊目的，Linux 中存在两个特殊的权限位：粘滞位（<code>t</code>）、Set Id（<code>s</code>）。这两个权限可以 <strong>叠加</strong> 在执行权限位上，其中 Set Id 可以置于 <strong>所属用户</strong> 和 <strong>所属用户组</strong> 的权限组上，而 粘滞位 只能置于 <strong>其他用户</strong> 权限组上。当特殊权限被设置时，执行权限位上即会显示 <code>s/t</code> （已有 <code>x</code> 权限）或 <code>S/T</code> （尚未有 <code>x</code> 权限）。</p>
-<h2 id="粘滞位"><a href="#粘滞位" class="headerlink" title="粘滞位"></a>粘滞位</h2><p>粘滞位的作用是 <strong>防止他人误删自己的文件</strong>。当某个目录的其他用户权限组有 <code>w</code> 权限时，系统中的其他用户即可随意删除目录中的文件。而一旦叠加上 <code>t</code> 权限，只有文件的所有者方能删除文件。一个经典的例子是 <code>/tmp</code>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ ls <span class="_">-l</span> /</div><div class="line">drwxrwxrwt  13 root root 12288 Jul  4 00:15 tmp/</div></pre></td></tr></table></figure>
-<h2 id="Set-Id"><a href="#Set-Id" class="headerlink" title="Set Id"></a>Set Id</h2><p>Linux 中的进程也有自己所属用户与用户组。一般而言，进程的所属用户即为其发起者，但这会引起一些麻烦。一个例子是 <code>passwd</code> 命令，该命令需要修改属于 <code>root</code> 用户的系统文件以保存密码，倘若进程所属用户即为所属者，此功能则无法实现。</p>
-<p>Set Id 权限的作用是：在文件被执行时，将其有效用户/用户组设置为文件的用户/用户组，而不是当前执行者。下面是一个演示：</p>
-<p>设当前用户为 <code>hsfzxjy</code>，我们在 <code>/tmp</code> 下创建一个 <code>test</code> 文件，并删去其他用户的 <code>r</code> 权限：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> /tmp</div><div class="line">$ <span class="built_in">echo</span> <span class="built_in">test</span> text &gt; <span class="built_in">test</span></div><div class="line">$ chmod o-r <span class="built_in">test</span></div><div class="line">$ ll <span class="built_in">test</span></div><div class="line">-rw-rw---- 1 hsfzxjy hsfzxjy 0 Jul  4 00:28 <span class="built_in">test</span></div></pre></td></tr></table></figure>
-<p>由于 <code>test</code> 文件的所属用户是 <code>hsfzxjy</code>，其他用户没有权限读取其中的内容：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ sudo -u mysql cat <span class="built_in">test</span></div><div class="line">cat: <span class="built_in">test</span>: Permission denied</div></pre></td></tr></table></figure>
-<p>现在我们修改一下 <code>cat</code> 命令的权限，为了不影响系统文件，我们拷贝一份 <code>cat</code> 副本至当前目录：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ cp /bin/cat .</div><div class="line">$ chmod u+s cat</div><div class="line">$ ll cat</div><div class="line">-rwsr-xr-x 1 hsfzxjy hsfzxjy 52080 Jul  4 00:34 cat*</div></pre></td></tr></table></figure>
-<p>再以 <code>mysql</code> 的身份执行命令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ sudo -u mysql ./cat <span class="built_in">test</span></div><div class="line"><span class="built_in">test</span> text</div></pre></td></tr></table></figure>
-<p>可见 <code>./cat</code> 在执行时所属用户是 <code>hsfzxjy</code>。我们可以使用 <code>ps</code> 命令更清楚地看到这点：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">$ sudo -u mysql cat</div><div class="line"><span class="comment"># 在另一个终端中</span></div><div class="line">$ ps -eo euser,ruser,comm | grep cat</div><div class="line">mysql    mysql    cat</div><div class="line"></div><div class="line"><span class="comment"># -----------</span></div><div class="line"></div><div class="line">$ sudo -u mysql ./cat</div><div class="line"><span class="comment"># 在另一个终端中</span></div><div class="line">$ ps -eo euser,ruser,comm | grep cat</div><div class="line">hsfzxjy  mysql    cat</div></pre></td></tr></table></figure>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;概念&quot;&gt;&lt;a href=&quot;#概念&quot; class=&quot;headerlink&quot; title=&quot;概念&quot;&gt;&lt;/a&gt;概念&lt;/h1&gt;&lt;p&gt;Linux 中的每一个文件都有其 &lt;strong&gt;所属用户&lt;/strong&gt; 及 &lt;strong&gt;所属用户组&lt;/strong&gt;，根据这两个属
-    
-    </summary>
-    
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
-    
-    
-      <category term="Linux" scheme="http://blog.hsfzxjy.site/tags/Linux/"/>
-    
-      <category term="File Permissions" scheme="http://blog.hsfzxjy.site/tags/File-Permissions/"/>
     
   </entry>
   
