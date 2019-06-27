@@ -5,7 +5,8 @@
 <blockquote>
 <p><strong>当$a_i, b_i$从小到大排序时，距离最小。</strong></p>
 </blockquote>
-<p>这是一个重要的信息。因此，我们只需把$a_i,b_i$进行排序，并把对应项“捆绑”成一项，再按$a_i$原有的顺序进行复原，此时，可以得到由%b_i$原先的下标组成的一个序列。也就是说，我们要求$1,2,\ldots,n$至少经过多少步才能变为该序列。这可以用逆序对来解决。<br>只可惜，传统的逆序对算法时间复杂度为$O(n^2)$，这里n可达20,0000，一定会超时（<strong>事实上，只过了70%的点</strong>）。因此我们需寻求更好的算法。</p>
+<p>这是一个重要的信息。因此，我们只需把$a_i,b_i$进行排序，并把对应项“捆绑”成一项，再按$a_i$原有的顺序进行复原，此时，可以得到由%b_i$原先的下标组成的一个序列。也就是说，我们要求$1,2,\ldots,n$至少经过多少步才能变为该序列。这可以用逆序对来解决。
+只可惜，传统的逆序对算法时间复杂度为$O(n^2)$，这里n可达20,0000，一定会超时（<strong>事实上，只过了70%的点</strong>）。因此我们需寻求更好的算法。</p>
 <h2 id="用归并排序求逆序对"><a href="#用归并排序求逆序对" class="headerlink" title="用归并排序求逆序对"></a><strong>用归并排序求逆序对</strong></h2><p>在归并排序的过程中，有一个步骤称为合并。在这个步骤中，需要轮流判断左右区间的第一个数的大小关系。注意到：<strong>左右区间已经有序，从而若左区间的第一个数大于右区间的第一个数，则左区间之后的所有数都大于右区间的第一个数</strong>，从而我们可以在合并时做一些修改：</p>
 <pre><code>procedure nx(l, r: longint);
 var
@@ -143,168 +144,22 @@ end.
 </code></pre></div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-25-noip2011-day2-coefficient-calculate/">NOIP2011 Day2 计算系数：快速求组合数</a></h2><div class="post-meta">2014-10-25</div><span data-disqus-identifier="2014-10-25-noip2011-day2-coefficient-calculate/" class="disqus-comment-count"></span><div class="post-content"><h2 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a><strong>题目大意</strong></h2><blockquote>
 <p>输入a, b, k, n, m，计算$a^n\times b^m\times C_k^n$模10007的余数。</p>
 </blockquote>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>对于幂数的计算并不难，关键在于对组合数$C<em>n^k$的计算。<br>通常来说，组合数的计算一般是这样的：<script type="math/tex">C_n^k=\frac{n}{k}\times\frac{n-1}{k-1}\times\ldots\times\frac{n-k+1}{1}</script> 这对于单精度的计算来说是十分快捷的，但如果要对结果取模的话就不起作用了——<strong>取模运算对于除法不成立</strong>。因此只能另辟蹊径了。<br>注意到<strong>加减乘法对于取模都是成立的</strong>，从而想到：能否将组合数转化成加法？<br>自然而然，想到了组合恒等式：$$C_n^k=C</em>{n-1}^{k}+C_{n-1}^{k-1}$$ 思路到此完成。</p>
-<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a><strong>Code</strong></h2><pre><code>const
-    modn = 10007;
-var
-    a, b, k, m, n: longint;
-    map: array[0..1000,0..1000] of int64; //缓存
-//快速幂
-function power(a, x: longint): int64;
-var
-    t: longint;
-begin
-    if x = 1 then
-        exit(a);
-    if x = 0 then
-        exit(1);
-    t := power(a, x shr 1);
-    power := t * t mod modn;
-    if odd(x) then
-        power := power * a mod modn;
-end;
-//快速组合数
-function C(n, k: longint): int64;
-begin
-    if map[n, k] &gt; 0 then
-        exit(map[n, k]);
-    if (n &lt;= k) or (k = 0) then
-        C := 1
-    else if k = 1 then
-        C := n
-    else
-        C := (C(n-1, k)+C(n-1, k-1)) mod modn;
-    map[n, k] := C;
-end;
-
-var
-    t: longint;
-    ans: int64;
-
-begin
-    assign(input, &#39;main.in&#39;); reset(input);
-    assign(output, &#39;main.out&#39;); rewrite(output);
-
-    readln(a, b, k, n, m);
-    a := a mod modn;
-    b := b mod modn;
-    ans := power(a, n);
-    ans := ans * power(b, m) mod modn;
-    //C(k,n)与C(k,m)是等效的，计算较小者即可
-    if n &gt; m then n := m;
-    ans := ans * C(k, n) mod modn;
-    writeln(ans);
-
-    close(input); close(output);
-end.
-</code></pre></div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-24-uva1647-computer-transformation/">UVa1647 Computer Transformation</a></h2><div class="post-meta">2014-10-24</div><span data-disqus-identifier="2014-10-24-uva1647-computer-transformation/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>对于幂数的计算并不难，关键在于对组合数$C_n^k$的计算。<br>通常来说，组合数的计算一般是这样的：$$C_n^k=\frac{n}{k}\times\frac{n-1}{k-1}\times\ldots\times\frac{n-k+1}{1}$$ 这对于单精度的计算来说是十分快捷的，但如果要对结果取模的话就不起作用了——<strong>取模运算对于除法不成立</strong>。因此只能另辟蹊径了。<br>注意到<strong>加减乘法对于取模都是成立的</strong>，从而想到：能否将组合数转化成加法？<br>自然而然，想到了组合恒等式：$$C_n^k=C_{n-1}^{k}+C_{n-1}^{k-1}$$ 思路到此完成。</p>
+<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a><strong>Code</strong></h2><figure class="highlight pascal"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span></div><div class="line">    modn = <span class="number">10007</span>;</div><div class="line"><span class="keyword">var</span></div><div class="line">    a, b, k, m, n: longint;</div><div class="line">    map: <span class="keyword">array</span>[<span class="number">0</span>..<span class="number">1000</span>,<span class="number">0</span>..<span class="number">1000</span>] <span class="keyword">of</span> int64; <span class="comment">//缓存</span></div><div class="line"><span class="comment">//快速幂</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">power</span><span class="params">(a, x: longint)</span>:</span> int64;</div><div class="line"><span class="keyword">var</span></div><div class="line">    t: longint;</div><div class="line"><span class="keyword">begin</span></div><div class="line">    <span class="keyword">if</span> x = <span class="number">1</span> <span class="keyword">then</span></div><div class="line">        <span class="keyword">exit</span>(a);</div><div class="line">    <span class="keyword">if</span> x = <span class="number">0</span> <span class="keyword">then</span></div><div class="line">        <span class="keyword">exit</span>(<span class="number">1</span>);</div><div class="line">    t := power(a, x <span class="keyword">shr</span> <span class="number">1</span>);</div><div class="line">    power := t * t <span class="keyword">mod</span> modn;</div><div class="line">    <span class="keyword">if</span> odd(x) <span class="keyword">then</span></div><div class="line">        power := power * a <span class="keyword">mod</span> modn;</div><div class="line"><span class="keyword">end</span>;</div><div class="line"><span class="comment">//快速组合数</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">C</span><span class="params">(n, k: longint)</span>:</span> int64;</div><div class="line"><span class="keyword">begin</span></div><div class="line">    <span class="keyword">if</span> map[n, k] &gt; <span class="number">0</span> <span class="keyword">then</span></div><div class="line">        <span class="keyword">exit</span>(map[n, k]);</div><div class="line">    <span class="keyword">if</span> (n &lt;= k) <span class="keyword">or</span> (k = <span class="number">0</span>) <span class="keyword">then</span></div><div class="line">        C := <span class="number">1</span></div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> k = <span class="number">1</span> <span class="keyword">then</span></div><div class="line">        C := n</div><div class="line">    <span class="keyword">else</span></div><div class="line">        C := (C(n-<span class="number">1</span>, k)+C(n-<span class="number">1</span>, k-<span class="number">1</span>)) <span class="keyword">mod</span> modn;</div><div class="line">    map[n, k] := C;</div><div class="line"><span class="keyword">end</span>;</div><div class="line"></div><div class="line"><span class="keyword">var</span></div><div class="line">    t: longint;</div><div class="line">    ans: int64;</div><div class="line"></div><div class="line"><span class="keyword">begin</span></div><div class="line">    assign(input, <span class="string">'main.in'</span>); reset(input);</div><div class="line">    assign(output, <span class="string">'main.out'</span>); rewrite(output);</div><div class="line"></div><div class="line">    readln(a, b, k, n, m);</div><div class="line">    a := a <span class="keyword">mod</span> modn;</div><div class="line">    b := b <span class="keyword">mod</span> modn;</div><div class="line">    ans := power(a, n);</div><div class="line">    ans := ans * power(b, m) <span class="keyword">mod</span> modn;</div><div class="line">    <span class="comment">//C(k,n)与C(k,m)是等效的，计算较小者即可</span></div><div class="line">    <span class="keyword">if</span> n &gt; m <span class="keyword">then</span> n := m;</div><div class="line">    ans := ans * C(k, n) <span class="keyword">mod</span> modn;</div><div class="line">    writeln(ans);</div><div class="line"></div><div class="line">    close(input); close(output);</div><div class="line"><span class="keyword">end</span>.</div></pre></td></tr></table></figure>
+</div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-24-uva1647-computer-transformation/">UVa1647 Computer Transformation</a></h2><div class="post-meta">2014-10-24</div><span data-disqus-identifier="2014-10-24-uva1647-computer-transformation/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
 <p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;category=825&amp;page=show_problem&amp;problem=4522" target="_blank" rel="noopener">Link</a> 耗时：0.679s</p>
 </blockquote>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>本质上，这是一道求数列通项的题目。我们列出前几个字符串：</p>
-<script type="math/tex; mode=display">01,</script><script type="math/tex; mode=display">1001,</script><script type="math/tex; mode=display">01101001,</script><script type="math/tex; mode=display">1001011001101001,</script><script type="math/tex; mode=display">\ldots</script><p>如果用$S_i$表示第i个字符串中“00”的个数，则有：</p>
-<script type="math/tex; mode=display">S_1=0,\ S_2=1,\ S_3=1,\ S_4=3,\ S_5=5,\ S_6=11,\ldots</script><p>经过观察可以发现有如下规律：</p>
-<script type="math/tex; mode=display">S_n=2\times S_{n-1}+{(-1)}^n</script><p>求通项就简单了，换个元即可：</p>
-<script type="math/tex; mode=display">S_n=\frac{1}{3}[{(-1)}^n+2^{n-1}]</script><p>程序采用高精度实现。</p>
-<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a><strong>Code</strong></h2><pre><code>const
-    JINDU = 100000;
-var
-    n: Integer;
-//在数字前补0
-procedure PrintANumber(x: longint);
-var
-    t: longint;
-begin
-    if x = 0 then
-        write(&#39;00000&#39;)
-    else
-    begin
-        t := JINDU;
-        while t &gt; x * 10 do
-        begin
-            write(0);
-            t := t div 10;
-        end;
-        write(x);
-    end;
-end;
-
-var
-    ans: array [1..300] of longint;
-    len, i: integer;
-//计算2^(n-1)
-procedure calc2;
-var
-    i, x, t, mul: longint;
-begin
-    len := 1;
-    ans[1] := 1;
-    t := n-1;
-    while t &gt; 0 do
-    begin
-        if t &lt; 6 then
-            mul := 1 &lt;&lt; t
-        else
-            mul := 64;
-        x := 0;
-        for i := 1 to len do
-        begin
-            ans[i] := ans[i] * mul + x;
-            x := ans[i] div JINDU;
-            ans[i] := ans[i] mod JINDU;
-        end;
-        if x &gt; 0 then
-        begin
-            inc(len);
-            ans[len] := x;
-        end;
-        dec(t, 6);
-    end;
-end;
-//除以3
-procedure div3;
-var
-    i, x, t: longint;
-begin
-    i := len;
-    x := 0;
-    while i &gt; 0 do
-    begin
-        t := (x * JINDU + ans[i]);
-        ans[i] := t div 3;
-        x := t mod 3;
-        dec(i);
-    end;
-    while ans[len] = 0 do dec(len);
-end;
-
-begin
-    assign(input, &#39;main.in&#39;); reset(input);
-    assign(output, &#39;main.out&#39;); rewrite(output);
-
-    while not eof do
-    begin
-        readln(n);
-        if n=1 then   //特殊情况处理
-        begin
-            writeln(0);
-            continue;
-        end;
-        fillchar(ans, sizeof(ans), 0);
-        calc2;
-        if odd(n) then
-            dec(ans[1])
-        else
-            inc(ans[1]);
-        div3;
-        write(ans[len]);
-        for i := len-1 downto 1 do
-            PrintANumber(ans[i]);
-        writeln;
-    end;
-
-    close(input); close(output);
-end.
-</code></pre></div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-23-sublime-configuration-for-pascal/">Sublime configuration for Pascal</a></h2><div class="post-meta">2014-10-23</div><span data-disqus-identifier="2014-10-23-sublime-configuration-for-pascal/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
+<p>$$01,$$</p>
+<p>$$1001,$$</p>
+<p>$$01101001,$$</p>
+<p>$$1001011001101001,$$</p>
+<p>$$\ldots$$<br>如果用$S_i$表示第i个字符串中“00”的个数，则有：</p>
+<p>$$S_1=0,\ S_2=1,\ S_3=1,\ S_4=3,\ S_5=5,\ S_6=11,\ldots$$<br>经过观察可以发现有如下规律：</p>
+<p>$$S_n=2\times S_{n-1}+{(-1)}^n$$<br>求通项就简单了，换个元即可：</p>
+<p>$$S_n=\frac{1}{3}[{(-1)}^n+2^{n-1}]$$<br>程序采用高精度实现。</p>
+<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a><strong>Code</strong></h2><figure class="highlight pascal"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span></div><div class="line">    JINDU = <span class="number">100000</span>;</div><div class="line"><span class="keyword">var</span></div><div class="line">    n: Integer;</div><div class="line"><span class="comment">//在数字前补0</span></div><div class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">PrintANumber</span><span class="params">(x: longint)</span>;</span></div><div class="line"><span class="keyword">var</span></div><div class="line">    t: longint;</div><div class="line"><span class="keyword">begin</span></div><div class="line">    <span class="keyword">if</span> x = <span class="number">0</span> <span class="keyword">then</span></div><div class="line">        <span class="keyword">write</span>(<span class="string">'00000'</span>)</div><div class="line">    <span class="keyword">else</span></div><div class="line">    <span class="keyword">begin</span></div><div class="line">        t := JINDU;</div><div class="line">        <span class="keyword">while</span> t &gt; x * <span class="number">10</span> <span class="keyword">do</span></div><div class="line">        <span class="keyword">begin</span></div><div class="line">            <span class="keyword">write</span>(<span class="number">0</span>);</div><div class="line">            t := t <span class="keyword">div</span> <span class="number">10</span>;</div><div class="line">        <span class="keyword">end</span>;</div><div class="line">        <span class="keyword">write</span>(x);</div><div class="line">    <span class="keyword">end</span>;</div><div class="line"><span class="keyword">end</span>;</div><div class="line"></div><div class="line"><span class="keyword">var</span></div><div class="line">    ans: <span class="keyword">array</span> [<span class="number">1</span>..<span class="number">300</span>] <span class="keyword">of</span> longint;</div><div class="line">    len, i: integer;</div><div class="line"><span class="comment">//计算2^(n-1)</span></div><div class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">calc2</span>;</span></div><div class="line"><span class="keyword">var</span></div><div class="line">    i, x, t, mul: longint;</div><div class="line"><span class="keyword">begin</span></div><div class="line">    len := <span class="number">1</span>;</div><div class="line">    ans[<span class="number">1</span>] := <span class="number">1</span>;</div><div class="line">    t := n-<span class="number">1</span>;</div><div class="line">    <span class="keyword">while</span> t &gt; <span class="number">0</span> <span class="keyword">do</span></div><div class="line">    <span class="keyword">begin</span></div><div class="line">        <span class="keyword">if</span> t &lt; <span class="number">6</span> <span class="keyword">then</span></div><div class="line">            mul := <span class="number">1</span> &lt;&lt; t</div><div class="line">        <span class="keyword">else</span></div><div class="line">            mul := <span class="number">64</span>;</div><div class="line">        x := <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> len <span class="keyword">do</span></div><div class="line">        <span class="keyword">begin</span></div><div class="line">            ans[i] := ans[i] * mul + x;</div><div class="line">            x := ans[i] <span class="keyword">div</span> JINDU;</div><div class="line">            ans[i] := ans[i] <span class="keyword">mod</span> JINDU;</div><div class="line">        <span class="keyword">end</span>;</div><div class="line">        <span class="keyword">if</span> x &gt; <span class="number">0</span> <span class="keyword">then</span></div><div class="line">        <span class="keyword">begin</span></div><div class="line">            inc(len);</div><div class="line">            ans[len] := x;</div><div class="line">        <span class="keyword">end</span>;</div><div class="line">        dec(t, <span class="number">6</span>);</div><div class="line">    <span class="keyword">end</span>;</div><div class="line"><span class="keyword">end</span>;</div><div class="line"><span class="comment">//除以3</span></div><div class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">div3</span>;</span></div><div class="line"><span class="keyword">var</span></div><div class="line">    i, x, t: longint;</div><div class="line"><span class="keyword">begin</span></div><div class="line">    i := len;</div><div class="line">    x := <span class="number">0</span>;</div><div class="line">    <span class="keyword">while</span> i &gt; <span class="number">0</span> <span class="keyword">do</span></div><div class="line">    <span class="keyword">begin</span></div><div class="line">        t := (x * JINDU + ans[i]);</div><div class="line">        ans[i] := t <span class="keyword">div</span> <span class="number">3</span>;</div><div class="line">        x := t <span class="keyword">mod</span> <span class="number">3</span>;</div><div class="line">        dec(i);</div><div class="line">    <span class="keyword">end</span>;</div><div class="line">    <span class="keyword">while</span> ans[len] = <span class="number">0</span> <span class="keyword">do</span> dec(len);</div><div class="line"><span class="keyword">end</span>;</div><div class="line"></div><div class="line"><span class="keyword">begin</span></div><div class="line">    assign(input, <span class="string">'main.in'</span>); reset(input);</div><div class="line">    assign(output, <span class="string">'main.out'</span>); rewrite(output);</div><div class="line"></div><div class="line">    <span class="keyword">while</span> <span class="keyword">not</span> eof <span class="keyword">do</span></div><div class="line">    <span class="keyword">begin</span></div><div class="line">        readln(n);</div><div class="line">        <span class="keyword">if</span> n=<span class="number">1</span> <span class="keyword">then</span>   <span class="comment">//特殊情况处理</span></div><div class="line">        <span class="keyword">begin</span></div><div class="line">            writeln(<span class="number">0</span>);</div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">        <span class="keyword">end</span>;</div><div class="line">        fillchar(ans, sizeof(ans), <span class="number">0</span>);</div><div class="line">        calc2;</div><div class="line">        <span class="keyword">if</span> odd(n) <span class="keyword">then</span></div><div class="line">            dec(ans[<span class="number">1</span>])</div><div class="line">        <span class="keyword">else</span></div><div class="line">            inc(ans[<span class="number">1</span>]);</div><div class="line">        div3;</div><div class="line">        <span class="keyword">write</span>(ans[len]);</div><div class="line">        <span class="keyword">for</span> i := len-<span class="number">1</span> <span class="keyword">downto</span> <span class="number">1</span> <span class="keyword">do</span></div><div class="line">            PrintANumber(ans[i]);</div><div class="line">        writeln;</div><div class="line">    <span class="keyword">end</span>;</div><div class="line"></div><div class="line">    close(input); close(output);</div><div class="line"><span class="keyword">end</span>.</div></pre></td></tr></table></figure>
+</div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-23-sublime-configuration-for-pascal/">Sublime configuration for Pascal</a></h2><div class="post-meta">2014-10-23</div><span data-disqus-identifier="2014-10-23-sublime-configuration-for-pascal/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
 <p>鉴于U盘中Sublime的配置常常莫名其妙地消失，在此将其记录一下。</p>
 </blockquote>
 <h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a><strong>Code</strong></h2><pre><code>{
@@ -329,44 +184,9 @@ end.
 </code></pre></div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-18-uva11526-hn/">UVa11526 H(n)</a></h2><div class="post-meta">2014-10-18</div><span data-disqus-identifier="2014-10-18-uva11526-hn/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
 <p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;page=show_problem&amp;category=27&amp;problem=2521&amp;mosmsg=Submission%20received%20with%20ID%2014374168" target="_blank" rel="noopener">Link</a> 耗时：2.232s</p>
 </blockquote>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>粗看题目，不过就是要求这样一个式子：$\sum<em>{i=1}^n{[\frac{n}{i}]}$的值。但<strong>注意到</strong>：题目给的数据范围极大，有$2^{31}-1$之多，若遍历计算，则时间复杂度为$O(n)$，将严重超时，不可取。<br>而事实上，通过尝试我们可以发现：$\sum</em>{i=1}^{n}{[\frac{n}{i}]}=2*\sum<em>{i=1}^{\sqrt n}{[\frac{n}{i}]}-{[\sqrt n]}^2$，这是一个重要的结论。因为这条式子一旦成立，时间复杂度即可从$O(n)$降为$O(\sqrt n)$，这是一个极为可观的改善。下面我们来证明一下这个结论：<br>事实上，$$\sum</em>{i=[{\sqrt n}]+1}^{n}{[\frac{n}{i}]}<script type="math/tex">$$=1\times(n-[\frac{n}{2}])+2\times([\frac{n}{2}]-[\frac{n}{3}])+\ldots+[\sqrt{n}]\times([\frac{n}{\sqrt{n}}]-{[\frac{n}{\sqrt n}+1]})</script> <script type="math/tex">=n+[\frac{n}{2}]+[\frac{n}{3}]+\ldots+[\frac{n}{\sqrt n}]-[\sqrt n]\times[\frac{n}{[\sqrt n]+1}]</script> <script type="math/tex">=\sum_{i=1}^{[\sqrt n]}{[\frac{n}{i}]}-{[\sqrt n]}^2</script> 从而，命题得证。</p>
-<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a><strong>Code</strong></h2><pre><code>var
-    n, _, i: longint;
-
-function h: int64; inline;
-var
-    k, t: longint;
-begin
-    h := 0;
-    t := trunc(sqrt(n));
-    k := 1;
-    while k &lt;=t do
-    begin
-        h := h + n div k;
-        inc(k);
-    end;
-    h := h * 2 - t * t;
-end;
-
-begin
-    assign(input, &#39;main.in&#39;); reset(input);
-    assign(output, &#39;main.out&#39;); rewrite(output);
-
-    readln(_);
-    while _ &gt; 0 do
-    begin
-        dec(_);
-        readln(n);
-        if n &lt;= 0 then
-            writeln(0)
-        else
-            writeln(h);
-    end;
-
-    close(input);
-    close(output);
-end.
-</code></pre></div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-17-uva817-according-to-bartjens/">UVa817 According to Bartjens</a></h2><div class="post-meta">2014-10-17</div><span data-disqus-identifier="2014-10-17-uva817-according-to-bartjens/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>粗看题目，不过就是要求这样一个式子：$\sum_{i=1}^n{[\frac{n}{i}]}$的值。但<strong>注意到</strong>：题目给的数据范围极大，有$2^{31}-1$之多，若遍历计算，则时间复杂度为$O(n)$，将严重超时，不可取。<br>而事实上，通过尝试我们可以发现：$\sum_{i=1}^{n}{[\frac{n}{i}]}=2*\sum_{i=1}^{\sqrt n}{[\frac{n}{i}]}-{[\sqrt n]}^2$，这是一个重要的结论。因为这条式子一旦成立，时间复杂度即可从$O(n)$降为$O(\sqrt n)$，这是一个极为可观的改善。下面我们来证明一下这个结论：<br>事实上，$$\sum_{i=[{\sqrt n}]+1}^{n}{[\frac{n}{i}]}$$ $$=1\times(n-[\frac{n}{2}])+2\times([\frac{n}{2}]-[\frac{n}{3}])+\ldots+[\sqrt{n}]\times([\frac{n}{\sqrt{n}}]-{[\frac{n}{\sqrt n}+1]})$$ $$=n+[\frac{n}{2}]+[\frac{n}{3}]+\ldots+[\frac{n}{\sqrt n}]-[\sqrt n]\times[\frac{n}{[\sqrt n]+1}]$$ $$=\sum_{i=1}^{[\sqrt n]}{[\frac{n}{i}]}-{[\sqrt n]}^2$$ 从而，命题得证。</p>
+<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a><strong>Code</strong></h2><figure class="highlight pascal"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span></div><div class="line">    n, _, i: longint;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">h</span>:</span> int64; <span class="keyword">inline</span>;</div><div class="line"><span class="keyword">var</span></div><div class="line">    k, t: longint;</div><div class="line"><span class="keyword">begin</span></div><div class="line">    h := <span class="number">0</span>;</div><div class="line">    t := trunc(sqrt(n));</div><div class="line">    k := <span class="number">1</span>;</div><div class="line">    <span class="keyword">while</span> k &lt;=t <span class="keyword">do</span></div><div class="line">    <span class="keyword">begin</span></div><div class="line">        h := h + n <span class="keyword">div</span> k;</div><div class="line">        inc(k);</div><div class="line">    <span class="keyword">end</span>;</div><div class="line">    h := h * <span class="number">2</span> - t * t;</div><div class="line"><span class="keyword">end</span>;</div><div class="line"></div><div class="line"><span class="keyword">begin</span></div><div class="line">    assign(input, <span class="string">'main.in'</span>); reset(input);</div><div class="line">    assign(output, <span class="string">'main.out'</span>); rewrite(output);</div><div class="line"></div><div class="line">    readln(_);</div><div class="line">    <span class="keyword">while</span> _ &gt; <span class="number">0</span> <span class="keyword">do</span></div><div class="line">    <span class="keyword">begin</span></div><div class="line">        dec(_);</div><div class="line">        readln(n);</div><div class="line">        <span class="keyword">if</span> n &lt;= <span class="number">0</span> <span class="keyword">then</span></div><div class="line">            writeln(<span class="number">0</span>)</div><div class="line">        <span class="keyword">else</span></div><div class="line">            writeln(h);</div><div class="line">    <span class="keyword">end</span>;</div><div class="line"></div><div class="line">    close(input);</div><div class="line">    close(output);</div><div class="line"><span class="keyword">end</span>.</div></pre></td></tr></table></figure>
+</div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-17-uva817-according-to-bartjens/">UVa817 According to Bartjens</a></h2><div class="post-meta">2014-10-17</div><span data-disqus-identifier="2014-10-17-uva817-according-to-bartjens/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
 <p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;page=show_problem&amp;category=10&amp;problem=758&amp;mosmsg=Submission%20received%20with%20ID%2014367065" target="_blank" rel="noopener">Link</a> 状态：<strong>WA</strong></p>
 </blockquote>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>做了两个小时，很可惜最终还是WA了。非常奇怪——和网上的C++代码运行结果完全一样，但却WA了。不过，在这里我还是记录一下解题的过程。<br>这道题数据量很小，直接爆搜每个空位，用*, +, -, #0来代表符号或不填。</p>
@@ -581,62 +401,7 @@ begin
 
     close(input); close(output);
 end.
-</code></pre></div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-08-noip-senior-knowlegdes/">NOIP初赛基础知识</a></h2><div class="post-meta">2014-10-08</div><span data-disqus-identifier="2014-10-08-noip-senior-knowlegdes/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
-<p>从今天起至10月11日，持续连载。</p>
-</blockquote>
-<h2 id="关于计算机"><a href="#关于计算机" class="headerlink" title="关于计算机"></a><strong>关于计算机</strong></h2><h3 id="ENIAC"><a href="#ENIAC" class="headerlink" title="ENIAC"></a><strong>ENIAC</strong></h3><ul>
-<li>出现于<strong>1946年</strong>。</li>
-<li>是<strong>最早</strong>的计算机。</li>
-<li>是<strong>电子管</strong>计算机。</li>
-</ul>
-<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a><strong>其他</strong></h3><ul>
-<li><strong>阶码</strong>，即浮点数的指数部分。</li>
-<li><strong>IPv6是128位的。</strong></li>
-<li>求补码：二进制下：<strong>各位取反再加1</strong> 或 <strong>把原码减1再取反</strong>。</li>
-</ul>
-<h2 id="关于算法"><a href="#关于算法" class="headerlink" title="关于算法"></a><strong>关于算法</strong></h2><h3 id="各种排序的时间复杂度"><a href="#各种排序的时间复杂度" class="headerlink" title="各种排序的时间复杂度"></a><strong>各种排序的时间复杂度</strong></h3><ul>
-<li>快速排序：$O(nlogn)$，最坏为$O(n^2)$。</li>
-<li>冒泡排序：$O(n^2)$。</li>
-<li>归并排序：$O(nlogn)$。</li>
-<li>计数排序：$O(n)$。</li>
-<li>插入排序：$O(n^2)$。</li>
-</ul>
-<h2 id="关于树"><a href="#关于树" class="headerlink" title="关于树"></a><strong>关于树</strong></h2><ul>
-<li>完全二叉树 vs 满二叉树：<strong>完全二叉树最后一层不一定满</strong>。</li>
-<li>前序遍历：<strong>中左右</strong>；中序遍历：<strong>左中右</strong>；后序遍历：<strong>左右中</strong>。</li>
-<li>节点数为n的二叉树上，有两个节点的至多有$[(n+1)/2]$个。</li>
-<li>节点数为n的完全二叉树有$log(n)$层，节点序号大于$n\ div\ 2$的为叶节点。</li>
-</ul>
-<h2 id="计算机史"><a href="#计算机史" class="headerlink" title="计算机史"></a><strong>计算机史</strong></h2><ul>
-<li>熵在<strong>1948年由克劳德·香农引入信息通信领域。</strong></li>
-</ul>
-<h2 id="杂项"><a href="#杂项" class="headerlink" title="杂项"></a><strong>杂项</strong></h2><h3 id="3G网络"><a href="#3G网络" class="headerlink" title="3G网络"></a><strong>3G网络</strong></h3><ul>
-<li>三种标准：<strong>CDMA2000、WCDMA、TD-SCDMA</strong>。</li>
-</ul>
-<h3 id="4G网络"><a href="#4G网络" class="headerlink" title="4G网络"></a><strong>4G网络</strong></h3><ul>
-<li>类别：<strong>TD-LTE和FDD-LTE</strong>。</li>
-</ul>
-<h3 id="N-NP问题"><a href="#N-NP问题" class="headerlink" title="N/NP问题"></a><strong>N/NP问题</strong></h3><ul>
-<li>P：复杂度类P包含所有那些可以由一个确定型图灵机<strong>在多项式表达的时间</strong>内解决的问题。</li>
-<li>NP：是指可以在多项式时间内被非确定机(他可以猜,他总是能猜到最能满足你需要的那种选择,如果你让他解决n皇后问题,他只要猜n次就能完成——每次都是那么幸运)解决的问题。</li>
-</ul>
-<h3 id="NOIP申诉条件（操蛋去年居然考了！）"><a href="#NOIP申诉条件（操蛋去年居然考了！）" class="headerlink" title="NOIP申诉条件（操蛋去年居然考了！）"></a><strong>NOIP申诉条件（操蛋去年居然考了！）</strong></h3><ol>
-<li>非公示期限内提出的申诉，不予受理；</li>
-<li>与个人名次、他人成绩和他人名次有关的申诉，不予受理；</li>
-<li>未通过NOI科学委员会提交的、来自非正规渠道的申诉，不予受理；</li>
-<li>因操作系统、语言环境的具体差异引起成绩变动的申诉，不予受理；</li>
-<li>对使用随机数和随机算法的程序的申诉，不予受理；</li>
-<li>发布成绩与选手使用非规范环境和数据、参数评测出的成绩不同，并因此提出的申诉，不予受理；</li>
-<li>在与标准测试环境相同的机器上，自测用时超过题目时限的5%，并由此提出的申诉，不予受理；</li>
-<li>以修改过的程序或答案为依据的申诉，不予受理；</li>
-<li>因选手错误而导致答案文件名错误，或者源文件存放目录结构不规范，且所提出的申诉与此有关的，不予受理。</li>
-<li>未描述清楚自测状况，如“与老师评测有出入”，“感觉评测结果有错”等，不予受理。</li>
-</ol>
-<h3 id="其他-1"><a href="#其他-1" class="headerlink" title="其他"></a><strong>其他</strong></h3><ul>
-<li>NOIP官网：<strong><a href="http://www.noi.cn/" target="_blank" rel="noopener">http://www.noi.cn/</a></strong>。</li>
-<li>中国互联网信息中心的缩写：<strong>CNNIC</strong>。</li>
-</ul>
-</div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-05-uva12219-common-subexpression-elimination/">UVa12219 Common Subexpression Elimination</a></h2><div class="post-meta">2014-10-05</div><span data-disqus-identifier="2014-10-05-uva12219-common-subexpression-elimination/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
+</code></pre></div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-05-uva12219-common-subexpression-elimination/">UVa12219 Common Subexpression Elimination</a></h2><div class="post-meta">2014-10-05</div><span data-disqus-identifier="2014-10-05-uva12219-common-subexpression-elimination/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
 <p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;page=show_problem&amp;problem=3371" target="_blank" rel="noopener">Link</a> 状态：<strong>Runtime Error</strong></p>
 </blockquote>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这题做的可真够久的，整整三个小时。但即便如此，还是只过了一部分的点，另一部分报运行时错误——估计是哈希表设计的不太好。但这确实是一道好题，因此，在睡觉前决定记录一下。</p>
@@ -881,7 +646,71 @@ begin
     close(input);
     close(output);
 end.
-</code></pre></div></div><div class="page-navigator"><a href="/page/6/" class="pre">Previous</a><a href="/page/8/" class="next">Next</a></div><!--if theme.disqus--><!--    script(id='dsq-count-scr' src='//#{theme.disqus}.disqus.com/count.js' async)--></div></div><div class="pure-u-1-4"><div id="sidebar"><div class="widget"><div class="widget-title">Navigations</div><ul><li><a href="/archives/" class="widget-item"><i class="icon-archives"></i><span>Archives</span></a></li><li><a href="/works/" class="widget-item"><i class="icon-works"></i><span>Masterpieces</span></a></li><li><a href="/atom.xml" class="widget-item"><i class="icon-rss"></i><span>RSS</span></a></li></ul></div><div class="widget"><div class="widget-title">Categories</div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Soliloquy/">Soliloquy</a><span class="category-list-count">21</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tech/">Tech</a><span class="category-list-count">65</span></li></ul></div><div class="widget"><div class="widget-title">Tags</div><div class="tagcloud"><a href="/tags/黑魔法/" style="font-size: 15px;">黑魔法</a> <a href="/tags/诗/" style="font-size: 15px;">诗</a> <a href="/tags/生活杂感/" style="font-size: 15px;">生活杂感</a> <a href="/tags/游记/" style="font-size: 15px;">游记</a> <a href="/tags/杂谈/" style="font-size: 15px;">杂谈</a> <a href="/tags/数论/" style="font-size: 15px;">数论</a> <a href="/tags/成人礼/" style="font-size: 15px;">成人礼</a> <a href="/tags/总结/" style="font-size: 15px;">总结</a> <a href="/tags/不经意间的感动/" style="font-size: 15px;">不经意间的感动</a> <a href="/tags/rust/" style="font-size: 15px;">rust</a> <a href="/tags/proxychains/" style="font-size: 15px;">proxychains</a> <a href="/tags/lifetime/" style="font-size: 15px;">lifetime</a> <a href="/tags/codecs/" style="font-size: 15px;">codecs</a> <a href="/tags/apt-get/" style="font-size: 15px;">apt-get</a> <a href="/tags/WiseCity/" style="font-size: 15px;">WiseCity</a> <a href="/tags/Win32/" style="font-size: 15px;">Win32</a> <a href="/tags/Web-Design/" style="font-size: 15px;">Web Design</a> <a href="/tags/Unit-Test/" style="font-size: 15px;">Unit Test</a> <a href="/tags/Ubuntu/" style="font-size: 15px;">Ubuntu</a> <a href="/tags/UVa/" style="font-size: 15px;">UVa</a> <a href="/tags/Translation/" style="font-size: 15px;">Translation</a> <a href="/tags/Sublime-Text/" style="font-size: 15px;">Sublime Text</a> <a href="/tags/String-Template/" style="font-size: 15px;">String Template</a> <a href="/tags/Search/" style="font-size: 15px;">Search</a> <a href="/tags/SS/" style="font-size: 15px;">SS</a> <a href="/tags/Regular-Expression/" style="font-size: 15px;">Regular Expression</a> <a href="/tags/Reentrancy/" style="font-size: 15px;">Reentrancy</a> <a href="/tags/RMPE/" style="font-size: 15px;">RMPE</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Pruning/" style="font-size: 15px;">Pruning</a> <a href="/tags/Pascal/" style="font-size: 15px;">Pascal</a> <a href="/tags/POSIX/" style="font-size: 15px;">POSIX</a> <a href="/tags/OOP/" style="font-size: 15px;">OOP</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/NOIP/" style="font-size: 15px;">NOIP</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/Multi-Threading/" style="font-size: 15px;">Multi-Threading</a> <a href="/tags/Meta-Classes/" style="font-size: 15px;">Meta Classes</a> <a href="/tags/Merge-Sort/" style="font-size: 15px;">Merge Sort</a> <a href="/tags/Machine-Learning/" style="font-size: 15px;">Machine Learning</a> <a href="/tags/MST/" style="font-size: 15px;">MST</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/LCA/" style="font-size: 15px;">LCA</a> <a href="/tags/JavaScript/" style="font-size: 15px;">JavaScript</a> <a href="/tags/Infinite-Recursion/" style="font-size: 15px;">Infinite Recursion</a> <a href="/tags/Haskell/" style="font-size: 15px;">Haskell</a> <a href="/tags/Generator/" style="font-size: 15px;">Generator</a> <a href="/tags/GIL/" style="font-size: 15px;">GIL</a> <a href="/tags/Front-End/" style="font-size: 15px;">Front End</a> <a href="/tags/Font/" style="font-size: 15px;">Font</a> <a href="/tags/Float-Number/" style="font-size: 15px;">Float Number</a> <a href="/tags/File-Permissions/" style="font-size: 15px;">File Permissions</a> <a href="/tags/Fast-Inverse-Square-Root-Algorithm/" style="font-size: 15px;">Fast Inverse Square Root Algorithm</a> <a href="/tags/Django-Channels/" style="font-size: 15px;">Django Channels</a> <a href="/tags/Django/" style="font-size: 15px;">Django</a> <a href="/tags/Delphi/" style="font-size: 15px;">Delphi</a> <a href="/tags/Decorator-Pattern/" style="font-size: 15px;">Decorator Pattern</a> <a href="/tags/DDos/" style="font-size: 15px;">DDos</a> <a href="/tags/Coroutine/" style="font-size: 15px;">Coroutine</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 15px;">Binary Indexed Tree</a> <a href="/tags/Automatic-Test/" style="font-size: 15px;">Automatic Test</a></div></div><div class="widget"><div class="widget-title">Recent Articles</div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019-06-26-option-as_ref/">Option::as_ref</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-06-23-rc-refcell-pattern/">Rc and RefCell tricks</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-03-10-correlation-matrix/">Visualing Correlation</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-03-10-notitle/">三月十日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-03-01-notitle/">三月一日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-02-11-notitle/">二月十一日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-01-26-notitle/">一月二十六日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-01-21-ss/">SS Configuration</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-01-07-notitle/">一月七日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-12-31-april-illness/">四月·病</a></li></ul></div><div class="widget"><div class="widget-title">Recent Comments</div><script type="text/javascript" src="//hsfzxjy.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div></div></div></div><div id="footer">© <a href="/" rel="nofollow">|| hsfzxjy ||.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></body><script src="/js/jquery.min.js"></script>
+</code></pre></div></div><div class="post"><hr/><h2 class="post-title"><a href="/2014-10-01-uva11582-colossal-fibonacci-numbers/">UVa11582 Colossal Fibonacci Numbers! &amp;&amp; 大数操作</a></h2><div class="post-meta">2014-10-01</div><span data-disqus-identifier="2014-10-01-uva11582-colossal-fibonacci-numbers/" class="disqus-comment-count"></span><div class="post-content"><blockquote>
+<p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;page=show_problem&amp;category=27&amp;problem=2629&amp;mosmsg=Submission%20received%20with%20ID%2014290914" target="_blank" rel="noopener">Link</a> 耗时：0.139s</p>
+</blockquote>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这道题的主要思路就是打表，看看Fibonacci数列模n几个一循环。但由于这题给的数太大了，从而在细节上耗了很久。在此记录一下：</p>
+<pre><code>var
+    x: qword;
+    y: longint;
+begin
+    x := 1&lt;&lt;64-1;
+    y := 100;
+    x := x mod y; //报错201
+    x := x mod qword(y); //正确
+end.
+</code></pre><h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h2><pre><code>var
+    a,b: qword;
+    _, n, i, k, cnt: longint;
+    f: array [1..1000000] of longint;
+
+function superMod(a, b: qword; m: longint): longint;
+var
+    x: qword;
+begin
+    if b = 0 then
+        exit(1);
+    x := superMod(a, b shr 1, m);
+    superMod := x * x mod m;
+    if odd(b) then
+        superMod := superMod * a mod m;
+end;
+
+begin
+    assign(input, &#39;main.in&#39;); reset(input);
+    assign(output, &#39;main.out&#39;); rewrite(output);
+    readln(_);
+    while _ &gt; 0 do
+    begin
+        dec(_);
+        readln(a, b, n);
+        if a = 0 then
+        begin
+            writeln(0);
+            continue;
+        end;
+        if n = 1 then
+        begin
+            writeln(0);
+            continue;
+        end;
+        f[1] := 1;
+        f[2] := 1;
+        cnt := 2;
+        while not ((f[cnt-1] = 1) and (f[cnt] = 0)) do
+        begin
+            inc(cnt);
+            f[cnt] := (f[cnt-1] + f[cnt-2]) mod n;
+        end;
+        //while x &gt; int64(1 &lt;&lt;60) do
+        //    x := x - int64((cnt &lt;&lt; 59));
+        a := a mod qword(cnt);
+        k := superMod(a, b, cnt);
+        writeln(f[k]);
+    end;
+    close(output); close(input);
+end.
+</code></pre></div></div><div class="page-navigator"><a href="/page/6/" class="pre">Previous</a><a href="/page/8/" class="next">Next</a></div><!--if theme.disqus--><!--    script(id='dsq-count-scr' src='//#{theme.disqus}.disqus.com/count.js' async)--></div></div><div class="pure-u-1-4"><div id="sidebar"><div class="widget"><div class="widget-title">Navigations</div><ul><li><a href="/archives/" class="widget-item"><i class="icon-archives"></i><span>Archives</span></a></li><li><a href="/works/" class="widget-item"><i class="icon-works"></i><span>Masterpieces</span></a></li><li><a href="/atom.xml" class="widget-item"><i class="icon-rss"></i><span>RSS</span></a></li></ul></div><div class="widget"><div class="widget-title">Categories</div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Soliloquy/">Soliloquy</a><span class="category-list-count">21</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tech/">Tech</a><span class="category-list-count">64</span></li></ul></div><div class="widget"><div class="widget-title">Tags</div><div class="tagcloud"><a href="/tags/黑魔法/" style="font-size: 15px;">黑魔法</a> <a href="/tags/诗/" style="font-size: 15px;">诗</a> <a href="/tags/生活杂感/" style="font-size: 15px;">生活杂感</a> <a href="/tags/游记/" style="font-size: 15px;">游记</a> <a href="/tags/杂谈/" style="font-size: 15px;">杂谈</a> <a href="/tags/数论/" style="font-size: 15px;">数论</a> <a href="/tags/成人礼/" style="font-size: 15px;">成人礼</a> <a href="/tags/总结/" style="font-size: 15px;">总结</a> <a href="/tags/不经意间的感动/" style="font-size: 15px;">不经意间的感动</a> <a href="/tags/rust/" style="font-size: 15px;">rust</a> <a href="/tags/proxychains/" style="font-size: 15px;">proxychains</a> <a href="/tags/lifetime/" style="font-size: 15px;">lifetime</a> <a href="/tags/codecs/" style="font-size: 15px;">codecs</a> <a href="/tags/apt-get/" style="font-size: 15px;">apt-get</a> <a href="/tags/WiseCity/" style="font-size: 15px;">WiseCity</a> <a href="/tags/Win32/" style="font-size: 15px;">Win32</a> <a href="/tags/Web-Design/" style="font-size: 15px;">Web Design</a> <a href="/tags/Unit-Test/" style="font-size: 15px;">Unit Test</a> <a href="/tags/Ubuntu/" style="font-size: 15px;">Ubuntu</a> <a href="/tags/UVa/" style="font-size: 15px;">UVa</a> <a href="/tags/Translation/" style="font-size: 15px;">Translation</a> <a href="/tags/Sublime-Text/" style="font-size: 15px;">Sublime Text</a> <a href="/tags/String-Template/" style="font-size: 15px;">String Template</a> <a href="/tags/Search/" style="font-size: 15px;">Search</a> <a href="/tags/SS/" style="font-size: 15px;">SS</a> <a href="/tags/Regular-Expression/" style="font-size: 15px;">Regular Expression</a> <a href="/tags/Reentrancy/" style="font-size: 15px;">Reentrancy</a> <a href="/tags/RMPE/" style="font-size: 15px;">RMPE</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Pruning/" style="font-size: 15px;">Pruning</a> <a href="/tags/Pascal/" style="font-size: 15px;">Pascal</a> <a href="/tags/POSIX/" style="font-size: 15px;">POSIX</a> <a href="/tags/OOP/" style="font-size: 15px;">OOP</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/NOIP/" style="font-size: 15px;">NOIP</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/Multi-Threading/" style="font-size: 15px;">Multi-Threading</a> <a href="/tags/Meta-Classes/" style="font-size: 15px;">Meta Classes</a> <a href="/tags/Merge-Sort/" style="font-size: 15px;">Merge Sort</a> <a href="/tags/Machine-Learning/" style="font-size: 15px;">Machine Learning</a> <a href="/tags/MST/" style="font-size: 15px;">MST</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/LCA/" style="font-size: 15px;">LCA</a> <a href="/tags/JavaScript/" style="font-size: 15px;">JavaScript</a> <a href="/tags/Infinite-Recursion/" style="font-size: 15px;">Infinite Recursion</a> <a href="/tags/Haskell/" style="font-size: 15px;">Haskell</a> <a href="/tags/Generator/" style="font-size: 15px;">Generator</a> <a href="/tags/GIL/" style="font-size: 15px;">GIL</a> <a href="/tags/Front-End/" style="font-size: 15px;">Front End</a> <a href="/tags/Font/" style="font-size: 15px;">Font</a> <a href="/tags/Float-Number/" style="font-size: 15px;">Float Number</a> <a href="/tags/File-Permissions/" style="font-size: 15px;">File Permissions</a> <a href="/tags/Fast-Inverse-Square-Root-Algorithm/" style="font-size: 15px;">Fast Inverse Square Root Algorithm</a> <a href="/tags/Django-Channels/" style="font-size: 15px;">Django Channels</a> <a href="/tags/Django/" style="font-size: 15px;">Django</a> <a href="/tags/Delphi/" style="font-size: 15px;">Delphi</a> <a href="/tags/Decorator-Pattern/" style="font-size: 15px;">Decorator Pattern</a> <a href="/tags/DDos/" style="font-size: 15px;">DDos</a> <a href="/tags/Coroutine/" style="font-size: 15px;">Coroutine</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 15px;">Binary Indexed Tree</a> <a href="/tags/Automatic-Test/" style="font-size: 15px;">Automatic Test</a></div></div><div class="widget"><div class="widget-title">Recent Articles</div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019-06-26-option-as_ref/">Option::as_ref</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-06-23-rc-refcell-pattern/">Rc and RefCell tricks</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-03-10-correlation-matrix/">Visualing Correlation</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-03-10-notitle/">三月十日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-03-01-notitle/">三月一日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-02-11-notitle/">二月十一日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-01-26-notitle/">一月二十六日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-01-21-ss/">SS Configuration</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-01-07-notitle/">一月七日杂感</a></li><li class="post-list-item"><a class="post-list-link" href="/2018-12-31-april-illness/">四月·病</a></li></ul></div><div class="widget"><div class="widget-title">Recent Comments</div><script type="text/javascript" src="//hsfzxjy.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div></div></div></div><div id="footer">© <a href="/" rel="nofollow">|| hsfzxjy ||.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></body><script src="/js/jquery.min.js"></script>
 <script src="/js/totop.js"></script>
 <script src="/js/adjust-wechat.js"></script><script src="/js/fancybox.pack.js"></script><link rel="stylesheet" href="/css/jquery.fancybox.css"><script>$(document).ready(function() {
     $('img').each(function() {
