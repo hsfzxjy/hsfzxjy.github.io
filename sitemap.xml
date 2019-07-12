@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/</loc>
+    
+    <lastmod>2019-07-02T07:05:35.383Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://blog.hsfzxjy.site/2016-08-03-uncover-the-secret-of-fast-inverse-square-root-algorithm/</loc>
     
     <lastmod>2019-06-27T06:27:43.307Z</lastmod>
@@ -89,13 +96,6 @@
     <loc>http://blog.hsfzxjy.site/2019-03-10-notitle/</loc>
     
     <lastmod>2019-06-25T01:34:31.929Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/</loc>
-    
-    <lastmod>2019-06-25T01:29:37.709Z</lastmod>
     
   </url>
   

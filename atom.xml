@@ -119,11 +119,11 @@
   </entry>
   
   <entry>
-    <title>Visualing Correlation</title>
+    <title>Visualizing Correlation</title>
     <link href="http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/"/>
     <id>http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/</id>
     <published>2019-03-09T16:00:00.000Z</published>
-    <updated>2019-06-25T01:29:37.709Z</updated>
+    <updated>2019-07-02T07:05:35.383Z</updated>
     
     <content type="html"><![CDATA[<p>Say we have a matrix <code>A</code> of shape <code>N x M</code>, which can be viewed as a collection of N vectors of shape <code>1 x M</code>. The code below gives us the correlation matrix of <code>A</code>:<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">A_corr = np.corrcoef(A)  <span class="comment"># shape: (N, N)</span></div></pre></td></tr></table></figure></p>
 <p>To visualize it, just use <code>plt.matshow(A_corr)</code>.</p>
