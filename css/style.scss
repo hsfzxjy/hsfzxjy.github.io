@@ -572,6 +572,10 @@ a:focus {
 /*<middle*/
 @media print, screen and (max-width: 767px) {
 
+    #no-comment {
+        padding: 20px 30px!important;        
+    }
+
     .post {
         .post-title {
             padding-top: 2em;
@@ -603,6 +607,13 @@ a:focus {
 
 /*<small*/
 @media print, screen and (max-width: 35.5em) {
+
+    #no-comment {
+        padding: 15px 15px!important;        
+        font-size: .7em;
+    }
+
+
     .body_container {
         padding: 0 15px;
     }
@@ -1570,4 +1581,29 @@ pre .javascript .function {
 
 .post-list-link {
     @include set-font;
+}
+
+#no-comment {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 2.5em 0;
+    padding: 20px 80px;
+    color: #555;
+    border: dashed darken($bk-color, 30%) 1px;
+    @include set-font;
+    
+    h2 {
+        text-align: center;
+    }
+
+    span {
+        display: block;
+        line-height: 1.5;
+        // text-align: center;
+    }
+
+    display: none;
+    &.show {
+        display: block;
+    }
 }

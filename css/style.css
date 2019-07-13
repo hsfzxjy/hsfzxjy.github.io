@@ -593,6 +593,9 @@ a:focus {
 /* for different pages ends*/
 /*<middle*/
 @media print, screen and (max-width: 767px) {
+  #no-comment {
+    padding: 20px 30px !important;
+  }
   .post .post-title {
     padding-top: 2em;
     text-align: center;
@@ -619,6 +622,10 @@ a:focus {
 
 /*<small*/
 @media print, screen and (max-width: 35.5em) {
+  #no-comment {
+    padding: 15px 15px !important;
+    font-size: .7em;
+  }
   .body_container {
     padding: 0 15px;
   }
@@ -1662,4 +1669,28 @@ pre .javascript .function {
 
 .post-list-link {
   font-family: "LatoWeb", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
+}
+
+#no-comment {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 2.5em 0;
+  padding: 20px 80px;
+  color: #555;
+  border: dashed #aaaaaa 1px;
+  font-family: "LatoWeb", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
+  display: none;
+}
+
+#no-comment h2 {
+  text-align: center;
+}
+
+#no-comment span {
+  display: block;
+  line-height: 1.5;
+}
+
+#no-comment.show {
+  display: block;
 }
