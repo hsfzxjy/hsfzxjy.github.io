@@ -53,7 +53,7 @@
 <p>至此一个键盘监听器就写好了（详细参考CSDN资源：4428899）</p>
 <h2 id="0x03-后记"><a href="#0x03-后记" class="headerlink" title="0x03 后记"></a>0x03 后记</h2><p>但是，这个程序还有一点缺陷，就是不能跨用户监听，即如果一台电脑中有多个用户，则用户A的监听器监听不到用户B的按键消息。</p>
 <p>我研究过，用户的实质是多个Desktop（即窗口工作站）同时运行（这也是虚拟桌面的工作原理）。我曾试图用CreateProcess()这个API将一个进程跨用户注入到另一个用户的空间中，虽说成功了，但一旦用户切换用户，所有的钩子都将停止，这也令我很苦恼，如果有兴趣的也可以研究一下。</p>
-</div><div class="tags"><a href="/tags/Delphi/">Delphi</a><a href="/tags/Win32/">Win32</a></div><div class="post-nav"><a href="/2013-01-13-sigh-for-house-moving/" class="pre">«搬家有感</a><a href="/2012-09-29-impression-for-delphi-OOP/" class="next">学习Delphi面向对象编程的一点心得»</a></div><div id="disqus_thread"><div id="no-comment"> <h2>OOPS! </h2><span>A comment box should be right here...</span><span>But it was gone due to connection issues :-(</span><span>If you want to leave comments, make sure you have access to <a href="https://disqus.com">disqus.com</a>.</span></div><script>var disqus_shortname = 'hsfzxjy';
+</div><div class="tags"><a href="/tags/Delphi/">Delphi</a><a href="/tags/Win32/">Win32</a></div><div class="post-nav"><a href="/2013-01-13-sigh-for-house-moving/" class="pre">«搬家有感</a><a href="/2012-09-29-impression-for-delphi-OOP/" class="next">学习Delphi面向对象编程的一点心得»</a></div><div id="disqus_thread"><div id="no-comment"> <h2>OOPS! </h2><span>A comment box should be right here...</span><span>But it was gone due to network issues :-(</span><span>If you want to leave comments, make sure you have access to <a href="https://disqus.com">disqus.com</a>.</span></div><script>var disqus_shortname = 'hsfzxjy';
 var disqus_identifier = '2012-09-29-sharing-a-keyboard-hook-in-delphi/';
 var disqus_title = '一个键盘钩子的写法，很实用';
 var disqus_url = 'http://blog.hsfzxjy.site/2012-09-29-sharing-a-keyboard-hook-in-delphi/';
