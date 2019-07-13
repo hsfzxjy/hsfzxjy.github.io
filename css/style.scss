@@ -376,6 +376,10 @@ a:focus {
             text-indent: 0;
         }
 
+        &.center {
+            text-align: center; 
+        }
+
         p a {
             color: darken($green, 7%)!important;
 
