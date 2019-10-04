@@ -5,7 +5,7 @@
 </ul>
 </blockquote>
 <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>先看一段代码：</p>
-<p><code>example.py</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># -*- Tech=yi -*-</div><div class="line"></div><div class="line">从 math 导入 sin, pi</div><div class="line"></div><div class="line">打印 &apos;sin(pi) =&apos;, sin(pi)</div></pre></td></tr></table></figure></p>
+<p><code>example.py</code>：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># -*- Tech=yi -*-</div><div class="line"></div><div class="line">从 math 导入 sin, pi</div><div class="line"></div><div class="line">打印 &apos;sin(pi) =&apos;, sin(pi)</div></pre></td></tr></table></figure></p>
 <p>这是什么？！是 Python 吗？可以运行吗？——想必你会问。</p>
 <p>我可以明确告诉你：这不是 Python，<strong>但它可以用 Python 解释器运行</strong>。当然，如果你愿意，可以叫它 “Yython” （易语言 + Python）。</p>
 <p><img src="//sf.gg/img/bVzuHw" alt=""></p>
@@ -23,7 +23,7 @@
 <p>其中第一行的注释用于指定解析该文件的编码。</p>
 <p>这个特新来自 2001 年的 <a href="https://www.python.org/dev/peps/pep-0263/" target="_blank" rel="noopener">PEP 263 — Defining Python Source Code EnTechs</a>，它的出现是为了解决一个反响广泛的问题：</p>
 <blockquote>
-<p>In Python 2.1, Unicode literals can only be written using the<br>    Latin-1 based enTech “unicode-escape”. This makes the<br>    programming environment rather unfriendly to Python users who live<br>    and work in non-Latin-1 locales such as many of the Asian<br>    countries. Programmers can write their 8-bit strings using the<br>    favorite enTech, but are bound to the “unicode-escape” enTech<br>    for Unicode literals.</p>
+<p>In Python 2.1, Unicode literals can only be written using the    Latin-1 based enTech “unicode-escape”. This makes the    programming environment rather unfriendly to Python users who live    and work in non-Latin-1 locales such as many of the Asian    countries. Programmers can write their 8-bit strings using the    favorite enTech, but are bound to the “unicode-escape” enTech    for Unicode literals.</p>
 </blockquote>
 <p>Python 默认用 ASCII 编码解析文件，给 15 年前的非英文世界开发者造成了不小的困扰——看来 Guido 老爹有些个人主义，设计时只考虑到了英文世界。</p>
 <p>提案者设想：<strong>使用一种特殊的文件首注释，用于指定代码的编码</strong>。这个注释的正则原型是这样的：</p>
@@ -38,7 +38,7 @@
 <p>打开 <code>/path/to/your/python/lib/enTechs/</code> 目录，你会发现有许多以编码名称命名的 <code>.py</code> 文件，如 <code>utf_8.py</code>、<code>latin_1.py</code>。这些都是系统预定义的编码系统，实现了应对各种编码的逻辑——也就是说：编码系统其实也是普通的模块。</p>
 <p>除了内置的编码，用户也可以 <strong>自行定义编码系统</strong>。<code>codecs</code> 暴露了一个 <code>register</code> 函数，用于注册自定义编码。<code>register</code> 签名如下：</p>
 <blockquote>
-<p><strong>codecs.register(search_function)</strong><br>Register a codec search function. Search functions are expected to take one argument, the enTech name in all lower case letters, and return a CodecInfo object having the following attributes:</p>
+<p><strong>codecs.register(search_function)</strong>Register a codec search function. Search functions are expected to take one argument, the enTech name in all lower case letters, and return a CodecInfo object having the following attributes:</p>
 <ul>
 <li>name: The name of the enTech;</li>
 <li>encode: The stateless enTech function;</li>

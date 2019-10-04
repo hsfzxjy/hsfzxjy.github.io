@@ -2,7 +2,7 @@
 <p>链接：<a href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&amp;Itemid=8&amp;page=show_problem&amp;problem=3371" target="_blank" rel="noopener">Link</a> 状态：<strong>Runtime Error</strong></p>
 </blockquote>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这题做的可真够久的，整整三个小时。但即便如此，还是只过了一部分的点，另一部分报运行时错误——估计是哈希表设计的不太好。但这确实是一道好题，因此，在睡觉前决定记录一下。</p>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>很容易便想到：用一个三元组$(x,y,z)$表示节点，表示内容为x的节点下跟着标号为y和z的左右子树。这样一来，一类相同的子树便可以唯一确定了，而不必每构造一棵子树就把整棵树遍历一遍。<br>对于三元组的储存，刚开始图方便，用了数组。查找也是用了$O(n)$的线性查找。磕磕碰碰写了两个多小时然后兴冲冲地提交，结果TLE了…………没办法，只好又花了半个小时写了一个哈希表，然后就是上文说过的情况了：<strong>Runtime Error204</strong>。可能是哈希数组过大的原因，日后再微调一下，今天实在是没有脑子了。</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>很容易便想到：用一个三元组$(x,y,z)$表示节点，表示内容为x的节点下跟着标号为y和z的左右子树。这样一来，一类相同的子树便可以唯一确定了，而不必每构造一棵子树就把整棵树遍历一遍。对于三元组的储存，刚开始图方便，用了数组。查找也是用了$O(n)$的线性查找。磕磕碰碰写了两个多小时然后兴冲冲地提交，结果TLE了…………没办法，只好又花了半个小时写了一个哈希表，然后就是上文说过的情况了：<strong>Runtime Error204</strong>。可能是哈希数组过大的原因，日后再微调一下，今天实在是没有脑子了。</p>
 <h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h2><pre><code>const
   maxn = 20000;
 type
