@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.hsfzxjy.site/"/>
-  <updated>2019-07-13T16:43:14.388Z</updated>
+  <updated>2019-10-04T06:56:00.926Z</updated>
   <id>http://blog.hsfzxjy.site/</id>
   
   <author>
@@ -14,6 +14,77 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>西郊线</title>
+    <link href="http://blog.hsfzxjy.site/2019-10-03-xjx/"/>
+    <id>http://blog.hsfzxjy.site/2019-10-03-xjx/</id>
+    <published>2019-10-02T16:00:00.000Z</published>
+    <updated>2019-10-04T06:56:00.926Z</updated>
+    
+    <content type="html"><![CDATA[<p>西郊线真的是电车，那种拖着两个辫子，走得不快的电车。沿途的车站也是很小的车站。不到两米宽的站台，甚至比广州的BRT站更窄一些，立了一排凳子，仅此而已。半露天的车站，有遮雨棚，却没有真正意义的墙。透过一人多高的玻璃看，站台外沿长满了狗尾巴草，再往后铺开了大片的草甸和桦林，一直延伸到远处的香山，和仿佛水洗后的天空。午前的秋阳给眼前的一切都染上了愉悦的暖色。</p>
+<p>从巴沟逃下环状线，可以乘西郊线继续远离城市。我讨厌高楼林立的城市，也许是因为两个多月两点一线的生活。但我又离不开城市的便利，活像得斯德哥尔摩患者。在仅有的假日出游或许是个好选择，也或许是必要的。和地下的铁棺材不同，驶在地面上的西郊线能让人看清城市的衰减。巴沟往后，城市仿佛被逐渐稀释于山林，房子逐渐变矮直至消失，草甸开始成片最后蔓延开来。草甸有些许枯黄，或是因为季节或是因为纬度，却莫名搭上了秋阳的颜色。人真是奇怪的动物，明明知道自己无法生活于此，却会因这里的景色产生快感。</p>
+<p><img src="/assets/2019-10-03-xjx-imgs/img0.jpg" alt=""></p>
+<p>车门处无疑是最佳的观景点。将头抵在车门的玻璃上，窗外的世界便充满整个视野。这是一个不同步的世界。极力远眺，大地的尽头几乎是静止的；目光逐渐收回，从桦林到草甸再到脚下的铁轨，世界开始运动起来。西郊线也不同于一般陆上的地铁，不需要开在高架桥上，而是真的「在地上行走」。所谓铁轨，不过是两根细细的钢轨铺设在地面上，地面也没有其他特别之处，就像是行车的公路，水泥作的底板，边缘与荒草相接。这让人不禁产生一种错觉，即电车是直接行走在原野上，无拘无束，劈开半人高的草缓缓前进，就像「千と千尋の神隠し」里的水上火车。</p>
+<p><img src="/assets/2019-10-03-xjx-imgs/img1.jpg" alt=""></p>
+<p>偶尔有几处，路面突破了草地的禁锢，笔直伸向远方——那便是遇到了匝道口，铁路和公路相交的地方。电车经过时，匝道口当然是亮着红灯的。许多匝道口是空无一人的，没有在等候的灵魂，只有信号灯孤独地亮着。如果匝道口外有个观察者，在他看来，电车短暂地劈开了世界，世界在驶过后又重新相溶，恢复宁静；但从车内看，一闪而过的匝道像是分叉的铁轨，电车由此仿佛真的能驶出草甸，驶向大地的尽头。</p>
+<p>电车为什么迷人呢？电气时代的工业设计是一点，人总是怀旧的。对于熟悉动漫的我，电车也是现实和童话的交叉点。但更重要的是，电车是「自由的」。虽有铁轨约束，坐在电车上的我却有如直接驶于公路上、原野间，与汽车并肩，与自然同行。这是我所不敢企求的。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;西郊线真的是电车，那种拖着两个辫子，走得不快的电车。沿途的车站也是很小的车站。不到两米宽的站台，甚至比广州的BRT站更窄一些，立了一排凳子，仅此而已。半露天的车站，有遮雨棚，却没有真正意义的墙。透过一人多高的玻璃看，站台外沿长满了狗尾巴草，再往后铺开了大片的草甸和桦林，一直
+    
+    </summary>
+    
+      <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Proof of the Gumbel Max Trick</title>
+    <link href="http://blog.hsfzxjy.site/2019-08-01-proof-of-gumbel-max-trick/"/>
+    <id>http://blog.hsfzxjy.site/2019-08-01-proof-of-gumbel-max-trick/</id>
+    <published>2019-07-31T16:00:00.000Z</published>
+    <updated>2019-08-01T15:29:11.031Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Statement"><a href="#Statement" class="headerlink" title="Statement"></a>Statement</h2><p>Assume that $\alpha_1, \alpha_2, \ldots, \alpha_n$ satisify $\sum_k\alpha_k=1$. Define     </p>
+<p>$$Z=\arg\max_k\{\log\alpha_k+G_k\}$$where $G_1,\ldots,G_n \text{ i.i.d.}\sim Gumbel(0,1)$, whose PDF and CDF are defined as</p>
+<p>$$\begin{align}
+f(x)&=e^{-(x+e^{-x})} \\
+F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
+<h2 id="Proof"><a href="#Proof" class="headerlink" title="Proof"></a>Proof</h2><p>Set $u_k=\log{\alpha_k}+G_k$. We prove by direct calculations.</p>
+<p>$$\begin{align}
+\mathbb{P}(Z=k)&=\mathbb{P}(u_k \geq u_j,\forall j \neq k) \\
+&=\int_{-\infty}^\infty \mathbb{P}(u_k \geq u_j, \forall j \neq k|u_k)\mathbb{P}(u_k) du_k \\
+&=\int_{-\infty}^\infty \prod_{j\neq k}\mathbb{P}(u_k \geq u_j|u_k)\mathbb{P}(u_k) du_k \\
+&=\int_{-\infty}^\infty \prod_{j\neq k}e^{-e^{-u_k+\log \alpha_j}} e^{-(u_k-\log\alpha_k+e^{-(u_k-\log\alpha_k)})} du_k \\
+&=\int_{-\infty}^\infty e^{-\sum_{j\neq k}\alpha_je^{-u_k}} \alpha_k e^{-(u_k+\alpha_k e^{-u_k})} du_k \\
+&=\alpha_k \int_{-\infty}^\infty e^{-u_k-(\alpha_k+\sum_{j\neq k}\alpha_j)e^{-u_k}} du_k \\
+&= \alpha_k
+\end{align}$$.</p>
+<h2 id="Application"><a href="#Application" class="headerlink" title="Application"></a>Application</h2><p>The trick is commonly used in DL to make sampling over a discrete distribution differentiable. </p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ul>
+<li><a href="https://en.wikipedia.org/wiki/Gumbel_distribution" target="_blank" rel="noopener">Gumbel Distribution - Wikipedia</a></li>
+<li><a href="https://arxiv.org/pdf/1611.01144.pdf" target="_blank" rel="noopener">Categorical Reparameterization with Gumbel-Softmax (ICLR 2017)</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Statement&quot;&gt;&lt;a href=&quot;#Statement&quot; class=&quot;headerlink&quot; title=&quot;Statement&quot;&gt;&lt;/a&gt;Statement&lt;/h2&gt;&lt;p&gt;Assume that $\alpha_1, \alpha_2, \ldots, \
+    
+    </summary>
+    
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+    
+    
+      <category term="probability" scheme="http://blog.hsfzxjy.site/tags/probability/"/>
+    
+      <category term="math" scheme="http://blog.hsfzxjy.site/tags/math/"/>
+    
+  </entry>
   
   <entry>
     <title>七月十三日·別れの前日</title>
@@ -689,170 +760,6 @@
     
     
       <category term="Ubuntu" scheme="http://blog.hsfzxjy.site/tags/Ubuntu/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>从伪并行的 Python 多线程说起</title>
-    <link href="http://blog.hsfzxjy.site/2018-03-10-python-gil-and-threads/"/>
-    <id>http://blog.hsfzxjy.site/2018-03-10-python-gil-and-threads/</id>
-    <published>2018-03-09T16:00:00.000Z</published>
-    <updated>2019-01-21T09:06:18.349Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><ul>
-<li>作者电脑 CPU 为 4 核，因此使用 4 个线程测试是合理的</li>
-<li>本文使用的 <code>cpython</code> 版本为 <code>3.6.4</code></li>
-<li>本文使用的 <code>pypy</code> 版本为 <code>5.9.0-beta0</code>，兼容 Python 3.5 语法</li>
-<li>本文使用的 <code>jython</code> 版本为 <code>2.7.0</code>，兼容 Python 2.7 语法</li>
-<li>若无特殊说明，作语言解时，<code>python</code> 指 Python 语言；作解释器解时，<code>python</code> 指 <code>cpython</code></li>
-</ul>
-<a id="more"></a>
-<p>本文使用的测速函数代码如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</div><div class="line"></div><div class="line"><span class="keyword">import</span> sys</div><div class="line">PY2 = sys.version_info[<span class="number">0</span>] == <span class="number">2</span></div><div class="line"></div><div class="line"><span class="comment"># 因为 Jython 不兼容 Python 3 语法，此处必须 hack 掉 range 以保证都是迭代器版本</span></div><div class="line"><span class="keyword">if</span> PY2:</div><div class="line">    range = xrange  <span class="comment"># noqa</span></div><div class="line"></div><div class="line"><span class="keyword">from</span> time <span class="keyword">import</span> time</div><div class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">spawn_n_threads</span><span class="params">(n, target)</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    启动 n 个线程并行执行 target 函数</div><div class="line">    """</div><div class="line"></div><div class="line">    threads = []</div><div class="line"></div><div class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> range(n):</div><div class="line">        thread = Thread(target=target)</div><div class="line">        thread.start()</div><div class="line">        threads.append(thread)</div><div class="line"></div><div class="line">    <span class="keyword">for</span> thread <span class="keyword">in</span> threads:</div><div class="line">        thread.join()</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">test</span><span class="params">(target, number=<span class="number">10</span>, spawner=spawn_n_threads)</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    分别启动 1, 2, 3, 4 个控制流，重复 number 次，计算运行耗时</div><div class="line">    """</div><div class="line"></div><div class="line">    <span class="keyword">for</span> n <span class="keyword">in</span> (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, ):</div><div class="line"></div><div class="line">        start_time = time()</div><div class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> range(number):  <span class="comment"># 执行 number 次以减少偶然误差</span></div><div class="line">            spawner(n, target)</div><div class="line">        end_time = time()</div><div class="line"></div><div class="line">        print(<span class="string">'Time elapsed with &#123;&#125; branch(es): &#123;:.6f&#125; sec(s)'</span>.format(n, end_time - start_time))</div></pre></td></tr></table></figure>
-<h2 id="并行？伪并行？"><a href="#并行？伪并行？" class="headerlink" title="并行？伪并行？"></a>并行？伪并行？</h2><p>学过操作系统的同学都知道，线程是现代操作系统底层一种轻量级的多任务机制。一个进程空间中可以存在多个线程，每个线程代表一条控制流，共享全局进程空间的变量，又有自己私有的内存空间。</p>
-<p>多个线程可以同时执行。此处的“同时”，在较早的单核架构中表现为“伪并行”，即让线程以极短的时间间隔交替执行，从人的感觉上看它们就像在同时执行一样。但由于仅有一个运算单元，当线程皆执行计算密集型任务时，多线程可能会出现 1 + 1 &gt; 2 的反效果。</p>
-<p>而“真正的并行”只能在多核架构上实现。对于计算密集型任务，巧妙地使用多线程或多进程将其分配至多个 CPU 上，通常可以成倍地缩短运算时间。</p>
-<p>作为一门优秀的语言，python 为我们提供了操纵线程的库 <code>threading</code>。使用 <code>threading</code>，我们可以很方便地进行并行编程。但下面的例子可能会让你对“并行”的真实性产生怀疑。</p>
-<p>假设我们有一个计算斐波那契数列的函数：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">()</span>:</span></div><div class="line"></div><div class="line">    a = b = <span class="number">1</span></div><div class="line"></div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100000</span>):</div><div class="line">        a, b = b, a + b</div></pre></td></tr></table></figure>
-<p>此处我们不记录其结果，只是为了让它产生一定的计算量，使运算时间开销远大于线程创建、切换的时间开销。现在我们执行 <code>test(fib)</code>，尝试在不同数量的线程中执行这个函数。如果线程是“真并行”，时间开销应该不会随线程数大幅上涨。但执行结果却让我们大跌眼镜：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># CPython，fib</div><div class="line">Time elapsed with 1 branch(es): 1.246095 sec(s)</div><div class="line">Time elapsed with 2 branch(es): 2.535884 sec(s)</div><div class="line">Time elapsed with 3 branch(es): 3.837506 sec(s)</div><div class="line">Time elapsed with 4 branch(es): 5.107638 sec(s)</div></pre></td></tr></table></figure>
-<p>从结果中可以发现：时间开销几乎是正比于线程数的！这明显和多核架构的“真并行”相矛盾。这是为什么呢？</p>
-<p>一切的罪魁祸首都是一个叫 GIL 的东西。</p>
-<h2 id="GIL"><a href="#GIL" class="headerlink" title="GIL"></a>GIL</h2><h3 id="GIL-是什么"><a href="#GIL-是什么" class="headerlink" title="GIL 是什么"></a>GIL 是什么</h3><p>GIL 的全名是 the Global Interpreter Lock （全局解释锁），是常规 python 解释器（当然，有些解释器没有）的核心部件。我们看看官方的解释：</p>
-<blockquote>
-<p>The Python interpreter is not fully thread-safe. In order to support multi-threaded Python programs, there’s a global lock, called <strong>the global interpreter lock</strong> or <strong>GIL</strong>, that must be held by the current thread before it can safely access Python objects.</p>
-<p>— via <a href="https://docs.python.org/3/c-api/init.html#thread-state-and-the-global-interpreter-lock" target="_blank" rel="noopener">Python 3.6.4 Documentation</a></p>
-</blockquote>
-<p>可见，这是一个用于保护 Python 内部对象的全局锁（在进程空间中唯一），保障了解释器的线程安全。</p>
-<p>这里用一个形象的例子来说明 GIL 的必要性（对资源抢占问题非常熟悉的可以跳过不看）：</p>
-<blockquote>
-<p>我们把整个进程空间看做一个车间，把线程看成是多条不相交的流水线，把线程控制流中的字节码看作是流水线上待处理的物品。Python 解释器是工人，整个车间仅此一名。操作系统是一只上帝之手，会随时把工人从一条流水线调到另一条——这种“随时”是不由分说的，即不管处理完当前物品与否。    </p>
-<p>若没有 GIL。假设工人正在流水线 A 处理 A1 物品，根据 A1 的需要将房间温度（一个全局对象）调到了 20 度。这时上帝之手发动了，工人被调到流水线 B 处理 B1 物品，根据 B1 的需要又将房间温度调到了 50 度。这时上帝之手又发动了，工人又调回 A 继续处理 A1。但此时 A1 暴露在了 50 度的环境中，安全问题就此产生了。</p>
-<p>而 GIL 相当于一条锁链，一旦工人开始处理某条流水线上的物品，GIL 便会将工人和该流水线锁在一起。而被锁住的工人只会处理该流水线上的物品。就算突然被调到另一条流水线，他也不会干活，而是干等至重新调回原来的流水线。这样每个物品在被处理的过程中便总是能保证全局环境不会突变。</p>
-</blockquote>
-<p>GIL 保证了线程安全性，但很显然也带来了一个问题：每个时刻只有一条线程在执行，即使在多核架构中也是如此——毕竟，解释器只有一个。如此一来，单进程的 Python 程序便无法利用到多核的优势了。</p>
-<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><p>为了验证确实是 GIL 搞的鬼，我们可以用不同的解释器再执行一次。这里使用 pypy（有 GIL）和 jython （无 GIL）作测试：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># PyPy, fib</div><div class="line">Time elapsed with 1 branch(es): 0.868052 sec(s)</div><div class="line">Time elapsed with 2 branch(es): 1.706454 sec(s)</div><div class="line">Time elapsed with 3 branch(es): 2.594260 sec(s)</div><div class="line">Time elapsed with 4 branch(es): 3.449946 sec(s)</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># Jython, fib</div><div class="line">Time elapsed with 1 branch(es): 2.984000 sec(s)</div><div class="line">Time elapsed with 2 branch(es): 3.058000 sec(s)</div><div class="line">Time elapsed with 3 branch(es): 4.404000 sec(s)</div><div class="line">Time elapsed with 4 branch(es): 5.357000 sec(s)</div></pre></td></tr></table></figure>
-<p>从结果可以看出，用 pypy 执行时，时间开销和线程数也是几乎成正比的；而 jython 的时间开销则是以较为缓慢的速度增长的。jython 由于下面还有一层 JVM，单线程的执行速度很慢，但在线程数达到 4 时，时间开销只有单线程的两倍不到，仅仅稍逊于 cpython 的 4 线程运行结果（5.10 secs）。由此可见，<strong>GIL 确实是造成伪并行现象的主要因素</strong>。</p>
-<h2 id="如何解决？"><a href="#如何解决？" class="headerlink" title="如何解决？"></a>如何解决？</h2><p>GIL 是 Python 解释器正确运行的保证，Python 语言本身没有提供任何机制访问它。但在特定场合，我们仍有办法降低它对效率的影响。</p>
-<h3 id="使用多进程"><a href="#使用多进程" class="headerlink" title="使用多进程"></a>使用多进程</h3><p>线程间会竞争资源是因为它们共享同一个进程空间，但进程的内存空间是独立的，自然也就没有必要使用解释锁了。</p>
-<p>许多人非常忌讳使用多进程，理由是进程操作（创建、切换）的时间开销太大了，而且会占用更多的内存。这种担心其实没有必要——除非是对并发量要求很高的应用（如服务器），多进程增加的时空开销其实都在可以接受的范围中。更何况，我们可以使用进程池减少频繁创建进程带来的开销。</p>
-<p>下面新建一个 <code>spawner</code>，以演示多进程带来的性能提升：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> multiprocessing <span class="keyword">import</span> Process</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">spawn_n_processes</span><span class="params">(n, target)</span>:</span></div><div class="line"></div><div class="line">    threads = []</div><div class="line"></div><div class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> range(n):</div><div class="line">        thread = Process(target=target)</div><div class="line">        thread.start()</div><div class="line">        threads.append(thread)</div><div class="line"></div><div class="line">    <span class="keyword">for</span> thread <span class="keyword">in</span> threads:</div><div class="line">        thread.join()</div></pre></td></tr></table></figure>
-<p>使用 cpython 执行 <code>test(fib, spawner=spawn_n_processes)</code>，结果如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># CPython, fib, multi-processing</div><div class="line">Time elapsed with 1 branch(es): 1.260981 sec(s)</div><div class="line">Time elapsed with 2 branch(es): 1.343570 sec(s)</div><div class="line">Time elapsed with 3 branch(es): 2.183770 sec(s)</div><div class="line">Time elapsed with 4 branch(es): 2.732911 sec(s)</div></pre></td></tr></table></figure>
-<p>可见这里出现了“真正的并行”，程序效率得到了提升。</p>
-<h3 id="使用-C-扩展"><a href="#使用-C-扩展" class="headerlink" title="使用 C 扩展"></a>使用 C 扩展</h3><p>GIL 并不是完全的黑箱，CPython 在解释器层提供了控制 GIL 的开关——这就是 <code>Py_BEGIN_ALLOW_THREADS</code> 和 <code>Py_END_ALLOW_THREADS</code> 宏。这一对宏允许你在自定义的 C 扩展中释放 GIL，从而可以重新利用多核的优势。</p>
-<p>沿用上面的例子，自定义的 C 扩展函数好比是流水线上一个特殊的物品。这个物品承诺自己不依赖全局环境，同时也不会要求工人去改变全局环境。同时它带有 <code>Py_BEGIN_ALLOW_THREADS</code> 和 <code>Py_END_ALLOW_THREADS</code> 两个机关，前者能砍断 GIL 锁链，这样工人被调度走后不需要干等，而是可以直接干活；后者则将锁链重新锁上，保证操作的一致性。</p>
-<p>这里同样用一个 C 扩展做演示。由于 C 实现的斐波那契数列计算过快，此处采用另一个计算 PI 的函数：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// cfib.c</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;python3.6m/Python.h&gt;</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">static</span> PyObject* <span class="title">fib</span><span class="params">(PyObject* self, PyObject* args)</span></span></div><div class="line">&#123;</div><div class="line">    Py_BEGIN_ALLOW_THREADS</div><div class="line">    <span class="keyword">double</span> n = <span class="number">90000000</span>, i;</div><div class="line">    <span class="keyword">double</span> s = <span class="number">1</span>;</div><div class="line">    <span class="keyword">double</span> pi = <span class="number">3</span>;</div><div class="line"></div><div class="line">    <span class="keyword">for</span> (i = <span class="number">2</span>; i &lt;= n * <span class="number">2</span>; i += <span class="number">2</span>) &#123;</div><div class="line">        pi = pi + s * (<span class="number">4</span> / (i * (i + <span class="number">1</span>) * (i + <span class="number">2</span>)));</div><div class="line">        s = -s;</div><div class="line">    &#125;</div><div class="line">    Py_END_ALLOW_THREADS</div><div class="line">    <span class="keyword">return</span> Py_None;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 模块初始化代码略去</span></div></pre></td></tr></table></figure>
-<p>使用 cpython 执行 <code>test(cfib.fib)</code>，结果如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># CPython, cfib, non-GIL</div><div class="line">Time elapsed with 1 branch(es): 1.334247 sec(s)</div><div class="line">Time elapsed with 2 branch(es): 1.439759 sec(s)</div><div class="line">Time elapsed with 3 branch(es): 1.603779 sec(s)</div><div class="line">Time elapsed with 4 branch(es): 1.689330 sec(s)</div></pre></td></tr></table></figure>
-<p>若注释掉以上两个宏，则结果如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># CPython, cfib, with-GIL</div><div class="line">Time elapsed with 1 branch(es): 1.331415 sec(s)</div><div class="line">Time elapsed with 2 branch(es): 2.671651 sec(s)</div><div class="line">Time elapsed with 3 branch(es): 4.022696 sec(s)</div><div class="line">Time elapsed with 4 branch(es): 5.337917 sec(s)</div></pre></td></tr></table></figure>
-<p>可见其中的性能差异。因此当你想做一些计算密集型任务时，不妨尝试用 C 实现，以此规避 GIL。</p>
-<p>值得注意的是，一些著名的科学计算库（如 <code>numpy</code>）为了提升性能，其底层也是用 C 实现的，并且会在做一些线程安全操作（如 <code>numpy</code> 的数组操作）时释放 GIL。因此对于这些库，我们可以放心地使用多线程。以下是一个例子：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> numpy</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">np_example</span><span class="params">()</span>:</span></div><div class="line">    ones = numpy.ones(<span class="number">10000000</span>)</div><div class="line">    numpy.exp(ones)</div></pre></td></tr></table></figure>
-<p>用 CPython 执行 <code>test(np_example)</code> 结果如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># CPython, np_example</div><div class="line">Time elapsed with 1 branch(es): 3.708392 sec(s)</div><div class="line">Time elapsed with 2 branch(es): 2.462703 sec(s)</div><div class="line">Time elapsed with 3 branch(es): 3.578331 sec(s)</div><div class="line">Time elapsed with 4 branch(es): 4.276800 sec(s)</div></pre></td></tr></table></figure>
-<h3 id="让线程做该做的事"><a href="#让线程做该做的事" class="headerlink" title="让线程做该做的事"></a>让线程做该做的事</h3><p>读到这，有同学可能会奇怪了：我在使用 python 多线程写爬虫时可从来没有这种问题啊——用 4 个线程下载 4 个页面的时间与单线程下载一个页面的时间相差无几。</p>
-<p>这里就要谈到 GIL 的第二种释放时机了。除了调用 <code>Py_BEGIN_ALLOW_THREADS</code>，解释器还会在<strong>发生阻塞 IO</strong>（如网络、文件）时释放 GIL。发生阻塞 IO 时，调用方线程会被挂起，无法进行任何操作，直至内核返回；IO 函数一般是原子性的，这确保了调用的线程安全性。因此在大多数阻塞 IO 发生时，解释器没有理由加锁。</p>
-<p>以爬虫为例：当 Thread1 发起对 Page1 的请求后，Thread1 会被挂起，<strong>此时 GIL 释放</strong>。当控制流切换至 Thread2 时，由于没有 GIL，不必干等，而是可以直接请求 Page2……如此一来，四个请求可以认为是几乎同时发起的。时间开销便与单线程请求一次一样。</p>
-<p>有人反对使用阻塞 IO，因为若想更好利用阻塞时的时间，必须使用多线程或进程，这样会有很大的上下文切换开销，而非阻塞 IO + 协程显然是更经济的方式。但当若干任务之间没有偏序关系时，一个任务阻塞是可以接受的（毕竟不会影响到其他任务的执行），同时也会简化程序的设计。而在一些通信模型（如 Publisher-Subscriber）中，“阻塞”是必要的语义。</p>
-<p>多个阻塞 IO 需要多条非抢占式的控制流来承载，这些工作交给线程再合适不过了。</p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><ol>
-<li>由于 GIL 的存在，大多数情况下 Python 多线程无法利用多核优势。</li>
-<li>C 扩展中可以接触到 GIL 的开关，从而规避 GIL，重新获得多核优势。</li>
-<li>IO 阻塞时，GIL 会被释放。</li>
-</ol>
-<h2 id="相关链接"><a href="#相关链接" class="headerlink" title="相关链接"></a>相关链接</h2><ol>
-<li><a href="https://wiki.python.org/moin/GlobalInterpreterLock" target="_blank" rel="noopener">GlobalInterpreterLock - Python Wiki</a></li>
-<li><a href="https://en.wikipedia.org/wiki/Blocking_%28computing%29" target="_blank" rel="noopener">Blocking(computing) - Wikipedia</a></li>
-<li><a href="https://docs.python.org/3/extending/extending.html" target="_blank" rel="noopener">Extending Python with C or C++</a></li>
-<li><a href="https://pypy.org/" target="_blank" rel="noopener">PyPy</a></li>
-<li><a href="http://www.jython.org/" target="_blank" rel="noopener">Jython</a></li>
-</ol>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;写在前面&quot;&gt;&lt;a href=&quot;#写在前面&quot; class=&quot;headerlink&quot; title=&quot;写在前面&quot;&gt;&lt;/a&gt;写在前面&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;作者电脑 CPU 为 4 核，因此使用 4 个线程测试是合理的&lt;/li&gt;
-&lt;li&gt;本文使用的 &lt;code&gt;cpython&lt;/code&gt; 版本为 &lt;code&gt;3.6.4&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;本文使用的 &lt;code&gt;pypy&lt;/code&gt; 版本为 &lt;code&gt;5.9.0-beta0&lt;/code&gt;，兼容 Python 3.5 语法&lt;/li&gt;
-&lt;li&gt;本文使用的 &lt;code&gt;jython&lt;/code&gt; 版本为 &lt;code&gt;2.7.0&lt;/code&gt;，兼容 Python 2.7 语法&lt;/li&gt;
-&lt;li&gt;若无特殊说明，作语言解时，&lt;code&gt;python&lt;/code&gt; 指 Python 语言；作解释器解时，&lt;code&gt;python&lt;/code&gt; 指 &lt;code&gt;cpython&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-    
-    </summary>
-    
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
-    
-    
-      <category term="Python" scheme="http://blog.hsfzxjy.site/tags/Python/"/>
-    
-      <category term="Multi-Threading" scheme="http://blog.hsfzxjy.site/tags/Multi-Threading/"/>
-    
-      <category term="GIL" scheme="http://blog.hsfzxjy.site/tags/GIL/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>RMPE 论文读书笔记</title>
-    <link href="http://blog.hsfzxjy.site/2018-03-08-RMPE-Notes/"/>
-    <id>http://blog.hsfzxjy.site/2018-03-08-RMPE-Notes/</id>
-    <published>2018-03-07T16:00:00.000Z</published>
-    <updated>2019-01-21T09:06:17.133Z</updated>
-    
-    <content type="html"><![CDATA[<p>论文地址：<a href="https://arxiv.org/pdf/1612.00137" target="_blank" rel="noopener">https://arxiv.org/pdf/1612.00137</a></p>
-<a id="more"></a>
-<h1 id="现有的-Pose-Estimation-解决方案"><a href="#现有的-Pose-Estimation-解决方案" class="headerlink" title="现有的 Pose Estimation 解决方案"></a>现有的 Pose Estimation 解决方案</h1><h2 id="Single-Person-Pose-Estimation-SPPE"><a href="#Single-Person-Pose-Estimation-SPPE" class="headerlink" title="Single Person Pose Estimation (SPPE)"></a>Single Person Pose Estimation (SPPE)</h2><p>只尝试估计一个人的姿势。早期曾使用诸如随机森林等机器学习方法，近几年采用深度学习方案，大致有如下几种：</p>
-<ul>
-<li>基于 DNN 的</li>
-<li>基于 CNN 的（如 RMPE 使用的 Hourglass）</li>
-<li>其他架构，如 <a href="http://ieeexplore.ieee.org/document/6909610/" target="_blank" rel="noopener">DeepPose</a></li>
-</ul>
-<p>局限：</p>
-<p>要求人能被精准定位，对人的位置十分敏感。</p>
-<h2 id="Multi-Person-Pose-Estimation-MPPE"><a href="#Multi-Person-Pose-Estimation-MPPE" class="headerlink" title="Multi Person Pose Estimation (MPPE)"></a>Multi Person Pose Estimation (MPPE)</h2><p>可以估计多人的姿势，不同架构的框架对噪音（如 人的重叠、人的鲜有姿态）有不同的敏感度。</p>
-<h3 id="part-based-MPPE"><a href="#part-based-MPPE" class="headerlink" title="part-based MPPE"></a>part-based MPPE</h3><p>将人看做若干 part 的组合，先对特定的 part 进行识别，再组合起来得到人的完整姿态。</p>
-<p>局限：</p>
-<p>检测 part 时只考虑了局部的小区域，在某些情况下表现不好。</p>
-<h3 id="two-step-MPPE"><a href="#two-step-MPPE" class="headerlink" title="two-step MPPE"></a>two-step MPPE</h3><p>先检测每个人的 bounding box，再在每个 box 中独立地估计姿势。由于 bounding box 中仅有一人（而且可以做到占据 box 的一大部分），估计姿势可以采用现成的 SPPE 方案。但 SPPE 普遍对人的位置依赖较高，因此 two-step MPPE 对 bounding box 的性能有较高的要求。</p>
-<p><strong>RMPE 基于此</strong>。</p>
-<h1 id="RMPE"><a href="#RMPE" class="headerlink" title="RMPE"></a>RMPE</h1><h2 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h2><p>尽可能精确地识别出每个人的 bounding box，<strong>并做适当变换使其便于被 SPPE 处理</strong>；再交给 SPPE 进行估计姿势。为了增强 RMPE 的鲁棒性，应该用一些手段从有限的训练集中生成尽量多的样本。</p>
-<h2 id="Pipeline"><a href="#Pipeline" class="headerlink" title="Pipeline"></a>Pipeline</h2><p>两条分支：</p>
-<p>(Object Detector) -&gt; (STN) -&gt; (Proposals Generator) -&gt; (master SPPE) -&gt; (SDTN, STN 的逆操作) -&gt; Pose NMS -&gt; Output</p>
-<p>(Object Detector) -&gt; (STN) -&gt; (Parallel SPPE)</p>
-<h2 id="细节"><a href="#细节" class="headerlink" title="细节"></a>细节</h2><ol>
-<li>有别于传统的 Object Detector，RMPE 在其后增加了 STN 作为图像正规化手段。这是因为 SPPE 对人的位置非常敏感，倘若能固定住人的位置（如居中），则可最大化 SPPE 的性能。</li>
-<li>RMPE 中有两条 SPPE 分支，其中的 parallel SPPE 的参数是固定的，它将 STN 后的图像直接与正规化后的 label （即将原 label 做适当变换使人处于正中）比较得到误差并由此进行训练。训练的结果可使 STN 正确地将人变换至中间位置，从而最优化 master SPPE。</li>
-<li>考虑到对于一个人，Object Detector 只能产生一个 bounding box，RMPE 在 STN 后面又安插了 Proposals Generator 用于<strong>生成更多的样本</strong>。Proposals Generator 会对 Object Detector 产生的 bounding box 做一定的偏移，再传入 master SPPE。</li>
-<li>考虑到 Proposals Generator 会对一个人生成多个 bounding box，而对于不同的 bounding box，master SPPE 会做出不同的姿态估计，RMPE 引入 Pose NMS（Pose Non-Maximum Suppression）对这些姿态进行合并。Pose NMS 综合考虑了姿态的位置与置信度因素。</li>
-</ol>
-<h2 id="实现（测试期）"><a href="#实现（测试期）" class="headerlink" title="实现（测试期）"></a>实现（测试期）</h2><p>在 Pipeline 中，有两个组件 Object Detector 和 SPPE 是被泛化，可以使用任何解决方案。在测试时，作者使用了 VGG-based SSD-512 作为 Object Detector，及 Stacked Hourglass Model 作为 SPPE 的实现，以达到最大的性能。</p>
-<h2 id="新组件的必要性"><a href="#新组件的必要性" class="headerlink" title="新组件的必要性"></a>新组件的必要性</h2><p>较于传统的架构，RMPE 引入了 STN (及附属的 Parallel SPPE)、Proposals Generator 及 Pose NMS 这三个新组件。在作者分别移除了它们后，RMPE 的性能显著下降。可见这些组件引入的必要性。</p>
-<h1 id="相关组件"><a href="#相关组件" class="headerlink" title="相关组件"></a>相关组件</h1><h2 id="Spatial-Transformer-Network-STN"><a href="#Spatial-Transformer-Network-STN" class="headerlink" title="Spatial Transformer Network (STN)"></a>Spatial Transformer Network (STN)</h2><p>原始论文：<a href="https://arxiv.org/abs/1506.02025" target="_blank" rel="noopener">https://arxiv.org/abs/1506.02025</a></p>
-<p>由 Localization Net、Grid Generator、Sampler 三部分组成，其中 Localization Net 为一个传统的 CNN。STN 可以被嵌入在具体任务的 CNN 中以增强其性能。STN 不需要额外的监督学习，随着原来的网络一起训练即可。</p>
-<h2 id="Stacked-Hourglass-Network"><a href="#Stacked-Hourglass-Network" class="headerlink" title="Stacked Hourglass Network"></a>Stacked Hourglass Network</h2><p>原始论文：<a href="https://arxiv.org/abs/1603.06937" target="_blank" rel="noopener">https://arxiv.org/abs/1603.06937</a></p>
-<p>Hourglass 是一个基于 CNN 的 SPPE。采用若干“沙漏状”模块（先自上而下降低分辨率，再自下而上采样）堆叠，相比其他 CNN 有更好的性能。</p>
-<h1 id="相关数据集"><a href="#相关数据集" class="headerlink" title="相关数据集"></a>相关数据集</h1><p>MPII Human Pose Dataset: <a href="http://human-pose.mpi-inf.mpg.de/" target="_blank" rel="noopener">http://human-pose.mpi-inf.mpg.de/</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;论文地址：&lt;a href=&quot;https://arxiv.org/pdf/1612.00137&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://arxiv.org/pdf/1612.00137&lt;/a&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
-    
-    
-      <category term="RMPE" scheme="http://blog.hsfzxjy.site/tags/RMPE/"/>
-    
-      <category term="Machine Learning" scheme="http://blog.hsfzxjy.site/tags/Machine-Learning/"/>
     
   </entry>
   
