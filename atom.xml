@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.hsfzxjy.site/"/>
-  <updated>2020-05-28T09:02:07.749Z</updated>
+  <updated>2019-10-04T07:01:50.006Z</updated>
   <id>http://blog.hsfzxjy.site/</id>
   
   <author>
@@ -14,54 +14,6 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>人类一败涂地</title>
-    <link href="http://blog.hsfzxjy.site/2020-02-02-human-failed/"/>
-    <id>http://blog.hsfzxjy.site/2020-02-02-human-failed/</id>
-    <published>2020-02-01T16:00:00.000Z</published>
-    <updated>2020-05-28T09:02:07.749Z</updated>
-    
-    <content type="html"><![CDATA[<p>「当年，人类可是一败涂地」我喃喃道。</p>
-<p>他没有回答。显然他对过去的事不感兴趣，对听了很多次的事更不感兴趣。太爷爷总是叨念着过去的事情，就像留声机一样——当然，他已经不知道留声机是什么了。这个时代已经没有阿茨海默症了，但对于上个时代遗民，它留下的伤害是不可逆的。就像太爷爷的外祖母一样，太爷爷的记忆被囚禁在了过去，只有身体随时间流逝到了现在。</p>
-<p>「要知道，人类可是很早就登上月球了」我继续说道。</p>
-<p>「月球…哦，是母星的那颗卫星吗」</p>
-<p>「没错。」</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;「当年，人类可是一败涂地」我喃喃道。&lt;/p&gt;
-&lt;p&gt;他没有回答。显然他对过去的事不感兴趣，对听了很多次的事更不感兴趣。太爷爷总是叨念着过去的事情，就像留声机一样——当然，他已经不知道留声机是什么了。这个时代已经没有阿茨海默症了，但对于上个时代遗民，它留下的伤害是不可逆的。就
-    
-    </summary>
-    
-      <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>焼き物</title>
-    <link href="http://blog.hsfzxjy.site/2019-12-01-yakimono/"/>
-    <id>http://blog.hsfzxjy.site/2019-12-01-yakimono/</id>
-    <published>2019-11-30T16:00:00.000Z</published>
-    <updated>2020-05-28T09:02:07.749Z</updated>
-    
-    <content type="html"><![CDATA[<p>最近喜欢上了那家铁板烧。那家店在食街的一角，不大的铺面几乎被开放式的厨房占据了。说是厨房，不过是一块长铁板，三位厨师在后面忙碌。铁板外围是一圈大理石桌面，密集地摆满了餐盘，餐盘前有椅子，客人就这么围着铁板坐下。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;最近喜欢上了那家铁板烧。那家店在食街的一角，不大的铺面几乎被开放式的厨房占据了。说是厨房，不过是一块长铁板，三位厨师在后面忙碌。铁板外围是一圈大理石桌面，密集地摆满了餐盘，餐盘前有椅子，客人就这么围着铁板坐下。&lt;/p&gt;
-
-    
-    </summary>
-    
-      <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
-    
-    
-  </entry>
   
   <entry>
     <title>西郊线</title>
@@ -731,6 +683,84 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     
       <category term="Haskell" scheme="http://blog.hsfzxjy.site/tags/Haskell/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Haskell 笔记：folds</title>
+    <link href="http://blog.hsfzxjy.site/2018-11-10-haskell-fold/"/>
+    <id>http://blog.hsfzxjy.site/2018-11-10-haskell-fold/</id>
+    <published>2018-11-09T16:00:00.000Z</published>
+    <updated>2019-01-21T09:06:18.425Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Prelude-foldl"><a href="#Prelude-foldl" class="headerlink" title="Prelude.foldl"></a>Prelude.foldl</h2><p><code>foldl</code> 为 left-associative folding。</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="title">foldl</span> :: (b -&gt; a -&gt; b) -&gt; b -&gt; [a] -&gt; b</div><div class="line"><span class="title">foldl</span> f acc [] = acc</div><div class="line"><span class="title">foldl</span> f acc (x:xs) = foldl f (f acc x) xs</div></pre></td></tr></table></figure>
+<p><code>foldl (+) 0 [1..3]</code> 等价于 <code>(((0 + 1) + 2) + 3)</code>。</p>
+<ul>
+<li>尾递归，因此有 strict 版本 <code>foldl&#39;</code></li>
+<li>求值时必须先到达栈底，遍历完列表，因此无法处理无穷列表</li>
+</ul>
+<h2 id="Data-List-foldl’"><a href="#Data-List-foldl’" class="headerlink" title="Data.List.foldl’"></a>Data.List.foldl’</h2><p><code>foldl&#39;</code> 为 <code>foldl</code> 的 TRO 版本。</p>
+<h2 id="Prelude-foldr"><a href="#Prelude-foldr" class="headerlink" title="Prelude.foldr"></a>Prelude.foldr</h2><p><code>foldr</code> 为 right-associative folding。</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="title">foldr</span> :: (a -&gt; b -&gt; b) -&gt; b -&gt; [a] -&gt; b</div><div class="line"><span class="title">foldr</span> f acc [] = acc</div><div class="line"><span class="title">foldr</span> f acc (x:xs) = f x (foldr f acc xs)</div></pre></td></tr></table></figure>
+<p><code>foldr (+) 0 [1..3]</code> 等价于 <code>(0 + (1 + (2 + 3)))</code></p>
+<ul>
+<li>没有尾递归，有爆栈的危险。</li>
+<li>有向右展开的特点，而 Haskell 中许多数据结构都有向右递归的特点（如 Cons），因此可以很好地处理无穷递归的数据，从而更加通用。</li>
+</ul>
+<h2 id="Prelude-foldl1-amp-amp-Prelude-foldr1"><a href="#Prelude-foldl1-amp-amp-Prelude-foldr1" class="headerlink" title="Prelude.foldl1 &amp;&amp; Prelude.foldr1"></a>Prelude.foldl1 &amp;&amp; Prelude.foldr1</h2><p>Helper functions。将 operator 限制为同一种类型，同时约去 accumulator。</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="title">foldl1</span> :: (a -&gt; a -&gt; a) -&gt; [a] -&gt; a</div><div class="line"><span class="title">foldl1</span> f (x:xs) = foldl f x xs</div><div class="line"><span class="title">foldl1</span> _ [] = error</div><div class="line"></div><div class="line"><span class="title">foldr1</span> :: (a -&gt; a -&gt; a) -&gt; [a] -&gt; a</div><div class="line"><span class="title">foldr1</span> f (x:xs) = foldr f x xs</div><div class="line"><span class="title">foldr1</span> _ [] = error</div></pre></td></tr></table></figure>
+<p>即，<code>foldr1</code> 将列表的第一个值作为 accumulator，将剩余部分作为 list，传给 <code>foldr</code>。<code>foldl</code> 同理。</p>
+<h2 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h2><h3 id="用-folds-实现-reverse"><a href="#用-folds-实现-reverse" class="headerlink" title="用 folds 实现 reverse"></a>用 folds 实现 <code>reverse</code></h3><figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="title">reversel</span>, reverser :: [a] -&gt; [a]</div><div class="line"><span class="title">reversel</span> list = foldl (\acc x -&gt; x : acc) [] list</div><div class="line"></div><div class="line"><span class="title">reverser</span> list = foldr (\x acc -&gt; acc ++ [x]) [] list</div></pre></td></tr></table></figure>
+<h3 id="用-foldr-实现-foldl"><a href="#用-foldr-实现-foldl" class="headerlink" title="用 foldr 实现 foldl"></a>用 foldr 实现 foldl</h3><p>先归纳出 <code>foldr</code> 的泛性质。如果一个函数 <code>g</code> s.t. </p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="title">g</span> [] = v</div><div class="line"><span class="title">g</span> (x:xs) = f x (g xs)</div></pre></td></tr></table></figure>
+<p>则 <code>g list === foldr f v list</code>.</p>
+<p>再看 <code>foldl</code> 的定义：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="title">foldl</span> f v [] = v</div><div class="line"><span class="title">foldl</span> f v (x:xs) = foldl f (f v x) xs</div><div class="line"></div><div class="line">===&gt;</div><div class="line"></div><div class="line"><span class="title">foldl</span> f v list = g list v</div><div class="line">    <span class="keyword">where</span> </div><div class="line">        g [] v = v</div><div class="line">        g (x:xs) v = g xs (f v x)</div><div class="line">        <span class="comment">-- 从左到右依次更新 v</span></div><div class="line"></div><div class="line">===&gt;</div><div class="line"></div><div class="line"><span class="title">foldl</span> f v list = g list v</div><div class="line">    <span class="keyword">where</span> </div><div class="line">        g [] = id</div><div class="line">        g (x:xs) = \v -&gt; g xs (f v x)</div></pre></td></tr></table></figure>
+<p>应有 <code>g (x:xs) === k x (g xs)</code>，我们计算 <code>k</code>：</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="title">g</span> (x:xs)       === k x (g xs)</div><div class="line"><span class="title">g</span> (x:xs) v     === k x (g xs) v</div><div class="line"><span class="title">g</span> xs (f v x)   === k x (g xs) v</div><div class="line">(g xs) (f v x) === k x (g xs) v </div><div class="line"><span class="title">g'</span> (f v x)     === k x g' v</div><div class="line"><span class="title">k</span>              === \x g' v -&gt; g' (f v x)</div></pre></td></tr></table></figure>
+<p>所以</p>
+<figure class="highlight haskell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="title">foldl</span> f v xs = </div><div class="line">    (foldr</div><div class="line">        (\x g' v -&gt; g' (f v x))</div><div class="line">        id</div><div class="line">        xs</div><div class="line">    ) v</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Prelude-foldl&quot;&gt;&lt;a href=&quot;#Prelude-foldl&quot; class=&quot;headerlink&quot; title=&quot;Prelude.foldl&quot;&gt;&lt;/a&gt;Prelude.foldl&lt;/h2&gt;&lt;p&gt;&lt;code&gt;foldl&lt;/code&gt; 为 left-
+    
+    </summary>
+    
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+    
+    
+      <category term="Haskell" scheme="http://blog.hsfzxjy.site/tags/Haskell/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用 Aria2 在 Ubuntu 中下载百度云资源</title>
+    <link href="http://blog.hsfzxjy.site/2018-06-11-download-in-ubuntu-with-aria/"/>
+    <id>http://blog.hsfzxjy.site/2018-06-11-download-in-ubuntu-with-aria/</id>
+    <published>2018-06-10T16:00:00.000Z</published>
+    <updated>2019-01-21T09:06:17.133Z</updated>
+    
+    <content type="html"><![CDATA[<p>可以实现满带宽下载。</p>
+<h1 id="配置-Aria2"><a href="#配置-Aria2" class="headerlink" title="配置 Aria2"></a>配置 Aria2</h1><p>从 <a href="https://github.com/aria2/aria2/releases" target="_blank" rel="noopener">Github</a> 下载源码 <code>./configure &amp;&amp; make -j8 &amp;&amp; sudo make install</code>。</p>
+<h1 id="配置-Chrome-插件"><a href="#配置-Chrome-插件" class="headerlink" title="配置 Chrome 插件"></a>配置 Chrome 插件</h1><p>clone <code>https://github.com/acgotaku/BaiduExporter</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> ariac</div><div class="line">$ cat &gt; start.sh</div><div class="line">&gt; <span class="comment">#!/bin/bash</span></div><div class="line">&gt; aria2c --conf=aria2.conf</div><div class="line">&gt; ^D</div><div class="line">$ chmod +x start.sh</div><div class="line">$ ./start.sh</div></pre></td></tr></table></figure>
+<h1 id="安装-Chrome-插件"><a href="#安装-Chrome-插件" class="headerlink" title="安装 Chrome 插件"></a>安装 Chrome 插件</h1><p>打开 <code>chrome://extensions</code>，<code>Load Unpacked</code> 选择 <code>chrome/release</code>。</p>
+<p>完成后在百度云页面上会有 <code>导出下载</code> 按钮。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;可以实现满带宽下载。&lt;/p&gt;
+&lt;h1 id=&quot;配置-Aria2&quot;&gt;&lt;a href=&quot;#配置-Aria2&quot; class=&quot;headerlink&quot; title=&quot;配置 Aria2&quot;&gt;&lt;/a&gt;配置 Aria2&lt;/h1&gt;&lt;p&gt;从 &lt;a href=&quot;https://github.co
+    
+    </summary>
+    
+      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+    
+    
+      <category term="Ubuntu" scheme="http://blog.hsfzxjy.site/tags/Ubuntu/"/>
     
   </entry>
   
