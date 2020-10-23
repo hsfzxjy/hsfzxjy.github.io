@@ -103,18 +103,39 @@ var disqus_url = 'http://i.hsfzxjy.site/2016-02-10-meta-class-in-python/';
      }
  });
 });
-</script><script type="text/x-mathjax-config">MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$','$']]},
-    jax: ["input/TeX","output/HTML-CSS"],
-    "HTML-CSS": {
-        noReflows: false,
-        imageFont: null,
-        webFont: null
+</script><script type="text/x-mathjax-config">//- MathJax.Hub.Config({
+//-     tex2jax: {inlineMath: [['$','$']]},
+//-     jax: ["input/TeX","output/HTML-CSS"],
+//-     "HTML-CSS": {
+//-         noReflows: false,
+//-         imageFont: null,
+//-         webFont: null
+//-     }
+//- });
+window.MathJax = {
+    tex: {
+        inlineMath: [['$','$']],
+        autoload: {
+            color: [],
+            colorV2: ['color']
+        },
+        packages: {'[+]': ['noerrors']}
+    },
+    svg: {
+        fontCache: 'global'
+    },
+    options: {
+        ignoreHtmlClass: 'tex2jax_ignore',
+        processHtmlClass: 'tex2jax_process'
+    },
+    loader: {
+        load: ['[tex]/noerrors']
     }
-});
-</script><script>$(document).ready(function() {
-    var script = document.createElement("script");
-    script.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"
-    document.body.appendChild(script)
-})
-</script></html>
+};            
+</script><script>//- $(document).ready(function() {
+//-     var script = document.createElement("script");
+//-     //- script.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"
+//-     script.src = ""
+//-     document.body.appendChild(script)
+//- })
+</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script></html>
