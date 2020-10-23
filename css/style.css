@@ -64,6 +64,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+mjx-container.MathJax {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 body,
 html {
   overflow-x: hidden;
@@ -332,6 +337,11 @@ a:focus {
   line-height: 1.77;
   color: #444;
   padding-top: 20px;
+  text-justify: inter-word;
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
 }
 .post .post-content p,
 .post .post-content a,
