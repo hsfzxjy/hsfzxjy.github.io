@@ -4,9 +4,9 @@
   <subtitle>言えない言葉は、ここに隠される</subtitle>
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://blog.hsfzxjy.site/"/>
+  <link href="http://i.hsfzxjy.site/"/>
   <updated>2019-10-04T07:01:50.006Z</updated>
-  <id>http://blog.hsfzxjy.site/</id>
+  <id>http://i.hsfzxjy.site/</id>
   
   <author>
     <name>hsfzxjy</name>
@@ -17,8 +17,8 @@
   
   <entry>
     <title>西郊线</title>
-    <link href="http://blog.hsfzxjy.site/2019-10-03-xjx/"/>
-    <id>http://blog.hsfzxjy.site/2019-10-03-xjx/</id>
+    <link href="http://i.hsfzxjy.site/2019-10-03-xjx/"/>
+    <id>http://i.hsfzxjy.site/2019-10-03-xjx/</id>
     <published>2019-10-02T16:00:00.000Z</published>
     <updated>2019-10-04T07:01:50.006Z</updated>
     
@@ -38,15 +38,15 @@
     
     </summary>
     
-      <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
+      <category term="Soliloquy" scheme="http://i.hsfzxjy.site/categories/Soliloquy/"/>
     
     
   </entry>
   
   <entry>
     <title>Proof of the Gumbel Max Trick</title>
-    <link href="http://blog.hsfzxjy.site/2019-08-01-proof-of-gumbel-max-trick/"/>
-    <id>http://blog.hsfzxjy.site/2019-08-01-proof-of-gumbel-max-trick/</id>
+    <link href="http://i.hsfzxjy.site/2019-08-01-proof-of-gumbel-max-trick/"/>
+    <id>http://i.hsfzxjy.site/2019-08-01-proof-of-gumbel-max-trick/</id>
     <published>2019-07-31T16:00:00.000Z</published>
     <updated>2019-08-01T15:29:11.031Z</updated>
     
@@ -78,19 +78,19 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     </summary>
     
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+      <category term="Tech" scheme="http://i.hsfzxjy.site/categories/Tech/"/>
     
     
-      <category term="probability" scheme="http://blog.hsfzxjy.site/tags/probability/"/>
+      <category term="probability" scheme="http://i.hsfzxjy.site/tags/probability/"/>
     
-      <category term="math" scheme="http://blog.hsfzxjy.site/tags/math/"/>
+      <category term="math" scheme="http://i.hsfzxjy.site/tags/math/"/>
     
   </entry>
   
   <entry>
     <title>別れの前日</title>
-    <link href="http://blog.hsfzxjy.site/2019-07-13-notitle/"/>
-    <id>http://blog.hsfzxjy.site/2019-07-13-notitle/</id>
+    <link href="http://i.hsfzxjy.site/2019-07-13-notitle/"/>
+    <id>http://i.hsfzxjy.site/2019-07-13-notitle/</id>
     <published>2019-07-12T16:00:00.000Z</published>
     <updated>2019-10-04T07:25:46.482Z</updated>
     
@@ -108,15 +108,15 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     </summary>
     
-      <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
+      <category term="Soliloquy" scheme="http://i.hsfzxjy.site/categories/Soliloquy/"/>
     
     
   </entry>
   
   <entry>
     <title>Option::as_ref</title>
-    <link href="http://blog.hsfzxjy.site/2019-06-26-option-as_ref/"/>
-    <id>http://blog.hsfzxjy.site/2019-06-26-option-as_ref/</id>
+    <link href="http://i.hsfzxjy.site/2019-06-26-option-as_ref/"/>
+    <id>http://i.hsfzxjy.site/2019-06-26-option-as_ref/</id>
     <published>2019-06-25T16:00:00.000Z</published>
     <updated>2019-06-27T06:07:23.571Z</updated>
     
@@ -138,19 +138,19 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     </summary>
     
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+      <category term="Tech" scheme="http://i.hsfzxjy.site/categories/Tech/"/>
     
     
-      <category term="rust" scheme="http://blog.hsfzxjy.site/tags/rust/"/>
+      <category term="rust" scheme="http://i.hsfzxjy.site/tags/rust/"/>
     
-      <category term="lifetime" scheme="http://blog.hsfzxjy.site/tags/lifetime/"/>
+      <category term="lifetime" scheme="http://i.hsfzxjy.site/tags/lifetime/"/>
     
   </entry>
   
   <entry>
     <title>Rc and RefCell tricks</title>
-    <link href="http://blog.hsfzxjy.site/2019-06-23-rc-refcell-pattern/"/>
-    <id>http://blog.hsfzxjy.site/2019-06-23-rc-refcell-pattern/</id>
+    <link href="http://i.hsfzxjy.site/2019-06-23-rc-refcell-pattern/"/>
+    <id>http://i.hsfzxjy.site/2019-06-23-rc-refcell-pattern/</id>
     <published>2019-06-22T16:00:00.000Z</published>
     <updated>2019-06-26T04:55:40.046Z</updated>
     
@@ -207,19 +207,19 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     </summary>
     
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+      <category term="Tech" scheme="http://i.hsfzxjy.site/categories/Tech/"/>
     
     
-      <category term="rust" scheme="http://blog.hsfzxjy.site/tags/rust/"/>
+      <category term="rust" scheme="http://i.hsfzxjy.site/tags/rust/"/>
     
-      <category term="lifetime" scheme="http://blog.hsfzxjy.site/tags/lifetime/"/>
+      <category term="lifetime" scheme="http://i.hsfzxjy.site/tags/lifetime/"/>
     
   </entry>
   
   <entry>
     <title>Visualizing Correlation</title>
-    <link href="http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/"/>
-    <id>http://blog.hsfzxjy.site/2019-03-10-correlation-matrix/</id>
+    <link href="http://i.hsfzxjy.site/2019-03-10-correlation-matrix/"/>
+    <id>http://i.hsfzxjy.site/2019-03-10-correlation-matrix/</id>
     <published>2019-03-09T16:00:00.000Z</published>
     <updated>2019-07-02T07:05:35.383Z</updated>
     
@@ -235,15 +235,15 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     </summary>
     
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+      <category term="Tech" scheme="http://i.hsfzxjy.site/categories/Tech/"/>
     
     
   </entry>
   
   <entry>
     <title>三月十日杂感</title>
-    <link href="http://blog.hsfzxjy.site/2019-03-10-notitle/"/>
-    <id>http://blog.hsfzxjy.site/2019-03-10-notitle/</id>
+    <link href="http://i.hsfzxjy.site/2019-03-10-notitle/"/>
+    <id>http://i.hsfzxjy.site/2019-03-10-notitle/</id>
     <published>2019-03-09T16:00:00.000Z</published>
     <updated>2019-10-04T07:20:10.986Z</updated>
     
@@ -267,15 +267,15 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     </summary>
     
-      <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
+      <category term="Soliloquy" scheme="http://i.hsfzxjy.site/categories/Soliloquy/"/>
     
     
   </entry>
   
   <entry>
     <title>三月一日杂感</title>
-    <link href="http://blog.hsfzxjy.site/2019-03-01-notitle/"/>
-    <id>http://blog.hsfzxjy.site/2019-03-01-notitle/</id>
+    <link href="http://i.hsfzxjy.site/2019-03-01-notitle/"/>
+    <id>http://i.hsfzxjy.site/2019-03-01-notitle/</id>
     <published>2019-02-28T16:00:00.000Z</published>
     <updated>2019-03-01T16:40:41.426Z</updated>
     
@@ -294,15 +294,15 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     </summary>
     
-      <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
+      <category term="Soliloquy" scheme="http://i.hsfzxjy.site/categories/Soliloquy/"/>
     
     
   </entry>
   
   <entry>
     <title>二月十一日杂感</title>
-    <link href="http://blog.hsfzxjy.site/2019-02-11-notitle/"/>
-    <id>http://blog.hsfzxjy.site/2019-02-11-notitle/</id>
+    <link href="http://i.hsfzxjy.site/2019-02-11-notitle/"/>
+    <id>http://i.hsfzxjy.site/2019-02-11-notitle/</id>
     <published>2019-02-10T16:00:00.000Z</published>
     <updated>2019-02-12T14:25:55.793Z</updated>
     
@@ -318,15 +318,15 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     </summary>
     
-      <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
+      <category term="Soliloquy" scheme="http://i.hsfzxjy.site/categories/Soliloquy/"/>
     
     
   </entry>
   
   <entry>
     <title>一月二十六日杂感</title>
-    <link href="http://blog.hsfzxjy.site/2019-01-26-notitle/"/>
-    <id>http://blog.hsfzxjy.site/2019-01-26-notitle/</id>
+    <link href="http://i.hsfzxjy.site/2019-01-26-notitle/"/>
+    <id>http://i.hsfzxjy.site/2019-01-26-notitle/</id>
     <published>2019-01-25T16:00:00.000Z</published>
     <updated>2019-01-28T16:01:29.982Z</updated>
     
@@ -346,15 +346,15 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     </summary>
     
-      <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
+      <category term="Soliloquy" scheme="http://i.hsfzxjy.site/categories/Soliloquy/"/>
     
     
   </entry>
   
   <entry>
     <title>SS Configuration</title>
-    <link href="http://blog.hsfzxjy.site/2019-01-21-ss/"/>
-    <id>http://blog.hsfzxjy.site/2019-01-21-ss/</id>
+    <link href="http://i.hsfzxjy.site/2019-01-21-ss/"/>
+    <id>http://i.hsfzxjy.site/2019-01-21-ss/</id>
     <published>2019-01-21T08:50:00.000Z</published>
     <updated>2019-01-21T11:17:28.562Z</updated>
     
@@ -375,19 +375,19 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     </summary>
     
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+      <category term="Tech" scheme="http://i.hsfzxjy.site/categories/Tech/"/>
     
     
-      <category term="SS" scheme="http://blog.hsfzxjy.site/tags/SS/"/>
+      <category term="SS" scheme="http://i.hsfzxjy.site/tags/SS/"/>
     
-      <category term="proxychains" scheme="http://blog.hsfzxjy.site/tags/proxychains/"/>
+      <category term="proxychains" scheme="http://i.hsfzxjy.site/tags/proxychains/"/>
     
   </entry>
   
   <entry>
     <title>一月七日杂感</title>
-    <link href="http://blog.hsfzxjy.site/2019-01-07-notitle/"/>
-    <id>http://blog.hsfzxjy.site/2019-01-07-notitle/</id>
+    <link href="http://i.hsfzxjy.site/2019-01-07-notitle/"/>
+    <id>http://i.hsfzxjy.site/2019-01-07-notitle/</id>
     <published>2019-01-06T16:00:00.000Z</published>
     <updated>2019-01-21T09:07:41.189Z</updated>
     
@@ -409,15 +409,15 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     </summary>
     
-      <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
+      <category term="Soliloquy" scheme="http://i.hsfzxjy.site/categories/Soliloquy/"/>
     
     
   </entry>
   
   <entry>
     <title>四月·病</title>
-    <link href="http://blog.hsfzxjy.site/2018-12-31-april-illness/"/>
-    <id>http://blog.hsfzxjy.site/2018-12-31-april-illness/</id>
+    <link href="http://i.hsfzxjy.site/2018-12-31-april-illness/"/>
+    <id>http://i.hsfzxjy.site/2018-12-31-april-illness/</id>
     <published>2018-12-30T16:00:00.000Z</published>
     <updated>2019-06-25T01:36:02.609Z</updated>
     
@@ -441,15 +441,15 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     </summary>
     
-      <category term="Soliloquy" scheme="http://blog.hsfzxjy.site/categories/Soliloquy/"/>
+      <category term="Soliloquy" scheme="http://i.hsfzxjy.site/categories/Soliloquy/"/>
     
     
   </entry>
   
   <entry>
     <title>Haskell 笔记：State Monad</title>
-    <link href="http://blog.hsfzxjy.site/2018-12-15-haskell-state-monad/"/>
-    <id>http://blog.hsfzxjy.site/2018-12-15-haskell-state-monad/</id>
+    <link href="http://i.hsfzxjy.site/2018-12-15-haskell-state-monad/"/>
+    <id>http://i.hsfzxjy.site/2018-12-15-haskell-state-monad/</id>
     <published>2018-12-14T16:00:00.000Z</published>
     <updated>2019-01-21T09:06:17.133Z</updated>
     
@@ -473,17 +473,17 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     </summary>
     
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+      <category term="Tech" scheme="http://i.hsfzxjy.site/categories/Tech/"/>
     
     
-      <category term="Haskell" scheme="http://blog.hsfzxjy.site/tags/Haskell/"/>
+      <category term="Haskell" scheme="http://i.hsfzxjy.site/tags/Haskell/"/>
     
   </entry>
   
   <entry>
     <title>Haskell 笔记：Monad 引论</title>
-    <link href="http://blog.hsfzxjy.site/2018-12-14-haskell-monad/"/>
-    <id>http://blog.hsfzxjy.site/2018-12-14-haskell-monad/</id>
+    <link href="http://i.hsfzxjy.site/2018-12-14-haskell-monad/"/>
+    <id>http://i.hsfzxjy.site/2018-12-14-haskell-monad/</id>
     <published>2018-12-13T16:00:00.000Z</published>
     <updated>2019-01-21T09:06:17.133Z</updated>
     
@@ -554,17 +554,17 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     </summary>
     
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+      <category term="Tech" scheme="http://i.hsfzxjy.site/categories/Tech/"/>
     
     
-      <category term="Haskell" scheme="http://blog.hsfzxjy.site/tags/Haskell/"/>
+      <category term="Haskell" scheme="http://i.hsfzxjy.site/tags/Haskell/"/>
     
   </entry>
   
   <entry>
     <title>Haskell 笔记：Applicative</title>
-    <link href="http://blog.hsfzxjy.site/2018-11-18-haskell-applicative/"/>
-    <id>http://blog.hsfzxjy.site/2018-11-18-haskell-applicative/</id>
+    <link href="http://i.hsfzxjy.site/2018-11-18-haskell-applicative/"/>
+    <id>http://i.hsfzxjy.site/2018-11-18-haskell-applicative/</id>
     <published>2018-11-18T02:29:00.000Z</published>
     <updated>2019-01-21T09:06:18.349Z</updated>
     
@@ -593,17 +593,17 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     </summary>
     
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+      <category term="Tech" scheme="http://i.hsfzxjy.site/categories/Tech/"/>
     
     
-      <category term="Haskell" scheme="http://blog.hsfzxjy.site/tags/Haskell/"/>
+      <category term="Haskell" scheme="http://i.hsfzxjy.site/tags/Haskell/"/>
     
   </entry>
   
   <entry>
     <title>Haskell 笔记：Category Theory and Functor</title>
-    <link href="http://blog.hsfzxjy.site/2018-11-18-haskell-category-theory-and-functor/"/>
-    <id>http://blog.hsfzxjy.site/2018-11-18-haskell-category-theory-and-functor/</id>
+    <link href="http://i.hsfzxjy.site/2018-11-18-haskell-category-theory-and-functor/"/>
+    <id>http://i.hsfzxjy.site/2018-11-18-haskell-category-theory-and-functor/</id>
     <published>2018-11-18T00:50:00.000Z</published>
     <updated>2019-01-21T09:06:17.133Z</updated>
     
@@ -646,17 +646,17 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     </summary>
     
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+      <category term="Tech" scheme="http://i.hsfzxjy.site/categories/Tech/"/>
     
     
-      <category term="Haskell" scheme="http://blog.hsfzxjy.site/tags/Haskell/"/>
+      <category term="Haskell" scheme="http://i.hsfzxjy.site/tags/Haskell/"/>
     
   </entry>
   
   <entry>
     <title>Haskell 笔记：data, type, newtype</title>
-    <link href="http://blog.hsfzxjy.site/2018-11-16-haskell-data-type-newtype/"/>
-    <id>http://blog.hsfzxjy.site/2018-11-16-haskell-data-type-newtype/</id>
+    <link href="http://i.hsfzxjy.site/2018-11-16-haskell-data-type-newtype/"/>
+    <id>http://i.hsfzxjy.site/2018-11-16-haskell-data-type-newtype/</id>
     <published>2018-11-15T16:00:00.000Z</published>
     <updated>2019-01-21T09:06:17.133Z</updated>
     
@@ -679,17 +679,17 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     </summary>
     
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+      <category term="Tech" scheme="http://i.hsfzxjy.site/categories/Tech/"/>
     
     
-      <category term="Haskell" scheme="http://blog.hsfzxjy.site/tags/Haskell/"/>
+      <category term="Haskell" scheme="http://i.hsfzxjy.site/tags/Haskell/"/>
     
   </entry>
   
   <entry>
     <title>Haskell 笔记：folds</title>
-    <link href="http://blog.hsfzxjy.site/2018-11-10-haskell-fold/"/>
-    <id>http://blog.hsfzxjy.site/2018-11-10-haskell-fold/</id>
+    <link href="http://i.hsfzxjy.site/2018-11-10-haskell-fold/"/>
+    <id>http://i.hsfzxjy.site/2018-11-10-haskell-fold/</id>
     <published>2018-11-09T16:00:00.000Z</published>
     <updated>2019-01-21T09:06:18.425Z</updated>
     
@@ -728,17 +728,17 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     </summary>
     
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+      <category term="Tech" scheme="http://i.hsfzxjy.site/categories/Tech/"/>
     
     
-      <category term="Haskell" scheme="http://blog.hsfzxjy.site/tags/Haskell/"/>
+      <category term="Haskell" scheme="http://i.hsfzxjy.site/tags/Haskell/"/>
     
   </entry>
   
   <entry>
     <title>使用 Aria2 在 Ubuntu 中下载百度云资源</title>
-    <link href="http://blog.hsfzxjy.site/2018-06-11-download-in-ubuntu-with-aria/"/>
-    <id>http://blog.hsfzxjy.site/2018-06-11-download-in-ubuntu-with-aria/</id>
+    <link href="http://i.hsfzxjy.site/2018-06-11-download-in-ubuntu-with-aria/"/>
+    <id>http://i.hsfzxjy.site/2018-06-11-download-in-ubuntu-with-aria/</id>
     <published>2018-06-10T16:00:00.000Z</published>
     <updated>2019-01-21T09:06:17.133Z</updated>
     
@@ -757,10 +757,10 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     </summary>
     
-      <category term="Tech" scheme="http://blog.hsfzxjy.site/categories/Tech/"/>
+      <category term="Tech" scheme="http://i.hsfzxjy.site/categories/Tech/"/>
     
     
-      <category term="Ubuntu" scheme="http://blog.hsfzxjy.site/tags/Ubuntu/"/>
+      <category term="Ubuntu" scheme="http://i.hsfzxjy.site/tags/Ubuntu/"/>
     
   </entry>
   
