@@ -107,6 +107,7 @@ body {
 body,
 html {
     overflow-x: hidden;
+    font-size: 16px;
 }
 
 .body_container {
@@ -239,7 +240,7 @@ a:focus {
             border-bottom: 1px solid #ddd;
             display: block;
             font-weight: normal;
-            font-family: Lato;
+            font-family: LatoWeb;
         }
 
         .comments-title {
@@ -1754,6 +1755,7 @@ pre .javascript .function {
         li {
             margin: 5px 0;
             line-height: 1.5;
+            font-size: 14px;
         }
     }
 }
