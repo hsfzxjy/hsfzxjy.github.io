@@ -8,7 +8,7 @@
  */
 @font-face {
   font-family: "life-saver";
-  src: url("../fonts/LifeSavers-Regular.ttf");
+  src: url("../fonts/slim.LifeSavers-Regular.ttf");
 }
 @font-face {
   font-family: "Sawarabi-Mincho";
@@ -29,9 +29,9 @@
 /* Webfont: Lato-Regular */
 @font-face {
   font-family: "LatoWeb";
-  src: url("../fonts/Lato/Lato-Regular.eot");
+  src: url("../fonts/Lato/slim.Lato-Regular.eot");
   /* IE9 Compat Modes */
-  src: url("../fonts/Lato/Lato-Regular.eot?#iefix") format("embedded-opentype"), url("../fonts/Lato/Lato-Regular.woff2") format("woff2"), url("../fonts/Lato/Lato-Regular.woff") format("woff"), url("../fonts/Lato/Lato-Regular.ttf") format("truetype");
+  src: url("../fonts/Lato/slim.Lato-Regular.eot?#iefix") format("embedded-opentype"), url("../fonts/Lato/slim.Lato-Regular.woff2") format("woff2"), url("../fonts/Lato/slim.Lato-Regular.woff") format("woff"), url("../fonts/Lato/slim.Lato-Regular.ttf") format("truetype");
   font-style: normal;
   font-weight: normal;
   text-rendering: optimizeLegibility;
@@ -39,9 +39,9 @@
 /* Webfont: Lato-Thin */
 @font-face {
   font-family: "LatoWebThin";
-  src: url("../fonts/Lato/Lato-Thin.eot");
+  src: url("../fonts/Lato/slim.Lato-Thin.eot");
   /* IE9 Compat Modes */
-  src: url("../fonts/Lato/Lato-Thin.eot?#iefix") format("embedded-opentype"), url("../fonts/Lato/Lato-Thin.woff2") format("woff2"), url("../fonts/Lato/Lato-Thin.woff") format("woff"), url("../fonts/Lato/Lato-Thin.ttf") format("truetype");
+  src: url("../fonts/Lato/slim.Lato-Thin.eot?#iefix") format("embedded-opentype"), url("../fonts/Lato/slim.Lato-Thin.woff2") format("woff2"), url("../fonts/Lato/slim.Lato-Thin.woff") format("woff"), url("../fonts/Lato/slim.Lato-Thin.ttf") format("truetype");
   font-style: normal;
   font-weight: normal;
   text-rendering: optimizeLegibility;
@@ -49,9 +49,9 @@
 /* Webfont: Lato-Light */
 @font-face {
   font-family: "LatoWebLight";
-  src: url("../fonts/Lato/Lato-Light.eot");
+  src: url("../fonts/Lato/slim.Lato-Light.eot");
   /* IE9 Compat Modes */
-  src: url("../fonts/Lato/Lato-Light.eot?#iefix") format("embedded-opentype"), url("../fonts/Lato/Lato-Light.woff2") format("woff2"), url("../fonts/Lato/Lato-Light.woff") format("woff"), url("../fonts/Lato/Lato-Light.ttf") format("truetype");
+  src: url("../fonts/Lato/slim.Lato-Light.eot?#iefix") format("embedded-opentype"), url("../fonts/Lato/slim.Lato-Light.woff2") format("woff2"), url("../fonts/Lato/slim.Lato-Light.woff") format("woff"), url("../fonts/Lato/slim.Lato-Light.ttf") format("truetype");
   font-style: normal;
   font-weight: normal;
   text-rendering: optimizeLegibility;
