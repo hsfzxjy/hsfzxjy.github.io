@@ -6,7 +6,7 @@
  * @link http://chopstack.com
  */
 
-$bk-color: lighten(#eee, 3.2%);
+$bk-color: lighten(#eee, 3%);
 $green: #42b983;
 
 @font-face {
@@ -201,27 +201,59 @@ a:focus {
     #nav-menu {
         margin: 10px 0 -1px;
         padding: 0;
+        position: relative;
 
-        a {
-            display: inline-block;
-            padding: 3px 20px 3px;
-            line-height: 30px;
-            color: #444;
-            font-size: 13px;
-            border: 1px solid transparent;
+        &.left span.before,
+        &.right span.after {
 
-            &:hover {
-                border-bottom-color: #444;
+            content: "";
+            display: block;
+            width: 3em;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+        }
+
+        & span.before {
+            left: -2px;
+            background-image: linear-gradient(to right, $bk-color, transparent);
+        }
+
+        & span.after {
+            right: -2px;
+            background-image: linear-gradient(to right, transparent, $bk-color);
+        }
+
+
+        &>div {
+            white-space: nowrap;
+            overflow-x: auto;
+
+            &::-webkit-scrollbar {
+                display: none;
             }
 
-            &.current {
-                border: 1px solid #ddd;
-                border-bottom-color: $bk-color;
-            }
+            a {
+                display: inline-block;
+                padding: 3px 20px 3px;
+                line-height: 30px;
+                color: #444;
+                font-size: 13px;
+                border: 1px solid transparent;
 
-            span {
-                margin-left: 0.5em;
-                font-family: LatoWeb;
+                &:hover {
+                    border-bottom-color: #444;
+                }
+
+                &.current {
+                    border: 1px solid #ddd;
+                    border-bottom-color: $bk-color;
+                }
+
+                span {
+                    margin-left: 0.5em;
+                    font-family: LatoWeb;
+                }
             }
         }
     }
@@ -503,13 +535,14 @@ a:focus {
             //text-indent: 2em;
         }
 
+        code {
+            display: inline;
+            font-size: 0.8em;
+        }
+
         p {
             margin: 0 0 1.234em;
 
-            code {
-                display: inline;
-                font-size: 0.8em;
-            }
 
             a {
                 color: #01579f;
@@ -562,6 +595,10 @@ a:focus {
             }
 
             ul {
+                margin: 0;
+            }
+
+            &:last-child {
                 margin: 0;
             }
         }
@@ -675,7 +712,7 @@ a:focus {
 
 /*<middle*/
 @media print,
-screen and (max-width: 767px) {
+screen and (max-width: 959px) {
     #no-comment {
         padding: 20px 30px !important;
     }
@@ -786,6 +823,18 @@ screen and (max-width: 35.5em) {
         .post-title {
             padding-top: 2em;
             text-align: center;
+        }
+
+        .post-content {
+            blockquote {
+                padding: 0
+            }
+
+            ul,
+            ol {
+                padding-left: 1.5em;
+                padding-right: 1em;
+            }
         }
     }
 }

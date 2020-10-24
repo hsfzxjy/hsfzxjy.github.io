@@ -152,8 +152,32 @@ a:focus {
 #header #nav-menu {
   margin: 10px 0 -1px;
   padding: 0;
+  position: relative;
 }
-#header #nav-menu a {
+#header #nav-menu.left span.before, #header #nav-menu.right span.after {
+  content: "";
+  display: block;
+  width: 3em;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+#header #nav-menu span.before {
+  left: -2px;
+  background-image: linear-gradient(to right, #f6f6f6, transparent);
+}
+#header #nav-menu span.after {
+  right: -2px;
+  background-image: linear-gradient(to right, transparent, #f6f6f6);
+}
+#header #nav-menu > div {
+  white-space: nowrap;
+  overflow-x: auto;
+}
+#header #nav-menu > div::-webkit-scrollbar {
+  display: none;
+}
+#header #nav-menu > div a {
   display: inline-block;
   padding: 3px 20px 3px;
   line-height: 30px;
@@ -161,14 +185,14 @@ a:focus {
   font-size: 13px;
   border: 1px solid transparent;
 }
-#header #nav-menu a:hover {
+#header #nav-menu > div a:hover {
   border-bottom-color: #444;
 }
-#header #nav-menu a.current {
+#header #nav-menu > div a.current {
   border: 1px solid #ddd;
   border-bottom-color: #f6f6f6;
 }
-#header #nav-menu a span {
+#header #nav-menu > div a span {
   margin-left: 0.5em;
   font-family: LatoWeb;
 }
@@ -303,7 +327,7 @@ a:focus {
   border-bottom-color: transparent;
 }
 .post .post-title a:hover {
-  border-bottom-color: #444444;
+  border-bottom-color: #434343;
 }
 .post:first-child .post-title {
   border: none;
@@ -402,12 +426,12 @@ a:focus {
 .post .post-content pre code {
   padding: 0 2em;
 }
-.post .post-content p {
-  margin: 0 0 1.234em;
-}
-.post .post-content p code {
+.post .post-content code {
   display: inline;
   font-size: 0.8em;
+}
+.post .post-content p {
+  margin: 0 0 1.234em;
 }
 .post .post-content p a {
   color: #01579f;
@@ -454,6 +478,10 @@ a:focus {
 }
 .post .post-content ul ul,
 .post .post-content ol ul {
+  margin: 0;
+}
+.post .post-content ul:last-child,
+.post .post-content ol:last-child {
   margin: 0;
 }
 .post .post-content table {
@@ -547,7 +575,7 @@ a:focus {
 }
 
 /*<middle*/
-@media print, screen and (max-width: 767px) {
+@media print, screen and (max-width: 959px) {
   #no-comment {
     padding: 20px 30px !important;
   }
@@ -641,6 +669,14 @@ a:focus {
     padding-top: 2em;
     text-align: center;
   }
+  .post .post-content blockquote {
+    padding: 0;
+  }
+  .post .post-content ul,
+.post .post-content ol {
+    padding-left: 1.5em;
+    padding-right: 1em;
+  }
 }
 blockquote,
 .stressed {
@@ -649,7 +685,7 @@ blockquote,
   margin: 2.5em 0;
   padding: 20px;
   color: #555;
-  border: dashed #aaaaaa 1px;
+  border: dashed darkgray 1px;
 }
 blockquote p:last-child,
 .stressed p:last-child {
@@ -1666,7 +1702,7 @@ pre .javascript .function {
   margin: 2.5em 0;
   padding: 20px 80px;
   color: #555;
-  border: dashed #aaaaaa 1px;
+  border: dashed darkgray 1px;
   font-family: "LatoWeb", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
   display: none;
 }
