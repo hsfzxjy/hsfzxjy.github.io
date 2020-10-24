@@ -92,7 +92,7 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     <link href="http://i.hsfzxjy.site/2019-06-26-option-as_ref/"/>
     <id>http://i.hsfzxjy.site/2019-06-26-option-as_ref/</id>
     <published>2019-06-25T16:00:00.000Z</published>
-    <updated>2020-10-24T09:13:05.983Z</updated>
+    <updated>2020-10-24T09:15:17.163Z</updated>
     
     <content type="html"><![CDATA[<p>Let’s consider the following function:</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::ptr::NonNull;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">transform</span></span>&lt;T&gt;(option: &amp;<span class="built_in">Option</span>&lt;NonNull&lt;T&gt;&gt;) -&gt; <span class="built_in">Option</span>&lt;&amp;T&gt; &#123;</span><br><span class="line">    option.map(|x| <span class="keyword">unsafe</span> &#123; x.as_ref() &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -132,7 +132,7 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     <link href="http://i.hsfzxjy.site/2019-06-23-rc-refcell-pattern/"/>
     <id>http://i.hsfzxjy.site/2019-06-23-rc-refcell-pattern/</id>
     <published>2019-06-22T16:00:00.000Z</published>
-    <updated>2020-10-24T09:02:18.214Z</updated>
+    <updated>2020-10-24T09:15:29.899Z</updated>
     
     <content type="html"><![CDATA[<p>Say we need a type <code>Cursor&lt;T&gt;</code> , which contains a mutable reference to <code>T</code> . The type has a method, say <code>.dup()</code> , which returns a new instance of <code>Cursor&lt;T&gt;</code> , while sharing the interior reference across instances. Such design is a common pattern in database driver library. Users might expect to hold multiple cursors simultaneously, each of which owns a reference to the same connection object. </p>
 <p>A possible implementation might look like:</p>
