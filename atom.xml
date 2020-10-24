@@ -132,7 +132,7 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     <link href="http://i.hsfzxjy.site/2019-06-23-rc-refcell-pattern/"/>
     <id>http://i.hsfzxjy.site/2019-06-23-rc-refcell-pattern/</id>
     <published>2019-06-22T16:00:00.000Z</published>
-    <updated>2020-10-24T09:15:29.899Z</updated>
+    <updated>2020-10-24T11:15:00.944Z</updated>
     
     <content type="html"><![CDATA[<p>Say we need a type <code>Cursor&lt;T&gt;</code> , which contains a mutable reference to <code>T</code> . The type has a method, say <code>.dup()</code> , which returns a new instance of <code>Cursor&lt;T&gt;</code> , while sharing the interior reference across instances. Such design is a common pattern in database driver library. Users might expect to hold multiple cursors simultaneously, each of which owns a reference to the same connection object. </p>
 <p>A possible implementation might look like:</p>
@@ -160,7 +160,10 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">thread &apos;main&apos; panicked at &apos;called `Option::unwrap()` on a `None` value&apos;, src/libcore/option.rs:347:21</span><br></pre></td></tr></table></figure>
 <p>Oops… <code>Rc::get_mut</code> really returns a <code>None</code> ! To explain this, we might go back to the docs for help:</p>
 <blockquote>
-<p>( <code>Rc::get_mut</code> ) Returns a mutable reference to the inner value, if there are no other <code>Rc</code> or <code>Weak</code> pointers to the same value.( <code>Rc::get_mut</code> ) Returns <code>None</code> otherwise, because it is not safe to mutate a shared value.</p>
+<ul>
+<li><code>Rc::get_mut</code> Returns a mutable reference to the inner value, if there are no other <code>Rc</code> or <code>Weak</code> pointers to the same value.</li>
+<li><code>Rc::get_mut</code> Returns <code>None</code> otherwise, because it is not safe to mutate a shared value.</li>
+</ul>
 </blockquote>
 <p>The fact is that, <code>Rc::get_mut</code> will perform a run-time check to ensure there’s no other <code>Rc</code> or <code>Weak</code> instances referencing the target, and fails (returns <code>None</code> ) if so. In the code above, there are actually two <code>Rc</code> instances, <code>i</code> and <code>a.obj</code> , sharing a same value internally. Consequently, <code>Rc::get_mut</code> denies the dereferencing. From this perspective, <code>Rc</code> resembles another borrow checker at runtime. </p>
 <p>We might do a quick comparison between <code>Rc</code> s and primitive references:<code>Rc</code> :</p>

@@ -24,7 +24,10 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">thread &apos;main&apos; panicked at &apos;called `Option::unwrap()` on a `None` value&apos;, src/libcore/option.rs:347:21</span><br></pre></td></tr></table></figure>
 <p>Oops… <code>Rc::get_mut</code> really returns a <code>None</code> ! To explain this, we might go back to the docs for help:</p>
 <blockquote>
-<p>( <code>Rc::get_mut</code> ) Returns a mutable reference to the inner value, if there are no other <code>Rc</code> or <code>Weak</code> pointers to the same value.( <code>Rc::get_mut</code> ) Returns <code>None</code> otherwise, because it is not safe to mutate a shared value.</p>
+<ul>
+<li><code>Rc::get_mut</code> Returns a mutable reference to the inner value, if there are no other <code>Rc</code> or <code>Weak</code> pointers to the same value.</li>
+<li><code>Rc::get_mut</code> Returns <code>None</code> otherwise, because it is not safe to mutate a shared value.</li>
+</ul>
 </blockquote>
 <p>The fact is that, <code>Rc::get_mut</code> will perform a run-time check to ensure there’s no other <code>Rc</code> or <code>Weak</code> instances referencing the target, and fails (returns <code>None</code> ) if so. In the code above, there are actually two <code>Rc</code> instances, <code>i</code> and <code>a.obj</code> , sharing a same value internally. Consequently, <code>Rc::get_mut</code> denies the dereferencing. From this perspective, <code>Rc</code> resembles another borrow checker at runtime. </p>
 <p>We might do a quick comparison between <code>Rc</code> s and primitive references:<code>Rc</code> :</p>
