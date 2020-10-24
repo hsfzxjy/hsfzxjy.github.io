@@ -542,6 +542,10 @@ a:focus {
 }
 
 /* for different pages ends*/
+#right-panel span.toggle-menu {
+  display: none;
+}
+
 /*<middle*/
 @media print, screen and (max-width: 767px) {
   #no-comment {
@@ -561,8 +565,51 @@ a:focus {
     padding-right: 15px;
   }
 
-  #sidebar {
+  #right-panel {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    background-color: #eee;
+    width: 100%;
+    overflow-y: auto;
+    transition: left 0.5s, right 0.5s;
+    left: 100%;
+    right: -100%;
+  }
+  #right-panel::-webkit-scrollbar {
     display: none;
+  }
+  #right-panel span.toggle-menu {
+    display: inline-block;
+    position: fixed;
+    font-size: 2.5rem;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    line-height: 1;
+    color: transparent;
+    transition: color 0.5s;
+  }
+  #right-panel span.toggle-menu span {
+    opacity: 1;
+    transition: opacity 0.5s;
+    content: "";
+    position: absolute;
+    left: -2px;
+    display: block;
+    width: 100%;
+    top: 10px;
+    box-shadow: 0 2px 0 1px #69737d, 0 9px 0 1px #69737d, 0 16px 0 1px #69737d;
+  }
+  #right-panel.show {
+    left: 0;
+    right: 0;
+  }
+  #right-panel.show span.toggle-menu {
+    color: inherit;
+  }
+  #right-panel.show span.toggle-menu span {
+    opacity: 0;
   }
 
   #header .site-name {
