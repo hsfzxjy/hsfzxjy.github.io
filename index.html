@@ -9,66 +9,9 @@
 </ol>
 <p>Property 5 is so-called addictivity. That is, if we observe $X$ in two steps, firstly obtaining a value from $\{\hat{a},a_{k+1},\ldots,a_n\}$ and then another value from $\{a_1,\ldots,a_k\}$ if $\hat{a}$ selected, the entropy of the whole system should be sum of these two subsystems.</p>
 <p>Note that a function satisfying property 1, 4, 5 must have a form of $H(\vec{p})= - C \sum_k p_k \log p_k$, which reveals that entropy function is unique.</p>
-<p>Entropy measures the <strong>uncertainty</strong> of a random value. Intuively, entropy reaches its maximum $\log n$ when all alphabets occur with same probability, and likewise has a minimum of $0$ if $p_k=1$ for some $k$.</p>
+<p>Entropy measures the <strong>uncertainty</strong> of a random value. Intuitively, entropy reaches its maximum $\log n$ when all alphabets occur with same probability, and likewise has a minimum of $0$ if $p_k=1$ for some $k$.</p>
 <p>Entropy also represents the smallest average length to encode a message. Say we have a message consisting of alphabets $a_1,\ldots,a_n$, occurring with probability $p_1,\ldots,p_n$. Now we want to assign a code (an $N$-ary string) to each alphabet, with no two codes sharing a same prefix. The length of the codes are denoted as $l_1,\ldots,l_n$. <a href="https://en.wikipedia.org/wiki/Shannon%27s_source_coding_theorem" target="_blank" rel="noopener">Shannon’s source coding theroem</a> states that the average code length $\sum_k p_k l_k$ could not be less than $H(p_1,\ldots,p_n)$ (taking $N$ as logarithm base).</p>
-<hr>
-<p>We may generalize the definition to 2D random variables likewisely. Suppose $\mathbb{P}((X,Y)=(a_k,b_j))$ $=p(a_k,b_j)$. We define: $$H(XY)=\sum_{k,j} - p(a_k,b_j) \log p(a_k,b_j)$$. Rewrite the formula as:</p>
-<p>$$
-\begin{align}
-H(XY) &= \sum_{k,j} - p(a_k,b_j) \log p(a_k,b_j) \\
-      &= \sum_k\sum_j - p(a_k,b_j) \log \left[ p(b_j) p(a_k|b_j) \right] \\
-      &= \sum_j -p(b_j) \log p(b_j) - \sum_j p(b_j) \sum_k p(a_k|b_j) \log p(a_k|b_j) \\
-      &= H(Y) - \sum_j p(b_j) H(X|b_j) \\
-      &= H(Y) + H(X|Y) \\
-\end{align}$$where $H(X|Y)$ is weighted average of $H(X|\cdot)$, called <strong>conditional entropy</strong>. Symmetrically, we have $H(X)+H(Y|X)=H(Y)+H(X|Y)$.</p>
-<p>Further we have $H(XY) \leq H(X)+H(Y)$, since:</p>
-<p>$$
-\begin{align}
-H(XY)-H(X)-H(Y) &= \sum_{k,j} p(a_k,b_j) \log \frac{p(a_k)p(b_j)}{p(a_k,b_j)} \\
- &\leq \sum_{k,j} p(a_k,b_j) \left[ \frac{p(a_k)p(b_j)}{p(a_k,b_j)} - 1 \right] \\
- &=0
-\end{align}$$the equality holds $\iff X, Y$ are independent.</p>
-<p>In summary, we have:</p>
-<p>$$\begin{align}
-H(XY) &\leq H(X)+H(Y) \\
-H(Y|X) &\leq H(Y) \\
-H(X|Y) &\leq H(X) \\
-\end{align}$$The latter two are intuitive — entropy (uncertainty) decreases if provided some prior.</p>
-<h2 id="Mutual-Information"><a href="#Mutual-Information" class="headerlink" title="Mutual Information"></a>Mutual Information</h2><p>The mutual information of $X,Y$ is defined as:</p>
-<p>$$\begin{align}
-I(X|Y) &= H(X)-H(X|Y) \\
-       &= - \sum_k p(a_k) \log p(a_k) + \sum_j \sum_k p(a_k,b_j) \log p(a_k|b_j) \\
-       &= \sum_{j,k} p(a_k,b_j) \log \frac{p(a_k, b_j)}{p(a_k)p(b_j)}
-\end{align}$$Intuitively, $I(X;Y)$ is the reduced information after prior $Y$ provided. It’s worth noting that $I(X;Y)=I(Y;X)$ and thus $I(\cdot;\cdot)$ is symmetric. </p>
-<p>We can define conditional mutual information likewisely:</p>
-<p>$$\begin{align}
-I(X;Y|Z) &= \sum_i p(z_i) I(X|z_i;Y|z_i) \\
-         &= \sum_i p(z_i) \sum_{k,j} p(a_k,b_j|z_i) \log \frac{p(a_k, b_j|z_i)}{p(a_k|z_i)p(b_j|z_i)} \\
-         &= \sum_{i,j,k} p(a_k,b_j,z_i) \log \frac{p(a_k, b_j,z_i)p(z_i)}{p(a_k,z_i)p(b_j,z_i)}
-\end{align}$$</p>
-<hr>
-<p>Some facts can be derived using the definition of entropy and mutual information:</p>
-<p>$$\begin{align}
-I(X;Y)   &= H(X) - H(X|Y) \\
-         &= H(X) + H(Y) - H(XY) \\
-I(X;YZ)  &= H(X) + H(YZ) - H(XYZ) \\
-I(X;Y|Z) &= H(X|Z) - H(X|YZ) \\
-         &= H(XZ) + H(YZ) - H(Z) - H(XYZ)
-\end{align}$$</p>
-<hr>
-<p>We can further define mutual information among three (or more) variables as:</p>
-<p>$$\begin{align}
-I(X;Y;Z) &= I(X;Y)-I(X;Y|Z) \\
-         &= H(X)+H(Y)+H(Z)-H(XY)-H(YZ)-H(XZ)+H(XYZ) \\
-\end{align}$$</p>
-<hr>
-<p>We may observse some similarity between the above formula and <a href="https://en.wikipedia.org/wiki/Inclusion%E2%80%93exclusion_principle" target="_blank" rel="noopener">Inclusion-Exclusion Principle</a>. In fact, we can build a formal correspondence between entropy and set measure, as:</p>
-<p>$$\begin{matrix}
-&H(X)=\mu(A)     &H(XY)=\mu(A \cup B) \\
-&H(X|Y)=\mu(A-B) &I(X;Y)=\mu(A \cap B) \\
-&H(X;Y|Z)=\mu((A \cap B)-C) &I(X;Y;Z)=\mu(A \cap B \cap C)
-\end{matrix}$$where $\mu$ is some set measure. The correspondence may be used as a helper for memorizing.</p>
-</div></div><div class="post"><hr><h2 class="post-title"><a href="/2019-12-10-yakimono/">铁板烧</a></h2><div class="post-meta">2019-12-10</div><span data-disqus-identifier="2019-12-10-yakimono/" class="disqus-comment-count"></span><div lang="en" class="post-content "><p>最近喜欢上了那家铁板烧。在寸土寸金的北京，那家店占据了食街不大的一角。开放式的厨房几乎就是它的全部。一圈细长的大理石柜台，被椅子围得严严实实。人们就此坐下，点菜，颇有一番日式的味道。隔着不高的玻璃，可以看到三个大厨在柜台另一边忙碌。食材触到铁板的「吱」响，伴随时不时的爆裂声，白色的烟汽袅起，混合着诱人的香味，好不热闹。</p>
+</div><p class="readmore"><a href="/2020-01-04-information-theory-entropy-and-mutual-information-discrete-cases/">Read More</a></p></div><div class="post"><hr><h2 class="post-title"><a href="/2019-12-10-yakimono/">铁板烧</a></h2><div class="post-meta">2019-12-10</div><span data-disqus-identifier="2019-12-10-yakimono/" class="disqus-comment-count"></span><div lang="en" class="post-content "><p>最近喜欢上了那家铁板烧。在寸土寸金的北京，那家店占据了食街不大的一角。开放式的厨房几乎就是它的全部。一圈细长的大理石柜台，被椅子围得严严实实。人们就此坐下，点菜，颇有一番日式的味道。隔着不高的玻璃，可以看到三个大厨在柜台另一边忙碌。食材触到铁板的「吱」响，伴随时不时的爆裂声，白色的烟汽袅起，混合着诱人的香味，好不热闹。</p>
 <p>入冬后，食街上的人更多了。日落后，室外温度急剧下降，这时来热闹的地方吃点热热的东西，再合适不过了。独自点上一份肉，一份菜，一碟满满的炒饭，吃得满面油光，奢侈而满足。推门而出，白天发生的不愉快，或是接下来要加班的怠惰，多少缓解了一些。但每次吃完，衣服上，头发上总会带上一股味道——铁板烧的味道，油烟的味道。</p>
 <p>有人不在乎这味道，觉得这是烟火味，是相关料理的灵魂，是生活的气息。在以前，我是很痛恨这种说法的。吃火锅，或是烧烤时，高温食材逸散出的分子，几乎无孔不入，附在衣服上、头发上，就像被泼了一身油。每一回都要努力地洗澡，再将衣服由里至外换一遍，方可除去这种味道。我不能忍受这样的味道，藉而讨厌相关的料理。但近几年，这种想法似乎在慢慢消失，我开始能接受这种味道。尽管还是接受不了烧烤，但这种铁板烧倒是可以，甚至慢慢喜欢上了。</p>
 <p>讨厌烟火味，和睡前一定要洗澡一样，这些观念的背后似乎有着奇妙的机理。人们小时候的经历，或是大人的说教，或是自身的负面遭遇，仿佛在主导这些观念。怕小鸡的以前踩死过小鸡，不敢吃鱼的是被鱼刺卡过。但我的这个观念好像是自发产生的，没有听从任何人表达过这样的观点，而是打心底里就讨厌这种味道。</p>

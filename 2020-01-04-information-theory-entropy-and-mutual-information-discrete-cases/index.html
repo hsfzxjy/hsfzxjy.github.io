@@ -9,8 +9,9 @@
 </ol>
 <p>Property 5 is so-called addictivity. That is, if we observe $X$ in two steps, firstly obtaining a value from $\{\hat{a},a_{k+1},\ldots,a_n\}$ and then another value from $\{a_1,\ldots,a_k\}$ if $\hat{a}$ selected, the entropy of the whole system should be sum of these two subsystems.</p>
 <p>Note that a function satisfying property 1, 4, 5 must have a form of $H(\vec{p})= - C \sum_k p_k \log p_k$, which reveals that entropy function is unique.</p>
-<p>Entropy measures the <strong>uncertainty</strong> of a random value. Intuively, entropy reaches its maximum $\log n$ when all alphabets occur with same probability, and likewise has a minimum of $0$ if $p_k=1$ for some $k$.</p>
+<p>Entropy measures the <strong>uncertainty</strong> of a random value. Intuitively, entropy reaches its maximum $\log n$ when all alphabets occur with same probability, and likewise has a minimum of $0$ if $p_k=1$ for some $k$.</p>
 <p>Entropy also represents the smallest average length to encode a message. Say we have a message consisting of alphabets $a_1,\ldots,a_n$, occurring with probability $p_1,\ldots,p_n$. Now we want to assign a code (an $N$-ary string) to each alphabet, with no two codes sharing a same prefix. The length of the codes are denoted as $l_1,\ldots,l_n$. <a href="https://en.wikipedia.org/wiki/Shannon%27s_source_coding_theorem" target="_blank" rel="noopener">Shannon’s source coding theroem</a> states that the average code length $\sum_k p_k l_k$ could not be less than $H(p_1,\ldots,p_n)$ (taking $N$ as logarithm base).</p>
+<a id="more"></a>
 <hr>
 <p>We may generalize the definition to 2D random variables likewisely. Suppose $\mathbb{P}((X,Y)=(a_k,b_j))$ $=p(a_k,b_j)$. We define: $$H(XY)=\sum_{k,j} - p(a_k,b_j) \log p(a_k,b_j)$$. Rewrite the formula as:</p>
 <p>$$

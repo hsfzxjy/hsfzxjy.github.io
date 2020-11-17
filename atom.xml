@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://i.hsfzxjy.site/"/>
-  <updated>2020-11-17T12:20:09.403Z</updated>
+  <updated>2020-11-17T12:22:49.009Z</updated>
   <id>http://i.hsfzxjy.site/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://i.hsfzxjy.site/2020-01-04-information-theory-entropy-and-mutual-information-discrete-cases/"/>
     <id>http://i.hsfzxjy.site/2020-01-04-information-theory-entropy-and-mutual-information-discrete-cases/</id>
     <published>2020-01-03T16:00:00.000Z</published>
-    <updated>2020-11-17T12:20:09.403Z</updated>
+    <updated>2020-11-17T12:22:49.009Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Entropy"><a href="#Entropy" class="headerlink" title="Entropy"></a>Entropy</h2><p>Given a discrete r.v. $X$, where $X$ ranged in $\{a_1, \ldots, a_n\}$, $\mathbb{P}(X=a_k)=p_k$. Entropy $H(X)$ is defined as:</p>
 <p>$$H(X)= - \sum_k p_k \log p_k$$When regarded as a function of $\{p_k\}$, entropy satisfies the following properties:</p>
@@ -33,8 +33,9 @@
 </ol>
 <p>Property 5 is so-called addictivity. That is, if we observe $X$ in two steps, firstly obtaining a value from $\{\hat{a},a_{k+1},\ldots,a_n\}$ and then another value from $\{a_1,\ldots,a_k\}$ if $\hat{a}$ selected, the entropy of the whole system should be sum of these two subsystems.</p>
 <p>Note that a function satisfying property 1, 4, 5 must have a form of $H(\vec{p})= - C \sum_k p_k \log p_k$, which reveals that entropy function is unique.</p>
-<p>Entropy measures the <strong>uncertainty</strong> of a random value. Intuively, entropy reaches its maximum $\log n$ when all alphabets occur with same probability, and likewise has a minimum of $0$ if $p_k=1$ for some $k$.</p>
+<p>Entropy measures the <strong>uncertainty</strong> of a random value. Intuitively, entropy reaches its maximum $\log n$ when all alphabets occur with same probability, and likewise has a minimum of $0$ if $p_k=1$ for some $k$.</p>
 <p>Entropy also represents the smallest average length to encode a message. Say we have a message consisting of alphabets $a_1,\ldots,a_n$, occurring with probability $p_1,\ldots,p_n$. Now we want to assign a code (an $N$-ary string) to each alphabet, with no two codes sharing a same prefix. The length of the codes are denoted as $l_1,\ldots,l_n$. <a href="https://en.wikipedia.org/wiki/Shannon%27s_source_coding_theorem" target="_blank" rel="noopener">Shannon’s source coding theroem</a> states that the average code length $\sum_k p_k l_k$ could not be less than $H(p_1,\ldots,p_n)$ (taking $N$ as logarithm base).</p>
+<a id="more"></a>
 <hr>
 <p>We may generalize the definition to 2D random variables likewisely. Suppose $\mathbb{P}((X,Y)=(a_k,b_j))$ $=p(a_k,b_j)$. We define: $$H(XY)=\sum_{k,j} - p(a_k,b_j) \log p(a_k,b_j)$$. Rewrite the formula as:</p>
 <p>$$
@@ -96,7 +97,19 @@ I(X;Y;Z) &= I(X;Y)-I(X;Y|Z) \\
     
     <summary type="html">
     
-      &lt;h2 id=&quot;Entropy&quot;&gt;&lt;a href=&quot;#Entropy&quot; class=&quot;headerlink&quot; title=&quot;Entropy&quot;&gt;&lt;/a&gt;Entropy&lt;/h2&gt;&lt;p&gt;Given a discrete r.v. $X$, where $X$ ranged in $\{
+      &lt;h2 id=&quot;Entropy&quot;&gt;&lt;a href=&quot;#Entropy&quot; class=&quot;headerlink&quot; title=&quot;Entropy&quot;&gt;&lt;/a&gt;Entropy&lt;/h2&gt;&lt;p&gt;Given a discrete r.v. $X$, where $X$ ranged in $\{a_1, \ldots, a_n\}$, $\mathbb{P}(X=a_k)=p_k$. Entropy $H(X)$ is defined as:&lt;/p&gt;
+&lt;p&gt;$$H(X)= - \sum_k p_k \log p_k$$When regarded as a function of $\{p_k\}$, entropy satisfies the following properties:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;$H(p_1,\ldots,p_n)$ is continuous, and non-negative;&lt;/li&gt;
+&lt;li&gt;$H(p_1,\ldots,p_n)$ is convex w.r.t. $(p_1,\ldots,p_n)$;&lt;/li&gt;
+&lt;li&gt;$H(p_1,\ldots,p_n)$ has a unique maxima $(\frac{1}{n},\ldots,\frac{1}{n})$;&lt;/li&gt;
+&lt;li&gt;$H(n):=H(\frac{1}{n},\ldots,\frac{1}{n})$ increases along with $n$;&lt;/li&gt;
+&lt;li&gt;$H(p_1,\ldots,p_n)=H(p_1+\ldots+p_k,p_{k+1},\ldots,p_n)+(p_1+\ldots+p_k)H(p_{k+1}&#39;,\ldots,p_n&#39;)$.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Property 5 is so-called addictivity. That is, if we observe $X$ in two steps, firstly obtaining a value from $\{\hat{a},a_{k+1},\ldots,a_n\}$ and then another value from $\{a_1,\ldots,a_k\}$ if $\hat{a}$ selected, the entropy of the whole system should be sum of these two subsystems.&lt;/p&gt;
+&lt;p&gt;Note that a function satisfying property 1, 4, 5 must have a form of $H(\vec{p})= - C \sum_k p_k \log p_k$, which reveals that entropy function is unique.&lt;/p&gt;
+&lt;p&gt;Entropy measures the &lt;strong&gt;uncertainty&lt;/strong&gt; of a random value. Intuitively, entropy reaches its maximum $\log n$ when all alphabets occur with same probability, and likewise has a minimum of $0$ if $p_k=1$ for some $k$.&lt;/p&gt;
+&lt;p&gt;Entropy also represents the smallest average length to encode a message. Say we have a message consisting of alphabets $a_1,\ldots,a_n$, occurring with probability $p_1,\ldots,p_n$. Now we want to assign a code (an $N$-ary string) to each alphabet, with no two codes sharing a same prefix. The length of the codes are denoted as $l_1,\ldots,l_n$. &lt;a href=&quot;https://en.wikipedia.org/wiki/Shannon%27s_source_coding_theorem&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Shannon’s source coding theroem&lt;/a&gt; states that the average code length $\sum_k p_k l_k$ could not be less than $H(p_1,\ldots,p_n)$ (taking $N$ as logarithm base).&lt;/p&gt;
     
     </summary>
     
