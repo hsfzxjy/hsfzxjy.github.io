@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://i.hsfzxjy.site/"/>
-  <updated>2020-11-17T12:22:49.009Z</updated>
+  <updated>2020-11-17T13:14:25.195Z</updated>
   <id>http://i.hsfzxjy.site/</id>
   
   <author>
@@ -16,13 +16,13 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Entropy and Mutual Information: Discrete Cases</title>
-    <link href="http://i.hsfzxjy.site/2020-01-04-information-theory-entropy-and-mutual-information-discrete-cases/"/>
-    <id>http://i.hsfzxjy.site/2020-01-04-information-theory-entropy-and-mutual-information-discrete-cases/</id>
+    <title>Entropy and Mutual Information</title>
+    <link href="http://i.hsfzxjy.site/2020-01-04-information-theory-entropy-and-mutual-information/"/>
+    <id>http://i.hsfzxjy.site/2020-01-04-information-theory-entropy-and-mutual-information/</id>
     <published>2020-01-03T16:00:00.000Z</published>
-    <updated>2020-11-17T12:22:49.009Z</updated>
+    <updated>2020-11-17T13:14:25.195Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="Entropy"><a href="#Entropy" class="headerlink" title="Entropy"></a>Entropy</h2><p>Given a discrete r.v. $X$, where $X$ ranged in $\{a_1, \ldots, a_n\}$, $\mathbb{P}(X=a_k)=p_k$. Entropy $H(X)$ is defined as:</p>
+    <content type="html"><![CDATA[<h2 id="Discrete-Entropy"><a href="#Discrete-Entropy" class="headerlink" title="Discrete Entropy"></a>Discrete Entropy</h2><p>Given a discrete r.v. $X$, where $X$ ranged in $\{a_1, \ldots, a_n\}$, $\mathbb{P}(X=a_k)=p_k$. Entropy $H(X)$ is defined as:</p>
 <p>$$H(X)= - \sum_k p_k \log p_k$$When regarded as a function of $\{p_k\}$, entropy satisfies the following properties:</p>
 <ol>
 <li>$H(p_1,\ldots,p_n)$ is continuous, and non-negative;</li>
@@ -59,7 +59,7 @@ H(XY) &\leq H(X)+H(Y) \\
 H(Y|X) &\leq H(Y) \\
 H(X|Y) &\leq H(X) \\
 \end{align}$$The latter two are intuitive — entropy (uncertainty) decreases if provided some prior.</p>
-<h2 id="Mutual-Information"><a href="#Mutual-Information" class="headerlink" title="Mutual Information"></a>Mutual Information</h2><p>The mutual information of $X,Y$ is defined as:</p>
+<h2 id="Discrete-Mutual-Information"><a href="#Discrete-Mutual-Information" class="headerlink" title="Discrete Mutual Information"></a>Discrete Mutual Information</h2><p>The mutual information of $X,Y$ is defined as:</p>
 <p>$$\begin{align}
 I(X|Y) &= H(X)-H(X|Y) \\
        &= - \sum_k p(a_k) \log p(a_k) + \sum_j \sum_k p(a_k,b_j) \log p(a_k|b_j) \\
@@ -93,11 +93,18 @@ I(X;Y;Z) &= I(X;Y)-I(X;Y|Z) \\
 &H(X|Y)=\mu(A-B) &I(X;Y)=\mu(A \cap B) \\
 &H(X;Y|Z)=\mu((A \cap B)-C) &I(X;Y;Z)=\mu(A \cap B \cap C)
 \end{matrix}$$where $\mu$ is some set measure. The correspondence may be used as a helper for memorizing.</p>
+<h2 id="Continuous-Cases"><a href="#Continuous-Cases" class="headerlink" title="Continuous Cases"></a>Continuous Cases</h2><p>We first try to generalize entropy to continuous r.v.. Suppose $X$ has pdf $p(x)$, and $\pi=\{x_i\}_{-\infty}^\infty$ is a partition of $\mathbb{R}$, $|\pi|=\Delta x$. We may resemble discrete cases and write down the formula of “entropy”:</p>
+<p>$$\sum_i - p(x_i) \log (p(x_i) \Delta x)$$Taking $\Delta x \rightarrow 0$, we have:</p>
+<p>$$\begin{align}
+&\lim_{\Delta x \rightarrow 0}\sum_i - p(x_i) \log (p(x_i) \Delta x) \\
+=&\int -p(x) \log p(x) dx - \lim_{\Delta x \rightarrow 0}\sum_i - p(x_i) \log \Delta x
+\end{align}$$In practice, we omit the second term (since it’s infinite) and define the first one as <strong>differential entropy</strong>:</p>
+<p>$$h(X):=\int_\mathbb{R} -p(x) \log p(x) dx$$We can define $h(X|Y)$ and $I(X;Y)$ likewisely.</p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;h2 id=&quot;Entropy&quot;&gt;&lt;a href=&quot;#Entropy&quot; class=&quot;headerlink&quot; title=&quot;Entropy&quot;&gt;&lt;/a&gt;Entropy&lt;/h2&gt;&lt;p&gt;Given a discrete r.v. $X$, where $X$ ranged in $\{a_1, \ldots, a_n\}$, $\mathbb{P}(X=a_k)=p_k$. Entropy $H(X)$ is defined as:&lt;/p&gt;
+      &lt;h2 id=&quot;Discrete-Entropy&quot;&gt;&lt;a href=&quot;#Discrete-Entropy&quot; class=&quot;headerlink&quot; title=&quot;Discrete Entropy&quot;&gt;&lt;/a&gt;Discrete Entropy&lt;/h2&gt;&lt;p&gt;Given a discrete r.v. $X$, where $X$ ranged in $\{a_1, \ldots, a_n\}$, $\mathbb{P}(X=a_k)=p_k$. Entropy $H(X)$ is defined as:&lt;/p&gt;
 &lt;p&gt;$$H(X)= - \sum_k p_k \log p_k$$When regarded as a function of $\{p_k\}$, entropy satisfies the following properties:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;$H(p_1,\ldots,p_n)$ is continuous, and non-negative;&lt;/li&gt;
