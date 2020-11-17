@@ -358,7 +358,7 @@ a:focus {
 }
 .post .post-content {
   clear: left;
-  line-height: 1.77;
+  line-height: 1.55;
   color: #444;
   padding-top: 20px;
   text-justify: inter-word;
@@ -399,7 +399,7 @@ a:focus {
 }
 .post .post-content h2 {
   font-size: 1.5em;
-  font-weight: bold;
+  font-weight: 300;
 }
 .post .post-content h3 {
   font-size: 1.35em;
@@ -431,7 +431,7 @@ a:focus {
   font-size: 0.8em;
 }
 .post .post-content p {
-  margin: 0 0 1.234em;
+  margin: 0;
 }
 .post .post-content p a {
   color: #01579f;
@@ -451,7 +451,7 @@ a:focus {
   display: none;
 }
 .post .post-content hr {
-  margin: 2.4em auto;
+  margin: 1em auto;
   border: none;
   border-top: 1px solid #e4e4e4;
   position: relative;
@@ -471,7 +471,6 @@ a:focus {
   padding: 0.5em 2.4em;
   border-radius: 3px;
   margin: 0;
-  margin-bottom: 1.234em;
 }
 .post .post-content ul li,
 .post .post-content ol li {
@@ -489,7 +488,7 @@ a:focus {
   margin: 0;
 }
 .post .tags {
-  padding-bottom: 1em;
+  padding: 1em 0;
 }
 .post .tags a {
   margin-right: 0.5em;

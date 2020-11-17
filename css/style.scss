@@ -442,7 +442,7 @@ a:focus {
     .post-content {
         clear: left;
         // font-size: 15px;
-        line-height: 1.77;
+        line-height: 1.55;
         color: #444;
         padding-top: 20px;
 
@@ -455,6 +455,10 @@ a:focus {
         -ms-hyphens: auto;
         -webkit-hyphens: auto;
         hyphens: auto;
+
+        // mjx-container {
+        //     // margin: 0 !important;
+        // }
 
         p,
         a,
@@ -496,7 +500,7 @@ a:focus {
 
         h2 {
             font-size: 1.5em;
-            font-weight: bold;
+            font-weight: 300;
         }
 
         h3 {
@@ -541,7 +545,9 @@ a:focus {
         }
 
         p {
-            margin: 0 0 1.234em;
+            // margin: 0 0 1.234em;
+            margin: 0;
+
 
 
             a {
@@ -566,7 +572,7 @@ a:focus {
         }
 
         hr {
-            margin: 2.4em auto;
+            margin: 1em auto;
             border: none;
             border-top: 1px solid darken(#eee, 4%);
             position: relative;
@@ -589,7 +595,7 @@ a:focus {
             padding: 0.5em 2.4em;
             border-radius: 3px;
             margin: 0;
-            margin-bottom: 1.234em;
+            // margin-bottom: 1.234em;
 
             li {
                 text-indent: 0;
@@ -610,7 +616,7 @@ a:focus {
     }
 
     .tags {
-        padding-bottom: 1em;
+        padding: 1em 0;
 
         a {
             margin-right: 0.5em;
