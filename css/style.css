@@ -317,7 +317,7 @@ a:focus {
   padding: 0;
   padding-top: 2em;
   font-size: 30px;
-  font-weight: 300;
+  font-weight: 500;
   font-family: "LatoWeb", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
 }
 .post .post-title a {
@@ -399,7 +399,7 @@ a:focus {
 }
 .post .post-content h2 {
   font-size: 1.5em;
-  font-weight: 300;
+  font-weight: 500;
 }
 .post .post-content h3 {
   font-size: 1.35em;
@@ -432,6 +432,12 @@ a:focus {
 }
 .post .post-content p {
   margin: 0;
+  margin-bottom: 1.2em;
+}
+.post .post-content p + ul,
+.post .post-content p + ol {
+  margin-top: -0.6em !important;
+  margin-bottom: 1.2em !important;
 }
 .post .post-content p a {
   color: #01579f;

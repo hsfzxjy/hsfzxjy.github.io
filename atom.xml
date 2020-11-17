@@ -186,7 +186,7 @@ I(X;Y;Z) &= I(X;Y)-I(X;Y|Z) \\
     <link href="http://i.hsfzxjy.site/2019-08-01-proof-of-gumbel-max-trick/"/>
     <id>http://i.hsfzxjy.site/2019-08-01-proof-of-gumbel-max-trick/</id>
     <published>2019-07-31T16:00:00.000Z</published>
-    <updated>2019-08-01T15:29:11.031Z</updated>
+    <updated>2020-11-17T15:27:09.197Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Statement"><a href="#Statement" class="headerlink" title="Statement"></a>Statement</h2><p>Assume that $\alpha_1, \alpha_2, \ldots, \alpha_n$ satisify $\sum_k\alpha_k=1$. Define     </p>
 <p>$$Z=\arg\max_k\{\log\alpha_k+G_k\}$$where $G_1,\ldots,G_n \text{ i.i.d.}\sim Gumbel(0,1)$, whose PDF and CDF are defined as</p>
@@ -219,9 +219,9 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
       <category term="Tech" scheme="http://i.hsfzxjy.site/categories/Tech/"/>
     
     
-      <category term="probability" scheme="http://i.hsfzxjy.site/tags/probability/"/>
+      <category term="Probability" scheme="http://i.hsfzxjy.site/tags/Probability/"/>
     
-      <category term="math" scheme="http://i.hsfzxjy.site/tags/math/"/>
+      <category term="Math" scheme="http://i.hsfzxjy.site/tags/Math/"/>
     
   </entry>
   
@@ -230,7 +230,7 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     <link href="http://i.hsfzxjy.site/2019-06-26-option-as_ref/"/>
     <id>http://i.hsfzxjy.site/2019-06-26-option-as_ref/</id>
     <published>2019-06-25T16:00:00.000Z</published>
-    <updated>2020-10-24T09:15:17.163Z</updated>
+    <updated>2020-11-17T15:28:33.937Z</updated>
     
     <content type="html"><![CDATA[<p>Let’s consider the following function:</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::ptr::NonNull;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">transform</span></span>&lt;T&gt;(option: &amp;<span class="built_in">Option</span>&lt;NonNull&lt;T&gt;&gt;) -&gt; <span class="built_in">Option</span>&lt;&amp;T&gt; &#123;</span><br><span class="line">    option.map(|x| <span class="keyword">unsafe</span> &#123; x.as_ref() &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -259,9 +259,9 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
       <category term="Tech" scheme="http://i.hsfzxjy.site/categories/Tech/"/>
     
     
-      <category term="rust" scheme="http://i.hsfzxjy.site/tags/rust/"/>
+      <category term="Rust" scheme="http://i.hsfzxjy.site/tags/Rust/"/>
     
-      <category term="lifetime" scheme="http://i.hsfzxjy.site/tags/lifetime/"/>
+      <category term="Lifetime" scheme="http://i.hsfzxjy.site/tags/Lifetime/"/>
     
   </entry>
   
@@ -270,7 +270,7 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     <link href="http://i.hsfzxjy.site/2019-06-23-rc-refcell-pattern/"/>
     <id>http://i.hsfzxjy.site/2019-06-23-rc-refcell-pattern/</id>
     <published>2019-06-22T16:00:00.000Z</published>
-    <updated>2020-10-24T11:15:00.944Z</updated>
+    <updated>2020-11-17T15:28:33.937Z</updated>
     
     <content type="html"><![CDATA[<p>Say we need a type <code>Cursor&lt;T&gt;</code> , which contains a mutable reference to <code>T</code> . The type has a method, say <code>.dup()</code> , which returns a new instance of <code>Cursor&lt;T&gt;</code> , while sharing the interior reference across instances. Such design is a common pattern in database driver library. Users might expect to hold multiple cursors simultaneously, each of which owns a reference to the same connection object. </p>
 <p>A possible implementation might look like:</p>
@@ -345,9 +345,9 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
       <category term="Tech" scheme="http://i.hsfzxjy.site/categories/Tech/"/>
     
     
-      <category term="rust" scheme="http://i.hsfzxjy.site/tags/rust/"/>
+      <category term="Rust" scheme="http://i.hsfzxjy.site/tags/Rust/"/>
     
-      <category term="lifetime" scheme="http://i.hsfzxjy.site/tags/lifetime/"/>
+      <category term="Lifetime" scheme="http://i.hsfzxjy.site/tags/Lifetime/"/>
     
   </entry>
   
@@ -467,7 +467,7 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     <link href="http://i.hsfzxjy.site/2019-01-21-ss/"/>
     <id>http://i.hsfzxjy.site/2019-01-21-ss/</id>
     <published>2019-01-21T08:50:00.000Z</published>
-    <updated>2020-10-24T09:03:00.990Z</updated>
+    <updated>2020-11-17T15:34:20.066Z</updated>
     
     <content type="html"><![CDATA[<h2 id="SS-Client"><a href="#SS-Client" class="headerlink" title="SS Client"></a>SS Client</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ [sudo] pip3 install shadowsocks</span><br></pre></td></tr></table></figure>
 <p><code>/etc/ss.json</code> :</p>

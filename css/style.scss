@@ -392,7 +392,7 @@ a:focus {
         padding-top: 2em;
         // border-top: 1px dotted darken($bk-color, 30%);
         font-size: 30px;
-        font-weight: 300;
+        font-weight: 500;
 
         @include set-font;
 
@@ -500,7 +500,7 @@ a:focus {
 
         h2 {
             font-size: 1.5em;
-            font-weight: 300;
+            font-weight: 500;
         }
 
         h3 {
@@ -547,8 +547,14 @@ a:focus {
         p {
             // margin: 0 0 1.234em;
             margin: 0;
+            margin-bottom: 1.2em;
 
 
+            +ul,
+            +ol {
+                margin-top: -.6em !important;
+                margin-bottom: 1.2em !important;
+            }
 
             a {
                 color: #01579f;
