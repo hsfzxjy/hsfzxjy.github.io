@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://i.hsfzxjy.site/"/>
-  <updated>2020-11-17T13:14:25.195Z</updated>
+  <updated>2020-11-17T13:32:30.461Z</updated>
   <id>http://i.hsfzxjy.site/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://i.hsfzxjy.site/2020-01-04-information-theory-entropy-and-mutual-information/"/>
     <id>http://i.hsfzxjy.site/2020-01-04-information-theory-entropy-and-mutual-information/</id>
     <published>2020-01-03T16:00:00.000Z</published>
-    <updated>2020-11-17T13:14:25.195Z</updated>
+    <updated>2020-11-17T13:32:30.461Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Discrete-Entropy"><a href="#Discrete-Entropy" class="headerlink" title="Discrete Entropy"></a>Discrete Entropy</h2><p>Given a discrete r.v. $X$, where $X$ ranged in $\{a_1, \ldots, a_n\}$, $\mathbb{P}(X=a_k)=p_k$. Entropy $H(X)$ is defined as:</p>
 <p>$$H(X)= - \sum_k p_k \log p_k$$When regarded as a function of $\{p_k\}$, entropy satisfies the following properties:</p>
