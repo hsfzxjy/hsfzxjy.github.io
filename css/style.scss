@@ -484,7 +484,8 @@ a:focus {
             text-align: center;
         }
 
-        p a {
+        p a,
+        li a {
             color: darken($green, 7%) !important;
 
             &:hover,
@@ -501,22 +502,27 @@ a:focus {
         h2 {
             font-size: 1.5em;
             font-weight: 500;
+            margin: .4em 0;
         }
 
         h3 {
             font-size: 1.35em;
+            margin: .4em 0;
         }
 
         h4 {
             font-size: 1.25em;
+            margin: .3em 0;
         }
 
         h5 {
             font-size: 1.15em;
+            margin: .3em 0;
         }
 
         h6 {
             font-size: 1.05em;
+            margin: .2em 0;
         }
 
         h3,
@@ -524,11 +530,6 @@ a:focus {
         h5,
         h6 {
             font-weight: normal;
-        }
-
-        h2,
-        h3 {
-            margin: 1.4em 0 1.1em;
         }
 
         pre code {

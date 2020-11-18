@@ -387,10 +387,13 @@ a:focus {
 .post .post-content.center {
   text-align: center;
 }
-.post .post-content p a {
+.post .post-content p a,
+.post .post-content li a {
   color: #399f70 !important;
 }
-.post .post-content p a:hover, .post .post-content p a:active {
+.post .post-content p a:hover, .post .post-content p a:active,
+.post .post-content li a:hover,
+.post .post-content li a:active {
   color: #4bbf8a !important;
 }
 .post .post-content h1 {
@@ -400,28 +403,29 @@ a:focus {
 .post .post-content h2 {
   font-size: 1.5em;
   font-weight: 500;
+  margin: 0.4em 0;
 }
 .post .post-content h3 {
   font-size: 1.35em;
+  margin: 0.4em 0;
 }
 .post .post-content h4 {
   font-size: 1.25em;
+  margin: 0.3em 0;
 }
 .post .post-content h5 {
   font-size: 1.15em;
+  margin: 0.3em 0;
 }
 .post .post-content h6 {
   font-size: 1.05em;
+  margin: 0.2em 0;
 }
 .post .post-content h3,
 .post .post-content h4,
 .post .post-content h5,
 .post .post-content h6 {
   font-weight: normal;
-}
-.post .post-content h2,
-.post .post-content h3 {
-  margin: 1.4em 0 1.1em;
 }
 .post .post-content pre code {
   padding: 0 2em;
