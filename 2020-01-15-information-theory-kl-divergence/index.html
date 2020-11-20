@@ -2,7 +2,7 @@
 <p>$$ p(H_i|a_k) = \frac{p(H_i)p_i(a_k)}{p_1(a_k)p(H_1)+p_2(a_k)p(H_2)} $$The formula can be transformed into:</p>
 <p>$$ \log \frac{p_2(a_k)}{p_1(a_k)} = \log \frac{p(H_2|a_k)}{p(H_1|a_k)} - \log \frac{p(H_2)}{p(H_1)} $$which implies that, $\log \frac{p_2(a_k)}{p_1(a_k)}$ equals the difference of log likelihood ratio before and after conditioning $X=a_k$. We define $\log \frac{p_2(a_k)}{p_1(a_k)}$ be the discrimination information for $H_2$ over $H_1$, when $X=a_k$. The expectation of discrimination information is KL divergence, denoted as:</p>
 <p>$$D_{KL}(P_2||P_1) = \sum_k p_1(a_k) \log \frac{p_2(a_k)}{p_1(a_k)} $$which sometimes denoted as $I(p2,p1;X)$, or simply $I(p2,p1)$ if without ambiguity.</p>
-<p>KL Divergence can be interpreted as a measure of expected information for $X$ gained after distribution shifted from $p_1$ to $p_2$, where $p_1$ and $p_2$ regarded as prior and post-prior distributions. Further we may define the (symmetrised) divergence between $p_2$ and $p_1$:</p>
+<p>KL Divergence can be interpreted as a measure of expected information for $X$ gained after distribution shifted from $p_1$ to $p_2$, where $p_1$ and $p_2$ regarded as prior and post-prior distributions.<a id="more"></a>Further we may define the (symmetrised) divergence between $p_2$ and $p_1$:</p>
 <p>$$J(p_2,p_1;X)=D_{KL}(p_2||p_1) + D_{KL}(p_1||p_2) = J(p_1,p_2;X)$$Divergence $J(p_2,p_1)$ is a measure of difference between two distributions satisfying</p>
 <ul>
 <li>$J(p_1,p_2) \geq 0$ and equality holds iff $p_1=p_2$;</li>
