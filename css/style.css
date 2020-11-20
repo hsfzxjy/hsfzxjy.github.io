@@ -440,7 +440,6 @@ a:focus {
 }
 .post .post-content p + ul,
 .post .post-content p + ol {
-  margin-top: -0.6em !important;
   margin-bottom: 1.2em !important;
 }
 .post .post-content p a {
@@ -477,8 +476,7 @@ a:focus {
 }
 .post .post-content ul,
 .post .post-content ol {
-  overflow: auto;
-  padding: 0.5em 2.4em;
+  padding: 0em 2.4em;
   border-radius: 3px;
   margin: 0;
 }

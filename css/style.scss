@@ -553,7 +553,7 @@ a:focus {
 
             +ul,
             +ol {
-                margin-top: -.6em !important;
+                // margin-top: -.6em !important;
                 margin-bottom: 1.2em !important;
             }
 
@@ -598,8 +598,8 @@ a:focus {
 
         ul,
         ol {
-            overflow: auto;
-            padding: 0.5em 2.4em;
+            // overflow: auto;
+            padding: 0em 2.4em;
             border-radius: 3px;
             margin: 0;
             // margin-bottom: 1.234em;

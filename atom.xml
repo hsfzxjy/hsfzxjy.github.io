@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://i.hsfzxjy.site/"/>
-  <updated>2020-11-17T13:32:30.461Z</updated>
+  <updated>2020-11-20T08:22:27.539Z</updated>
   <id>http://i.hsfzxjy.site/</id>
   
   <author>
@@ -16,13 +16,68 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Entropy and Mutual Information</title>
+    <title>Information Theory: KL Divergence</title>
+    <link href="http://i.hsfzxjy.site/2020-01-15-information-theory-kl-divergence/"/>
+    <id>http://i.hsfzxjy.site/2020-01-15-information-theory-kl-divergence/</id>
+    <published>2020-01-14T16:00:00.000Z</published>
+    <updated>2020-11-20T08:22:27.539Z</updated>
+    
+    <content type="html"><![CDATA[<p>Assume there are two hypotheses $H_1$ and $H_2$, r.v. $X$ ranged in alphabets $a_1,\ldots\,a_k$. Under hypothesis $H_i$, $X$ has pdf $p(X=a_j|H_i)=p_i(a_j)$. According to Law of Total Probability, we have:</p>
+<p>$$ p(H_i|a_k) = \frac{p(H_i)p_i(a_k)}{p_1(a_k)p(H_1)+p_2(a_k)p(H_2)} $$The formula can be transformed into:</p>
+<p>$$ \log \frac{p_2(a_k)}{p_1(a_k)} = \log \frac{p(H_2|a_k)}{p(H_1|a_k)} - \log \frac{p(H_2)}{p(H_1)} $$which implies that, $\log \frac{p_2(a_k)}{p_1(a_k)}$ equals the difference of log likelihood ratio before and after conditioning $X=a_k$. We define $\log \frac{p_2(a_k)}{p_1(a_k)}$ be the discrimination information for $H_2$ over $H_1$, when $X=a_k$. The expectation of discrimination information is KL divergence, denoted as:</p>
+<p>$$D_{KL}(P_2||P_1) = \sum_k p_1(a_k) \log \frac{p_2(a_k)}{p_1(a_k)} $$which sometimes denoted as $I(p2,p1;X)$, or simply $I(p2,p1)$ if without ambiguity.</p>
+<p>KL Divergence can be interpreted as a measure of expected information for $X$ gained after distribution shifted from $p_1$ to $p_2$, where $p_1$ and $p_2$ regarded as prior and post-prior distributions. Further we may define the (symmetrised) divergence between $p_2$ and $p_1$:</p>
+<p>$$J(p_2,p_1;X)=D_{KL}(p_2||p_1) + D_{KL}(p_1||p_2) = J(p_1,p_2;X)$$Divergence $J(p_2,p_1)$ is a measure of difference between two distributions satisfying</p>
+<ul>
+<li>$J(p_1,p_2) \geq 0$ and equality holds iff $p_1=p_2$;</li>
+<li>$J(p_1,p_2) = J(p_2,p_1)$.</li>
+</ul>
+<p>but not triangle inequality, and thus $J(\cdot,\cdot)$ is not a distance function.</p>
+<h2 id="Generalization"><a href="#Generalization" class="headerlink" title="Generalization"></a>Generalization</h2><p>We may generalize the definition to continuous variables as:</p>
+<p>$$D_{KL}(p_2||p_1) = \int p_1(x) \log \frac{p_2(x)}{p_1(x)} dx$$or multivariate cases:</p>
+<p>$$D_{KL}(p_2(\vec{x})||p_1(\vec{x})) = \int p_1(\vec{x}) \log \frac{p_2(\vec{x})}{p_1(\vec{x})} d\vec{x}$$or further, conditional cases:</p>
+<p>$$D_{KL}(p_2(X|Y)||p_1(X|Y)) = \int p_2(y) p_1(x|y) \log \frac{p_2(x|y)}{p_1(x|y)} dxdy$$</p>
+<h2 id="Relation-to-Shannon-Entropy"><a href="#Relation-to-Shannon-Entropy" class="headerlink" title="Relation to Shannon Entropy"></a>Relation to Shannon Entropy</h2><p>For a discrete variable $X$, with distribution $p$, we have:</p>
+<p>$$H(X)=\log n - D_{KL}(p||v)$$where $n$ is number of values $X$ can take on, and $v$ is the uniform distribution on those values. The lemma suggests that $D_{KL}(p||v)$ measures the information difference between $p$ and a totally chaotic “bottom distribution”. From the perspective of transmission, KL divergence equals the length of additional bits required to encode a message, when the distribution of source alphabets shifts from $p$ to $v$.</p>
+<p>For a continuous variable $X$ ranged within a finite set of volume $L$, we have:</p>
+<p>$$H(X) = \log L - D_{KL}(p||v)$$where $v$ is a uniform distribution over the range of $X$. The interpretation is similar to discrete cases.</p>
+<h2 id="Relation-to-Mutual-Information"><a href="#Relation-to-Mutual-Information" class="headerlink" title="Relation to Mutual Information"></a>Relation to Mutual Information</h2><p>We can observe that</p>
+<p>$$I(X;Y)=D_{KL}(P(XY)||P(X)P(Y))$$which suggests mutual information $I(X;Y)$ is the information difference when distribution of $(X,Y)$ shifted from $P(X)P(Y)$ to $P(X,Y)$, i.e., from independent to dependent. </p>
+<h2 id="Additional-Properties-of-KL-Divergence"><a href="#Additional-Properties-of-KL-Divergence" class="headerlink" title="Additional Properties of KL Divergence"></a>Additional Properties of KL Divergence</h2><h3 id="Addictivity"><a href="#Addictivity" class="headerlink" title="Addictivity"></a>Addictivity</h3><p>Assume $X,Y$ are independent, and $P(x,y)=P_1(x)P_2(y)$, $Q$ likewisely. We have</p>
+<p>$$\begin{align}
+D_{KL}(P(X,Y)||Q(X,Y)) &= \int Q(x,y) \log \frac{P(x,y)}{Q(x,y)} dxdy \\
+&= \int Q_1(x)P_2(y) \log \frac{P_1(x)P_2(y)}{Q_1(x)Q_2(y)} dxdy \\
+&= \int Q_1(x) \log \frac{P_1(x)}{Q_1(x)} dx + \int Q_2(y) \log \frac{P_2(y)}{Q_2(y)} dy \\
+&= D_{KL}(P_1||Q_1) + D_{KL}(P_2||Q_2)
+\end{align}$$</p>
+<h3 id="Convexity"><a href="#Convexity" class="headerlink" title="Convexity"></a>Convexity</h3><p>Assume $p_1,p_2,q_1,q_2,p,q$ are distributions, $0 \leq \lambda \leq 1$. We have</p>
+<p>$$D_{KL}(\lambda p_1 + (1 - \lambda) p_2 || q) \leq \lambda D_{KL}(p_1||q) + (1 - \lambda) D_{KL}(p_2||q)$$which can be derived from $\log x \leq x - 1$ when $0 < x < 1$. Similarity we have</p>
+<p>$$D_{KL}(p || \lambda q_1 + (1 - \lambda) q_2) \leq \lambda D_{KL}(p||q_1) + (1 - \lambda) D_{KL}(p||q_2)$$which can be derived from the convexity of $\log(\cdot)$. Further we have</p>
+<p>$$D_{KL}(\lambda p_1 + (1 - \lambda) p_2 || \lambda q_1 + (1 - \lambda) q_2) \leq \lambda D_{KL}(p_1 || q_1) + (1 - \lambda) D_{KL}(p_2|| q_2)$$which can be proved using the <a href="https://en.wikipedia.org/wiki/Log_sum_inequality" target="_blank" rel="noopener">Log Sum Inequality</a>.</p>
+<h3 id="Invariance"><a href="#Invariance" class="headerlink" title="Invariance"></a>Invariance</h3><p>Assume $U=g(X)$, then $D_{KL}(p(X)||q(X))=D_{KL}(p(U)||q(U))$, i.e., the form of KL divergence remains invariant under transforms. Mutual information, however, does not have such property.</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Assume there are two hypotheses $H_1$ and $H_2$, r.v. $X$ ranged in alphabets $a_1,\ldots\,a_k$. Under hypothesis $H_i$, $X$ has pdf $p(X
+    
+    </summary>
+    
+      <category term="Tech" scheme="http://i.hsfzxjy.site/categories/Tech/"/>
+    
+    
+      <category term="Information Theory" scheme="http://i.hsfzxjy.site/tags/Information-Theory/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Information Theory: Entropy and Mutual Information</title>
     <link href="http://i.hsfzxjy.site/2020-01-04-information-theory-entropy-and-mutual-information/"/>
     <id>http://i.hsfzxjy.site/2020-01-04-information-theory-entropy-and-mutual-information/</id>
     <published>2020-01-03T16:00:00.000Z</published>
-    <updated>2020-11-17T13:32:30.461Z</updated>
+    <updated>2020-11-20T03:33:17.260Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="Discrete-Entropy"><a href="#Discrete-Entropy" class="headerlink" title="Discrete Entropy"></a>Discrete Entropy</h2><p>Given a discrete r.v. $X$, where $X$ ranged in $\{a_1, \ldots, a_n\}$, $\mathbb{P}(X=a_k)=p_k$. Entropy $H(X)$ is defined as:</p>
+    <content type="html"><![CDATA[<p>Given a discrete r.v. $X$, where $X$ ranged in $\{a_1, \ldots, a_n\}$, $\mathbb{P}(X=a_k)=p_k$. Entropy $H(X)$ is defined as:</p>
 <p>$$H(X)= - \sum_k p_k \log p_k$$When regarded as a function of $\{p_k\}$, entropy satisfies the following properties:</p>
 <ol>
 <li>$H(p_1,\ldots,p_n)$ is continuous, and non-negative;</li>
@@ -104,7 +159,7 @@ I(X;Y;Z) &= I(X;Y)-I(X;Y|Z) \\
     
     <summary type="html">
     
-      &lt;h2 id=&quot;Discrete-Entropy&quot;&gt;&lt;a href=&quot;#Discrete-Entropy&quot; class=&quot;headerlink&quot; title=&quot;Discrete Entropy&quot;&gt;&lt;/a&gt;Discrete Entropy&lt;/h2&gt;&lt;p&gt;Given a discrete r.v. $X$, where $X$ ranged in $\{a_1, \ldots, a_n\}$, $\mathbb{P}(X=a_k)=p_k$. Entropy $H(X)$ is defined as:&lt;/p&gt;
+      &lt;p&gt;Given a discrete r.v. $X$, where $X$ ranged in $\{a_1, \ldots, a_n\}$, $\mathbb{P}(X=a_k)=p_k$. Entropy $H(X)$ is defined as:&lt;/p&gt;
 &lt;p&gt;$$H(X)= - \sum_k p_k \log p_k$$When regarded as a function of $\{p_k\}$, entropy satisfies the following properties:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;$H(p_1,\ldots,p_n)$ is continuous, and non-negative;&lt;/li&gt;
@@ -843,35 +898,6 @@ F(x)&=e^{-e^{-x}}\end{align}$$. Then $\mathbb{P}(Z=k)=\alpha_k$.</p>
     
     
       <category term="Haskell" scheme="http://i.hsfzxjy.site/tags/Haskell/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>使用 Aria2 在 Ubuntu 中下载百度云资源</title>
-    <link href="http://i.hsfzxjy.site/2018-06-11-download-in-ubuntu-with-aria/"/>
-    <id>http://i.hsfzxjy.site/2018-06-11-download-in-ubuntu-with-aria/</id>
-    <published>2018-06-10T16:00:00.000Z</published>
-    <updated>2019-01-21T09:06:17.133Z</updated>
-    
-    <content type="html"><![CDATA[<p>可以实现满带宽下载。</p>
-<h1 id="配置-Aria2"><a href="#配置-Aria2" class="headerlink" title="配置 Aria2"></a>配置 Aria2</h1><p>从 <a href="https://github.com/aria2/aria2/releases" target="_blank" rel="noopener">Github</a> 下载源码 <code>./configure &amp;&amp; make -j8 &amp;&amp; sudo make install</code>。</p>
-<h1 id="配置-Chrome-插件"><a href="#配置-Chrome-插件" class="headerlink" title="配置 Chrome 插件"></a>配置 Chrome 插件</h1><p>clone <code>https://github.com/acgotaku/BaiduExporter</code>。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$ <span class="built_in">cd</span> ariac</div><div class="line">$ cat &gt; start.sh</div><div class="line">&gt; <span class="comment">#!/bin/bash</span></div><div class="line">&gt; aria2c --conf=aria2.conf</div><div class="line">&gt; ^D</div><div class="line">$ chmod +x start.sh</div><div class="line">$ ./start.sh</div></pre></td></tr></table></figure>
-<h1 id="安装-Chrome-插件"><a href="#安装-Chrome-插件" class="headerlink" title="安装 Chrome 插件"></a>安装 Chrome 插件</h1><p>打开 <code>chrome://extensions</code>，<code>Load Unpacked</code> 选择 <code>chrome/release</code>。</p>
-<p>完成后在百度云页面上会有 <code>导出下载</code> 按钮。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;可以实现满带宽下载。&lt;/p&gt;
-&lt;h1 id=&quot;配置-Aria2&quot;&gt;&lt;a href=&quot;#配置-Aria2&quot; class=&quot;headerlink&quot; title=&quot;配置 Aria2&quot;&gt;&lt;/a&gt;配置 Aria2&lt;/h1&gt;&lt;p&gt;从 &lt;a href=&quot;https://github.co
-    
-    </summary>
-    
-      <category term="Tech" scheme="http://i.hsfzxjy.site/categories/Tech/"/>
-    
-    
-      <category term="Ubuntu" scheme="http://i.hsfzxjy.site/tags/Ubuntu/"/>
     
   </entry>
   
