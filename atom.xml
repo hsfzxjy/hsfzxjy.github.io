@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://i.hsfzxjy.site/"/>
-  <updated>2020-11-20T08:52:34.687Z</updated>
+  <updated>2020-11-20T11:13:08.610Z</updated>
   <id>http://i.hsfzxjy.site/</id>
   
   <author>
@@ -20,12 +20,12 @@
     <link href="http://i.hsfzxjy.site/2020-01-15-information-theory-kl-divergence/"/>
     <id>http://i.hsfzxjy.site/2020-01-15-information-theory-kl-divergence/</id>
     <published>2020-01-14T16:00:00.000Z</published>
-    <updated>2020-11-20T08:52:34.687Z</updated>
+    <updated>2020-11-20T11:13:08.610Z</updated>
     
     <content type="html"><![CDATA[<p>Assume there are two hypotheses $H_1$ and $H_2$, r.v. $X$ ranged in alphabets $a_1,\ldots\,a_k$. Under hypothesis $H_i$, $X$ has pdf $p(X=a_j|H_i)=p_i(a_j)$. According to Law of Total Probability, we have:</p>
 <p>$$ p(H_i|a_k) = \frac{p(H_i)p_i(a_k)}{p_1(a_k)p(H_1)+p_2(a_k)p(H_2)} $$The formula can be transformed into:</p>
 <p>$$ \log \frac{p_2(a_k)}{p_1(a_k)} = \log \frac{p(H_2|a_k)}{p(H_1|a_k)} - \log \frac{p(H_2)}{p(H_1)} $$which implies that, $\log \frac{p_2(a_k)}{p_1(a_k)}$ equals the difference of log likelihood ratio before and after conditioning $X=a_k$. We define $\log \frac{p_2(a_k)}{p_1(a_k)}$ be the discrimination information for $H_2$ over $H_1$, when $X=a_k$. The expectation of discrimination information is KL divergence, denoted as:</p>
-<p>$$D_{KL}(P_2||P_1) = \sum_k p_1(a_k) \log \frac{p_2(a_k)}{p_1(a_k)} $$which sometimes denoted as $I(p2,p1;X)$, or simply $I(p2,p1)$ if without ambiguity.</p>
+<p>$$D_{KL}(P_2||P_1) = \sum_k p_2(a_k) \log \frac{p_2(a_k)}{p_1(a_k)} $$which sometimes denoted as $I(p2,p1;X)$, or simply $I(p2,p1)$ if without ambiguity.</p>
 <p>KL Divergence can be interpreted as a measure of expected information for $X$ gained after distribution shifted from $p_1$ to $p_2$, where $p_1$ and $p_2$ regarded as prior and post-prior distributions.<a id="more"></a>Further we may define the (symmetrised) divergence between $p_2$ and $p_1$:</p>
 <p>$$J(p_2,p_1;X)=D_{KL}(p_2||p_1) + D_{KL}(p_1||p_2) = J(p_1,p_2;X)$$Divergence $J(p_2,p_1)$ is a measure of difference between two distributions satisfying</p>
 <ul>
@@ -34,9 +34,9 @@
 </ul>
 <p>but not triangle inequality, and thus $J(\cdot,\cdot)$ is not a distance function.</p>
 <h2 id="Generalization"><a href="#Generalization" class="headerlink" title="Generalization"></a>Generalization</h2><p>We may generalize the definition to continuous variables as:</p>
-<p>$$D_{KL}(p_2||p_1) = \int p_1(x) \log \frac{p_2(x)}{p_1(x)} dx$$or multivariate cases:</p>
-<p>$$D_{KL}(p_2(\vec{x})||p_1(\vec{x})) = \int p_1(\vec{x}) \log \frac{p_2(\vec{x})}{p_1(\vec{x})} d\vec{x}$$or further, conditional cases:</p>
-<p>$$D_{KL}(p_2(X|Y)||p_1(X|Y)) = \int p_2(y) p_1(x|y) \log \frac{p_2(x|y)}{p_1(x|y)} dxdy$$</p>
+<p>$$D_{KL}(p_2||p_1) = \int p_2(x) \log \frac{p_2(x)}{p_1(x)} dx$$or multivariate cases:</p>
+<p>$$D_{KL}(p_2(\vec{x})||p_1(\vec{x})) = \int p_2(\vec{x}) \log \frac{p_2(\vec{x})}{p_1(\vec{x})} d\vec{x}$$or further, conditional cases:</p>
+<p>$$D_{KL}(p_2(X|Y)||p_1(X|Y)) = \int p_2(y) p_2(x|y) \log \frac{p_2(x|y)}{p_1(x|y)} dxdy$$</p>
 <h2 id="Relation-to-Shannon-Entropy"><a href="#Relation-to-Shannon-Entropy" class="headerlink" title="Relation to Shannon Entropy"></a>Relation to Shannon Entropy</h2><p>For a discrete variable $X$, with distribution $p$, we have:</p>
 <p>$$H(X)=\log n - D_{KL}(p||v)$$where $n$ is number of values $X$ can take on, and $v$ is the uniform distribution on those values. The lemma suggests that $D_{KL}(p||v)$ measures the information difference between $p$ and a totally chaotic “bottom distribution”. From the perspective of transmission, KL divergence equals the length of additional bits required to encode a message, when the distribution of source alphabets shifts from $p$ to $v$.</p>
 <p>For a continuous variable $X$ ranged within a finite set of volume $L$, we have:</p>
@@ -45,13 +45,13 @@
 <p>$$I(X;Y)=D_{KL}(P(XY)||P(X)P(Y))$$which suggests mutual information $I(X;Y)$ is the information difference when distribution of $(X,Y)$ shifted from $P(X)P(Y)$ to $P(X,Y)$, i.e., from independent to dependent. </p>
 <h2 id="Additional-Properties-of-KL-Divergence"><a href="#Additional-Properties-of-KL-Divergence" class="headerlink" title="Additional Properties of KL Divergence"></a>Additional Properties of KL Divergence</h2><h3 id="Addictivity"><a href="#Addictivity" class="headerlink" title="Addictivity"></a>Addictivity</h3><p>Assume $X,Y$ are independent, and $P(x,y)=P_1(x)P_2(y)$, $Q$ likewisely. We have</p>
 <p>$$\begin{align}
-D_{KL}(P(X,Y)||Q(X,Y)) &= \int Q(x,y) \log \frac{P(x,y)}{Q(x,y)} dxdy \\
-&= \int Q_1(x)P_2(y) \log \frac{P_1(x)P_2(y)}{Q_1(x)Q_2(y)} dxdy \\
-&= \int Q_1(x) \log \frac{P_1(x)}{Q_1(x)} dx + \int Q_2(y) \log \frac{P_2(y)}{Q_2(y)} dy \\
+D_{KL}(P(X,Y)||Q(X,Y)) &= \int P(x,y) \log \frac{P(x,y)}{Q(x,y)} dxdy \\
+&= \int P_1(x)P_2(y) \log \frac{P_1(x)P_2(y)}{Q_1(x)Q_2(y)} dxdy \\
+&= \int P_1(x) \log \frac{P_1(x)}{Q_1(x)} dx + \int P_2(y) \log \frac{P_2(y)}{Q_2(y)} dy \\
 &= D_{KL}(P_1||Q_1) + D_{KL}(P_2||Q_2)
 \end{align}$$</p>
 <h3 id="Convexity"><a href="#Convexity" class="headerlink" title="Convexity"></a>Convexity</h3><p>Assume $p_1,p_2,q_1,q_2,p,q$ are distributions, $0 \leq \lambda \leq 1$. We have</p>
-<p>$$D_{KL}(\lambda p_1 + (1 - \lambda) p_2 || q) \leq \lambda D_{KL}(p_1||q) + (1 - \lambda) D_{KL}(p_2||q)$$which can be derived from $\log x \leq x - 1$ when $0 < x < 1$. Similarity we have</p>
+<p>$$D_{KL}(\lambda p_1 + (1 - \lambda) p_2 || q) \leq \lambda D_{KL}(p_1||q) + (1 - \lambda) D_{KL}(p_2||q)$$which can be derived from $\log x \leq x - 1$ when $0 < x < 1$. Similarly we have</p>
 <p>$$D_{KL}(p || \lambda q_1 + (1 - \lambda) q_2) \leq \lambda D_{KL}(p||q_1) + (1 - \lambda) D_{KL}(p||q_2)$$which can be derived from the convexity of $\log(\cdot)$. Further we have</p>
 <p>$$D_{KL}(\lambda p_1 + (1 - \lambda) p_2 || \lambda q_1 + (1 - \lambda) q_2) \leq \lambda D_{KL}(p_1 || q_1) + (1 - \lambda) D_{KL}(p_2|| q_2)$$which can be proved using the <a href="https://en.wikipedia.org/wiki/Log_sum_inequality" target="_blank" rel="noopener">Log Sum Inequality</a>.</p>
 <h3 id="Invariance"><a href="#Invariance" class="headerlink" title="Invariance"></a>Invariance</h3><p>Assume $U=g(X)$, then $D_{KL}(p(X)||q(X))=D_{KL}(p(U)||q(U))$, i.e., the form of KL divergence remains invariant under transforms. Mutual information, however, does not have such property.</p>
@@ -62,7 +62,7 @@ D_{KL}(P(X,Y)||Q(X,Y)) &= \int Q(x,y) \log \frac{P(x,y)}{Q(x,y)} dxdy \\
       &lt;p&gt;Assume there are two hypotheses $H_1$ and $H_2$, r.v. $X$ ranged in alphabets $a_1,\ldots\,a_k$. Under hypothesis $H_i$, $X$ has pdf $p(X=a_j|H_i)=p_i(a_j)$. According to Law of Total Probability, we have:&lt;/p&gt;
 &lt;p&gt;$$ p(H_i|a_k) = \frac{p(H_i)p_i(a_k)}{p_1(a_k)p(H_1)+p_2(a_k)p(H_2)} $$The formula can be transformed into:&lt;/p&gt;
 &lt;p&gt;$$ \log \frac{p_2(a_k)}{p_1(a_k)} = \log \frac{p(H_2|a_k)}{p(H_1|a_k)} - \log \frac{p(H_2)}{p(H_1)} $$which implies that, $\log \frac{p_2(a_k)}{p_1(a_k)}$ equals the difference of log likelihood ratio before and after conditioning $X=a_k$. We define $\log \frac{p_2(a_k)}{p_1(a_k)}$ be the discrimination information for $H_2$ over $H_1$, when $X=a_k$. The expectation of discrimination information is KL divergence, denoted as:&lt;/p&gt;
-&lt;p&gt;$$D_{KL}(P_2||P_1) = \sum_k p_1(a_k) \log \frac{p_2(a_k)}{p_1(a_k)} $$which sometimes denoted as $I(p2,p1;X)$, or simply $I(p2,p1)$ if without ambiguity.&lt;/p&gt;
+&lt;p&gt;$$D_{KL}(P_2||P_1) = \sum_k p_2(a_k) \log \frac{p_2(a_k)}{p_1(a_k)} $$which sometimes denoted as $I(p2,p1;X)$, or simply $I(p2,p1)$ if without ambiguity.&lt;/p&gt;
 &lt;p&gt;KL Divergence can be interpreted as a measure of expected information for $X$ gained after distribution shifted from $p_1$ to $p_2$, where $p_1$ and $p_2$ regarded as prior and post-prior distributions.
     
     </summary>
