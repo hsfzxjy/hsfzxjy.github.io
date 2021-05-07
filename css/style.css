@@ -26,40 +26,18 @@
   src: url("../fonts/kokoro/Kokoro-Regular.eot");
   src: url("../fonts/kokoro/Kokoro-Regular.eot?#iefix") format("embedded-opentype"), url("../fonts/kokoro/Kokoro-Regular.woff2") format("woff2"), url("../fonts/kokoro/Kokoro-Regular.woff") format("woff"), url("../fonts/kokoro/Kokoro-Regular.ttf") format("truetype");
 }
-/* Webfont: Lato-Regular */
 @font-face {
-  font-family: "LatoWeb";
-  src: url("../fonts/Lato/slim.Lato-Regular.eot");
-  /* IE9 Compat Modes */
-  src: url("../fonts/Lato/slim.Lato-Regular.eot?#iefix") format("embedded-opentype"), url("../fonts/Lato/slim.Lato-Regular.woff2") format("woff2"), url("../fonts/Lato/slim.Lato-Regular.woff") format("woff"), url("../fonts/Lato/slim.Lato-Regular.ttf") format("truetype");
-  font-style: normal;
-  font-weight: normal;
-  text-rendering: optimizeLegibility;
+  font-family: "NunitoSans-Regular";
+  src: url("../fonts/NunitoSans/NunitoSans-Regular.ttf");
 }
-/* Webfont: Lato-Thin */
 @font-face {
-  font-family: "LatoWebThin";
-  src: url("../fonts/Lato/slim.Lato-Thin.eot");
-  /* IE9 Compat Modes */
-  src: url("../fonts/Lato/slim.Lato-Thin.eot?#iefix") format("embedded-opentype"), url("../fonts/Lato/slim.Lato-Thin.woff2") format("woff2"), url("../fonts/Lato/slim.Lato-Thin.woff") format("woff"), url("../fonts/Lato/slim.Lato-Thin.ttf") format("truetype");
-  font-style: normal;
-  font-weight: normal;
-  text-rendering: optimizeLegibility;
-}
-/* Webfont: Lato-Light */
-@font-face {
-  font-family: "LatoWebLight";
-  src: url("../fonts/Lato/slim.Lato-Light.eot");
-  /* IE9 Compat Modes */
-  src: url("../fonts/Lato/slim.Lato-Light.eot?#iefix") format("embedded-opentype"), url("../fonts/Lato/slim.Lato-Light.woff2") format("woff2"), url("../fonts/Lato/slim.Lato-Light.woff") format("woff"), url("../fonts/Lato/slim.Lato-Light.ttf") format("truetype");
-  font-style: normal;
-  font-weight: normal;
-  text-rendering: optimizeLegibility;
+  font-family: "NunitoSans-Bold";
+  src: url("../fonts/NunitoSans/NunitoSans-SemiBold.ttf");
 }
 body {
   background-color: #f6f6f6;
   color: #444;
-  font-family: Georgia, Times New Roman, Times, serif !important;
+  font-family: "NunitoSans-Regular", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -67,12 +45,14 @@ body {
 mjx-container.MathJax {
   overflow-x: auto;
   overflow-y: hidden;
+  margin: 0.5em 0 !important;
+  font-size: 0.9em;
 }
 
 body,
 html {
   overflow-x: hidden;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .body_container {
@@ -194,7 +174,7 @@ a:focus {
 }
 #header #nav-menu > div a span {
   margin-left: 0.5em;
-  font-family: LatoWeb;
+  font-family: "NunitoSans-Regular", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
 }
 
 #sidebar {
@@ -215,7 +195,8 @@ a:focus {
   border-bottom: 1px solid #ddd;
   display: block;
   font-weight: normal;
-  font-family: LatoWeb;
+  font-family: "NunitoSans-Bold", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
+  font-weight: 500;
 }
 #sidebar .widget .comments-title {
   color: #6e7173;
@@ -232,7 +213,7 @@ a:focus {
 #sidebar .widget .tagcloud a {
   line-height: 1.5;
   padding: 5px;
-  font-family: LatoWeb;
+  font-family: "NunitoSans-Regular", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
 }
 #sidebar .widget ul {
   list-style: none;
@@ -280,6 +261,19 @@ a:focus {
 .post {
   padding: 25px 0 15px;
 }
+.post .h1,
+.post h2,
+.post h3,
+.post h4,
+.post h5,
+.post h6 {
+  font-family: "NunitoSans-Bold", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
+  font-weight: 500;
+}
+.post p,
+.post a {
+  font-family: "NunitoSans-Regular", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
+}
 .post > hr {
   line-height: 1em;
   position: relative;
@@ -316,9 +310,10 @@ a:focus {
   text-align: center;
   padding: 0;
   padding-top: 2em;
-  font-size: 30px;
+  font-size: 2em;
   font-weight: 500;
-  font-family: "LatoWeb", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
+  font-family: "NunitoSans-Bold", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
+  font-weight: 500;
 }
 .post .post-title a {
   color: #555;
@@ -339,6 +334,7 @@ a:focus {
   color: #999;
   text-align: center;
   text-indent: 0.15em;
+  font-family: "NunitoSans-Regular", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
 }
 .post .ds-thread-count {
   padding: 0;
@@ -356,7 +352,8 @@ a:focus {
   display: inline;
   text-indent: 0.15em;
 }
-.post .post-content {
+.post .post-content,
+.post .post-archive {
   clear: left;
   line-height: 1.55;
   color: #444;
@@ -369,88 +366,142 @@ a:focus {
 }
 .post .post-content p,
 .post .post-content a,
+.post .post-content li,
+.post .post-archive p,
+.post .post-archive a,
+.post .post-archive li {
+  font-family: "NunitoSans-Regular", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
+}
 .post .post-content h1,
 .post .post-content h2,
 .post .post-content h3,
 .post .post-content h4,
 .post .post-content h5,
 .post .post-content h6,
-.post .post-content li {
-  font-family: "LatoWeb", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
+.post .post-archive h1,
+.post .post-archive h2,
+.post .post-archive h3,
+.post .post-archive h4,
+.post .post-archive h5,
+.post .post-archive h6 {
+  font-family: "NunitoSans-Bold", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
+  font-weight: 500;
 }
-.post .post-content p {
+.post .post-content p,
+.post .post-archive p {
   text-indent: 2em;
 }
-.post .post-content.noindent p {
+.post .post-content.noindent p,
+.post .post-archive.noindent p {
   text-indent: 0;
 }
-.post .post-content.center {
+.post .post-content.center,
+.post .post-archive.center {
   text-align: center;
 }
 .post .post-content p a,
-.post .post-content li a {
+.post .post-content li a,
+.post .post-archive p a,
+.post .post-archive li a {
   color: #399f70 !important;
 }
 .post .post-content p a:hover, .post .post-content p a:active,
 .post .post-content li a:hover,
-.post .post-content li a:active {
+.post .post-content li a:active,
+.post .post-archive p a:hover,
+.post .post-archive p a:active,
+.post .post-archive li a:hover,
+.post .post-archive li a:active {
   color: #4bbf8a !important;
 }
-.post .post-content h1 {
+.post .post-content h1,
+.post .post-archive h1 {
   font-size: 1.6em;
   font-weight: bold;
 }
-.post .post-content h2 {
+.post .post-content h2,
+.post .post-archive h2 {
   font-size: 1.5em;
   font-weight: 500;
   margin: 0.4em 0;
 }
-.post .post-content h3 {
+.post .post-content h3,
+.post .post-archive h3 {
   font-size: 1.35em;
   margin: 0.4em 0;
 }
-.post .post-content h4 {
+.post .post-content h4,
+.post .post-archive h4 {
   font-size: 1.25em;
   margin: 0.3em 0;
 }
-.post .post-content h5 {
+.post .post-content h5,
+.post .post-archive h5 {
   font-size: 1.15em;
   margin: 0.3em 0;
 }
-.post .post-content h6 {
+.post .post-content h6,
+.post .post-archive h6 {
   font-size: 1.05em;
   margin: 0.2em 0;
 }
 .post .post-content h3,
 .post .post-content h4,
 .post .post-content h5,
-.post .post-content h6 {
+.post .post-content h6,
+.post .post-archive h3,
+.post .post-archive h4,
+.post .post-archive h5,
+.post .post-archive h6 {
   font-weight: normal;
 }
-.post .post-content pre code {
-  padding: 0 2em;
+.post .post-content pre code,
+.post .post-archive pre code {
+  padding: 0.9em 1em;
 }
-.post .post-content code {
+.post .post-content code,
+.post .post-archive code {
   display: inline;
   font-size: 0.8em;
 }
-.post .post-content p {
+.post .post-content mjx-container.MathJax + p,
+.post .post-archive mjx-container.MathJax + p {
+  margin-top: 1.5em;
+}
+.post .post-content ul + p,
+.post .post-content ol + p,
+.post .post-content p + p,
+.post .post-archive ul + p,
+.post .post-archive ol + p,
+.post .post-archive p + p {
+  margin-top: 1.5em;
+}
+.post .post-content figure + p,
+.post .post-archive figure + p {
+  margin-top: 2em;
+}
+.post .post-content p,
+.post .post-archive p {
   margin: 0;
-  margin-bottom: 1.2em;
 }
 .post .post-content p + ul,
-.post .post-content p + ol {
-  margin-bottom: 1.2em !important;
+.post .post-content p + ol,
+.post .post-archive p + ul,
+.post .post-archive p + ol {
+  margin: 0.5em 0 !important;
 }
-.post .post-content p a {
+.post .post-content p a,
+.post .post-archive p a {
   color: #01579f;
   padding-bottom: 2px;
   word-break: break-all;
 }
-.post .post-content p a:hover {
+.post .post-content p a:hover,
+.post .post-archive p a:hover {
   border-bottom-color: #444;
 }
-.post .post-content p .caption {
+.post .post-content p .caption,
+.post .post-archive p .caption {
   color: #444;
   display: block;
   font-size: 0.9em;
@@ -459,41 +510,72 @@ a:focus {
   text-align: center;
   display: none;
 }
-.post .post-content hr {
+.post .post-content hr,
+.post .post-archive hr {
   margin: 1em auto;
   border: none;
   border-top: 1px solid #e4e4e4;
   position: relative;
 }
-.post .post-content img {
+.post .post-content img,
+.post .post-archive img {
   max-width: 100%;
   padding: 0.5em 0;
   margin: auto;
   display: block;
 }
-.post .post-content img.pay {
+.post .post-content img.pay,
+.post .post-archive img.pay {
   max-width: 200px;
 }
 .post .post-content ul,
-.post .post-content ol {
+.post .post-content ol,
+.post .post-archive ul,
+.post .post-archive ol {
   padding: 0em 2.4em;
   border-radius: 3px;
   margin: 0;
 }
 .post .post-content ul li,
-.post .post-content ol li {
+.post .post-content ol li,
+.post .post-archive ul li,
+.post .post-archive ol li {
   text-indent: 0;
 }
 .post .post-content ul ul,
-.post .post-content ol ul {
+.post .post-content ol ul,
+.post .post-archive ul ul,
+.post .post-archive ol ul {
   margin: 0;
 }
 .post .post-content ul:last-child,
-.post .post-content ol:last-child {
+.post .post-content ol:last-child,
+.post .post-archive ul:last-child,
+.post .post-archive ol:last-child {
   margin: 0;
 }
-.post .post-content table {
+.post .post-content table,
+.post .post-archive table {
   margin: 0;
+}
+.post .post-content ul,
+.post .post-archive ul {
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
+  position: relative;
+}
+.post .post-content ul li,
+.post .post-archive ul li {
+  padding-left: 2em;
+}
+.post .post-content ul li::before,
+.post .post-archive ul li::before {
+  content: "+";
+  font-weight: 500;
+  padding-left: 5px;
+  position: absolute;
+  left: 0;
 }
 .post .tags {
   padding: 1em 0;
@@ -536,6 +618,7 @@ a:focus {
   margin-top: 1em;
   line-height: 1.5;
   color: #999;
+  font-family: "NunitoSans-Regular", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
 }
 #footer span {
   font-size: 0.9em;
@@ -685,6 +768,21 @@ a:focus {
     padding-left: 1.5em;
     padding-right: 1em;
   }
+
+  figure.highlight {
+    margin: 5px -10px;
+    padding: 10px 0;
+  }
+  figure.highlight table td {
+    position: static;
+  }
+  figure.highlight .code pre {
+    padding: 0 10px;
+  }
+
+  .body_container {
+    padding: 0 10px;
+  }
 }
 blockquote,
 .stressed {
@@ -711,13 +809,6 @@ blockquote p:after,
   content: " ";
   clear: both;
   height: 0;
-}
-
-strong,
-b,
-em {
-  padding: 1px 2px;
-  font-weight: bold;
 }
 
 pre {
@@ -863,7 +954,7 @@ div {
 }
 
 .readmore a {
-  font-family: LatoWeb;
+  font-family: "NunitoSans-Regular", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
   font-size: 12px;
   color: #fff;
   margin-top: -10px;
@@ -1029,15 +1120,14 @@ div {
 }
 
 /* syntax highlight*/
-pre,
 .highlight {
   background: #2d2d2d;
-  margin: 20px 0;
-  padding: 5px;
+  margin: 5px 0;
+  padding: 0.9em 0;
   overflow: auto;
   font-size: 15px;
   color: #ccc;
-  line-height: 1.6;
+  line-height: 1.4;
 }
 
 .highlight .gutter pre,
@@ -1052,33 +1142,48 @@ code * {
 
 code {
   word-break: break-all;
-  background: #f9f2f4;
   color: #c7254e;
   text-shadow: 0 1px #f6f6f6;
-  padding: 0 0.3em;
 }
 
 pre code {
   background: none;
   text-shadow: none;
-  padding: 0;
 }
 
 .highlight pre {
   border: none;
   margin: 0;
-  padding: 1px;
 }
 
 .highlight table {
   margin: 0;
-  width: auto;
+  width: 100%;
   border: none;
+}
+
+.highlight table td {
+  position: relative;
+}
+
+.highlight ._hl {
+  background-color: rgba(255, 255, 0, 0.4);
+  margin: 0 -1em;
+  padding: 0 1em;
+}
+.highlight ._hl span._hl-label {
+  position: absolute;
+  padding: 1px 7px;
+  text-align: center;
+  height: 2em;
+  line-height: 2em;
+  right: 0;
+  color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(219, 219, 0, 0.4);
 }
 
 .highlight td {
   border: none;
-  padding: 0;
 }
 
 .highlight figcaption {
@@ -1111,122 +1216,8 @@ pre code {
   height: 20px;
 }
 
-.gist {
-  margin: 20px 0;
-  border-style: solid;
-  border-color: #ccc;
-  border-width: 1px 0;
-  background: #2d2d2d;
-  padding: 15px 40px 15px 15px;
-}
-
-.gist .gist-file {
-  border: none;
-  font-family: "Input Mono", "PT Mono", Consolas, Monaco, Menlo, monospace;
-  margin: 0;
-}
-
-.gist .gist-file .gist-data {
-  background: none;
-  border: none;
-}
-
-.gist .gist-file .gist-data .line-numbers {
-  background: none;
-  border: none;
-  padding: 0 20px 0 0;
-}
-
-.gist .gist-file .gist-data .line-data {
-  padding: 0 !important;
-}
-
-.gist .gist-file .highlight {
-  margin: 0;
-  padding: 0;
-  border: none;
-}
-
-.gist .gist-file .gist-meta {
-  background: #2d2d2d;
-  color: #999;
-  font: 13px Lato, "PingFang SC", "Microsoft YaHei", sans-serif;
-  text-shadow: 0 0;
-  padding: 0;
-  margin-top: 1em;
-  margin-left: 40px;
-}
-
-.gist .gist-file .gist-meta a {
-  color: color-link;
-  font-weight: normal;
-}
-
-.gist .gist-file .gist-meta a:hover {
-  text-decoration: underline;
-}
-
-pre .comment {
-  color: #999;
-}
-
-pre .variable,
-pre .attribute,
-pre .tag,
-pre .regexp,
-pre .ruby .constant,
-pre .xml .tag .title,
-pre .xml .pi,
-pre .xml .doctype,
-pre .html .doctype,
-pre .css .id,
-pre .css .class,
-pre .css .pseudo {
-  color: #f2777a;
-}
-
-pre .number,
-pre .preprocessor,
-pre .built_in,
-pre .literal,
-pre .params,
-pre .constant {
-  color: #f99157;
-}
-
-pre .ruby .class .title,
-pre .css .rules .attribute {
-  color: #9c9;
-}
-
-pre .string,
-pre .value,
-pre .inheritance,
-pre .header,
-pre .ruby .symbol,
-pre .xml .cdata {
-  color: #9c9;
-}
-
-pre .title,
-pre .css .hexcolor {
-  color: #6cc;
-}
-
-pre .function,
-pre .python .decorator,
-pre .python .title,
-pre .ruby .function .title,
-pre .ruby .title .keyword,
-pre .perl .sub,
-pre .javascript .title,
-pre .coffeescript .title {
-  color: #69c;
-}
-
-pre .keyword,
-pre .javascript .function {
-  color: #c9c;
+.highlight .code pre {
+  padding: 0 1em;
 }
 
 /* icomoon icon fonts*/
@@ -1353,325 +1344,6 @@ pre .javascript .function {
   padding-left: 0;
 }
 
-/* *******************************************************
-* Process timelime, (homepage)
-******************************************************* */
-#process {
-  padding: 80px 0;
-  background-color: #f6f6f6;
-}
-
-#process .col-md-2 i {
-  font-size: 50px;
-  position: relative;
-  top: 10px;
-}
-
-#process .timeline-centered {
-  position: relative;
-  margin-bottom: 30px;
-}
-
-#process .timeline-centered:before,
-#process .timeline-centered:after,
-#process .timeline-centered:before,
-#process .timeline-centered:after {
-  content: " ";
-  display: table;
-}
-
-#process .timeline-centered:after {
-  clear: both;
-}
-
-#process .timeline-centered:before {
-  content: "";
-  position: absolute;
-  display: block;
-  width: 4px;
-  background: #dadade;
-  /*left: 50%;*/
-  top: 50px;
-  bottom: 50px;
-  margin-left: 10px;
-}
-
-#process .timeline-centered .timeline-entry {
-  position: relative;
-  /*width: 50%;
-  float: right;*/
-  margin-top: 5px;
-  margin-left: 20px;
-  margin-bottom: 10px;
-  clear: both;
-}
-
-#process .timeline-centered .timeline-entry:before,
-#process .timeline-centered .timeline-entry:after {
-  content: " ";
-  display: table;
-}
-
-#process .timeline-centered .timeline-entry:after {
-  clear: both;
-}
-
-#process .timeline-centered .timeline-entry.begin {
-  margin-bottom: 0;
-}
-
-#process .timeline-centered .timeline-entry.left-aligned {
-  float: left;
-}
-
-#process .timeline-centered .timeline-entry.left-aligned .timeline-entry-inner {
-  margin-left: 0;
-  margin-right: -18px;
-}
-
-#process .timeline-centered .timeline-entry.left-aligned .timeline-entry-inner .timeline-time {
-  left: auto;
-  right: -100px;
-  text-align: left;
-}
-
-#process span.number {
-  font-family: "Georgia", serif, Helvetica, "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", "Source Han Sans CN", "WenQuanYi Micro Hei", Arial, sans-serif;
-  font-style: italic;
-  font-size: 20px;
-  line-height: 0;
-  color: #cfcfca;
-  position: relative;
-  top: 13px;
-}
-
-#process .timeline-centered .timeline-entry.left-aligned .timeline-entry-inner .timeline-icon {
-  float: right;
-}
-
-#process .timeline-centered .timeline-entry.left-aligned .timeline-entry-inner .timeline-label {
-  margin-left: 0;
-  margin-right: 70px;
-}
-
-#process .timeline-centered .timeline-entry.left-aligned .timeline-entry-inner .timeline-label:after {
-  left: auto;
-  right: 0;
-  margin-left: 0;
-  margin-right: -9px;
-  -moz-transform: rotate(180deg);
-  -o-transform: rotate(180deg);
-  -webkit-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
-  transform: rotate(180deg);
-}
-
-.timeline-label p {
-  font-family: Helvetica, "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", "Source Han Sans CN", "WenQuanYi Micro Hei", Arial, sans-serif;
-  margin-bottom: 3px;
-}
-
-#process .timeline-centered .timeline-entry .timeline-entry-inner {
-  position: relative;
-  margin-left: -20px;
-}
-
-#process .timeline-centered .timeline-entry .timeline-entry-inner:before,
-#process .timeline-centered .timeline-entry .timeline-entry-inner:after {
-  content: " ";
-  display: table;
-}
-
-#process .timeline-centered .timeline-entry .timeline-entry-inner:after {
-  clear: both;
-}
-
-#process .timeline-centered .timeline-entry .timeline-entry-inner .timeline-time {
-  position: absolute;
-  left: -100px;
-  text-align: right;
-  padding: 10px;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-}
-
-#process .timeline-centered .timeline-entry .timeline-entry-inner .timeline-time > span {
-  display: block;
-}
-
-#process .timeline-centered .timeline-entry .timeline-entry-inner .timeline-time > span:first-child {
-  font-size: 15px;
-  font-weight: bold;
-}
-
-#process .timeline-centered .timeline-entry .timeline-entry-inner .timeline-time > span:last-child {
-  font-size: 12px;
-}
-
-#process .timeline-centered .timeline-entry .timeline-entry-inner .timeline-icon {
-  background: #f6f6f6;
-  color: #737881;
-  display: block;
-  width: 40px;
-  height: 40px;
-  -webkit-background-clip: padding-box;
-  -moz-background-clip: padding;
-  background-clip: padding-box;
-  -webkit-border-radius: 20px;
-  -moz-border-radius: 20px;
-  border-radius: 20px;
-  text-align: center;
-  border: 4px solid #dadade;
-  line-height: 40px;
-  font-size: 15px;
-  float: left;
-  position: absolute;
-  top: 50%;
-  margin-top: -20px;
-  margin-left: -9px;
-}
-
-#process .timeline-centered .timeline-entry .timeline-entry-inner .timeline-icon.bg-primary {
-  background-color: #303641;
-  color: #fff;
-}
-
-#process .timeline-centered .timeline-entry .timeline-entry-inner .timeline-label {
-  position: relative;
-  background: #eee;
-  padding: 30px;
-  margin-left: 60px;
-  -webkit-background-clip: padding-box;
-  -moz-background-clip: padding;
-  background-clip: padding-box;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-}
-
-#process .timeline-centered .timeline-entry .timeline-entry-inner .timeline-label:after {
-  content: "";
-  display: block;
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 9px 9px 9px 0;
-  border-color: transparent #eee transparent transparent;
-  left: 0;
-  top: 50%;
-  margin-top: -9px;
-  margin-left: -9px;
-}
-
-#process .line {
-  position: absolute;
-  display: block;
-  width: 4px;
-  background: #eee;
-  top: -25px;
-  right: -30px;
-  bottom: -25px;
-}
-
-#process .present,
-#process .born {
-  font-size: 14px;
-  font-family: "Georgia", serif, Helvetica, "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", "Source Han Sans CN", "WenQuanYi Micro Hei", Arial, sans-serif;
-  font-style: italic;
-  color: #333;
-  padding: 10px;
-  background-color: #eee;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-}
-
-#process .present:after,
-#process .born:after {
-  left: 100%;
-  top: 50%;
-  border: solid transparent;
-  content: " ";
-  height: 0;
-  width: 0;
-  position: absolute;
-  border-color: rgba(136, 183, 213, 0);
-  border-left-color: #eee;
-  border-width: 10px;
-  margin-top: -10px;
-}
-
-#process .present {
-  position: absolute;
-  top: -25px;
-  right: 0;
-  margin-top: -20px;
-  line-height: 100%;
-}
-
-#process .born {
-  position: absolute;
-  bottom: -25px;
-  right: 0;
-  margin-bottom: -20px;
-  line-height: 100%;
-}
-
-#process .dot_tp {
-  position: absolute;
-  top: -25px;
-  right: -35px;
-  background-color: transparent;
-  height: 15px;
-  width: 15px;
-  margin-top: -13px;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
-  border: 3px solid #eee;
-}
-
-#process .dot_bt {
-  position: absolute;
-  bottom: -25px;
-  right: -35px;
-  background-color: transparent;
-  height: 15px;
-  width: 15px;
-  margin-bottom: -13px;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
-  border: 3px solid #eee;
-}
-
-@media (max-width: 768px) {
-  #process .line {
-    right: 10px;
-  }
-
-  #process .timeline-centered .timeline-entry .timeline-entry-inner .timeline-label {
-    margin-right: 30px;
-    margin-left: 45px;
-    padding: 20px;
-  }
-
-  #process .timeline-centered .timeline-entry {
-    margin-right: 20px;
-  }
-
-  #process .dot_tp,
-#process .dot_bt {
-    right: 5px;
-  }
-
-  #process .present,
-#process .born {
-    right: 35px;
-  }
-}
 .widget ul {
   list-style: none;
   padding: 0;
@@ -1692,16 +1364,16 @@ pre .javascript .function {
 .category-list-link {
   color: #222;
   margin-right: 0.25em;
-  font-family: LatoWeb;
+  font-family: "NunitoSans-Regular", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
 }
 
 .widget-item span {
   margin-left: 0.5em;
-  font-family: LatoWeb;
+  font-family: "NunitoSans-Regular", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
 }
 
 .post-list-link {
-  font-family: "LatoWeb", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
+  font-family: "NunitoSans-Regular", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
 }
 
 #no-comment {
@@ -1711,7 +1383,7 @@ pre .javascript .function {
   padding: 20px 80px;
   color: #555;
   border: dashed darkgray 1px;
-  font-family: "LatoWeb", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
+  font-family: "NunitoSans-Regular", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
   display: none;
 }
 #no-comment h2 {
@@ -1723,4 +1395,79 @@ pre .javascript .function {
 }
 #no-comment.show {
   display: block;
+}
+
+.highlight {
+  color: #383a42;
+  background: #eeeeee;
+}
+
+pre .comment,
+pre .quote {
+  color: #a0a1a7;
+  font-style: italic;
+}
+
+pre .doctag,
+pre .keyword,
+pre .formula {
+  color: #a626a4;
+}
+
+pre .section,
+pre .name,
+pre .selector-tag,
+pre .deletion,
+pre .subst {
+  color: #e45649;
+}
+
+pre .literal {
+  color: #0184bb;
+}
+
+pre .string,
+pre .regexp,
+pre .addition,
+pre .attribute,
+pre .meta-string {
+  color: #50a14f;
+}
+
+pre .attr,
+pre .variable,
+pre .template-variable,
+pre .type,
+pre .selector-class,
+pre .selector-attr,
+pre .selector-pseudo,
+pre .number {
+  color: #986801;
+}
+
+pre .symbol,
+pre .bullet,
+pre .link,
+pre .meta,
+pre .selector-id,
+pre .title {
+  color: #4078f2;
+}
+
+pre .built_in,
+pre .title.class_,
+pre .class pre .title {
+  color: #c18401;
+}
+
+pre .emphasis {
+  font-style: italic;
+}
+
+pre .strong {
+  font-weight: bold;
+}
+
+pre .link {
+  text-decoration: underline;
 }
