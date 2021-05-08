@@ -538,7 +538,8 @@ a:focus {
         ul,
         ol,
         p,
-        table {
+        table,
+        blockquote {
             + p {
                 margin-top: 1.5em;
             }
@@ -554,25 +555,26 @@ a:focus {
             margin-top: 2em;
         }
 
-        p {
-            // margin: 0 0 1.234em;
-            margin: 0;
-            // margin-bottom: 1.2em;
-
+        > * {
             + ul,
-            + ol {
+            + ol,
+            + blockquote {
                 margin: 0.5em 0 !important;
             }
+        }
 
-            a {
-                color: #01579f;
-                padding-bottom: 2px;
-                word-break: break-all;
+        a {
+            color: #01579f;
+            padding-bottom: 2px;
+            word-break: break-all;
 
-                &:hover {
-                    border-bottom-color: #444;
-                }
+            &:hover {
+                border-bottom-color: #444;
             }
+        }
+
+        p {
+            margin: 0;
 
             .caption {
                 color: #444;
@@ -929,14 +931,12 @@ blockquote,
     box-sizing: border-box;
     margin: 0;
     padding-left: 1.5em;
-    color: #555;
-    // border: dashed darken($bk-color, 30%) 1px;
+    color: #6f6f6f;
     position: relative;
 
     &::before {
         content: "";
-        // background: linear-gradient(to right, rgba(adjust-color($bk-color, $lightness: -30%), $alpha: 0.5), $bk-color);
-        background: #ccc;
+        background: darken(#e6e6e6, 0%);
         width: 0.5em;
         position: absolute;
         top: 0;

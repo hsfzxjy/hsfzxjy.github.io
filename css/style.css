@@ -485,10 +485,12 @@ a:focus {
 .post .post-content ol + p,
 .post .post-content p + p,
 .post .post-content table + p,
+.post .post-content blockquote + p,
 .post .post-archive ul + p,
 .post .post-archive ol + p,
 .post .post-archive p + p,
-.post .post-archive table + p {
+.post .post-archive table + p,
+.post .post-archive blockquote + p {
   margin-top: 1.5em;
 }
 .post .post-content ul,
@@ -502,25 +504,27 @@ a:focus {
 .post .post-archive figure + p {
   margin-top: 2em;
 }
-.post .post-content p,
-.post .post-archive p {
-  margin: 0;
-}
-.post .post-content p + ul,
-.post .post-content p + ol,
-.post .post-archive p + ul,
-.post .post-archive p + ol {
+.post .post-content > * + ul,
+.post .post-content > * + ol,
+.post .post-content > * + blockquote,
+.post .post-archive > * + ul,
+.post .post-archive > * + ol,
+.post .post-archive > * + blockquote {
   margin: 0.5em 0 !important;
 }
-.post .post-content p a,
-.post .post-archive p a {
+.post .post-content a,
+.post .post-archive a {
   color: #01579f;
   padding-bottom: 2px;
   word-break: break-all;
 }
-.post .post-content p a:hover,
-.post .post-archive p a:hover {
+.post .post-content a:hover,
+.post .post-archive a:hover {
   border-bottom-color: #444;
+}
+.post .post-content p,
+.post .post-archive p {
+  margin: 0;
 }
 .post .post-content p .caption,
 .post .post-archive p .caption {
@@ -837,13 +841,13 @@ blockquote,
   box-sizing: border-box;
   margin: 0;
   padding-left: 1.5em;
-  color: #555;
+  color: #6f6f6f;
   position: relative;
 }
 blockquote::before,
 .stressed::before {
   content: "";
-  background: #ccc;
+  background: #e6e6e6;
   width: 0.5em;
   position: absolute;
   top: 0;
