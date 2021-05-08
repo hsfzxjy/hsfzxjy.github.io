@@ -11,6 +11,8 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">unused_port</span></span>() &#123;</span><br><span class="line">    N=<span class="variable">$&#123;1:-1&#125;</span></span><br><span class="line">    comm -23 \</span><br><span class="line">        &lt;(seq <span class="string">&quot;1025&quot;</span> <span class="string">&quot;65535&quot;</span> | sort) \</span><br><span class="line">        &lt;(ss -Htan |</span><br><span class="line">            awk <span class="string">&#x27;&#123;print $4&#125;&#x27;</span> |</span><br><span class="line">            cut -d<span class="string">&#x27;:&#x27;</span> -f2 |</span><br><span class="line">            sort -u) |</span><br><span class="line">        shuf |</span><br><span class="line">        head -n <span class="string">&quot;<span class="variable">$N</span>&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p style="text-indent: 0; margin-top: 0;"> We are going to step through the code next.</p>
+<a id="more"></a>
+
 <p>Our first step is to obtain a list of occupied ports, which can be accomplished by command</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ss -Htan</span><br></pre></td></tr></table></figure>
 
