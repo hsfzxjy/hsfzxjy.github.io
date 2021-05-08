@@ -1,36 +1,41 @@
 $(function () {
     function isWX() {
-        var ua = navigator.userAgent.toLowerCase();
-        return (/micromessenger/.test(ua)) ? true : false;
+        var ua = navigator.userAgent.toLowerCase()
+        return /micromessenger/.test(ua)
     }
 
     if (isWX()) {
-        $("#header, .post-nav").remove();
         $(".categories a, .tags a").click(function (e) {
-            e.preventDefault();
+            e.preventDefault()
         })
+    } else {
+        autoResizeNav()
     }
 })
 
 $(window).scroll(function () {
-    $(window).scrollTop() > 100 ? $("#rocket").addClass("show") : $("#rocket").removeClass("show");
-});
+    $(window).scrollTop() > 100 ? $("#rocket").addClass("show") : $("#rocket").removeClass("show")
+})
 $("#rocket").click(function () {
-    $("#rocket").addClass("launch");
-    $("html, body").animate({
-        scrollTop: 0
-    }, 500, function () {
-        $("#rocket").removeClass("show launch");
-    });
-    return false;
-});
+    $("#rocket").addClass("launch")
+    $("html, body").animate(
+        {
+            scrollTop: 0,
+        },
+        500,
+        function () {
+            $("#rocket").removeClass("show launch")
+        }
+    )
+    return false
+})
 
 $(() => {
     const $toggleButton = $("span.toggle-menu")
     const $rightPanel = $("#right-panel")
 
     $toggleButton.click(() => {
-        $rightPanel.toggleClass("show");
+        $rightPanel.toggleClass("show")
     })
 })
 
@@ -46,18 +51,20 @@ function throttle(f, time) {
     }
 }
 
-
-$(() => {
-    const $navMenuContainer = document.querySelector('#nav-menu > div')
-    const $navMenu = document.getElementById('nav-menu')
+function autoResizeNav() {
+    const $navMenuContainer = document.querySelector("#nav-menu > div")
+    const $navMenu = document.getElementById("nav-menu")
 
     function process() {
         const threshold = 2
-        $navMenu.classList.toggle('left', $navMenuContainer.scrollLeft > threshold)
-        $navMenu.classList.toggle('right', $navMenuContainer.scrollLeft + $navMenuContainer.clientWidth + threshold < $navMenuContainer.scrollWidth)
+        $navMenu.classList.toggle("left", $navMenuContainer.scrollLeft > threshold)
+        $navMenu.classList.toggle(
+            "right",
+            $navMenuContainer.scrollLeft + $navMenuContainer.clientWidth + threshold < $navMenuContainer.scrollWidth
+        )
         console.log($navMenuContainer.scrollLeft, $navMenuContainer.clientWidth, $navMenuContainer.scrollWidth)
     }
 
-    (new ResizeObserver(throttle(process, 100))).observe($navMenuContainer)
-    $navMenuContainer.addEventListener('scroll', throttle(process, 10))
-})
+    new ResizeObserver(throttle(process, 100)).observe($navMenuContainer)
+    $navMenuContainer.addEventListener("scroll", throttle(process, 10))
+}
