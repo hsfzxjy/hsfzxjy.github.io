@@ -47,12 +47,13 @@ mjx-container.MathJax {
   overflow-y: hidden;
   margin: 0.5em 0 !important;
   font-size: 0.9em;
+  font-weight: lighter;
 }
 
 body,
 html {
   overflow-x: hidden;
-  font-size: 18px;
+  font-size: 17px;
 }
 
 .body_container {
@@ -364,6 +365,13 @@ a:focus {
   -webkit-hyphens: auto;
   hyphens: auto;
 }
+.post .post-content b,
+.post .post-content strong,
+.post .post-archive b,
+.post .post-archive strong {
+  font-family: "NunitoSans-Bold", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
+  font-weight: 500;
+}
 .post .post-content p,
 .post .post-content a,
 .post .post-content li,
@@ -459,6 +467,11 @@ a:focus {
 .post .post-archive pre code {
   padding: 0.9em 1em;
 }
+.post .post-content p,
+.post .post-archive p {
+  hyphens: auto;
+  word-break: break-word;
+}
 .post .post-content code,
 .post .post-archive code {
   display: inline;
@@ -471,10 +484,19 @@ a:focus {
 .post .post-content ul + p,
 .post .post-content ol + p,
 .post .post-content p + p,
+.post .post-content table + p,
 .post .post-archive ul + p,
 .post .post-archive ol + p,
-.post .post-archive p + p {
+.post .post-archive p + p,
+.post .post-archive table + p {
   margin-top: 1.5em;
+}
+.post .post-content ul,
+.post .post-content ol,
+.post .post-archive ul,
+.post .post-archive ol {
+  overflow-y: hidden;
+  overflow-x: auto;
 }
 .post .post-content figure + p,
 .post .post-archive figure + p {
@@ -558,16 +580,43 @@ a:focus {
 .post .post-archive table {
   margin: 0;
 }
+.post .post-content > table,
+.post .post-archive > table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  margin-top: 0;
+  max-width: 100%;
+  margin: 0 auto;
+  overflow: auto;
+}
+.post .post-content > table th,
+.post .post-archive > table th {
+  font-weight: 600;
+  background-color: #f3f3f3 !important;
+}
+.post .post-content > table td,
+.post .post-content > table th,
+.post .post-archive > table td,
+.post .post-archive > table th {
+  padding: 6px 13px;
+  border: 1px solid #dfe2e5;
+}
+.post .post-content > table tr,
+.post .post-archive > table tr {
+  background-color: #f8f8f8;
+  border-top: 1px solid #c6cbd1;
+}
+.post .post-content > table tr:nth-child(2n),
+.post .post-archive > table tr:nth-child(2n) {
+  background-color: #f6f8fa;
+}
 .post .post-content ul,
 .post .post-archive ul {
   list-style: none;
-  padding-left: 0;
+  padding-left: 1.5em;
+  padding-right: 0;
   margin-left: 0;
   position: relative;
-}
-.post .post-content ul li,
-.post .post-archive ul li {
-  padding-left: 2em;
 }
 .post .post-content ul li::before,
 .post .post-archive ul li::before {
@@ -760,13 +809,11 @@ a:focus {
     padding-top: 2em;
     text-align: center;
   }
-  .post .post-content blockquote {
-    padding: 0;
+  .post blockquote {
+    padding-left: 1em;
   }
-  .post .post-content ul,
-.post .post-content ol {
-    padding-left: 1.5em;
-    padding-right: 1em;
+  .post blockquote::before {
+    left: -10px;
   }
 
   figure.highlight {
@@ -788,10 +835,20 @@ blockquote,
 .stressed {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  margin: 2.5em 0;
-  padding: 20px;
+  margin: 0;
+  padding-left: 1.5em;
   color: #555;
-  border: dashed darkgray 1px;
+  position: relative;
+}
+blockquote::before,
+.stressed::before {
+  content: "";
+  background: #ccc;
+  width: 0.5em;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
 }
 blockquote p:last-child,
 .stressed p:last-child {
@@ -1154,6 +1211,7 @@ pre code {
 .highlight pre {
   border: none;
   margin: 0;
+  overflow: hidden;
 }
 
 .highlight table {
@@ -1180,6 +1238,14 @@ pre code {
   right: 0;
   color: rgba(0, 0, 0, 0.4);
   background-color: rgba(219, 219, 0, 0.4);
+}
+
+.post-content code._hl-label {
+  color: #3b3a42;
+  background-color: rgba(255, 255, 0, 0.4);
+  text-indent: 0;
+  padding: 0 3px;
+  display: inline-block;
 }
 
 .highlight td {

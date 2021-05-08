@@ -74,12 +74,13 @@ mjx-container.MathJax {
     overflow-y: hidden;
     margin: 0.5em 0 !important;
     font-size: 0.9em;
+    font-weight: lighter;
 }
 
 body,
 html {
     overflow-x: hidden;
-    font-size: 18px;
+    font-size: 17px;
 }
 
 .body_container {
@@ -437,9 +438,10 @@ a:focus {
         -webkit-hyphens: auto;
         hyphens: auto;
 
-        // mjx-container {
-        //     // margin: 0 !important;
-        // }
+        b,
+        strong {
+            @include set-font-bold();
+        }
 
         p,
         a,
@@ -519,8 +521,9 @@ a:focus {
             padding: 0.9em 1em;
         }
 
-        > p {
-            //text-indent: 2em;
+        p {
+            hyphens: auto;
+            word-break: break-word;
         }
 
         code {
@@ -534,10 +537,17 @@ a:focus {
 
         ul,
         ol,
-        p {
+        p,
+        table {
             + p {
                 margin-top: 1.5em;
             }
+        }
+
+        ul,
+        ol {
+            overflow-y: hidden;
+            overflow-x: auto;
         }
 
         figure + p {
@@ -618,14 +628,47 @@ a:focus {
             margin: 0;
         }
 
+        > table {
+            border-spacing: 0;
+            border-collapse: collapse;
+
+            margin-top: 0;
+            // margin-bottom: 16px;
+
+            // display: block;
+            // width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            overflow: auto;
+
+            th {
+                font-weight: 600;
+                // border-bottom-width: 3px !important;
+                background-color: darken($bk-color, 1%) !important;
+            }
+            td,
+            th {
+                padding: 6px 13px;
+                border: 1px solid #dfe2e5;
+            }
+            tr {
+                background-color: lighten($bk-color, 1%);
+                border-top: 1px solid #c6cbd1;
+                &:nth-child(2n) {
+                    background-color: #f6f8fa;
+                }
+            }
+        }
+
         ul {
             list-style: none;
-            padding-left: 0;
+            padding-left: 1.5em;
+            padding-right: 0;
             margin-left: 0;
             position: relative;
 
             li {
-                padding-left: 2em;
+                // padding-left: 2em;
             }
 
             li::before {
@@ -854,16 +897,11 @@ a:focus {
             text-align: center;
         }
 
-        .post-content {
-            blockquote {
-                padding: 0;
+        blockquote {
+            &::before {
+                left: -10px;
             }
-
-            ul,
-            ol {
-                padding-left: 1.5em;
-                padding-right: 1em;
-            }
+            padding-left: 1em;
         }
     }
 
@@ -889,10 +927,22 @@ blockquote,
 .stressed {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    margin: 2.5em 0;
-    padding: 20px;
+    margin: 0;
+    padding-left: 1.5em;
     color: #555;
-    border: dashed darken($bk-color, 30%) 1px;
+    // border: dashed darken($bk-color, 30%) 1px;
+    position: relative;
+
+    &::before {
+        content: "";
+        // background: linear-gradient(to right, rgba(adjust-color($bk-color, $lightness: -30%), $alpha: 0.5), $bk-color);
+        background: #ccc;
+        width: 0.5em;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+    }
 
     p:last-child {
         margin: 0 !important;
@@ -1293,6 +1343,7 @@ pre code {
 .highlight pre {
     border: none;
     margin: 0;
+    overflow: hidden;
     // padding: 1px;
 }
 
@@ -1306,8 +1357,11 @@ pre code {
     position: relative;
 }
 
+$hl-color: rgba(255, 255, 0, 0.4);
+$hl-text-color: darken($hl-color, 60%);
+$hl-bg-color: darken($hl-color, 7%);
+
 .highlight ._hl {
-    $hl-color: rgba(255, 255, 0, 0.4);
     background-color: $hl-color;
     margin: 0 -1em;
     padding: 0 1em;
@@ -1316,13 +1370,21 @@ pre code {
         position: absolute;
         padding: 1px 7px;
         text-align: center;
-        // transform: translateY(-2em);
         height: 2em;
         line-height: 2em;
-        // opacity: 0.5;
         right: 0;
-        color: darken(rgba(255, 255, 0, 0.4), 60%);
-        background-color: darken(rgba(255, 255, 0, 0.4), 7%);
+        color: $hl-text-color;
+        background-color: $hl-bg-color;
+    }
+}
+
+.post-content {
+    code._hl-label {
+        color: #3b3a42;
+        background-color: $hl-color;
+        text-indent: 0;
+        padding: 0 3px;
+        display: inline-block;
     }
 }
 
@@ -1363,124 +1425,6 @@ pre code {
 .highlight .code pre {
     padding: 0 1em;
 }
-
-// .gist {
-//     margin: 20px 0;
-//     border-style: solid;
-//     border-color: #ccc;
-//     border-width: 1px 0;
-//     background: #2d2d2d;
-//     padding: 15px 40px 15px 15px;
-// }
-
-// .gist .gist-file {
-//     border: none;
-//     font-family: "Input Mono", "PT Mono", Consolas, Monaco, Menlo, monospace;
-//     margin: 0;
-// }
-
-// .gist .gist-file .gist-data {
-//     background: none;
-//     border: none;
-// }
-
-// .gist .gist-file .gist-data .line-numbers {
-//     background: none;
-//     border: none;
-//     padding: 0 20px 0 0;
-// }
-
-// .gist .gist-file .gist-data .line-data {
-//     padding: 0 !important;
-// }
-
-// .gist .gist-file .highlight {
-//     margin: 0;
-//     padding: 0;
-//     border: none;
-// }
-
-// .gist .gist-file .gist-meta {
-//     background: #2d2d2d;
-//     color: #999;
-//     font: 13px Lato, "PingFang SC", "Microsoft YaHei", sans-serif;
-//     text-shadow: 0 0;
-//     padding: 0;
-//     margin-top: 1em;
-//     margin-left: 40px;
-// }
-
-// .gist .gist-file .gist-meta a {
-//     color: color-link;
-//     font-weight: normal;
-// }
-
-// .gist .gist-file .gist-meta a:hover {
-//     text-decoration: underline;
-// }
-
-// pre .comment {
-//     color: #999;
-// }
-
-// pre .variable,
-// pre .attribute,
-// pre .tag,
-// pre .regexp,
-// pre .ruby .constant,
-// pre .xml .tag .title,
-// pre .xml .pi,
-// pre .xml .doctype,
-// pre .html .doctype,
-// pre .css .id,
-// pre .css .class,
-// pre .css .pseudo {
-//     color: #f2777a;
-// }
-
-// pre .number,
-// pre .preprocessor,
-// pre .built_in,
-// pre .literal,
-// pre .params,
-// pre .constant {
-//     color: #f99157;
-// }
-
-// pre .ruby .class .title,
-// pre .css .rules .attribute {
-//     color: #9c9;
-// }
-
-// pre .string,
-// pre .value,
-// pre .inheritance,
-// pre .header,
-// pre .ruby .symbol,
-// pre .xml .cdata {
-//     color: #9c9;
-// }
-
-// pre .title,
-// pre .css .hexcolor {
-//     color: #6cc;
-// }
-
-// pre .function,
-// pre .python .decorator,
-// pre .python .title,
-// pre .ruby .function .title,
-// pre .ruby .title .keyword,
-// pre .perl .sub,
-// pre .javascript .title,
-// pre .coffeescript .title {
-//     color: #69c;
-// }
-
-// pre .keyword,
-// pre .javascript .function {
-//     color: #c9c;
-// }
 
 /* icomoon icon fonts*/
 @font-face {
