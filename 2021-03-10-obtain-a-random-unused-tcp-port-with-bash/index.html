@@ -26,7 +26,7 @@
 <p style="text-indent: 0; margin-top: 0;"> We then use some string manipulation tools to extract the port numbers:</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ss -Htan |</span><br><div class="_hl"><span class="line">    awk <span class="string">&#x27;&#123;print $4&#125;&#x27;</span> |</span><br><span class="line">    cut -d<span class="string">&#x27;:&#x27;</span> -f2 |</span><br><span class="line">    sort -u</span><br></pre></div></td></tr></table></figure>
 
-<p style="text-indent: 0; margin-top: 0;"> Here, <code>awk &#39;&#123;print $4&#125;&#39;</code> selects the 4th item (e.g., <code>0.0.0.0:17500</code>) from each line. <code>cut -d&#39;:&#39; -f2</code> splits each item with <code>:</code>, and then prints out the second part (e.g., <code>17500</code>). <code>sort -u</code> sorts then items and removes duplicated ones.</p>
+<p style="text-indent: 0; margin-top: 0;"> Here, <code>awk &#39;&#123;print $4&#125;&#39;</code> selects the 4th item (e.g., <code>0.0.0.0:17500</code>) from each line. <code>cut -d&#39;:&#39; -f2</code> splits each item with <code>:</code>, and then prints out the second part (e.g., <code>17500</code>). <code>sort -u</code> sorts the items and removes duplicated ones.</p>
 <p>Now we get the list, say <code>LIST2</code>. Our next step is to create another list <code>LIST1</code> by “inversing” <code>LIST2</code>, such that <code>LIST1</code> (disjointly) unioning <code>LIST2</code> equals <code>FULLLIST</code> (all legal ports).</p>
 <p style="margin-top: 0;"> <code>FULLLIST</code> can be obtained easily with <code>seq &quot;1025&quot; &quot;65535&quot; | sort</code>. The “inverse” operation, meanwhile, can be achieved using <code>comm</code>.</p>
 <blockquote>
