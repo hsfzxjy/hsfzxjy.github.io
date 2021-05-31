@@ -486,11 +486,13 @@ a:focus {
 .post .post-content p + p,
 .post .post-content table + p,
 .post .post-content blockquote + p,
+.post .post-content a#more + p,
 .post .post-archive ul + p,
 .post .post-archive ol + p,
 .post .post-archive p + p,
 .post .post-archive table + p,
-.post .post-archive blockquote + p {
+.post .post-archive blockquote + p,
+.post .post-archive a#more + p {
   margin-top: 1.5em;
 }
 .post .post-content ul,

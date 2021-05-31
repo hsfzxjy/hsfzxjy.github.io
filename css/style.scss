@@ -539,7 +539,8 @@ a:focus {
         ol,
         p,
         table,
-        blockquote {
+        blockquote,
+        a#more {
             + p {
                 margin-top: 1.5em;
             }
