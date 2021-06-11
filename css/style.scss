@@ -374,7 +374,7 @@ a:focus {
         font-size: 2em;
         font-weight: 500;
 
-        @include set-font-bold;
+        @include set-font;
 
         a {
             color: #555;

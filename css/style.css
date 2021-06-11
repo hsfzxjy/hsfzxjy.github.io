@@ -313,8 +313,7 @@ a:focus {
   padding-top: 2em;
   font-size: 2em;
   font-weight: 500;
-  font-family: "NunitoSans-Bold", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
-  font-weight: 500;
+  font-family: "NunitoSans-Regular", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB", "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
 }
 .post .post-title a {
   color: #555;
