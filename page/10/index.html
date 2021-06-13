@@ -69,7 +69,9 @@
 <p>如果dwThreadId参数指定一个由自身进程创建的线程ID，lpfn参数指向的钩子函数只要在当前进程中即可，不必非要写入DLL。这种挂钩属于自身进程事件的钩子称为局部钩子。</p>
 <p>hMod参数是钩子函数所在DLL的实例句柄，如果钩子函数不再DLL中，应将hMod设置为NULL。</p>
 <p>dwThreadId参数指定要与钩子函数相关联的线程ID号。如果设为0，那么钩子就是系统范围内的，即钩子函数将关联到系统内所有线程。</p>
-<p>要卸载钩子，可以调用UnhookWindowsHookEx函数。<br> BOOL UnhookWindowsHookEx(HHOOK hhk); // hhk 为要卸载的钩子的句柄</p>
+<p>要卸载钩子，可以调用UnhookWindowsHookEx函数。</p>
+<figure class="highlight pascal"><table><tr><td class="code"><pre><span class="line">BOOL UnhookWindowsHookEx(HHOOK hhk); <span class="comment">// hhk 为要卸载的钩子的句柄</span></span><br></pre></td></tr></table></figure>
+
 <p>注意：安装钩子的代码可以在DLL模块中，也可以在主模块中，但是一般在DLL里实现它，主要是为了使程序更加模块化。</p>
 <p>既然我们要截获的是全局的按键消息，那么就应该将钩子放在DLL中。</p>
 <p>Windows钩子都有一个回调函数：</p>

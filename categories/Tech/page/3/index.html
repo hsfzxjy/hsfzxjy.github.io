@@ -6,7 +6,7 @@
 
     document.head.appendChild(style)
 }
-</script><div id="header" class="hide-wx"><div class="site-name"><h1 class="hidden">#hsfzxjy#</h1><a id="logo" href="/">#hsfzxjy#</a><p class="description">言えない言葉は、ここに隠される</p><a target="_blank" rel="noopener" href="https://github.com/hsfzxjy" data-color-scheme="no-preference: light; light: light; dark: light;" data-show-count="true" aria-label="Follow @hsfzxjy on GitHub" style="display: none;" class="github-button">Follow @hsfzxjy</a></div><div id="nav-menu"><span class="before"></span><div><a href="/"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Tech/" class="current"><i class="icon-code"></i><span>Tech</span></a><a href="/categories/Soliloquy/"><i class="icon-life"></i><span>Soliloquy</span></a><a href="/works/"><i class="icon-works"></i><span>Projects</span></a><a href="/about/"><i class="icon-about"></i><span>Me</span></a><a href="/aggr/"><i class="icon-history"></i><span>Index</span></a></div><span class="after"></span></div></div><div id="layout" class="pure-g"><div id="left-panel" class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title"><a href="/2017-08-17-caveats-for-signal-handler-in-python/">一个 Reentrant Error 引发的对 Python 信号机制的探索和思考</a></h1><div class="post-meta">2017-08-17</div><span data-disqus-identifier="2017-08-17-caveats-for-signal-handler-in-python/" class="disqus-comment-count"></span><div lang="en" class="post-content "><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>前几天工作时遇到了一个匪夷所思的问题。经过几次尝试后问题得以解决，但问题产生的原因却仍令人费解。查找 SO 无果，我决定翻看 Python 的源码。断断续续地研究了几天，终于恍然大悟。撰此文以记。</p>
+</script><div id="header" class="hide-wx"><div class="site-name"><h1 class="hidden">#hsfzxjy#</h1><a id="logo" href="/">#hsfzxjy#</a><p class="description">言えない言葉は、ここに隠される</p><a target="_blank" rel="noopener" href="https://github.com/hsfzxjy" data-color-scheme="no-preference: light; light: light; dark: light;" data-show-count="true" aria-label="Follow @hsfzxjy on GitHub" style="display: none;" class="github-button">Follow @hsfzxjy</a></div><div id="nav-menu"><span class="before"></span><div><a href="/"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Tech/" class="current"><i class="icon-code"></i><span>Tech</span></a><a href="/categories/Soliloquy/"><i class="icon-life"></i><span>Soliloquy</span></a><a href="/works/"><i class="icon-works"></i><span>Projects</span></a><a href="/about/"><i class="icon-about"></i><span>Me</span></a><a href="/aggr/"><i class="icon-history"></i><span>Index</span></a></div><span class="after"></span></div></div><div id="layout" class="pure-g"><div id="left-panel" class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title"><a href="/2017-08-17-caveats-for-signal-handler-in-python/">一个 Reentrant Error 引发的对 Python 信号机制的探索和思考</a></h1><div class="post-meta">2017-08-17</div><span data-disqus-identifier="2017-08-17-caveats-for-signal-handler-in-python/" class="disqus-comment-count"></span><div lang="en" class="post-content noindent"><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>前几天工作时遇到了一个匪夷所思的问题。经过几次尝试后问题得以解决，但问题产生的原因却仍令人费解。查找 SO 无果，我决定翻看 Python 的源码。断断续续地研究了几天，终于恍然大悟。撰此文以记。</p>
 </div><p class="readmore"><a href="/2017-08-17-caveats-for-signal-handler-in-python/">Read More</a></p></div><div class="post"><hr><h1 class="post-title"><a href="/2017-07-03-linux-file-permissions/">Linux 文件权限</a></h1><div class="post-meta">2017-07-03</div><span data-disqus-identifier="2017-07-03-linux-file-permissions/" class="disqus-comment-count"></span><div lang="en" class="post-content "><h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><p>Linux 中的每一个文件都有其 <strong>所属用户</strong> 及 <strong>所属用户组</strong>，根据这两个属性可将文件访问者分为三类：<strong>所属用户自己</strong>、<strong>所属用户组中的用户</strong> 和 <strong>其他用户</strong>，我们可以针对不同的访问者设置不同的用户权限。</p>
 <p>“访问”可分为三类：<strong>读</strong>、<strong>写</strong> 与 <strong>执行</strong>。我们可以用 <code>ls -l</code> 命令查看一个文件的权限：</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ touch <span class="built_in">test</span></span><br><span class="line">$ ls -l <span class="built_in">test</span></span><br><span class="line">-rw-rw-r-- 1 hsfzxjy hsfzxjy 0 Jul  3 23:44 <span class="built_in">test</span></span><br></pre></td></tr></table></figure>
@@ -38,7 +38,7 @@
 
 <p>可见 <code>./cat</code> 在执行时所属用户是 <code>hsfzxjy</code>。我们可以使用 <code>ps</code> 命令更清楚地看到这点：</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo -u mysql cat</span><br><span class="line"><span class="comment"># 在另一个终端中</span></span><br><span class="line">$ ps -eo euser,ruser,comm | grep cat</span><br><span class="line">mysql    mysql    cat</span><br><span class="line"></span><br><span class="line"><span class="comment"># -----------</span></span><br><span class="line"></span><br><span class="line">$ sudo -u mysql ./cat</span><br><span class="line"><span class="comment"># 在另一个终端中</span></span><br><span class="line">$ ps -eo euser,ruser,comm | grep cat</span><br><span class="line">hsfzxjy  mysql    cat</span><br></pre></td></tr></table></figure>
-</div></div><div class="post"><hr><h1 class="post-title"><a href="/2017-02-25-HSFZMUN-4.0-configuration/">HSFZMUN 4.0 部署小记</a></h1><div class="post-meta">2017-02-25</div><span data-disqus-identifier="2017-02-25-HSFZMUN-4.0-configuration/" class="disqus-comment-count"></span><div lang="en" class="post-content "><blockquote>
+</div></div><div class="post"><hr><h1 class="post-title"><a href="/2017-02-25-HSFZMUN-4.0-configuration/">HSFZMUN 4.0 部署小记</a></h1><div class="post-meta">2017-02-25</div><span data-disqus-identifier="2017-02-25-HSFZMUN-4.0-configuration/" class="disqus-comment-count"></span><div lang="en" class="post-content noindent"><blockquote>
 <p>技术流水账一篇，记录踩过的坑</p>
 </blockquote>
 <h2 id="Channels-异构"><a href="#Channels-异构" class="headerlink" title="Channels 异构"></a>Channels 异构</h2><p>Django Channels 官方文档宣称 channels 的最佳配置是使用其自带的服务器组件 Daphne，但在开发中我发现 daphne 处理普通请求比在 WSGI 架构下慢了好几倍，更何况使用 daphne 派发静态文件是十分不切实际的。于是我将 <code>http.request</code> 和 <code>websocket.*</code> 两个 channel 解耦，前者使用 nginx 配合 uwsgi 处理，后者使用 nginx 反向代理至 daphne 处理。这样一来便可充分利用两种架构的优势。</p>
@@ -46,13 +46,13 @@
 <p><img src="/assets/django-channels-configuration/old-arch.png"></p>
 <p><strong>新架构：</strong></p>
 <p><img src="/assets/django-channels-configuration/new-arch.png"></p>
-</div><p class="readmore"><a href="/2017-02-25-HSFZMUN-4.0-configuration/">Read More</a></p></div><div class="post"><hr><h1 class="post-title"><a href="/2016-08-03-uncover-the-secret-of-fast-inverse-square-root-algorithm/">揭秘·变态的平方根倒数算法</a></h1><div class="post-meta">2016-08-03</div><span data-disqus-identifier="2016-08-03-uncover-the-secret-of-fast-inverse-square-root-algorithm/" class="disqus-comment-count"></span><div lang="en" class="post-content "><blockquote>
+</div><p class="readmore"><a href="/2017-02-25-HSFZMUN-4.0-configuration/">Read More</a></p></div><div class="post"><hr><h1 class="post-title"><a href="/2016-08-03-uncover-the-secret-of-fast-inverse-square-root-algorithm/">揭秘·变态的平方根倒数算法</a></h1><div class="post-meta">2016-08-03</div><span data-disqus-identifier="2016-08-03-uncover-the-secret-of-fast-inverse-square-root-algorithm/" class="disqus-comment-count"></span><div lang="en" class="post-content noindent"><blockquote>
 <p>神的时代已离去<br>神的故事却化为传说<br>流落凡间<br>供凡人传颂、膜拜</p>
 </blockquote>
 <h2 id="这是什么"><a href="#这是什么" class="headerlink" title="这是什么"></a>这是什么</h2><p>在上世纪 90 年代，出现过一款不可思议的游戏——雷神之锤（Quake series）。除了优秀的情节设定和精美的画面，最让人称道的莫过于它的运行效率——要知道在那个计算机配置低下的时代，一段小动画都是一个奇迹，但 Quake 却能流畅地运行于各种配置的电脑上。</p>
 <p>直至 2005 年，当 Quake Engine 开源时，Quake 系列的秘密才被揭开。在代码库中，人们发现了许多堪称神来之笔的算法。它们以极其变态的高效率，压榨着计算机的性能，进而才支撑起了 90 年代 3D 游戏的传奇。其中的某些算法，甚至比系统原生的实现还要快！</p>
 <p>我们今天的主角——快速平方根倒数算法（Fast Inverse Square Root）就是其中一个。</p>
-</div><p class="readmore"><a href="/2016-08-03-uncover-the-secret-of-fast-inverse-square-root-algorithm/">Read More</a></p></div><div class="post"><hr><h1 class="post-title"><a href="/2016-07-30-recursively-calling-when-decorating-a-python-class/">神坑·Python 装饰类无限递归</a></h1><div class="post-meta">2016-07-30</div><span data-disqus-identifier="2016-07-30-recursively-calling-when-decorating-a-python-class/" class="disqus-comment-count"></span><div lang="en" class="post-content "><blockquote>
+</div><p class="readmore"><a href="/2016-08-03-uncover-the-secret-of-fast-inverse-square-root-algorithm/">Read More</a></p></div><div class="post"><hr><h1 class="post-title"><a href="/2016-07-30-recursively-calling-when-decorating-a-python-class/">神坑·Python 装饰类无限递归</a></h1><div class="post-meta">2016-07-30</div><span data-disqus-identifier="2016-07-30-recursively-calling-when-decorating-a-python-class/" class="disqus-comment-count"></span><div lang="en" class="post-content noindent"><blockquote>
 <p>《神坑》系列将会不定期更新一些可遇而不可求的坑<br>防止他人入坑，也防止自己再次入坑</p>
 </blockquote>
 <h2 id="简化版问题"><a href="#简化版问题" class="headerlink" title="简化版问题"></a>简化版问题</h2><p>现有两个 <code>View</code> 类：</p>
@@ -97,10 +97,10 @@
 
 <p>即通过赋值的方式为 <code>cls</code> 添加 <code>Mixin</code> 上的新方法，缺点是较为繁琐。</p>
 <p>两种方法各有利弊，要根据实际场景权衡使用。</p>
-</div></div><div class="post"><hr><h1 class="post-title"><a href="/2016-07-21-python-encoding-and-decoding/">Python “黑魔法” 之 Encoding &amp; Decoding</a></h1><div class="post-meta">2016-07-21</div><span data-disqus-identifier="2016-07-21-python-encoding-and-decoding/" class="disqus-comment-count"></span><div lang="en" class="post-content "><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><blockquote>
+</div></div><div class="post"><hr><h1 class="post-title"><a href="/2016-07-21-python-encoding-and-decoding/">Python “黑魔法” 之 Encoding &amp; Decoding</a></h1><div class="post-meta">2016-07-21</div><span data-disqus-identifier="2016-07-21-python-encoding-and-decoding/" class="disqus-comment-count"></span><div lang="en" class="post-content noindent"><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><blockquote>
 <ul>
-<li>本文为科普文</li>
-<li>本文中的例子在 Ubuntu 14.04 / Python 2.7.11 下运行成功，Python 3+ 的接口有些许不同，需要读者自行转换</li>
+<li>  本文为科普文</li>
+<li>  本文中的例子在 Ubuntu 14.04 / Python 2.7.11 下运行成功，Python 3+ 的接口有些许不同，需要读者自行转换</li>
 </ul>
 </blockquote>
 <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>先看一段代码：</p>
@@ -112,18 +112,18 @@
 <p><img src="//sf.gg/img/bVzuHw"></p>
 <p>怎么做到的？也许你已经注意到第一行的奇怪注释——没错，秘密全在这里。</p>
 <p>这种黑魔法，还要从 <a target="_blank" rel="noopener" href="https://www.python.org/dev/peps/pep-0263/">PEP 263</a> 说起。</p>
-</div><p class="readmore"><a href="/2016-07-21-python-encoding-and-decoding/">Read More</a></p></div><div class="post"><hr><h1 class="post-title"><a href="/2016-06-05-alternative-key-maps-under-ubuntu/">Ubuntu 重新映射键盘布局</a></h1><div class="post-meta">2016-06-05</div><span data-disqus-identifier="2016-06-05-alternative-key-maps-under-ubuntu/" class="disqus-comment-count"></span><div lang="en" class="post-content "><p>键盘持续失灵，已经到了让我忍无可忍的地步了。</p>
+</div><p class="readmore"><a href="/2016-07-21-python-encoding-and-decoding/">Read More</a></p></div><div class="post"><hr><h1 class="post-title"><a href="/2016-06-05-alternative-key-maps-under-ubuntu/">Ubuntu 重新映射键盘布局</a></h1><div class="post-meta">2016-06-05</div><span data-disqus-identifier="2016-06-05-alternative-key-maps-under-ubuntu/" class="disqus-comment-count"></span><div lang="en" class="post-content noindent"><p>键盘持续失灵，已经到了让我忍无可忍的地步了。</p>
 <p>刚开始只是方向键失灵，好在可以用小键盘替代；后来右 Ctrl 和 Alt 也失灵了，好在可以用左边的替代；直到最近 Fn 键也失灵了，终于逼疯了我——因为这意味着 F1 ～ F12 都将不能使用。</p>
 <p>我曾试图寻找方法将 CapsLock 键映射为 Fn 键映射，但失败了——Fn 键消息是由 BIOS 拦截的，无法被操作系统捕获。</p>
 <p>但今天我找到了一个更好的替代方案：</p>
 <ul>
-<li>交换 Fn 和 Ctrl。这是唯一一种能让 Fn 键移位的方式，在所有的 BIOS 中都可以设置。</li>
-<li>将 CapsLock 映射为 Ctrl。反正 CapsLock 闲着也是闲着，不如用它代替坏了的键。</li>
+<li>  交换 Fn 和 Ctrl。这是唯一一种能让 Fn 键移位的方式，在所有的 BIOS 中都可以设置。</li>
+<li>  将 CapsLock 映射为 Ctrl。反正 CapsLock 闲着也是闲着，不如用它代替坏了的键。</li>
 </ul>
 <p>ubuntu 下需要执行：</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">setxkbmap -layout us -option ctrl:nocaps</span><br></pre></td></tr></table></figure>
 
-<p>参考： <a target="_blank" rel="noopener" href="http://askubuntu.com/questions/462021/how-do-i-turn-caps-lock-into-an-extra-control-key">How do I turn Caps Lock into an extra Control key? - Ask Ubuntu</a></p>
+<p style="text-indent: 0; margin-top: 0;"> 参考： <a target="_blank" rel="noopener" href="http://askubuntu.com/questions/462021/how-do-i-turn-caps-lock-into-an-extra-control-key">How do I turn Caps Lock into an extra Control key? - Ask Ubuntu</a></p>
 </div></div><div class="post"><hr><h1 class="post-title"><a href="/2016-04-02-python-generator-coroutine/">Python “黑魔法” 之 Generator Coroutines</a></h1><div class="post-meta">2016-04-02</div><span data-disqus-identifier="2016-04-02-python-generator-coroutine/" class="disqus-comment-count"></span><div lang="en" class="post-content "><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><blockquote>
 <ul>
 <li>本文默认读者对 Python 生成器 有一定的了解，不了解者请移步至<a target="_blank" rel="noopener" href="http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014317799226173f45ce40636141b6abc8424e12b5fb27000">生成器 - 廖雪峰的官方网站</a>。</li>

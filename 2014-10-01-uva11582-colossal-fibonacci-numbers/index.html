@@ -7,70 +7,12 @@
     document.head.appendChild(style)
 }
 </script><div id="header" class="hide-wx"><div class="site-name"><h1 class="hidden">UVa11582 Colossal Fibonacci Numbers! &amp;&amp; 大数操作</h1><a id="logo" href="/">#hsfzxjy#</a><p class="description">言えない言葉は、ここに隠される</p><a target="_blank" rel="noopener" href="https://github.com/hsfzxjy" data-color-scheme="no-preference: light; light: light; dark: light;" data-show-count="true" aria-label="Follow @hsfzxjy on GitHub" style="display: none;" class="github-button">Follow @hsfzxjy</a></div><div id="nav-menu"><span class="before"></span><div><a href="/"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Tech/" class="current"><i class="icon-code"></i><span>Tech</span></a><a href="/categories/Soliloquy/"><i class="icon-life"></i><span>Soliloquy</span></a><a href="/works/"><i class="icon-works"></i><span>Projects</span></a><a href="/about/"><i class="icon-about"></i><span>Me</span></a><a href="/aggr/"><i class="icon-history"></i><span>Index</span></a></div><span class="after"></span></div></div><div id="layout" class="pure-g"><div id="left-panel" class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post post-page"><h1 class="post-title">UVa11582 Colossal Fibonacci Numbers! &amp;&amp; 大数操作</h1><div class="post-meta">2014-10-01 | <span class="categories"><a href="/categories/Tech/"> Tech</a></span></div><!--if theme.duoshuo--><!--    span.ds-thread-count(data-thread-key=page.path)--><!--if theme.disqus--><!--    span.disqus-comment-count(data-disqus-identifier=page.path)--><div lang="en" class="post-content "><blockquote>
-<p>链接：<a target="_blank" rel="noopener" href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&category=27&problem=2629&mosmsg=Submission%20received%20with%20ID%2014290914">Link</a> 耗时：0.139s</p>
+<p style="text-indent: 0;"> 链接：<a target="_blank" rel="noopener" href="http://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&category=27&problem=2629&mosmsg=Submission%20received%20with%20ID%2014290914">Link</a> 耗时：0.139s</p>
 </blockquote>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这道题的主要思路就是打表，看看Fibonacci数列模n几个一循环。但由于这题给的数太大了，从而在细节上耗了很久。在此记录一下：</p>
-<pre><code>var
-    x: qword;
-    y: longint;
-begin
-    x := 1&lt;&lt;64-1;
-    y := 100;
-    x := x mod y; //报错201
-    x := x mod qword(y); //正确
-end.</code></pre>
-<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h2><pre><code>var
-    a,b: qword;
-    _, n, i, k, cnt: longint;
-    f: array [1..1000000] of longint;
+<figure class="highlight pascal"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span></span><br><span class="line">    x: qword;</span><br><span class="line">    y: longint;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    x := <span class="number">1</span>&lt;&lt;<span class="number">64</span>-<span class="number">1</span>;</span><br><span class="line">    y := <span class="number">100</span>;</span><br><span class="line">    x := x <span class="keyword">mod</span> y; <span class="comment">//报错201</span></span><br><span class="line">    x := x <span class="keyword">mod</span> qword(y); <span class="comment">//正确</span></span><br><span class="line"><span class="keyword">end</span>.</span><br></pre></td></tr></table></figure>
 
-function superMod(a, b: qword; m: longint): longint;
-var
-    x: qword;
-begin
-    if b = 0 then
-        exit(1);
-    x := superMod(a, b shr 1, m);
-    superMod := x * x mod m;
-    if odd(b) then
-        superMod := superMod * a mod m;
-end;
-
-begin
-    assign(input, &#39;main.in&#39;); reset(input);
-    assign(output, &#39;main.out&#39;); rewrite(output);
-    readln(_);
-    while _ &gt; 0 do
-    begin
-        dec(_);
-        readln(a, b, n);
-        if a = 0 then
-        begin
-            writeln(0);
-            continue;
-        end;
-        if n = 1 then
-        begin
-            writeln(0);
-            continue;
-        end;
-        f[1] := 1;
-        f[2] := 1;
-        cnt := 2;
-        while not ((f[cnt-1] = 1) and (f[cnt] = 0)) do
-        begin
-            inc(cnt);
-            f[cnt] := (f[cnt-1] + f[cnt-2]) mod n;
-        end;
-        //while x &gt; int64(1 &lt;&lt;60) do
-        //    x := x - int64((cnt &lt;&lt; 59));
-        a := a mod qword(cnt);
-        k := superMod(a, b, cnt);
-        writeln(f[k]);
-    end;
-    close(output); close(input);
-end.</code></pre>
-</div><div class="tags"><a href="/tags/NOIP/">NOIP</a><a href="/tags/UVa/">UVa</a></div><div class="post-nav"><a href="/2014-10-05-uva536-recovery/" class="pre">«UVa536 Recovery</a><a href="/2014-10-01-extended-gcd-algorithm/" class="next">扩展欧几里得算法»</a></div><div id="disqus_thread"><div id="no-comment"> <h2>OOPS! </h2><span>A comment box should be right here...</span><span>But it was gone due to network issues :-(</span><span>If you want to leave comments, make sure you have access to <a target="_blank" rel="noopener" href="https://disqus.com">disqus.com</a>.</span></div><script>var disqus_shortname = 'hsfzxjy';
+<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h2><figure class="highlight pascal"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span></span><br><span class="line">    a,b: qword;</span><br><span class="line">    _, n, i, k, cnt: longint;</span><br><span class="line">    f: <span class="keyword">array</span> [<span class="number">1</span>..<span class="number">1000000</span>] <span class="keyword">of</span> longint;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">superMod</span><span class="params">(a, b: qword; m: longint)</span>:</span> longint;</span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    x: qword;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span> b = <span class="number">0</span> <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">exit</span>(<span class="number">1</span>);</span><br><span class="line">    x := superMod(a, b <span class="keyword">shr</span> <span class="number">1</span>, m);</span><br><span class="line">    superMod := x * x <span class="keyword">mod</span> m;</span><br><span class="line">    <span class="keyword">if</span> odd(b) <span class="keyword">then</span></span><br><span class="line">        superMod := superMod * a <span class="keyword">mod</span> m;</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    assign(input, <span class="string">&#x27;main.in&#x27;</span>); reset(input);</span><br><span class="line">    assign(output, <span class="string">&#x27;main.out&#x27;</span>); rewrite(output);</span><br><span class="line">    readln(_);</span><br><span class="line">    <span class="keyword">while</span> _ &gt; <span class="number">0</span> <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        dec(_);</span><br><span class="line">        readln(a, b, n);</span><br><span class="line">        <span class="keyword">if</span> a = <span class="number">0</span> <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">            writeln(<span class="number">0</span>);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">end</span>;</span><br><span class="line">        <span class="keyword">if</span> n = <span class="number">1</span> <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">            writeln(<span class="number">0</span>);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        <span class="keyword">end</span>;</span><br><span class="line">        f[<span class="number">1</span>] := <span class="number">1</span>;</span><br><span class="line">        f[<span class="number">2</span>] := <span class="number">1</span>;</span><br><span class="line">        cnt := <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">while</span> <span class="keyword">not</span> ((f[cnt-<span class="number">1</span>] = <span class="number">1</span>) <span class="keyword">and</span> (f[cnt] = <span class="number">0</span>)) <span class="keyword">do</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">            inc(cnt);</span><br><span class="line">            f[cnt] := (f[cnt-<span class="number">1</span>] + f[cnt-<span class="number">2</span>]) <span class="keyword">mod</span> n;</span><br><span class="line">        <span class="keyword">end</span>;</span><br><span class="line">        <span class="comment">//while x &gt; int64(1 &lt;&lt;60) do</span></span><br><span class="line">        <span class="comment">//    x := x - int64((cnt &lt;&lt; 59));</span></span><br><span class="line">        a := a <span class="keyword">mod</span> qword(cnt);</span><br><span class="line">        k := superMod(a, b, cnt);</span><br><span class="line">        writeln(f[k]);</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    close(output); close(input);</span><br><span class="line"><span class="keyword">end</span>.</span><br></pre></td></tr></table></figure></div><div class="tags"><a href="/tags/NOIP/">NOIP</a><a href="/tags/UVa/">UVa</a></div><div class="post-nav"><a href="/2014-10-05-uva536-recovery/" class="pre">«UVa536 Recovery</a><a href="/2014-10-01-extended-gcd-algorithm/" class="next">扩展欧几里得算法»</a></div><div id="disqus_thread"><div id="no-comment"> <h2>OOPS! </h2><span>A comment box should be right here...</span><span>But it was gone due to network issues :-(</span><span>If you want to leave comments, make sure you have access to <a target="_blank" rel="noopener" href="https://disqus.com">disqus.com</a>.</span></div><script>var disqus_shortname = 'hsfzxjy';
 var disqus_identifier = '2014-10-01-uva11582-colossal-fibonacci-numbers/';
 var disqus_title = 'UVa11582 Colossal Fibonacci Numbers! &amp;&amp; 大数操作';
 var disqus_url = 'http://i.hsfzxjy.site/2014-10-01-uva11582-colossal-fibonacci-numbers/';

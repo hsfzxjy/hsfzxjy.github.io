@@ -6,10 +6,10 @@
 
     document.head.appendChild(style)
 }
-</script><div id="header" class="hide-wx"><div class="site-name"><h1 class="hidden">Python “黑魔法” 之 Encoding &amp; Decoding</h1><a id="logo" href="/">#hsfzxjy#</a><p class="description">言えない言葉は、ここに隠される</p><a target="_blank" rel="noopener" href="https://github.com/hsfzxjy" data-color-scheme="no-preference: light; light: light; dark: light;" data-show-count="true" aria-label="Follow @hsfzxjy on GitHub" style="display: none;" class="github-button">Follow @hsfzxjy</a></div><div id="nav-menu"><span class="before"></span><div><a href="/"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Tech/" class="current"><i class="icon-code"></i><span>Tech</span></a><a href="/categories/Soliloquy/"><i class="icon-life"></i><span>Soliloquy</span></a><a href="/works/"><i class="icon-works"></i><span>Projects</span></a><a href="/about/"><i class="icon-about"></i><span>Me</span></a><a href="/aggr/"><i class="icon-history"></i><span>Index</span></a></div><span class="after"></span></div></div><div id="layout" class="pure-g"><div id="left-panel" class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post post-page"><h1 class="post-title">Python “黑魔法” 之 Encoding &amp; Decoding</h1><div class="post-meta">2016-07-21 | <span class="categories"><a href="/categories/Tech/"> Tech</a></span></div><!--if theme.duoshuo--><!--    span.ds-thread-count(data-thread-key=page.path)--><!--if theme.disqus--><!--    span.disqus-comment-count(data-disqus-identifier=page.path)--><div lang="en" class="post-content "><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><blockquote>
+</script><div id="header" class="hide-wx"><div class="site-name"><h1 class="hidden">Python “黑魔法” 之 Encoding &amp; Decoding</h1><a id="logo" href="/">#hsfzxjy#</a><p class="description">言えない言葉は、ここに隠される</p><a target="_blank" rel="noopener" href="https://github.com/hsfzxjy" data-color-scheme="no-preference: light; light: light; dark: light;" data-show-count="true" aria-label="Follow @hsfzxjy on GitHub" style="display: none;" class="github-button">Follow @hsfzxjy</a></div><div id="nav-menu"><span class="before"></span><div><a href="/"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Tech/" class="current"><i class="icon-code"></i><span>Tech</span></a><a href="/categories/Soliloquy/"><i class="icon-life"></i><span>Soliloquy</span></a><a href="/works/"><i class="icon-works"></i><span>Projects</span></a><a href="/about/"><i class="icon-about"></i><span>Me</span></a><a href="/aggr/"><i class="icon-history"></i><span>Index</span></a></div><span class="after"></span></div></div><div id="layout" class="pure-g"><div id="left-panel" class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post post-page"><h1 class="post-title">Python “黑魔法” 之 Encoding &amp; Decoding</h1><div class="post-meta">2016-07-21 | <span class="categories"><a href="/categories/Tech/"> Tech</a></span></div><!--if theme.duoshuo--><!--    span.ds-thread-count(data-thread-key=page.path)--><!--if theme.disqus--><!--    span.disqus-comment-count(data-disqus-identifier=page.path)--><div lang="en" class="post-content noindent"><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><blockquote>
 <ul>
-<li>本文为科普文</li>
-<li>本文中的例子在 Ubuntu 14.04 / Python 2.7.11 下运行成功，Python 3+ 的接口有些许不同，需要读者自行转换</li>
+<li>  本文为科普文</li>
+<li>  本文中的例子在 Ubuntu 14.04 / Python 2.7.11 下运行成功，Python 3+ 的接口有些许不同，需要读者自行转换</li>
 </ul>
 </blockquote>
 <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>先看一段代码：</p>
@@ -37,8 +37,14 @@
 <p>其中第一行的注释用于指定解析该文件的编码。</p>
 <p>这个特新来自 2001 年的 <a target="_blank" rel="noopener" href="https://www.python.org/dev/peps/pep-0263/">PEP 263 – Defining Python Source Code Encondings</a>，它的出现是为了解决一个反响广泛的问题：</p>
 <blockquote>
-<p>In Python 2.1, Unicode literals can only be written using the<br>    Latin-1 based enconding “unicode-escape”. This makes the<br>    programming environment rather unfriendly to Python users who live<br>    and work in non-Latin-1 locales such as many of the Asian<br>    countries. Programmers can write their 8-bit strings using the<br>    favorite enconding, but are bound to the “unicode-escape” enconding<br>    for Unicode literals.</p>
+<p>In Python 2.1, Unicode literals can only be written using the</p>
 </blockquote>
+<pre><code>Latin-1 based enconding &quot;unicode-escape&quot;. This makes the
+programming environment rather unfriendly to Python users who live
+and work in non-Latin-1 locales such as many of the Asian
+countries. Programmers can write their 8-bit strings using the
+favorite enconding, but are bound to the &quot;unicode-escape&quot; enconding
+for Unicode literals.</code></pre>
 <p>Python 默认用 ASCII 编码解析文件，给 15 年前的非英文世界开发者造成了不小的困扰——看来 Guido 老爹有些个人主义，设计时只考虑到了英文世界。</p>
 <p>提案者设想：<strong>使用一种特殊的文件首注释，用于指定代码的编码</strong>。这个注释的正则原型是这样的：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">^[ \t\v]*#.*?conding[:&#x3D;][ \t]*([-_.a-zA-Z0-9]+)</span><br></pre></td></tr></table></figure>
@@ -57,13 +63,13 @@
 <p><strong>codecs.register(search_function)</strong><br>Register a codec search function. Search functions are expected to take one argument, the enconding name in all lower case letters, and return a CodecInfo object having the following attributes:</p>
 </blockquote>
 <ul>
-<li>name: The name of the enconding;</li>
-<li>encode: The stateless enconding function;</li>
-<li>decode: The stateless deconding function;</li>
-<li>incrementalencoder: An incremental encoder class or factory function;</li>
-<li>incrementaldecoder: An incremental decoder class or factory function;</li>
-<li>streamwriter: A stream writer class or factory function;</li>
-<li>streamreader: A stream reader class or factory function.</li>
+<li>  name: The name of the enconding;</li>
+<li>  encode: The stateless enconding function;</li>
+<li>  decode: The stateless deconding function;</li>
+<li>  incrementalencoder: An incremental encoder class or factory function;</li>
+<li>  incrementaldecoder: An incremental decoder class or factory function;</li>
+<li>  streamwriter: A stream writer class or factory function;</li>
+<li>  streamreader: A stream reader class or factory function.</li>
 </ul>
 <p><code>encode</code> 和 <code>decode</code> 是无状态的编码/解码的函数，简单说就是：前一个被编解码的字符串与后一个没有关联。如果你想用 <code>codecs</code> 系统进行语法树解析，解析逻辑最好不要写在这里，因为代码的连续性无法被保证；<code>incremental*</code> 则是有状态的解析类，能弥补 <code>encode</code>、<code>decode</code> 的不足；<code>stream*</code> 是流相关的解析类，行为通常与 <code>encode</code>/<code>decode</code> 相同。</p>
 <p>关于这六个对象的具体写法，可以参考 <code>/path/to/your/python/lib/encondings/rot_13.py</code>，该文件实现了一个简单的密码系统。</p>
@@ -77,7 +83,7 @@
 
 <h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>有时，对习以为常的东西深入了解一下，说不定会有惊人的发现。</p>
 <h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://docs.python.org/2.7/library/codecs.html">codecs - Codec registry and base classes</a></li>
+<li>  <a target="_blank" rel="noopener" href="https://docs.python.org/2.7/library/codecs.html">codecs - Codec registry and base classes</a></li>
 </ul>
 </div><div class="tags"><a href="/tags/Python/">Python</a></div><div class="post-nav"><a href="/2016-07-30-recursively-calling-when-decorating-a-python-class/" class="pre">«神坑·Python 装饰类无限递归</a><a href="/2016-06-05-alternative-key-maps-under-ubuntu/" class="next">Ubuntu 重新映射键盘布局»</a></div><div id="disqus_thread"><div id="no-comment"> <h2>OOPS! </h2><span>A comment box should be right here...</span><span>But it was gone due to network issues :-(</span><span>If you want to leave comments, make sure you have access to <a target="_blank" rel="noopener" href="https://disqus.com">disqus.com</a>.</span></div><script>var disqus_shortname = 'hsfzxjy';
 var disqus_identifier = '2016-07-21-python-encoding-and-decoding/';

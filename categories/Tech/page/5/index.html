@@ -6,171 +6,21 @@
 
     document.head.appendChild(style)
 }
-</script><div id="header" class="hide-wx"><div class="site-name"><h1 class="hidden">#hsfzxjy#</h1><a id="logo" href="/">#hsfzxjy#</a><p class="description">言えない言葉は、ここに隠される</p><a target="_blank" rel="noopener" href="https://github.com/hsfzxjy" data-color-scheme="no-preference: light; light: light; dark: light;" data-show-count="true" aria-label="Follow @hsfzxjy on GitHub" style="display: none;" class="github-button">Follow @hsfzxjy</a></div><div id="nav-menu"><span class="before"></span><div><a href="/"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Tech/" class="current"><i class="icon-code"></i><span>Tech</span></a><a href="/categories/Soliloquy/"><i class="icon-life"></i><span>Soliloquy</span></a><a href="/works/"><i class="icon-works"></i><span>Projects</span></a><a href="/about/"><i class="icon-about"></i><span>Me</span></a><a href="/aggr/"><i class="icon-history"></i><span>Index</span></a></div><span class="after"></span></div></div><div id="layout" class="pure-g"><div id="left-panel" class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title"><a href="/2014-12-13-remove-broken-packages-under-ubuntu/">Ubuntu下删除不完整的包</a></h1><div class="post-meta">2014-12-13</div><span data-disqus-identifier="2014-12-13-remove-broken-packages-under-ubuntu/" class="disqus-comment-count"></span><div lang="en" class="post-content "><p>答案来自<a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/27455626/how-to-remove-an-incomplete-package-by-using-apt-get">StackOverflow</a>:</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">sudo dpkg --remove --force-remove-reinstreq &lt;your package name&gt;</span><br></pre></td></tr></table></figure>
-</div></div><div class="post"><hr><h1 class="post-title"><a href="/2014-11-29-solution-of-apt-get-error-hash-checksum-incorrect/">Ubuntu下解决apt-get “Hash校验和不符的方案”</a></h1><div class="post-meta">2014-11-29</div><span data-disqus-identifier="2014-11-29-solution-of-apt-get-error-hash-checksum-incorrect/" class="disqus-comment-count"></span><div lang="en" class="post-content "><p>各种坑爹，我也不知道为什么：</p>
-<pre><code>sudo gedit etc/apt/apt.conf.d/00aptitude</code></pre>
-<p>最后加一行：<code>Acquire::CompressionTypes::Order &quot;gz&quot;;</code></p>
-</div></div><div class="post"><hr><h1 class="post-title"><a href="/2014-11-28-alter-mysql-character-set-under-ubuntu/">在Ubuntu下更改MYSQL的字符集</a></h1><div class="post-meta">2014-11-28</div><span data-disqus-identifier="2014-11-28-alter-mysql-character-set-under-ubuntu/" class="disqus-comment-count"></span><div lang="en" class="post-content "><p>修改<code>/etc/mysql/my.cnf</code>：</p>
-<pre><code>[client]
-default-character-set=utf8
+</script><div id="header" class="hide-wx"><div class="site-name"><h1 class="hidden">#hsfzxjy#</h1><a id="logo" href="/">#hsfzxjy#</a><p class="description">言えない言葉は、ここに隠される</p><a target="_blank" rel="noopener" href="https://github.com/hsfzxjy" data-color-scheme="no-preference: light; light: light; dark: light;" data-show-count="true" aria-label="Follow @hsfzxjy on GitHub" style="display: none;" class="github-button">Follow @hsfzxjy</a></div><div id="nav-menu"><span class="before"></span><div><a href="/"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Tech/" class="current"><i class="icon-code"></i><span>Tech</span></a><a href="/categories/Soliloquy/"><i class="icon-life"></i><span>Soliloquy</span></a><a href="/works/"><i class="icon-works"></i><span>Projects</span></a><a href="/about/"><i class="icon-about"></i><span>Me</span></a><a href="/aggr/"><i class="icon-history"></i><span>Index</span></a></div><span class="after"></span></div></div><div id="layout" class="pure-g"><div id="left-panel" class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title"><a href="/2014-12-13-remove-broken-packages-under-ubuntu/">Ubuntu下删除不完整的包</a></h1><div class="post-meta">2014-12-13</div><span data-disqus-identifier="2014-12-13-remove-broken-packages-under-ubuntu/" class="disqus-comment-count"></span><div lang="en" class="post-content "><p style="text-indent: 0; margin-top: 0;"> 答案来自 <a target="_blank" rel="noopener" href="http://stackoverflow.com/questions/27455626/how-to-remove-an-incomplete-package-by-using-apt-get">StackOverflow</a>:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo dpkg --remove --force-remove-reinstreq &lt;your package name&gt;</span><br></pre></td></tr></table></figure>
+</div></div><div class="post"><hr><h1 class="post-title"><a href="/2014-11-29-solution-of-apt-get-error-hash-checksum-incorrect/">Ubuntu下解决apt-get “Hash校验和不符的方案”</a></h1><div class="post-meta">2014-11-29</div><span data-disqus-identifier="2014-11-29-solution-of-apt-get-error-hash-checksum-incorrect/" class="disqus-comment-count"></span><div lang="en" class="post-content "><p style="text-indent: 0;"> 各种坑爹，我也不知道为什么：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo gedit etc/apt/apt.conf.d/00aptitude</span><br></pre></td></tr></table></figure>
 
-[mysqld]
-character_set_server=utf8
+<p style="text-indent: 0; margin-top: 0;"> 最后加一行：<code>Acquire::CompressionTypes::Order &quot;gz&quot;;</code></p>
+</div></div><div class="post"><hr><h1 class="post-title"><a href="/2014-11-28-alter-mysql-character-set-under-ubuntu/">在Ubuntu下更改MYSQL的字符集</a></h1><div class="post-meta">2014-11-28</div><span data-disqus-identifier="2014-11-28-alter-mysql-character-set-under-ubuntu/" class="disqus-comment-count"></span><div lang="en" class="post-content "><p style="text-indent: 0;"> 修改<code>/etc/mysql/my.cnf</code>：</p>
+<figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"><span class="section">[client]</span></span><br><span class="line"><span class="attr">default-character-set</span>=utf8</span><br><span class="line"></span><br><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="attr">character_set_server</span>=utf8</span><br><span class="line"></span><br><span class="line"><span class="section">[mysql]</span></span><br><span class="line"><span class="attr">default-character-set</span>=utf8</span><br></pre></td></tr></table></figure>
 
-[mysql]
-default-character-set=utf8</code></pre>
-<p>然后：<code>sudo service mysql restart</code></p>
+<p style="text-indent: 0; margin-top: 0;"> 然后：<code>sudo service mysql restart</code></p>
 </div></div><div class="post"><hr><h1 class="post-title"><a href="/2014-11-02-lca-Tarjan/">LCA之离线Tarjan算法</a></h1><div class="post-meta">2014-11-02</div><span data-disqus-identifier="2014-11-02-lca-Tarjan/" class="disqus-comment-count"></span><div lang="en" class="post-content "><blockquote>
-<p>真是巧妙的算法！</p>
+<p style="text-indent: 0;"> 真是巧妙的算法！</p>
 </blockquote>
 <p>比起树上倍增，Tarjan算法实现起来更为简单，一个DFS加并查集即可。缺点便是：<strong>需要先把所有的查询都读进来，并且要储存结果</strong>。复杂度为O(n+q)。</p>
-<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a><strong>Code</strong></h2><pre><code>var
-    sets: array [1..100] of longint;
-    visited: array [1..100] of Boolean;
-    a: array [1..100, 1..100] of Boolean;
-    questions: array [1..1000] of record
-        x, y: longint;
-        ans: longint;
-    end;
-    qn, n, i, m, x, y, root: longint;
-
-function find(x: longint): longint;
-begin
-    if x = sets[x] then exit(x);
-    sets[x] := find(sets[x]);
-    exit(sets[x]);
-end;
-
-procedure dfs(x: longint);
-var
-    i: longint;
-begin
-    visited[x] := true;
-    //对于两个节点都已访问到的询问，其结果已经出来了
-    for i := 1 to qn do
-    begin
-        if visited[questions[i].x] and visited[questions[i].y] then
-            if questions[i].x = x then
-                questions[i].ans := find(questions[i].y)
-            else if questions[i].y = x then
-                questions[i].ans := find(questions[i].x);
-    end;
-    for i := 1 to n do
-    begin
-        if not a[i, x] or visited[i] then continue;
-        dfs(i);
-        sets[find(i)] := x;
-    end;
-end;
-
-begin
-    assign(input, &#39;main.in&#39;); reset(input);
-    assign(output, &#39;main.out&#39;); rewrite(output);
-
-    read(n, m);
-    for i := 1 to n do
-        sets[i] := i;
-    for i := 1 to m do
-    begin
-        read(x, y);
-        a[x, y] := true;
-        a[y, x] := True;
-    end;
-    read(root);
-    qn := 0;
-    while not eof do
-    begin
-        inc(qn);
-        read(questions[qn].x, questions[qn].y);
-    end;
-    dfs(root);
-    for i := 1 to qn do
-        writeln(questions[i].ans);
-
-    close(input); close(output);
-end.</code></pre>
-</div></div><div class="post"><hr><h1 class="post-title"><a href="/2014-11-02-lca-tree-multiplier/">LCA树上倍增</a></h1><div class="post-meta">2014-11-02</div><span data-disqus-identifier="2014-11-02-lca-tree-multiplier/" class="disqus-comment-count"></span><div lang="en" class="post-content "><pre><code>var
-    a: array [1..100, 1..100] of boolean;
-    depth: array [1..100] of longint;
-    father: array [1..100, 0..16] of longint;
-    n, m, i, x, y: longint;
-    root: longint;
-
-procedure dfs(x: longint);
-var
-    i: longint;
-    j: longint;
-begin
-    depth[x] := depth[father[x][0]]+1;
-    j := 1;
-    while 1&lt;&lt;j&lt;=depth[x]-1 do
-    begin
-        father[x][j] := father[father[x][j-1]][j-1];
-        inc(j);
-    end;
-    for i := 1 to n do
-    begin
-        if not a[x][i] or (father[x][0] = i) then continue;
-        father[i][0] := x;
-        dfs(i);
-    end;
-end;
-
-procedure swap(var x, y: longint);
-var
-    t: longint;
-begin
-    t := x;
-    x := y;
-    y := t;
-end;
-
-function lca(x, y: longint): longint;
-var
-    t, j: longint;
-begin
-    if depth[x] &lt; depth[y] then
-        swap(x, y);
-
-    t := depth[x] - depth[y];
-    for j := 0 to 15 do
-        if t and (1&lt;&lt;j) &lt;&gt; 0 then
-            x := father[x][j];
-    if x = y then
-        exit(x);
-    for j := 15 downto 0 do
-        if father[x][j] &lt;&gt; father[y][j] then
-        begin
-            x := father[x][j];
-            y := father[y][j];
-        end;
-    lca := father[x][0];
-end;
-
-begin
-    assign(input, &#39;main.in&#39;); reset(input);
-    assign(output, &#39;main.out&#39;); rewrite(output);
-
-    read(n, m);
-    for i := 1 to m do
-    begin
-        read(x, y);
-        a[x, y] := true;
-        a[y, x] := true;
-    end;
-    read(root);
-    father[root][0] := root;
-    dfs(root);
-    while not eof do
-    begin
-        read(x, y);
-        writeln(lca(x, y));
-    end;
-
-    close(input); close(output);
-end.</code></pre>
-</div></div><div class="post"><hr><h1 class="post-title"><a href="/2014-11-02-RMQ-binary/">RMQ（二进制方法）</a></h1><div class="post-meta">2014-11-02</div><span data-disqus-identifier="2014-11-02-RMQ-binary/" class="disqus-comment-count"></span><div lang="en" class="post-content "><blockquote>
+<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a><strong>Code</strong></h2><figure class="highlight pascal"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span></span><br><span class="line">    sets: <span class="keyword">array</span> [<span class="number">1</span>..<span class="number">100</span>] <span class="keyword">of</span> longint;</span><br><span class="line">    visited: <span class="keyword">array</span> [<span class="number">1</span>..<span class="number">100</span>] <span class="keyword">of</span> Boolean;</span><br><span class="line">    a: <span class="keyword">array</span> [<span class="number">1</span>..<span class="number">100</span>, <span class="number">1</span>..<span class="number">100</span>] <span class="keyword">of</span> Boolean;</span><br><span class="line">    questions: <span class="keyword">array</span> [<span class="number">1</span>..<span class="number">1000</span>] <span class="keyword">of</span> <span class="keyword">record</span></span><br><span class="line">        x, y: longint;</span><br><span class="line">        ans: longint;</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    qn, n, i, m, x, y, root: longint;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">find</span><span class="params">(x: longint)</span>:</span> longint;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span> x = sets[x] <span class="keyword">then</span> <span class="keyword">exit</span>(x);</span><br><span class="line">    sets[x] := find(sets[x]);</span><br><span class="line">    <span class="keyword">exit</span>(sets[x]);</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">dfs</span><span class="params">(x: longint)</span>;</span></span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    i: longint;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    visited[x] := true;</span><br><span class="line">    <span class="comment">//对于两个节点都已访问到的询问，其结果已经出来了</span></span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> qn <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">if</span> visited[questions[i].x] <span class="keyword">and</span> visited[questions[i].y] <span class="keyword">then</span></span><br><span class="line">            <span class="keyword">if</span> questions[i].x = x <span class="keyword">then</span></span><br><span class="line">                questions[i].ans := find(questions[i].y)</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> questions[i].y = x <span class="keyword">then</span></span><br><span class="line">                questions[i].ans := find(questions[i].x);</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> a[i, x] <span class="keyword">or</span> visited[i] <span class="keyword">then</span> <span class="keyword">continue</span>;</span><br><span class="line">        dfs(i);</span><br><span class="line">        sets[find(i)] := x;</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    assign(input, <span class="string">&#x27;main.in&#x27;</span>); reset(input);</span><br><span class="line">    assign(output, <span class="string">&#x27;main.out&#x27;</span>); rewrite(output);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">read</span>(n, m);</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line">        sets[i] := i;</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> m <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">read</span>(x, y);</span><br><span class="line">        a[x, y] := true;</span><br><span class="line">        a[y, x] := True;</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    <span class="keyword">read</span>(root);</span><br><span class="line">    qn := <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">not</span> eof <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        inc(qn);</span><br><span class="line">        <span class="keyword">read</span>(questions[qn].x, questions[qn].y);</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    dfs(root);</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> qn <span class="keyword">do</span></span><br><span class="line">        writeln(questions[i].ans);</span><br><span class="line"></span><br><span class="line">    close(input); close(output);</span><br><span class="line"><span class="keyword">end</span>.</span><br></pre></td></tr></table></figure></div></div><div class="post"><hr><h1 class="post-title"><a href="/2014-11-02-lca-tree-multiplier/">LCA树上倍增</a></h1><div class="post-meta">2014-11-02</div><span data-disqus-identifier="2014-11-02-lca-tree-multiplier/" class="disqus-comment-count"></span><div lang="en" class="post-content "><figure class="highlight pascal"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span></span><br><span class="line">    a: <span class="keyword">array</span> [<span class="number">1</span>..<span class="number">100</span>, <span class="number">1</span>..<span class="number">100</span>] <span class="keyword">of</span> boolean;</span><br><span class="line">    depth: <span class="keyword">array</span> [<span class="number">1</span>..<span class="number">100</span>] <span class="keyword">of</span> longint;</span><br><span class="line">    father: <span class="keyword">array</span> [<span class="number">1</span>..<span class="number">100</span>, <span class="number">0</span>..<span class="number">16</span>] <span class="keyword">of</span> longint;</span><br><span class="line">    n, m, i, x, y: longint;</span><br><span class="line">    root: longint;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">dfs</span><span class="params">(x: longint)</span>;</span></span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    i: longint;</span><br><span class="line">    j: longint;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    depth[x] := depth[father[x][<span class="number">0</span>]]+<span class="number">1</span>;</span><br><span class="line">    j := <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> <span class="number">1</span>&lt;&lt;j&lt;=depth[x]-<span class="number">1</span> <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        father[x][j] := father[father[x][j-<span class="number">1</span>]][j-<span class="number">1</span>];</span><br><span class="line">        inc(j);</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> a[x][i] <span class="keyword">or</span> (father[x][<span class="number">0</span>] = i) <span class="keyword">then</span> <span class="keyword">continue</span>;</span><br><span class="line">        father[i][<span class="number">0</span>] := x;</span><br><span class="line">        dfs(i);</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">swap</span><span class="params">(<span class="keyword">var</span> x, y: longint)</span>;</span></span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    t: longint;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    t := x;</span><br><span class="line">    x := y;</span><br><span class="line">    y := t;</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">lca</span><span class="params">(x, y: longint)</span>:</span> longint;</span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    t, j: longint;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span> depth[x] &lt; depth[y] <span class="keyword">then</span></span><br><span class="line">        swap(x, y);</span><br><span class="line"></span><br><span class="line">    t := depth[x] - depth[y];</span><br><span class="line">    <span class="keyword">for</span> j := <span class="number">0</span> <span class="keyword">to</span> <span class="number">15</span> <span class="keyword">do</span></span><br><span class="line">        <span class="keyword">if</span> t <span class="keyword">and</span> (<span class="number">1</span>&lt;&lt;j) &lt;&gt; <span class="number">0</span> <span class="keyword">then</span></span><br><span class="line">            x := father[x][j];</span><br><span class="line">    <span class="keyword">if</span> x = y <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">exit</span>(x);</span><br><span class="line">    <span class="keyword">for</span> j := <span class="number">15</span> <span class="keyword">downto</span> <span class="number">0</span> <span class="keyword">do</span></span><br><span class="line">        <span class="keyword">if</span> father[x][j] &lt;&gt; father[y][j] <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">            x := father[x][j];</span><br><span class="line">            y := father[y][j];</span><br><span class="line">        <span class="keyword">end</span>;</span><br><span class="line">    lca := father[x][<span class="number">0</span>];</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    assign(input, <span class="string">&#x27;main.in&#x27;</span>); reset(input);</span><br><span class="line">    assign(output, <span class="string">&#x27;main.out&#x27;</span>); rewrite(output);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">read</span>(n, m);</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> m <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">read</span>(x, y);</span><br><span class="line">        a[x, y] := true;</span><br><span class="line">        a[y, x] := true;</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    <span class="keyword">read</span>(root);</span><br><span class="line">    father[root][<span class="number">0</span>] := root;</span><br><span class="line">    dfs(root);</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">not</span> eof <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">read</span>(x, y);</span><br><span class="line">        writeln(lca(x, y));</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line">    close(input); close(output);</span><br><span class="line"><span class="keyword">end</span>.</span><br></pre></td></tr></table></figure></div></div><div class="post"><hr><h1 class="post-title"><a href="/2014-11-02-RMQ-binary/">RMQ（二进制方法）</a></h1><div class="post-meta">2014-11-02</div><span data-disqus-identifier="2014-11-02-RMQ-binary/" class="disqus-comment-count"></span><div lang="en" class="post-content "><blockquote>
 <p>问题描述：已知数组a以及若干个查询(x, y)，求a[x~y]之间的最小值。</p>
 </blockquote>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>不难发现：若取t使得$2^t\leq y-x+1$且$2^{t+1}>y-x+1$，则有：</p>
@@ -179,344 +29,38 @@ $$[x, x+t]\bigcup[y-t+1,y]=[x,y]$$
 $$dp[i][j]=min(dp[i][j-1],dp[i+2^{j-1}][j-1])$$。
 
 <h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a><strong>Code</strong></h2><figure class="highlight pascal"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span></span><br><span class="line">    a: <span class="keyword">array</span> [<span class="number">1</span>..<span class="number">100000</span>] <span class="keyword">of</span> longint;</span><br><span class="line">    dp: <span class="keyword">array</span> [<span class="number">1</span>..<span class="number">100000</span>, <span class="number">0</span>..<span class="number">20</span>] <span class="keyword">of</span> longint;</span><br><span class="line">    n, i: longint;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">min</span><span class="params">(x, y: longint)</span>:</span> longint;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span> x &lt; y <span class="keyword">then</span> <span class="keyword">exit</span>(x) <span class="keyword">else</span> <span class="keyword">exit</span>(y);</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">init</span>;</span></span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    i, j: longint;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span> dp[i, <span class="number">0</span>] := a[i];</span><br><span class="line">    j := <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> <span class="number">1</span>&lt;&lt;j-<span class="number">1</span>&lt;=n <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> n-<span class="number">1</span>&lt;&lt;(j-<span class="number">1</span>) <span class="keyword">do</span></span><br><span class="line">            dp[i, j] := min(dp[i, j-<span class="number">1</span>], dp[i+<span class="number">1</span>&lt;&lt;(j-<span class="number">1</span>), j-<span class="number">1</span>]);</span><br><span class="line">        inc(j);</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">query</span><span class="params">(x, y: longint)</span>:</span> longint;</span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    t: longint;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    t := <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>&lt;&lt;(t+<span class="number">1</span>)&lt;=y-x+<span class="number">1</span>) <span class="keyword">do</span> inc(t);</span><br><span class="line">    query := min(dp[x][t], dp[y-(<span class="number">1</span>&lt;&lt;t)+<span class="number">1</span>][t]);</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    x, y: longint;</span><br><span class="line"></span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    assign(input, <span class="string">&#x27;main.in&#x27;</span>); reset(input);</span><br><span class="line">    assign(output, <span class="string">&#x27;main.out&#x27;</span>); rewrite(output);</span><br><span class="line"></span><br><span class="line">    readln(n);</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span> <span class="keyword">read</span>(a[i]);</span><br><span class="line">    init;</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">not</span> eof <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">read</span>(x, y);</span><br><span class="line">        writeln(query(X, y));</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line">    close(input); close(output);</span><br><span class="line"><span class="keyword">end</span>.</span><br></pre></td></tr></table></figure>
-</div></div><div class="post"><hr><h1 class="post-title"><a href="/2014-11-01-tree-array/">树状数组</a></h1><div class="post-meta">2014-11-01</div><span data-disqus-identifier="2014-11-01-tree-array/" class="disqus-comment-count"></span><div lang="en" class="post-content "><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a><strong>介绍</strong></h2><p>所谓树状数组，就是将线性的数组预处理成树状的结构以降低时间复杂度。先来看一幅经典的图： <img src="/assets/TArry1.jpg"><br>其中的a数组为原生数组，c数组为辅助数组，计算方式为： $$c_1=a_1——{(1)}<em>{10}={(1)}_2$$ $$c_2=a_2+c_1——{(2)}</em>{10}={(10)}_2$$ $$\ldots$$ 不难发现，c[k]存储的实际上是从k开始向前数k的二进制表示中右边第一个1所代表的数字个元素的和。这样写的好处便是可以利用位运算轻松计算sum。上代码。</p>
+</div></div><div class="post"><hr><h1 class="post-title"><a href="/2014-11-01-tree-array/">树状数组</a></h1><div class="post-meta">2014-11-01</div><span data-disqus-identifier="2014-11-01-tree-array/" class="disqus-comment-count"></span><div lang="en" class="post-content "><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a><strong>介绍</strong></h2><p>所谓树状数组，就是将线性的数组预处理成树状的结构以降低时间复杂度。先来看一幅经典的图： <img src="/assets/TArry1.jpg"><br>其中的a数组为原生数组，c数组为辅助数组，计算方式为： </p>
+$$c_1=a_1——{(1)}_{10}={(1)}_2$$ 
+$$c_2=a_2+c_1——{(2)}_{10}={(10)}_2$$ 
+$$\ldots$$ 
+
+<p style="margin-top: 0;"> 不难发现，c[k]存储的实际上是从k开始向前数k的二进制表示中右边第一个1所代表的数字个元素的和。这样写的好处便是可以利用位运算轻松计算sum。上代码。</p>
 <h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a><strong>Code</strong></h2><figure class="highlight pascal"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span></span><br><span class="line">    n, i: longint;</span><br><span class="line">    a, c: <span class="keyword">array</span> [<span class="number">1</span>..<span class="number">10000</span>] <span class="keyword">of</span> longint;</span><br><span class="line"></span><br><span class="line"><span class="comment">//计算x最右边的1所代表的数字。</span></span><br><span class="line"><span class="comment">//如：lowbit(0b1100)=0b100</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">lowbit</span><span class="params">(x: longint)</span>:</span> longint;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    lowbit := x <span class="keyword">and</span> (-x);</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//给a[index]加上x</span></span><br><span class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">add</span><span class="params">(<span class="keyword">index</span>, x: longint)</span>;</span></span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    inc(a[<span class="keyword">index</span>], x);</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">index</span>&lt;=n <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        inc(c[<span class="keyword">index</span>], x);</span><br><span class="line">        inc(<span class="keyword">index</span>, lowbit(<span class="keyword">index</span>));</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//求a[1~index]的和</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span><span class="params">(<span class="keyword">index</span>: longint)</span>:</span> longint;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    sum := <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">index</span>&gt;<span class="number">0</span> <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        inc(sum, c[<span class="keyword">index</span>]);</span><br><span class="line">        dec(<span class="keyword">index</span>, lowbit(<span class="keyword">index</span>));</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    s: longint;</span><br><span class="line">    op: longint;</span><br><span class="line">    x,y: longint;</span><br><span class="line"></span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    assign(input, <span class="string">&#x27;main.in&#x27;</span>); reset(input);</span><br><span class="line">    assign(output, <span class="string">&#x27;main.out&#x27;</span>); rewrite(output);</span><br><span class="line"></span><br><span class="line">    readln(n);</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">read</span>(a[i]);</span><br><span class="line">        add(i, a[i]);</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">not</span> eof <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">read</span>(op);</span><br><span class="line">        <span class="keyword">if</span> op = <span class="number">1</span> <span class="keyword">then</span> <span class="comment">//添加操作</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">           <span class="keyword">read</span>(x, y);</span><br><span class="line">           Add(x, y);</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">else</span>           <span class="comment">//求和操作</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">            <span class="keyword">read</span>(s);</span><br><span class="line">            writeln(sum(s));</span><br><span class="line">        <span class="keyword">end</span>;</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line">    close(input); close(output);</span><br><span class="line"><span class="keyword">end</span>.</span><br></pre></td></tr></table></figure>
 </div></div><div class="post"><hr><h1 class="post-title"><a href="/2014-11-01-revelation-of-binary/">二进制的启示</a></h1><div class="post-meta">2014-11-01</div><span data-disqus-identifier="2014-11-01-revelation-of-binary/" class="disqus-comment-count"></span><div lang="en" class="post-content "><blockquote>
-<p>在学习数论时我们都知道：只用2的幂次可以组合出所有的正整数。这便是二进制的魅力——状态简单而又变化万千。</p>
+<p style="text-indent: 0;"> 在学习数论时我们都知道：只用2的幂次可以组合出所有的正整数。这便是二进制的魅力——状态简单而又变化万千。</p>
 </blockquote>
 <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a><strong>引子</strong></h2><p>实际算法中，常常有一些线性的但数据量特别大的问题，如区间求和、求最小值等。很多时候，为了把时间复杂度从$O(n^2)$甚至更高的地方降下来，我们需要对数据进行一些预处理，以提高计算的速度。在这其中，有很大一部分是来自二进制运算特点的启发。</p>
 <h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a><strong>目录</strong></h2><ol>
-<li> <a href="/archives/307">树状数组</a></li>
-<li> <a href="/archives/318">RMQ</a></li>
-<li> <a href="/archives/324">LCA&amp;树上倍增</a></li>
+<li> <a href="/2014-11-02-tree-array/">树状数组</a></li>
+<li> <a href="/2014-11-02-RMQ-binary/">RMQ</a></li>
+<li> <a href="/2014-11-02-lca-tree-multiplier/">LCA&amp;树上倍增</a></li>
 </ol>
 </div></div><div class="post"><hr><h1 class="post-title"><a href="/2014-10-26-kruscal-and-prim/">最小生成树（Kruscal &amp; Prim）</a></h1><div class="post-meta">2014-10-26</div><span data-disqus-identifier="2014-10-26-kruscal-and-prim/" class="disqus-comment-count"></span><div lang="en" class="post-content "><blockquote>
-<p>测试位置：<a target="_blank" rel="noopener" href="http://codevs.cn/problem/1078/">WikiOI1078</a></p>
+<p style="text-indent: 0;"> 测试位置：<a target="_blank" rel="noopener" href="http://codevs.cn/problem/1078/">WikiOI1078</a></p>
 </blockquote>
-<pre><code>type
-    TEdge = record
-        start, terminal: longint;
-        weight: int64;
-    end;
-    TEdgeArr = array of TEdge;
-
-operator &lt;(e1, e2: TEdge)res: boolean;
-begin
-    res := e1.weight &lt; e2.weight;
-end;
-
-operator &gt;(e1, e2: TEdge)res: Boolean;
-begin
-    res := e1.weight &gt; e2.weight;
-end;
-
-procedure SortEdge(A: TEdgeArr; l, r: longint);
-var
-    i, j: longint;
-    t, m: TEdge;
-begin
-    i := l; j := r; m := A[(i+j) &gt;&gt; 1];
-    repeat
-        while A[i]&lt;m do inc(i);
-        while A[j]&gt;m do dec(j);
-        if i&lt;=j then
-        begin
-            t := A[i];
-            A[i] := A[j];
-            A[j] := t;
-            inc(i); dec(j);
-        end;
-    until i&gt;j;
-    if i&lt;r then SortEdge(A, i, r);
-    if l&lt;j then SortEdge(A, l, j);
-end;
-
-const
-    INF: int64 = 1&lt;&lt;60 div 3;
-var
-    map: array [1..100, 1..100] of int64;
-    n, i, j: longint;
-
-&#123;
-    @param x: 起始搜索节点
-    算法思想：用一个数组维护从各个未加入顶点到
-    树的最短边长度，操作n次，每次将距离最短的
-    边加入到树中，并更新与之相邻的点的距离值。
-&#125;
-
-function prim(x: longint): int64;
-&#123;
-    lowest: 储存各个节点到树的最短距离
-    visited: 标记是否已加入树中
-&#125;
-var
-    lowest: array [1..100] of int64;
-    visited: array [1..100] of boolean;
-    min: int64;
-    i, j, minindex: longint;
-begin
-    fillchar(visited, sizeof(visited), 0);
-    visited[x] := true;
-
-    //先将初始节点加入树中，更新lowest
-    for i := 1 to n do
-        lowest[i] := map[i, x];
-
-    prim := 0;
-    for i := 2 to n do
-    begin
-        min := INF;
-
-        //找出树到外部节点最短的一条边
-        //并将该边加入树中
-        for j := 1 to n do
-            if (not visited[j]) and (min &gt; lowest[j]) then
-            begin
-                min := lowest[j];
-                minindex := j;
-            end;
-        visited[minindex] := true;
-        prim := prim + min;
-
-        //对新加入的那个节点，
-        //更新与其相邻的未加入树的节点的lowest值
-        for j := 1 to n do
-        begin
-            if visited[j] then continue;
-            if map[j, minindex] &lt; lowest[j] then
-                lowest[j] := map[j, minindex];
-        end;
-    end;
-end;
-
-&#123;
-    算法思想：
-    1\. 先将边按照长度排序。
-    2\. 遍历所有的边，若该边的两个顶点都在树中则跳过；
-    否则将其加入树中。
-&#125;
-
-function Kruscal: int64;
-var
-    Edges: TEdgeArr;
-    //并查集，储存自己的父亲，若自己为根结点则为自己
-    //这是一种常用的写法：否则如果存成0的话，想把两棵
-    //树并在一起需要多一步判断。
-    UnionSet: array [0..100] of longint;
-    i: longint;
-
-    procedure InitEdges; //将邻接矩阵转化为边数组。
-    var
-        i, j: longint;
-        E: TEdge;
-    begin
-        for i := 1 to n do
-            for j := 1 to i-1 do
-            begin
-                E.start := i;
-                E.terminal := j;
-                E.weight := map[i, j];
-                SetLength(Edges, Length(Edges)+1);
-                Edges[High(Edges)] := E;
-            end;
-        SortEdge(Edges, Low(Edges), High(Edges));
-    end;
-
-    //寻找自己的根节点，并把自己直接连到根结点上。
-    function Find(x: longint): longint;
-    var
-        root: longint;
-    begin
-        root := x;
-        while root &lt;&gt; UnionSet[root] do
-            root := UnionSet[root];
-        UnionSet[x] := root;
-        exit(root);
-    end;
-
-    //尝试将边的两个顶点并在一个并查集中，如果两个
-    //顶点都在同一个集合中则返回False，否则执行合
-    //并操作。
-    function Union(x, y: longint): boolean;
-    var
-        px, py: longint;
-    begin
-        px := Find(x);
-        py := Find(y);
-        if px = py then
-            exit(False);
-        UnionSet[px] := py;
-        exit(True);
-    end;
-
-begin
-    Kruscal := 0;
-    fillchar(UnionSet, sizeof(UnionSet), 0);
-    InitEdges;
-    for i := 1 to n do
-        UnionSet[i] := i;
-    for i := Low(Edges) to High(Edges) do
-        if Union(Edges[i].start, Edges[i].terminal) then
-        begin
-            Kruscal := Kruscal + Edges[i].weight;
-        end;
-end;
-
-begin
-    assign(input, &#39;main.in&#39;); reset(input);
-    assign(output, &#39;main.out&#39;); rewrite(output);
-
-    readln(n);
-    for i := 1 to n do
-        for j := 1 to n do
-            read(map[i, j]);
-    writeln(Kruscal);
-
-    close(input); close(output);
-end.</code></pre>
-</div></div><div class="post"><hr><h1 class="post-title"><a href="/2014-10-26-noip2013-day1-matches/">NOIP2013 Day1 火柴排队：快速求逆序对</a></h1><div class="post-meta">2014-10-26</div><span data-disqus-identifier="2014-10-26-noip2013-day1-matches/" class="disqus-comment-count"></span><div lang="en" class="post-content "><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a><strong>题目</strong></h2><blockquote>
+<figure class="highlight pascal"><table><tr><td class="code"><pre><span class="line"><span class="keyword">type</span></span><br><span class="line">    TEdge = <span class="keyword">record</span></span><br><span class="line">        start, terminal: longint;</span><br><span class="line">        weight: int64;</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    TEdgeArr = <span class="keyword">array</span> <span class="keyword">of</span> TEdge;</span><br><span class="line"></span><br><span class="line"><span class="keyword">operator</span> &lt;(e1, e2: TEdge)res: boolean;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    res := e1.weight &lt; e2.weight;</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">operator</span> &gt;(e1, e2: TEdge)res: Boolean;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    res := e1.weight &gt; e2.weight;</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">SortEdge</span><span class="params">(A: TEdgeArr; l, r: longint)</span>;</span></span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    i, j: longint;</span><br><span class="line">    t, m: TEdge;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    i := l; j := r; m := A[(i+j) &gt;&gt; <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">repeat</span></span><br><span class="line">        <span class="keyword">while</span> A[i]&lt;m <span class="keyword">do</span> inc(i);</span><br><span class="line">        <span class="keyword">while</span> A[j]&gt;m <span class="keyword">do</span> dec(j);</span><br><span class="line">        <span class="keyword">if</span> i&lt;=j <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">            t := A[i];</span><br><span class="line">            A[i] := A[j];</span><br><span class="line">            A[j] := t;</span><br><span class="line">            inc(i); dec(j);</span><br><span class="line">        <span class="keyword">end</span>;</span><br><span class="line">    <span class="keyword">until</span> i&gt;j;</span><br><span class="line">    <span class="keyword">if</span> i&lt;r <span class="keyword">then</span> SortEdge(A, i, r);</span><br><span class="line">    <span class="keyword">if</span> l&lt;j <span class="keyword">then</span> SortEdge(A, l, j);</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span></span><br><span class="line">    INF: int64 = <span class="number">1</span>&lt;&lt;<span class="number">60</span> <span class="keyword">div</span> <span class="number">3</span>;</span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    map: <span class="keyword">array</span> [<span class="number">1</span>..<span class="number">100</span>, <span class="number">1</span>..<span class="number">100</span>] <span class="keyword">of</span> int64;</span><br><span class="line">    n, i, j: longint;</span><br><span class="line"></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">    @param x: 起始搜索节点</span></span><br><span class="line"><span class="comment">    算法思想：用一个数组维护从各个未加入顶点到</span></span><br><span class="line"><span class="comment">    树的最短边长度，操作n次，每次将距离最短的</span></span><br><span class="line"><span class="comment">    边加入到树中，并更新与之相邻的点的距离值。</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">prim</span><span class="params">(x: longint)</span>:</span> int64;</span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">    lowest: 储存各个节点到树的最短距离</span></span><br><span class="line"><span class="comment">    visited: 标记是否已加入树中</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    lowest: <span class="keyword">array</span> [<span class="number">1</span>..<span class="number">100</span>] <span class="keyword">of</span> int64;</span><br><span class="line">    visited: <span class="keyword">array</span> [<span class="number">1</span>..<span class="number">100</span>] <span class="keyword">of</span> boolean;</span><br><span class="line">    min: int64;</span><br><span class="line">    i, j, minindex: longint;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    fillchar(visited, sizeof(visited), <span class="number">0</span>);</span><br><span class="line">    visited[x] := true;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//先将初始节点加入树中，更新lowest</span></span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line">        lowest[i] := map[i, x];</span><br><span class="line"></span><br><span class="line">    prim := <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">2</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        min := INF;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//找出树到外部节点最短的一条边</span></span><br><span class="line">        <span class="comment">//并将该边加入树中</span></span><br><span class="line">        <span class="keyword">for</span> j := <span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">not</span> visited[j]) <span class="keyword">and</span> (min &gt; lowest[j]) <span class="keyword">then</span></span><br><span class="line">            <span class="keyword">begin</span></span><br><span class="line">                min := lowest[j];</span><br><span class="line">                minindex := j;</span><br><span class="line">            <span class="keyword">end</span>;</span><br><span class="line">        visited[minindex] := true;</span><br><span class="line">        prim := prim + min;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//对新加入的那个节点，</span></span><br><span class="line">        <span class="comment">//更新与其相邻的未加入树的节点的lowest值</span></span><br><span class="line">        <span class="keyword">for</span> j := <span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">            <span class="keyword">if</span> visited[j] <span class="keyword">then</span> <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">if</span> map[j, minindex] &lt; lowest[j] <span class="keyword">then</span></span><br><span class="line">                lowest[j] := map[j, minindex];</span><br><span class="line">        <span class="keyword">end</span>;</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">&#123;</span></span><br><span class="line"><span class="comment">    算法思想：</span></span><br><span class="line"><span class="comment">    1\. 先将边按照长度排序。</span></span><br><span class="line"><span class="comment">    2\. 遍历所有的边，若该边的两个顶点都在树中则跳过；</span></span><br><span class="line"><span class="comment">    否则将其加入树中。</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Kruscal</span>:</span> int64;</span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    Edges: TEdgeArr;</span><br><span class="line">    <span class="comment">//并查集，储存自己的父亲，若自己为根结点则为自己</span></span><br><span class="line">    <span class="comment">//这是一种常用的写法：否则如果存成0的话，想把两棵</span></span><br><span class="line">    <span class="comment">//树并在一起需要多一步判断。</span></span><br><span class="line">    UnionSet: <span class="keyword">array</span> [<span class="number">0</span>..<span class="number">100</span>] <span class="keyword">of</span> longint;</span><br><span class="line">    i: longint;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">procedure</span> <span class="title">InitEdges</span>;</span> <span class="comment">//将邻接矩阵转化为边数组。</span></span><br><span class="line">    <span class="keyword">var</span></span><br><span class="line">        i, j: longint;</span><br><span class="line">        E: TEdge;</span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line">            <span class="keyword">for</span> j := <span class="number">1</span> <span class="keyword">to</span> i-<span class="number">1</span> <span class="keyword">do</span></span><br><span class="line">            <span class="keyword">begin</span></span><br><span class="line">                E.start := i;</span><br><span class="line">                E.terminal := j;</span><br><span class="line">                E.weight := map[i, j];</span><br><span class="line">                SetLength(Edges, Length(Edges)+<span class="number">1</span>);</span><br><span class="line">                Edges[High(Edges)] := E;</span><br><span class="line">            <span class="keyword">end</span>;</span><br><span class="line">        SortEdge(Edges, Low(Edges), High(Edges));</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//寻找自己的根节点，并把自己直接连到根结点上。</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">Find</span><span class="params">(x: longint)</span>:</span> longint;</span><br><span class="line">    <span class="keyword">var</span></span><br><span class="line">        root: longint;</span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        root := x;</span><br><span class="line">        <span class="keyword">while</span> root &lt;&gt; UnionSet[root] <span class="keyword">do</span></span><br><span class="line">            root := UnionSet[root];</span><br><span class="line">        UnionSet[x] := root;</span><br><span class="line">        <span class="keyword">exit</span>(root);</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//尝试将边的两个顶点并在一个并查集中，如果两个</span></span><br><span class="line">    <span class="comment">//顶点都在同一个集合中则返回False，否则执行合</span></span><br><span class="line">    <span class="comment">//并操作。</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">Union</span><span class="params">(x, y: longint)</span>:</span> boolean;</span><br><span class="line">    <span class="keyword">var</span></span><br><span class="line">        px, py: longint;</span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        px := Find(x);</span><br><span class="line">        py := Find(y);</span><br><span class="line">        <span class="keyword">if</span> px = py <span class="keyword">then</span></span><br><span class="line">            <span class="keyword">exit</span>(False);</span><br><span class="line">        UnionSet[px] := py;</span><br><span class="line">        <span class="keyword">exit</span>(True);</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    Kruscal := <span class="number">0</span>;</span><br><span class="line">    fillchar(UnionSet, sizeof(UnionSet), <span class="number">0</span>);</span><br><span class="line">    InitEdges;</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line">        UnionSet[i] := i;</span><br><span class="line">    <span class="keyword">for</span> i := Low(Edges) <span class="keyword">to</span> High(Edges) <span class="keyword">do</span></span><br><span class="line">        <span class="keyword">if</span> Union(Edges[i].start, Edges[i].terminal) <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">            Kruscal := Kruscal + Edges[i].weight;</span><br><span class="line">        <span class="keyword">end</span>;</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    assign(input, <span class="string">&#x27;main.in&#x27;</span>); reset(input);</span><br><span class="line">    assign(output, <span class="string">&#x27;main.out&#x27;</span>); rewrite(output);</span><br><span class="line"></span><br><span class="line">    readln(n);</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line">        <span class="keyword">for</span> j := <span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line">            <span class="keyword">read</span>(map[i, j]);</span><br><span class="line">    writeln(Kruscal);</span><br><span class="line"></span><br><span class="line">    close(input); close(output);</span><br><span class="line"><span class="keyword">end</span>.</span><br></pre></td></tr></table></figure></div></div><div class="post"><hr><h1 class="post-title"><a href="/2014-10-26-noip2013-day1-matches/">NOIP2013 Day1 火柴排队：快速求逆序对</a></h1><div class="post-meta">2014-10-26</div><span data-disqus-identifier="2014-10-26-noip2013-day1-matches/" class="disqus-comment-count"></span><div lang="en" class="post-content "><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a><strong>题目</strong></h2><blockquote>
 <p>涵涵有两盒火柴，每盒装有 n 根火柴，每根火柴都有一个高度。现在将每盒中的火柴各自排成一列，同一列火柴的高度互不相同，两列火柴之间的距离定义为：$\sum_{i=1}^{n}{(a_i-b_i)^2}$<br>，其中 ai表示第一列火柴中第 i 个火柴的高度，bi表示第二列火柴中第 i 个火柴的高度。<br>每列火柴中相邻两根火柴的位置都可以交换，请你通过交换使得两列火柴之间的距离最小。请问得到这个最小的距离，最少需要交换多少次？如果这个数字太大，请输出这个最小交换次数对 99,999,997 取模的结果。</p>
 </blockquote>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>这真是一道好题——断断续续想了几天才完全AC。<br>事实上，由排序不等式可知：</p>
 <blockquote>
-<p><strong>当$a_i, b_i$从小到大排序时，距离最小。</strong></p>
+<p style="text-indent: 0;"> <strong>当$a_i, b_i$从小到大排序时，距离最小。</strong></p>
 </blockquote>
 <p>这是一个重要的信息。因此，我们只需把$a_i,b_i$进行排序，并把对应项“捆绑”成一项，再按$a_i$原有的顺序进行复原，此时，可以得到由$b_i$原先的下标组成的一个序列。也就是说，我们要求$1,2,\ldots,n$至少经过多少步才能变为该序列。这可以用逆序对来解决。<br>只可惜，传统的逆序对算法时间复杂度为$O(n^2)$，这里n可达20,0000，一定会超时（<strong>事实上，只过了70%的点</strong>）。因此我们需寻求更好的算法。</p>
 <h2 id="用归并排序求逆序对"><a href="#用归并排序求逆序对" class="headerlink" title="用归并排序求逆序对"></a><strong>用归并排序求逆序对</strong></h2><p>在归并排序的过程中，有一个步骤称为合并。在这个步骤中，需要轮流判断左右区间的第一个数的大小关系。注意到：<strong>左右区间已经有序，从而若左区间的第一个数大于右区间的第一个数，则左区间之后的所有数都大于右区间的第一个数</strong>，从而我们可以在合并时做一些修改：</p>
-<pre><code>procedure nx(l, r: longint);
-var
-    mid, i, j, k: longint;
-begin
-    if l = r then
-    begin
-        tmp[l] := a[l];
-        exit;
-    end;
-    mid := (l + r) shr 1;
-    nx(l, mid);
-    nx(mid+1, r);
-    i := l;
-    j := mid+1;
-    k := l;
-    while k &lt;= r do
-    begin
-        if (j&gt;r) or (i&lt;=mid) and (a[i]&lt;=a[j]) then //注意这里为等号
-        begin
-            tmp[k] := a[i];
-            inc(i);
-        end
-        else
-        begin
-            cnt := cnt + mid - i + 1; //加上逆序数
-            tmp[k] := a[j];
-            inc(j);
-        end;
-        inc(k);
-    end;
-    for i := l to r do
-        a[i] := tmp[i];
-end;</code></pre>
+<figure class="highlight pascal"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">nx</span><span class="params">(l, r: longint)</span>;</span></span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    mid, i, j, k: longint;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span> l = r <span class="keyword">then</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        tmp[l] := a[l];</span><br><span class="line">        <span class="keyword">exit</span>;</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    mid := (l + r) <span class="keyword">shr</span> <span class="number">1</span>;</span><br><span class="line">    nx(l, mid);</span><br><span class="line">    nx(mid+<span class="number">1</span>, r);</span><br><span class="line">    i := l;</span><br><span class="line">    j := mid+<span class="number">1</span>;</span><br><span class="line">    k := l;</span><br><span class="line">    <span class="keyword">while</span> k &lt;= r <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">if</span> (j&gt;r) <span class="keyword">or</span> (i&lt;=mid) <span class="keyword">and</span> (a[i]&lt;=a[j]) <span class="keyword">then</span> <span class="comment">//注意这里为等号</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">            tmp[k] := a[i];</span><br><span class="line">            inc(i);</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">            cnt := cnt + mid - i + <span class="number">1</span>; <span class="comment">//加上逆序数</span></span><br><span class="line">            tmp[k] := a[j];</span><br><span class="line">            inc(j);</span><br><span class="line">        <span class="keyword">end</span>;</span><br><span class="line">        inc(k);</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    <span class="keyword">for</span> i := l <span class="keyword">to</span> r <span class="keyword">do</span></span><br><span class="line">        a[i] := tmp[i];</span><br><span class="line"><span class="keyword">end</span>;</span><br></pre></td></tr></table></figure>
+
 <p>这个算法复杂度为$O(nlogn)$，是一种比较理想的算法，实现起来也简单。但他有个缺点：<strong>会打乱原数组顺序</strong>。</p>
-<h2 id="原题代码"><a href="#原题代码" class="headerlink" title="原题代码"></a><strong>原题代码</strong></h2><pre><code>//AC
-const
-    MODN = 99999997;
-type
-    rec = record value, index: longint; end;
-    TArr = array [1..100000] of rec;
-var
-    n: longint;
-    a, b, c, tmp: TArr;
-    ok: Boolean;
-    l, r, i, j: longint;
-    cnt: int64;
-
-procedure sort(var arr: TArr; l, r: longint);
-var
-    i, j: longint;
-    m, t: rec;
-begin
-    i := l;
-    j := r;
-    m := arr[(i+j) shr 1];
-    repeat
-        while arr[i].value &lt; m.value do inc(i);
-        while arr[j].value &gt; m.value do dec(j);
-        if i &lt;= j then
-        begin
-            t := arr[i];
-            arr[i] := arr[j];
-            arr[j] := t;
-            inc(i);
-            dec(j);
-        end;
-    until i &gt;j;
-    if i &lt; r then sort(arr, i, r);
-    if l &lt; j then sort(arr, l, j);
-end;
-
-procedure nx(l, r: longint);
-var
-    mid, i, j, k: longint;
-begin
-    if l = r then
-    begin
-        tmp[l] := c[l];
-        exit;
-    end;
-    mid := (l + r) shr 1;
-    nx(l, mid);
-    nx(mid+1, r);
-    i := l;
-    j := mid+1;
-    k := l;
-    while k &lt;= r do
-    begin
-        if (j&gt;r) or (i&lt;=mid) and (c[i].index&lt;=c[j].index) then
-        begin
-            tmp[k] := c[i];
-            inc(i);
-        end
-        else
-        begin
-            cnt := cnt + mid - i + 1;
-            cnt := cnt mod MODN;
-            tmp[k] := c[j];
-            inc(j);
-        end;
-        inc(k);
-    end;
-    for i := l to r do
-        c[i] := tmp[i];
-end;
-
-begin
-    assign(input, &#39;main.in&#39;); reset(input);
-    assign(output, &#39;main.out&#39;); rewrite(output);
-
-    readln(n);
-    for i := 1 to n do
-    begin
-        read(a[i].value);
-        a[i].index := i;
-    end;
-    for i := 1 to n do
-    begin
-        read(b[i].value);
-        b[i].index := i;
-    end;
-    sort(a, 1, n);
-    sort(b, 1, n);
-
-    for i := 1 to n do
-        c[a[i].index] := b[i];
-
-    cnt := 0;
-    nx(1, n);
-    writeln(cnt);
-
-    close(input); close(output);
-end.</code></pre>
-</div></div><div class="page-navigator"><a href="/categories/Tech/page/4/" class="pre">Previous</a><a href="/categories/Tech/page/6/" class="next">Next</a></div></div></div><div id="right-panel" class="pure-u-1-4"><span class="toggle-menu">&times; <span></span></span><div id="sidebar"><div class="widget"><div class="widget-title">Navigations</div><ul><li><a href="/works/" class="widget-item"><i class="icon-works"></i><span>Publications &amp; Projects</span></a></li><li><a href="/archives/" class="widget-item"><i class="icon-archives"></i><span>Archives</span></a></li><li><a href="/atom.xml" class="widget-item"><i class="icon-rss"></i><span>RSS</span></a></li></ul></div><div class="widget"><div class="widget-title">Categories</div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Soliloquy/">Soliloquy</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tech/">Tech</a><span class="category-list-count">71</span></li></ul></div><div class="widget"><div class="widget-title">Tags</div><div class="tagcloud"><a href="/tags/proxychains/" style="font-size: 15px;">proxychains</a> <a href="/tags/apt-get/" style="font-size: 15px;">apt-get</a> <a href="/tags/WiseCity/" style="font-size: 15px;">WiseCity</a> <a href="/tags/Win32/" style="font-size: 15px;">Win32</a> <a href="/tags/Web-Design/" style="font-size: 15px;">Web Design</a> <a href="/tags/Web/" style="font-size: 15px;">Web</a> <a href="/tags/Unit-Test/" style="font-size: 15px;">Unit Test</a> <a href="/tags/Ubuntu/" style="font-size: 15px;">Ubuntu</a> <a href="/tags/UVa/" style="font-size: 15px;">UVa</a> <a href="/tags/Travel/" style="font-size: 15px;">Travel</a> <a href="/tags/Translation/" style="font-size: 15px;">Translation</a> <a href="/tags/Sublime-Text/" style="font-size: 15px;">Sublime Text</a> <a href="/tags/String-Template/" style="font-size: 15px;">String Template</a> <a href="/tags/Search/" style="font-size: 15px;">Search</a> <a href="/tags/SS/" style="font-size: 15px;">SS</a> <a href="/tags/Rust/" style="font-size: 15px;">Rust</a> <a href="/tags/Regular-Expression/" style="font-size: 15px;">Regular Expression</a> <a href="/tags/Reentrancy/" style="font-size: 15px;">Reentrancy</a> <a href="/tags/Random-Thoughts/" style="font-size: 15px;">Random Thoughts</a> <a href="/tags/RMPE/" style="font-size: 15px;">RMPE</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Pruning/" style="font-size: 15px;">Pruning</a> <a href="/tags/Probability/" style="font-size: 15px;">Probability</a> <a href="/tags/Poem/" style="font-size: 15px;">Poem</a> <a href="/tags/Pascal/" style="font-size: 15px;">Pascal</a> <a href="/tags/POSIX/" style="font-size: 15px;">POSIX</a> <a href="/tags/OOP/" style="font-size: 15px;">OOP</a> <a href="/tags/Number-Theory/" style="font-size: 15px;">Number Theory</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/NOIP/" style="font-size: 15px;">NOIP</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/Multi-Threading/" style="font-size: 15px;">Multi-Threading</a> <a href="/tags/Meta-Classes/" style="font-size: 15px;">Meta Classes</a> <a href="/tags/Merge-Sort/" style="font-size: 15px;">Merge Sort</a> <a href="/tags/Math/" style="font-size: 15px;">Math</a> <a href="/tags/Magic/" style="font-size: 15px;">Magic</a> <a href="/tags/Machine-Learning/" style="font-size: 15px;">Machine Learning</a> <a href="/tags/MST/" style="font-size: 15px;">MST</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/Lifetime/" style="font-size: 15px;">Lifetime</a> <a href="/tags/LCA/" style="font-size: 15px;">LCA</a> <a href="/tags/JavaScript/" style="font-size: 15px;">JavaScript</a> <a href="/tags/Initiation/" style="font-size: 15px;">Initiation</a> <a href="/tags/Information-Theory/" style="font-size: 15px;">Information Theory</a> <a href="/tags/Infinite-Recursion/" style="font-size: 15px;">Infinite Recursion</a> <a href="/tags/IndexedDB/" style="font-size: 15px;">IndexedDB</a> <a href="/tags/Haskell/" style="font-size: 15px;">Haskell</a> <a href="/tags/Generator/" style="font-size: 15px;">Generator</a> <a href="/tags/GIL/" style="font-size: 15px;">GIL</a> <a href="/tags/Front-End/" style="font-size: 15px;">Front End</a> <a href="/tags/Font/" style="font-size: 15px;">Font</a> <a href="/tags/Float-Number/" style="font-size: 15px;">Float Number</a> <a href="/tags/File-Permissions/" style="font-size: 15px;">File Permissions</a> <a href="/tags/Fast-Inverse-Square-Root-Algorithm/" style="font-size: 15px;">Fast Inverse Square Root Algorithm</a> <a href="/tags/Django-Channels/" style="font-size: 15px;">Django Channels</a> <a href="/tags/Django/" style="font-size: 15px;">Django</a> <a href="/tags/Determinism/" style="font-size: 15px;">Determinism</a> <a href="/tags/Delphi/" style="font-size: 15px;">Delphi</a> <a href="/tags/Decorator-Pattern/" style="font-size: 15px;">Decorator Pattern</a> <a href="/tags/DDoS/" style="font-size: 15px;">DDoS</a> <a href="/tags/Cython/" style="font-size: 15px;">Cython</a> <a href="/tags/Coroutine/" style="font-size: 15px;">Coroutine</a> <a href="/tags/Conclusion/" style="font-size: 15px;">Conclusion</a> <a href="/tags/CUDA/" style="font-size: 15px;">CUDA</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 15px;">Binary Indexed Tree</a> <a href="/tags/Bash/" style="font-size: 15px;">Bash</a> <a href="/tags/Automatic-Test/" style="font-size: 15px;">Automatic Test</a></div></div><div class="widget"><div class="widget-title">Recent Articles</div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021-06-11-where-does-the-randomness-of-cuda-kernels-come-from/">Where does the randomness of CUDA kernels come from?</a></li><li class="post-list-item"><a class="post-list-link" href="/2021-05-30-indexeddb-performant-bulk-mutations/">Performant Bulk Mutations in IndexedDB</a></li><li class="post-list-item"><a class="post-list-link" href="/2021-05-16-cython-auto-reload/">Auto Rebuild .pyx Files with pyximport</a></li><li class="post-list-item"><a class="post-list-link" href="/2021-05-07-cython-and-threads/">Cython and Threads</a></li><li class="post-list-item"><a class="post-list-link" href="/2021-03-10-obtain-a-random-unused-tcp-port-with-bash/">Obtain a Random Unused TCP Port with Bash</a></li><li class="post-list-item"><a class="post-list-link" href="/2020-01-15-information-theory-kl-divergence/">Information Theory: KL Divergence</a></li><li class="post-list-item"><a class="post-list-link" href="/2020-01-04-information-theory-entropy-and-mutual-information/">Information Theory: Entropy and Mutual Information</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-12-10-yakimono/">铁板烧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-10-03-xjx/">西郊线</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-08-01-proof-of-gumbel-max-trick/">Proof of the Gumbel Max Trick</a></li></ul></div><div class="widget"><div class="widget-title">Recent Comments</div><script type="text/javascript" src="//hsfzxjy.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1" async defer></script></div></div></div></div><div id="footer" style="text-align: center;">© <a href="/" rel="nofollow">#hsfzxjy#.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a><div stype="width:300px;margin:0 auto; padding:20px 0;"><a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44011202001249" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="/beian.png" style="float:left;"><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">粤公网安备 44011202001249号		 </p></a></div></div></div></body>
+<h2 id="原题代码"><a href="#原题代码" class="headerlink" title="原题代码"></a><strong>原题代码</strong></h2><figure class="highlight pascal"><table><tr><td class="code"><pre><span class="line"><span class="comment">//AC</span></span><br><span class="line"><span class="keyword">const</span></span><br><span class="line">    MODN = <span class="number">99999997</span>;</span><br><span class="line"><span class="keyword">type</span></span><br><span class="line">    rec = <span class="keyword">record</span> value, <span class="keyword">index</span>: longint; <span class="keyword">end</span>;</span><br><span class="line">    TArr = <span class="keyword">array</span> [<span class="number">1</span>..<span class="number">100000</span>] <span class="keyword">of</span> rec;</span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    n: longint;</span><br><span class="line">    a, b, c, tmp: TArr;</span><br><span class="line">    ok: Boolean;</span><br><span class="line">    l, r, i, j: longint;</span><br><span class="line">    cnt: int64;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">sort</span><span class="params">(<span class="keyword">var</span> arr: TArr; l, r: longint)</span>;</span></span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    i, j: longint;</span><br><span class="line">    m, t: rec;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    i := l;</span><br><span class="line">    j := r;</span><br><span class="line">    m := arr[(i+j) <span class="keyword">shr</span> <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">repeat</span></span><br><span class="line">        <span class="keyword">while</span> arr[i].value &lt; m.value <span class="keyword">do</span> inc(i);</span><br><span class="line">        <span class="keyword">while</span> arr[j].value &gt; m.value <span class="keyword">do</span> dec(j);</span><br><span class="line">        <span class="keyword">if</span> i &lt;= j <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">            t := arr[i];</span><br><span class="line">            arr[i] := arr[j];</span><br><span class="line">            arr[j] := t;</span><br><span class="line">            inc(i);</span><br><span class="line">            dec(j);</span><br><span class="line">        <span class="keyword">end</span>;</span><br><span class="line">    <span class="keyword">until</span> i &gt;j;</span><br><span class="line">    <span class="keyword">if</span> i &lt; r <span class="keyword">then</span> sort(arr, i, r);</span><br><span class="line">    <span class="keyword">if</span> l &lt; j <span class="keyword">then</span> sort(arr, l, j);</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">nx</span><span class="params">(l, r: longint)</span>;</span></span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    mid, i, j, k: longint;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span> l = r <span class="keyword">then</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        tmp[l] := c[l];</span><br><span class="line">        <span class="keyword">exit</span>;</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    mid := (l + r) <span class="keyword">shr</span> <span class="number">1</span>;</span><br><span class="line">    nx(l, mid);</span><br><span class="line">    nx(mid+<span class="number">1</span>, r);</span><br><span class="line">    i := l;</span><br><span class="line">    j := mid+<span class="number">1</span>;</span><br><span class="line">    k := l;</span><br><span class="line">    <span class="keyword">while</span> k &lt;= r <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">if</span> (j&gt;r) <span class="keyword">or</span> (i&lt;=mid) <span class="keyword">and</span> (c[i].<span class="keyword">index</span>&lt;=c[j].<span class="keyword">index</span>) <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">            tmp[k] := c[i];</span><br><span class="line">            inc(i);</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">            cnt := cnt + mid - i + <span class="number">1</span>;</span><br><span class="line">            cnt := cnt <span class="keyword">mod</span> MODN;</span><br><span class="line">            tmp[k] := c[j];</span><br><span class="line">            inc(j);</span><br><span class="line">        <span class="keyword">end</span>;</span><br><span class="line">        inc(k);</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    <span class="keyword">for</span> i := l <span class="keyword">to</span> r <span class="keyword">do</span></span><br><span class="line">        c[i] := tmp[i];</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    assign(input, <span class="string">&#x27;main.in&#x27;</span>); reset(input);</span><br><span class="line">    assign(output, <span class="string">&#x27;main.out&#x27;</span>); rewrite(output);</span><br><span class="line"></span><br><span class="line">    readln(n);</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">read</span>(a[i].value);</span><br><span class="line">        a[i].<span class="keyword">index</span> := i;</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">read</span>(b[i].value);</span><br><span class="line">        b[i].<span class="keyword">index</span> := i;</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    sort(a, <span class="number">1</span>, n);</span><br><span class="line">    sort(b, <span class="number">1</span>, n);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line">        c[a[i].<span class="keyword">index</span>] := b[i];</span><br><span class="line"></span><br><span class="line">    cnt := <span class="number">0</span>;</span><br><span class="line">    nx(<span class="number">1</span>, n);</span><br><span class="line">    writeln(cnt);</span><br><span class="line"></span><br><span class="line">    close(input); close(output);</span><br><span class="line"><span class="keyword">end</span>.</span><br></pre></td></tr></table></figure></div></div><div class="page-navigator"><a href="/categories/Tech/page/4/" class="pre">Previous</a><a href="/categories/Tech/page/6/" class="next">Next</a></div></div></div><div id="right-panel" class="pure-u-1-4"><span class="toggle-menu">&times; <span></span></span><div id="sidebar"><div class="widget"><div class="widget-title">Navigations</div><ul><li><a href="/works/" class="widget-item"><i class="icon-works"></i><span>Publications &amp; Projects</span></a></li><li><a href="/archives/" class="widget-item"><i class="icon-archives"></i><span>Archives</span></a></li><li><a href="/atom.xml" class="widget-item"><i class="icon-rss"></i><span>RSS</span></a></li></ul></div><div class="widget"><div class="widget-title">Categories</div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Soliloquy/">Soliloquy</a><span class="category-list-count">23</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Tech/">Tech</a><span class="category-list-count">71</span></li></ul></div><div class="widget"><div class="widget-title">Tags</div><div class="tagcloud"><a href="/tags/proxychains/" style="font-size: 15px;">proxychains</a> <a href="/tags/apt-get/" style="font-size: 15px;">apt-get</a> <a href="/tags/WiseCity/" style="font-size: 15px;">WiseCity</a> <a href="/tags/Win32/" style="font-size: 15px;">Win32</a> <a href="/tags/Web-Design/" style="font-size: 15px;">Web Design</a> <a href="/tags/Web/" style="font-size: 15px;">Web</a> <a href="/tags/Unit-Test/" style="font-size: 15px;">Unit Test</a> <a href="/tags/Ubuntu/" style="font-size: 15px;">Ubuntu</a> <a href="/tags/UVa/" style="font-size: 15px;">UVa</a> <a href="/tags/Travel/" style="font-size: 15px;">Travel</a> <a href="/tags/Translation/" style="font-size: 15px;">Translation</a> <a href="/tags/Sublime-Text/" style="font-size: 15px;">Sublime Text</a> <a href="/tags/String-Template/" style="font-size: 15px;">String Template</a> <a href="/tags/Search/" style="font-size: 15px;">Search</a> <a href="/tags/SS/" style="font-size: 15px;">SS</a> <a href="/tags/Rust/" style="font-size: 15px;">Rust</a> <a href="/tags/Regular-Expression/" style="font-size: 15px;">Regular Expression</a> <a href="/tags/Reentrancy/" style="font-size: 15px;">Reentrancy</a> <a href="/tags/Random-Thoughts/" style="font-size: 15px;">Random Thoughts</a> <a href="/tags/RMPE/" style="font-size: 15px;">RMPE</a> <a href="/tags/Python/" style="font-size: 15px;">Python</a> <a href="/tags/Pruning/" style="font-size: 15px;">Pruning</a> <a href="/tags/Probability/" style="font-size: 15px;">Probability</a> <a href="/tags/Poem/" style="font-size: 15px;">Poem</a> <a href="/tags/Pascal/" style="font-size: 15px;">Pascal</a> <a href="/tags/POSIX/" style="font-size: 15px;">POSIX</a> <a href="/tags/OOP/" style="font-size: 15px;">OOP</a> <a href="/tags/Number-Theory/" style="font-size: 15px;">Number Theory</a> <a href="/tags/Nginx/" style="font-size: 15px;">Nginx</a> <a href="/tags/NOIP/" style="font-size: 15px;">NOIP</a> <a href="/tags/MySQL/" style="font-size: 15px;">MySQL</a> <a href="/tags/Multi-Threading/" style="font-size: 15px;">Multi-Threading</a> <a href="/tags/Meta-Classes/" style="font-size: 15px;">Meta Classes</a> <a href="/tags/Merge-Sort/" style="font-size: 15px;">Merge Sort</a> <a href="/tags/Math/" style="font-size: 15px;">Math</a> <a href="/tags/Magic/" style="font-size: 15px;">Magic</a> <a href="/tags/Machine-Learning/" style="font-size: 15px;">Machine Learning</a> <a href="/tags/MST/" style="font-size: 15px;">MST</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/Lifetime/" style="font-size: 15px;">Lifetime</a> <a href="/tags/LCA/" style="font-size: 15px;">LCA</a> <a href="/tags/JavaScript/" style="font-size: 15px;">JavaScript</a> <a href="/tags/Initiation/" style="font-size: 15px;">Initiation</a> <a href="/tags/Information-Theory/" style="font-size: 15px;">Information Theory</a> <a href="/tags/Infinite-Recursion/" style="font-size: 15px;">Infinite Recursion</a> <a href="/tags/IndexedDB/" style="font-size: 15px;">IndexedDB</a> <a href="/tags/Haskell/" style="font-size: 15px;">Haskell</a> <a href="/tags/Generator/" style="font-size: 15px;">Generator</a> <a href="/tags/GIL/" style="font-size: 15px;">GIL</a> <a href="/tags/Front-End/" style="font-size: 15px;">Front End</a> <a href="/tags/Font/" style="font-size: 15px;">Font</a> <a href="/tags/Float-Number/" style="font-size: 15px;">Float Number</a> <a href="/tags/File-Permissions/" style="font-size: 15px;">File Permissions</a> <a href="/tags/Fast-Inverse-Square-Root-Algorithm/" style="font-size: 15px;">Fast Inverse Square Root Algorithm</a> <a href="/tags/Django-Channels/" style="font-size: 15px;">Django Channels</a> <a href="/tags/Django/" style="font-size: 15px;">Django</a> <a href="/tags/Determinism/" style="font-size: 15px;">Determinism</a> <a href="/tags/Delphi/" style="font-size: 15px;">Delphi</a> <a href="/tags/Decorator-Pattern/" style="font-size: 15px;">Decorator Pattern</a> <a href="/tags/DDoS/" style="font-size: 15px;">DDoS</a> <a href="/tags/Cython/" style="font-size: 15px;">Cython</a> <a href="/tags/Coroutine/" style="font-size: 15px;">Coroutine</a> <a href="/tags/Conclusion/" style="font-size: 15px;">Conclusion</a> <a href="/tags/CUDA/" style="font-size: 15px;">CUDA</a> <a href="/tags/Binary-Indexed-Tree/" style="font-size: 15px;">Binary Indexed Tree</a> <a href="/tags/Bash/" style="font-size: 15px;">Bash</a> <a href="/tags/Automatic-Test/" style="font-size: 15px;">Automatic Test</a></div></div><div class="widget"><div class="widget-title">Recent Articles</div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2021-06-11-where-does-the-randomness-of-cuda-kernels-come-from/">Where does the randomness of CUDA kernels come from?</a></li><li class="post-list-item"><a class="post-list-link" href="/2021-05-30-indexeddb-performant-bulk-mutations/">Performant Bulk Mutations in IndexedDB</a></li><li class="post-list-item"><a class="post-list-link" href="/2021-05-16-cython-auto-reload/">Auto Rebuild .pyx Files with pyximport</a></li><li class="post-list-item"><a class="post-list-link" href="/2021-05-07-cython-and-threads/">Cython and Threads</a></li><li class="post-list-item"><a class="post-list-link" href="/2021-03-10-obtain-a-random-unused-tcp-port-with-bash/">Obtain a Random Unused TCP Port with Bash</a></li><li class="post-list-item"><a class="post-list-link" href="/2020-01-15-information-theory-kl-divergence/">Information Theory: KL Divergence</a></li><li class="post-list-item"><a class="post-list-link" href="/2020-01-04-information-theory-entropy-and-mutual-information/">Information Theory: Entropy and Mutual Information</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-12-10-yakimono/">铁板烧</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-10-03-xjx/">西郊线</a></li><li class="post-list-item"><a class="post-list-link" href="/2019-08-01-proof-of-gumbel-max-trick/">Proof of the Gumbel Max Trick</a></li></ul></div><div class="widget"><div class="widget-title">Recent Comments</div><script type="text/javascript" src="//hsfzxjy.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1" async defer></script></div></div></div></div><div id="footer" style="text-align: center;">© <a href="/" rel="nofollow">#hsfzxjy#.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a><div stype="width:300px;margin:0 auto; padding:20px 0;"><a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44011202001249" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="/beian.png" style="float:left;"><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">粤公网安备 44011202001249号		 </p></a></div></div></div></body>
 <script src="/js/jquery.min.js"></script>
 <script src="/js/main.js"></script>
 

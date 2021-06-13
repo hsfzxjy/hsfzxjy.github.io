@@ -6,7 +6,7 @@
 
     document.head.appendChild(style)
 }
-</script><div id="header" class="hide-wx"><div class="site-name"><h1 class="hidden">揭秘·变态的平方根倒数算法</h1><a id="logo" href="/">#hsfzxjy#</a><p class="description">言えない言葉は、ここに隠される</p><a target="_blank" rel="noopener" href="https://github.com/hsfzxjy" data-color-scheme="no-preference: light; light: light; dark: light;" data-show-count="true" aria-label="Follow @hsfzxjy on GitHub" style="display: none;" class="github-button">Follow @hsfzxjy</a></div><div id="nav-menu"><span class="before"></span><div><a href="/"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Tech/" class="current"><i class="icon-code"></i><span>Tech</span></a><a href="/categories/Soliloquy/"><i class="icon-life"></i><span>Soliloquy</span></a><a href="/works/"><i class="icon-works"></i><span>Projects</span></a><a href="/about/"><i class="icon-about"></i><span>Me</span></a><a href="/aggr/"><i class="icon-history"></i><span>Index</span></a></div><span class="after"></span></div></div><div id="layout" class="pure-g"><div id="left-panel" class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post post-page"><h1 class="post-title">揭秘·变态的平方根倒数算法</h1><div class="post-meta">2016-08-03 | <span class="categories"><a href="/categories/Tech/"> Tech</a></span></div><!--if theme.duoshuo--><!--    span.ds-thread-count(data-thread-key=page.path)--><!--if theme.disqus--><!--    span.disqus-comment-count(data-disqus-identifier=page.path)--><div lang="en" class="post-content "><blockquote>
+</script><div id="header" class="hide-wx"><div class="site-name"><h1 class="hidden">揭秘·变态的平方根倒数算法</h1><a id="logo" href="/">#hsfzxjy#</a><p class="description">言えない言葉は、ここに隠される</p><a target="_blank" rel="noopener" href="https://github.com/hsfzxjy" data-color-scheme="no-preference: light; light: light; dark: light;" data-show-count="true" aria-label="Follow @hsfzxjy on GitHub" style="display: none;" class="github-button">Follow @hsfzxjy</a></div><div id="nav-menu"><span class="before"></span><div><a href="/"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Tech/" class="current"><i class="icon-code"></i><span>Tech</span></a><a href="/categories/Soliloquy/"><i class="icon-life"></i><span>Soliloquy</span></a><a href="/works/"><i class="icon-works"></i><span>Projects</span></a><a href="/about/"><i class="icon-about"></i><span>Me</span></a><a href="/aggr/"><i class="icon-history"></i><span>Index</span></a></div><span class="after"></span></div></div><div id="layout" class="pure-g"><div id="left-panel" class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post post-page"><h1 class="post-title">揭秘·变态的平方根倒数算法</h1><div class="post-meta">2016-08-03 | <span class="categories"><a href="/categories/Tech/"> Tech</a></span></div><!--if theme.duoshuo--><!--    span.ds-thread-count(data-thread-key=page.path)--><!--if theme.disqus--><!--    span.disqus-comment-count(data-disqus-identifier=page.path)--><div lang="en" class="post-content noindent"><blockquote>
 <p>神的时代已离去<br>神的故事却化为传说<br>流落凡间<br>供凡人传颂、膜拜</p>
 </blockquote>
 <h2 id="这是什么"><a href="#这是什么" class="headerlink" title="这是什么"></a>这是什么</h2><p>在上世纪 90 年代，出现过一款不可思议的游戏——雷神之锤（Quake series）。除了优秀的情节设定和精美的画面，最让人称道的莫过于它的运行效率——要知道在那个计算机配置低下的时代，一段小动画都是一个奇迹，但 Quake 却能流畅地运行于各种配置的电脑上。</p>
@@ -21,17 +21,17 @@
 
 <p>翻译成数学语言就是：</p>
 <ol>
-<li>设输入数为 $number$，令 $ x_2=number/2, y=number $。</li>
-<li>上式中，$y$ 是一个 32 位浮点数（可以理解为数学中的实数），现在我们将其“看作”一个整数，并赋给 $i$。</li>
-<li>最神奇的一步出现了——用一个十六进制数 $5f3759df$ 减去 $i$ 自身右移一位的结果，并将结果赋给 $i$。</li>
-<li>将整数 $i$ 重新“看作”是一个浮点数，并赋值给 $y$。</li>
-<li>令 $y=y(1.5-x_2 \times y^2)$。</li>
-<li>重复一遍操作 5（事实上这一步可以忽略）。</li>
+<li> 设输入数为 $number$，令 $ x_2=number/2, y=number $。</li>
+<li> 上式中，$y$ 是一个 32 位浮点数（可以理解为数学中的实数），现在我们将其“看作”一个整数，并赋给 $i$。</li>
+<li> 最神奇的一步出现了——用一个十六进制数 $5f3759df$ 减去 $i$ 自身右移一位的结果，并将结果赋给 $i$。</li>
+<li> 将整数 $i$ 重新“看作”是一个浮点数，并赋值给 $y$。</li>
+<li> 令 $y=y(1.5-x_2 \times y^2)$。</li>
+<li> 重复一遍操作 5（事实上这一步可以忽略）。</li>
 </ol>
 <p>在此需要向无计算机基础的朋友解释一下：</p>
 <ul>
-<li>右移（Right Shifting）指的是：将一个数表示成二进制之后整体向右移动一位，并抹去溢出的末位。如 $(4)_{10} >> 1=(100)_2 >> 1=(10)_2=(2)_{10}$。其效果等价为整除 2，但由于有 CPU 指令直接支持，速度比整除快若干个数量级。</li>
-<li>无论是实数还是整数，在计算机中只不过是一串二进制序列。因此一串二进制序列，既可以被看作一个实数，也可以被看作一个整数。</li>
+<li>  右移（Right Shifting）指的是：将一个数表示成二进制之后整体向右移动一位，并抹去溢出的末位。如 $(4)_{10} >> 1=(100)_2 >> 1=(10)_2=(2)_{10}$。其效果等价为整除 2，但由于有 CPU 指令直接支持，速度比整除快若干个数量级。</li>
+<li>  无论是实数还是整数，在计算机中只不过是一串二进制序列。因此一串二进制序列，既可以被看作一个实数，也可以被看作一个整数。</li>
 </ul>
 <p>这个算法得到的只是一个近似值。对于 $[0.01, max\_float]$ 内的所有浮点数，最大误差为 $0.175%$（见 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Fast_inverse_square_root">Accuracy</a>）。但它却比内置算法 <code>1.0/sqrt(x)</code> 快 4 倍，可谓瑕不掩瑜。</p>
 <p>那么，它究竟是怎么实现的呢？</p>
@@ -44,7 +44,7 @@
 </blockquote>
 <p>用牛顿法进行迭代，可以完成对解任意精度的数值逼近。下面我们尝试写出 $x={1 \over {\sqrt {a}}}$的迭代式。</p>
 <p>令 $f(x)={ {1 \over x^2}-a}$，则有</p>
-$$ x_{n+1}=x_n-{f(x_n) \over {f'(x_n)}} $$
+$$ x\_{n+1}=x_n-{f(x_n) \over {f'(x_n)}} $$
 $$ =x_n-{ { {1 \over x_n^2} -a} \over {-2 \over {x_n^3} } } $$
 $$ ={3 \over 2}x_n - { {ax_n^3} \over 2} $$
 $$ ={x_n}(1.5-{a \over 2}x_n^2)$$
@@ -57,22 +57,22 @@ $$ ={x_n}(1.5-{a \over 2}x_n^2)$$
 <p>就是那神奇的第 3 步得到的结果。</p>
 <h2 id="神奇的-0x5f3759df"><a href="#神奇的-0x5f3759df" class="headerlink" title="神奇的 0x5f3759df"></a>神奇的 0x5f3759df</h2><p>这是整个算法的奥妙所在。我们再来回顾一下：</p>
 <ol start="2">
-<li>上式中，$y$ 是一个 32 位浮点数（可以理解为数学中的实数），现在我们将其“看作”一个整数，并赋给 $i$。</li>
-<li>最神奇的一步出现了——用一个十六进制数 $5f3759df$ 减去 $i$ 自身右移一位的结果，并将结果赋给 $i$。</li>
-<li>将整数 $i$ 重新“看作”是一个浮点数，并赋值给 $y$。</li>
+<li> 上式中，$y$ 是一个 32 位浮点数（可以理解为数学中的实数），现在我们将其“看作”一个整数，并赋给 $i$。</li>
+<li> 最神奇的一步出现了——用一个十六进制数 $5f3759df$ 减去 $i$ 自身右移一位的结果，并将结果赋给 $i$。</li>
+<li> 将整数 $i$ 重新“看作”是一个浮点数，并赋值给 $y$。</li>
 </ol>
 <p>有了上一节的分析，几乎可以肯定：这是为了得到 $1 \over {\sqrt {number} }$ 的一个粗略值，即应该有 $y \approx {1 \over {\sqrt {number} } }$。</p>
 <p>为了进一步的论证，我们首先要了解一个知识点：</p>
 <h3 id="IEEE-754-（浮点数储存标准）"><a href="#IEEE-754-（浮点数储存标准）" class="headerlink" title="IEEE 754 （浮点数储存标准）"></a>IEEE 754 （浮点数储存标准）</h3><p><a target="_blank" rel="noopener" href="http://grouper.ieee.org/groups/754/">IEEE 754: Standard for Binary Floating-Point Arithmetic</a></p>
 <p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/IEEE_floating_point">IEEE floating point - Wikipedia</a></p>
 <p>这是计算机内实数的储存标准。</p>
-<p>在本算法中，我们使用的是 32 位浮点数（即 用32个二进制位表示一个实数）。储存方式如下：</p>
+<p>在本算法中，我们使用的是 32 位浮点数（即 用 32 个二进制位表示一个实数）。储存方式如下：</p>
 <blockquote>
 <p>对任意一个实数 $x$，总可以将其分解为如下形式：<br>$$ x=2^E \times (1+M)\ (E \in Z,M \in [0, 1))$$<br>则 32 个二进制位安排如下：<br>$$ S,EEEEEEEE,MMMMMMMMMMMMMMMMMMMMMM $$</p>
 <ul>
-<li>首位为符号位，取 <code>0</code> 为正数，取 <code>1</code> 为负数</li>
-<li>接下来 8 位为 <strong>带符号</strong> 指数。根据带符号数的储存方式，该数减去 127 才为真实的指数 $E$</li>
-<li>接下来 23 位为底数。是 $M$ 左移 23 位再取整的结果</li>
+<li>  首位为符号位，取 <code>0</code> 为正数，取 <code>1</code> 为负数</li>
+<li>  接下来 8 位为 <strong>带符号</strong> 指数。根据带符号数的储存方式，该数减去 127 才为真实的指数 $E$</li>
+<li>  接下来 23 位为底数。是 $M$ 左移 23 位再取整的结果</li>
 </ul>
 </blockquote>
 <p>举个例子：将 $0.15625=(0.00101)_2$ 换算成浮点数：</p>
@@ -80,9 +80,9 @@ $$ 0.15625=+2^{-3}\times(1+0.25) $$
 
 <p>则有：</p>
 <ul>
-<li>符号位为 $0$</li>
-<li>$E=-3$，换算成带符号正数为 $-3+127=124=(01111100)_2$</li>
-<li>$M=0.25=(0.01)_2$，左移 23 位后为 $(01000000000000000000000)_2$
+<li>  符号位为 $0$</li>
+<li>  $E=-3$，换算成带符号正数为 $-3+127=124=(01111100)_2$</li>
+<li>  $M=0.25=(0.01)_2$，左移 23 位后为 $(01000000000000000000000)_2$
 
 </li>
 </ul>
@@ -128,18 +128,17 @@ $$ = 2^{23}\times(127-\sigma+\log_2 x)$$
 $$ {I \over 2^{23}} + \sigma - 127 \approx \log_2 x $$
 
 <p>记 $r={1 \over {\sqrt x} }$ 对应的 $I$ 值为 $I_r$。则：</p>
-$$ I_r \approx 2^{23}\times(127-\sigma+\log_2 m)$$
+$$ I*r \approx 2^{23}\times(127-\sigma+\log_2 m)$$
 $$ = 2^{23}\times(127-\sigma-{1 \over 2}{\log_2 x})$$
 $$ \approx 2^{23}\times(127-\sigma-{1 \over 2}({I \over 2^{23}} + \sigma - 127))$$
 $$ = (127-\sigma)\times 2^{22} \times 3-{I \over 2}$$
-$$ = (5f37bcb6)_{16}-{I \over 2}$$
-$$ = (5f37bcb6)_{16}-(I >> 1)$$
-
+$$ = (5f37bcb6)*{16}-{I \over 2}$$
+$$ = (5f37bcb6)\_{16}-(I >> 1)$$
 
 <p>这便是步骤 3 的那个式子，神秘的常数终于出现了。</p>
 <p>这里算得的常数和原算法有一些不同，主要是 $\sigma$ 取值差异造成的。如果我们取 $\sigma= 0.0450466$ 就会得到原算法的常数。作者选取了后者，应该是综合考虑了牛顿法迭代产生的误差。我没有深入研究——事实上，在允许范围内微调 $\sigma$ 不会对精度和速度产生显著影响。</p>
 <h2 id="Lomont-的另一种诠释"><a href="#Lomont-的另一种诠释" class="headerlink" title="Lomont 的另一种诠释"></a>Lomont 的另一种诠释</h2><p>尽管 Quake Engine 的源码直到 2005 年才被公开，这个算法却在 2000 年左右即为人们所知。2003 年，数学家 Chris Lomont 曾写过一篇<a target="_blank" rel="noopener" href="http://www.lomont.org/Math/Papers/2003/InvSqrt.pdf">论文</a>讨论过这一常数的由来。他采用了另一种不同的方法。</p>
-<p>Lomont 也发现 <code>i  = 0x5f3759df - ( i &gt;&gt; 1 )</code> 实为 $1 \over {\sqrt x}$ 的粗略逼近，但他没有深究这个式子背后的数学含义，而是将此常数泛化为一个变量 $R$，通过最小化其与 $1 \over {\sqrt x}$ 的误差，反解出常数 $R$，其中运用的一些技巧值得品味。</p>
+<p>Lomont 也发现 <code>i = 0x5f3759df - ( i &gt;&gt; 1 )</code> 实为 $1 \over {\sqrt x}$ 的粗略逼近，但他没有深究这个式子背后的数学含义，而是将此常数泛化为一个变量 $R$，通过最小化其与 $1 \over {\sqrt x}$ 的误差，反解出常数 $R$，其中运用的一些技巧值得品味。</p>
 <p>有趣的是，他在论文中提供了另一个他认为最佳的常数 <code>5f375a86</code>，并通过实测证实了他的想法。但此常数只是以毫厘之差险胜原算法（一次迭代 $0.175228$ vs $0.175124$，二次迭代 $4.66 \times 10^{-4}$ vs $4.65437 \times 10^{-4}$）。Lomont 在论文中表达了他的惊讶，这个实验同时也使那位不知名的作者（传闻说是 Quake 的作者 Carmack，然而他自己不承认）更加扑朔迷离。</p>
 <h2 id="总结-amp-推广"><a href="#总结-amp-推广" class="headerlink" title="总结 &amp; 推广"></a>总结 &amp; 推广</h2><p>这个算法的核心其实很简单：先使用某种手段近似估计解，再用牛顿法迭代增加精确度。同时，它也启示我们： <strong>浮点数表示和对数之间存在某种联系</strong>，而对数恰是我们简化计算的利器。</p>
 <p>按照这个思路，我们可以拓展出立方根倒数的对应算法，也可以将 32 位算法改写为 64 位（Lomont 在他的论文中提供了 64 位的常数 <code>0x5fe6ec85e7de30da</code>）。现如今，这些算法的加速效应已经不太明显了，但深入剖析上古神话背后的理论，也未尝不是件有趣的事。</p>
@@ -147,8 +146,8 @@ $$ = (5f37bcb6)_{16}-(I >> 1)$$
 <p>也许<br>他真的是神</p>
 </blockquote>
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Fast_inverse_square_root">Fast inverse square root - Wikipedia</a></li>
-<li><a target="_blank" rel="noopener" href="http://www.lomont.org/Math/Papers/2003/InvSqrt.pdf">FAST INVERSE SQUARE ROOT - CHRIS LOMONT</a></li>
+<li>  <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Fast_inverse_square_root">Fast inverse square root - Wikipedia</a></li>
+<li>  <a target="_blank" rel="noopener" href="http://www.lomont.org/Math/Papers/2003/InvSqrt.pdf">FAST INVERSE SQUARE ROOT - CHRIS LOMONT</a></li>
 </ul>
 </div><div class="tags"><a href="/tags/Fast-Inverse-Square-Root-Algorithm/">Fast Inverse Square Root Algorithm</a></div><div class="post-nav"><a href="/2016-08-18-leaving-guangzhou/" class="pre">«最后的雨夜·广州</a><a href="/2016-07-30-recursively-calling-when-decorating-a-python-class/" class="next">神坑·Python 装饰类无限递归»</a></div><div id="disqus_thread"><div id="no-comment"> <h2>OOPS! </h2><span>A comment box should be right here...</span><span>But it was gone due to network issues :-(</span><span>If you want to leave comments, make sure you have access to <a target="_blank" rel="noopener" href="https://disqus.com">disqus.com</a>.</span></div><script>var disqus_shortname = 'hsfzxjy';
 var disqus_identifier = '2016-08-03-uncover-the-secret-of-fast-inverse-square-root-algorithm/';

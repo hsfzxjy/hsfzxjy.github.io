@@ -6,14 +6,14 @@
 
     document.head.appendChild(style)
 }
-</script><div id="header" class="hide-wx"><div class="site-name"><h1 class="hidden">RMPE 论文读书笔记</h1><a id="logo" href="/">#hsfzxjy#</a><p class="description">言えない言葉は、ここに隠される</p><a target="_blank" rel="noopener" href="https://github.com/hsfzxjy" data-color-scheme="no-preference: light; light: light; dark: light;" data-show-count="true" aria-label="Follow @hsfzxjy on GitHub" style="display: none;" class="github-button">Follow @hsfzxjy</a></div><div id="nav-menu"><span class="before"></span><div><a href="/"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Tech/" class="current"><i class="icon-code"></i><span>Tech</span></a><a href="/categories/Soliloquy/"><i class="icon-life"></i><span>Soliloquy</span></a><a href="/works/"><i class="icon-works"></i><span>Projects</span></a><a href="/about/"><i class="icon-about"></i><span>Me</span></a><a href="/aggr/"><i class="icon-history"></i><span>Index</span></a></div><span class="after"></span></div></div><div id="layout" class="pure-g"><div id="left-panel" class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post post-page"><h1 class="post-title">RMPE 论文读书笔记</h1><div class="post-meta">2018-03-08 | <span class="categories"><a href="/categories/Tech/"> Tech</a></span></div><!--if theme.duoshuo--><!--    span.ds-thread-count(data-thread-key=page.path)--><!--if theme.disqus--><!--    span.disqus-comment-count(data-disqus-identifier=page.path)--><div lang="en" class="post-content "><p>论文地址：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1612.00137">https://arxiv.org/pdf/1612.00137</a></p>
+</script><div id="header" class="hide-wx"><div class="site-name"><h1 class="hidden">RMPE 论文读书笔记</h1><a id="logo" href="/">#hsfzxjy#</a><p class="description">言えない言葉は、ここに隠される</p><a target="_blank" rel="noopener" href="https://github.com/hsfzxjy" data-color-scheme="no-preference: light; light: light; dark: light;" data-show-count="true" aria-label="Follow @hsfzxjy on GitHub" style="display: none;" class="github-button">Follow @hsfzxjy</a></div><div id="nav-menu"><span class="before"></span><div><a href="/"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Tech/" class="current"><i class="icon-code"></i><span>Tech</span></a><a href="/categories/Soliloquy/"><i class="icon-life"></i><span>Soliloquy</span></a><a href="/works/"><i class="icon-works"></i><span>Projects</span></a><a href="/about/"><i class="icon-about"></i><span>Me</span></a><a href="/aggr/"><i class="icon-history"></i><span>Index</span></a></div><span class="after"></span></div></div><div id="layout" class="pure-g"><div id="left-panel" class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post post-page"><h1 class="post-title">RMPE 论文读书笔记</h1><div class="post-meta">2018-03-08 | <span class="categories"><a href="/categories/Tech/"> Tech</a></span></div><!--if theme.duoshuo--><!--    span.ds-thread-count(data-thread-key=page.path)--><!--if theme.disqus--><!--    span.disqus-comment-count(data-disqus-identifier=page.path)--><div lang="en" class="post-content noindent"><p>论文地址：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1612.00137">https://arxiv.org/pdf/1612.00137</a></p>
 <a id="more"></a>
 
 <h1 id="现有的-Pose-Estimation-解决方案"><a href="#现有的-Pose-Estimation-解决方案" class="headerlink" title="现有的 Pose Estimation 解决方案"></a>现有的 Pose Estimation 解决方案</h1><h2 id="Single-Person-Pose-Estimation-SPPE"><a href="#Single-Person-Pose-Estimation-SPPE" class="headerlink" title="Single Person Pose Estimation (SPPE)"></a>Single Person Pose Estimation (SPPE)</h2><p>只尝试估计一个人的姿势。早期曾使用诸如随机森林等机器学习方法，近几年采用深度学习方案，大致有如下几种：</p>
 <ul>
-<li>基于 DNN 的</li>
-<li>基于 CNN 的（如 RMPE 使用的 Hourglass）</li>
-<li>其他架构，如 <a target="_blank" rel="noopener" href="http://ieeexplore.ieee.org/document/6909610/">DeepPose</a></li>
+<li>  基于 DNN 的</li>
+<li>  基于 CNN 的（如 RMPE 使用的 Hourglass）</li>
+<li>  其他架构，如 <a target="_blank" rel="noopener" href="http://ieeexplore.ieee.org/document/6909610/">DeepPose</a></li>
 </ul>
 <p>局限：</p>
 <p>要求人能被精准定位，对人的位置十分敏感。</p>
@@ -28,10 +28,10 @@
 <p>(Object Detector) -&gt; (STN) -&gt; (Proposals Generator) -&gt; (master SPPE) -&gt; (SDTN, STN 的逆操作) -&gt; Pose NMS -&gt; Output</p>
 <p>(Object Detector) -&gt; (STN) -&gt; (Parallel SPPE)</p>
 <h2 id="细节"><a href="#细节" class="headerlink" title="细节"></a>细节</h2><ol>
-<li>有别于传统的 Object Detector，RMPE 在其后增加了 STN 作为图像正规化手段。这是因为 SPPE 对人的位置非常敏感，倘若能固定住人的位置（如居中），则可最大化 SPPE 的性能。</li>
-<li>RMPE 中有两条 SPPE 分支，其中的 parallel SPPE 的参数是固定的，它将 STN 后的图像直接与正规化后的 label （即将原 label 做适当变换使人处于正中）比较得到误差并由此进行训练。训练的结果可使 STN 正确地将人变换至中间位置，从而最优化 master SPPE。</li>
-<li>考虑到对于一个人，Object Detector 只能产生一个 bounding box，RMPE 在 STN 后面又安插了 Proposals Generator 用于<strong>生成更多的样本</strong>。Proposals Generator 会对 Object Detector 产生的 bounding box 做一定的偏移，再传入 master SPPE。</li>
-<li>考虑到 Proposals Generator 会对一个人生成多个 bounding box，而对于不同的 bounding box，master SPPE 会做出不同的姿态估计，RMPE 引入 Pose NMS（Pose Non-Maximum Suppression）对这些姿态进行合并。Pose NMS 综合考虑了姿态的位置与置信度因素。</li>
+<li> 有别于传统的 Object Detector，RMPE 在其后增加了 STN 作为图像正规化手段。这是因为 SPPE 对人的位置非常敏感，倘若能固定住人的位置（如居中），则可最大化 SPPE 的性能。</li>
+<li> RMPE 中有两条 SPPE 分支，其中的 parallel SPPE 的参数是固定的，它将 STN 后的图像直接与正规化后的 label （即将原 label 做适当变换使人处于正中）比较得到误差并由此进行训练。训练的结果可使 STN 正确地将人变换至中间位置，从而最优化 master SPPE。</li>
+<li> 考虑到对于一个人，Object Detector 只能产生一个 bounding box，RMPE 在 STN 后面又安插了 Proposals Generator 用于<strong>生成更多的样本</strong>。Proposals Generator 会对 Object Detector 产生的 bounding box 做一定的偏移，再传入 master SPPE。</li>
+<li> 考虑到 Proposals Generator 会对一个人生成多个 bounding box，而对于不同的 bounding box，master SPPE 会做出不同的姿态估计，RMPE 引入 Pose NMS（Pose Non-Maximum Suppression）对这些姿态进行合并。Pose NMS 综合考虑了姿态的位置与置信度因素。</li>
 </ol>
 <h2 id="实现（测试期）"><a href="#实现（测试期）" class="headerlink" title="实现（测试期）"></a>实现（测试期）</h2><p>在 Pipeline 中，有两个组件 Object Detector 和 SPPE 是被泛化，可以使用任何解决方案。在测试时，作者使用了 VGG-based SSD-512 作为 Object Detector，及 Stacked Hourglass Model 作为 SPPE 的实现，以达到最大的性能。</p>
 <h2 id="新组件的必要性"><a href="#新组件的必要性" class="headerlink" title="新组件的必要性"></a>新组件的必要性</h2><p>较于传统的架构，RMPE 引入了 STN (及附属的 Parallel SPPE)、Proposals Generator 及 Pose NMS 这三个新组件。在作者分别移除了它们后，RMPE 的性能显著下降。可见这些组件引入的必要性。</p>

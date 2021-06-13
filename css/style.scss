@@ -53,7 +53,7 @@ $green: #42b983;
 @mixin set-font-bold {
     font-family: "NunitoSans-Bold", "TIBch", "Classic Grotesque W01", "Helvetica Neue", Arial, "Hiragino Sans GB",
         "STHeiti", "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 body {
@@ -440,6 +440,7 @@ a:focus {
 
         b,
         strong {
+            font-weight: 700;
             @include set-font-bold();
         }
 
@@ -614,7 +615,7 @@ a:focus {
             margin: 0;
             // margin-bottom: 1.234em;
 
-            li {
+            li p {
                 text-indent: 0;
             }
 

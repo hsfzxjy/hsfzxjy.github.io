@@ -11,144 +11,14 @@
 </blockquote>
 <h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a><strong>分析</strong></h2><p>这真是一道好题——断断续续想了几天才完全AC。<br>事实上，由排序不等式可知：</p>
 <blockquote>
-<p><strong>当$a_i, b_i$从小到大排序时，距离最小。</strong></p>
+<p style="text-indent: 0;"> <strong>当$a_i, b_i$从小到大排序时，距离最小。</strong></p>
 </blockquote>
 <p>这是一个重要的信息。因此，我们只需把$a_i,b_i$进行排序，并把对应项“捆绑”成一项，再按$a_i$原有的顺序进行复原，此时，可以得到由$b_i$原先的下标组成的一个序列。也就是说，我们要求$1,2,\ldots,n$至少经过多少步才能变为该序列。这可以用逆序对来解决。<br>只可惜，传统的逆序对算法时间复杂度为$O(n^2)$，这里n可达20,0000，一定会超时（<strong>事实上，只过了70%的点</strong>）。因此我们需寻求更好的算法。</p>
 <h2 id="用归并排序求逆序对"><a href="#用归并排序求逆序对" class="headerlink" title="用归并排序求逆序对"></a><strong>用归并排序求逆序对</strong></h2><p>在归并排序的过程中，有一个步骤称为合并。在这个步骤中，需要轮流判断左右区间的第一个数的大小关系。注意到：<strong>左右区间已经有序，从而若左区间的第一个数大于右区间的第一个数，则左区间之后的所有数都大于右区间的第一个数</strong>，从而我们可以在合并时做一些修改：</p>
-<pre><code>procedure nx(l, r: longint);
-var
-    mid, i, j, k: longint;
-begin
-    if l = r then
-    begin
-        tmp[l] := a[l];
-        exit;
-    end;
-    mid := (l + r) shr 1;
-    nx(l, mid);
-    nx(mid+1, r);
-    i := l;
-    j := mid+1;
-    k := l;
-    while k &lt;= r do
-    begin
-        if (j&gt;r) or (i&lt;=mid) and (a[i]&lt;=a[j]) then //注意这里为等号
-        begin
-            tmp[k] := a[i];
-            inc(i);
-        end
-        else
-        begin
-            cnt := cnt + mid - i + 1; //加上逆序数
-            tmp[k] := a[j];
-            inc(j);
-        end;
-        inc(k);
-    end;
-    for i := l to r do
-        a[i] := tmp[i];
-end;</code></pre>
+<figure class="highlight pascal"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">nx</span><span class="params">(l, r: longint)</span>;</span></span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    mid, i, j, k: longint;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span> l = r <span class="keyword">then</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        tmp[l] := a[l];</span><br><span class="line">        <span class="keyword">exit</span>;</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    mid := (l + r) <span class="keyword">shr</span> <span class="number">1</span>;</span><br><span class="line">    nx(l, mid);</span><br><span class="line">    nx(mid+<span class="number">1</span>, r);</span><br><span class="line">    i := l;</span><br><span class="line">    j := mid+<span class="number">1</span>;</span><br><span class="line">    k := l;</span><br><span class="line">    <span class="keyword">while</span> k &lt;= r <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">if</span> (j&gt;r) <span class="keyword">or</span> (i&lt;=mid) <span class="keyword">and</span> (a[i]&lt;=a[j]) <span class="keyword">then</span> <span class="comment">//注意这里为等号</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">            tmp[k] := a[i];</span><br><span class="line">            inc(i);</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">            cnt := cnt + mid - i + <span class="number">1</span>; <span class="comment">//加上逆序数</span></span><br><span class="line">            tmp[k] := a[j];</span><br><span class="line">            inc(j);</span><br><span class="line">        <span class="keyword">end</span>;</span><br><span class="line">        inc(k);</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    <span class="keyword">for</span> i := l <span class="keyword">to</span> r <span class="keyword">do</span></span><br><span class="line">        a[i] := tmp[i];</span><br><span class="line"><span class="keyword">end</span>;</span><br></pre></td></tr></table></figure>
+
 <p>这个算法复杂度为$O(nlogn)$，是一种比较理想的算法，实现起来也简单。但他有个缺点：<strong>会打乱原数组顺序</strong>。</p>
-<h2 id="原题代码"><a href="#原题代码" class="headerlink" title="原题代码"></a><strong>原题代码</strong></h2><pre><code>//AC
-const
-    MODN = 99999997;
-type
-    rec = record value, index: longint; end;
-    TArr = array [1..100000] of rec;
-var
-    n: longint;
-    a, b, c, tmp: TArr;
-    ok: Boolean;
-    l, r, i, j: longint;
-    cnt: int64;
-
-procedure sort(var arr: TArr; l, r: longint);
-var
-    i, j: longint;
-    m, t: rec;
-begin
-    i := l;
-    j := r;
-    m := arr[(i+j) shr 1];
-    repeat
-        while arr[i].value &lt; m.value do inc(i);
-        while arr[j].value &gt; m.value do dec(j);
-        if i &lt;= j then
-        begin
-            t := arr[i];
-            arr[i] := arr[j];
-            arr[j] := t;
-            inc(i);
-            dec(j);
-        end;
-    until i &gt;j;
-    if i &lt; r then sort(arr, i, r);
-    if l &lt; j then sort(arr, l, j);
-end;
-
-procedure nx(l, r: longint);
-var
-    mid, i, j, k: longint;
-begin
-    if l = r then
-    begin
-        tmp[l] := c[l];
-        exit;
-    end;
-    mid := (l + r) shr 1;
-    nx(l, mid);
-    nx(mid+1, r);
-    i := l;
-    j := mid+1;
-    k := l;
-    while k &lt;= r do
-    begin
-        if (j&gt;r) or (i&lt;=mid) and (c[i].index&lt;=c[j].index) then
-        begin
-            tmp[k] := c[i];
-            inc(i);
-        end
-        else
-        begin
-            cnt := cnt + mid - i + 1;
-            cnt := cnt mod MODN;
-            tmp[k] := c[j];
-            inc(j);
-        end;
-        inc(k);
-    end;
-    for i := l to r do
-        c[i] := tmp[i];
-end;
-
-begin
-    assign(input, &#39;main.in&#39;); reset(input);
-    assign(output, &#39;main.out&#39;); rewrite(output);
-
-    readln(n);
-    for i := 1 to n do
-    begin
-        read(a[i].value);
-        a[i].index := i;
-    end;
-    for i := 1 to n do
-    begin
-        read(b[i].value);
-        b[i].index := i;
-    end;
-    sort(a, 1, n);
-    sort(b, 1, n);
-
-    for i := 1 to n do
-        c[a[i].index] := b[i];
-
-    cnt := 0;
-    nx(1, n);
-    writeln(cnt);
-
-    close(input); close(output);
-end.</code></pre>
-</div><div class="tags"><a href="/tags/NOIP/">NOIP</a><a href="/tags/Merge-Sort/">Merge Sort</a></div><div class="post-nav"><a href="/2014-10-26-kruscal-and-prim/" class="pre">«最小生成树（Kruscal &amp; Prim）</a><a href="/2014-10-25-noip2011-day2-coefficient-calculate/" class="next">NOIP2011 Day2 计算系数：快速求组合数»</a></div><div id="disqus_thread"><div id="no-comment"> <h2>OOPS! </h2><span>A comment box should be right here...</span><span>But it was gone due to network issues :-(</span><span>If you want to leave comments, make sure you have access to <a target="_blank" rel="noopener" href="https://disqus.com">disqus.com</a>.</span></div><script>var disqus_shortname = 'hsfzxjy';
+<h2 id="原题代码"><a href="#原题代码" class="headerlink" title="原题代码"></a><strong>原题代码</strong></h2><figure class="highlight pascal"><table><tr><td class="code"><pre><span class="line"><span class="comment">//AC</span></span><br><span class="line"><span class="keyword">const</span></span><br><span class="line">    MODN = <span class="number">99999997</span>;</span><br><span class="line"><span class="keyword">type</span></span><br><span class="line">    rec = <span class="keyword">record</span> value, <span class="keyword">index</span>: longint; <span class="keyword">end</span>;</span><br><span class="line">    TArr = <span class="keyword">array</span> [<span class="number">1</span>..<span class="number">100000</span>] <span class="keyword">of</span> rec;</span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    n: longint;</span><br><span class="line">    a, b, c, tmp: TArr;</span><br><span class="line">    ok: Boolean;</span><br><span class="line">    l, r, i, j: longint;</span><br><span class="line">    cnt: int64;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">sort</span><span class="params">(<span class="keyword">var</span> arr: TArr; l, r: longint)</span>;</span></span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    i, j: longint;</span><br><span class="line">    m, t: rec;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    i := l;</span><br><span class="line">    j := r;</span><br><span class="line">    m := arr[(i+j) <span class="keyword">shr</span> <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">repeat</span></span><br><span class="line">        <span class="keyword">while</span> arr[i].value &lt; m.value <span class="keyword">do</span> inc(i);</span><br><span class="line">        <span class="keyword">while</span> arr[j].value &gt; m.value <span class="keyword">do</span> dec(j);</span><br><span class="line">        <span class="keyword">if</span> i &lt;= j <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">            t := arr[i];</span><br><span class="line">            arr[i] := arr[j];</span><br><span class="line">            arr[j] := t;</span><br><span class="line">            inc(i);</span><br><span class="line">            dec(j);</span><br><span class="line">        <span class="keyword">end</span>;</span><br><span class="line">    <span class="keyword">until</span> i &gt;j;</span><br><span class="line">    <span class="keyword">if</span> i &lt; r <span class="keyword">then</span> sort(arr, i, r);</span><br><span class="line">    <span class="keyword">if</span> l &lt; j <span class="keyword">then</span> sort(arr, l, j);</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">procedure</span> <span class="title">nx</span><span class="params">(l, r: longint)</span>;</span></span><br><span class="line"><span class="keyword">var</span></span><br><span class="line">    mid, i, j, k: longint;</span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    <span class="keyword">if</span> l = r <span class="keyword">then</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        tmp[l] := c[l];</span><br><span class="line">        <span class="keyword">exit</span>;</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    mid := (l + r) <span class="keyword">shr</span> <span class="number">1</span>;</span><br><span class="line">    nx(l, mid);</span><br><span class="line">    nx(mid+<span class="number">1</span>, r);</span><br><span class="line">    i := l;</span><br><span class="line">    j := mid+<span class="number">1</span>;</span><br><span class="line">    k := l;</span><br><span class="line">    <span class="keyword">while</span> k &lt;= r <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">if</span> (j&gt;r) <span class="keyword">or</span> (i&lt;=mid) <span class="keyword">and</span> (c[i].<span class="keyword">index</span>&lt;=c[j].<span class="keyword">index</span>) <span class="keyword">then</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">            tmp[k] := c[i];</span><br><span class="line">            inc(i);</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">begin</span></span><br><span class="line">            cnt := cnt + mid - i + <span class="number">1</span>;</span><br><span class="line">            cnt := cnt <span class="keyword">mod</span> MODN;</span><br><span class="line">            tmp[k] := c[j];</span><br><span class="line">            inc(j);</span><br><span class="line">        <span class="keyword">end</span>;</span><br><span class="line">        inc(k);</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    <span class="keyword">for</span> i := l <span class="keyword">to</span> r <span class="keyword">do</span></span><br><span class="line">        c[i] := tmp[i];</span><br><span class="line"><span class="keyword">end</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">begin</span></span><br><span class="line">    assign(input, <span class="string">&#x27;main.in&#x27;</span>); reset(input);</span><br><span class="line">    assign(output, <span class="string">&#x27;main.out&#x27;</span>); rewrite(output);</span><br><span class="line"></span><br><span class="line">    readln(n);</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">read</span>(a[i].value);</span><br><span class="line">        a[i].<span class="keyword">index</span> := i;</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">begin</span></span><br><span class="line">        <span class="keyword">read</span>(b[i].value);</span><br><span class="line">        b[i].<span class="keyword">index</span> := i;</span><br><span class="line">    <span class="keyword">end</span>;</span><br><span class="line">    sort(a, <span class="number">1</span>, n);</span><br><span class="line">    sort(b, <span class="number">1</span>, n);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">1</span> <span class="keyword">to</span> n <span class="keyword">do</span></span><br><span class="line">        c[a[i].<span class="keyword">index</span>] := b[i];</span><br><span class="line"></span><br><span class="line">    cnt := <span class="number">0</span>;</span><br><span class="line">    nx(<span class="number">1</span>, n);</span><br><span class="line">    writeln(cnt);</span><br><span class="line"></span><br><span class="line">    close(input); close(output);</span><br><span class="line"><span class="keyword">end</span>.</span><br></pre></td></tr></table></figure></div><div class="tags"><a href="/tags/NOIP/">NOIP</a><a href="/tags/Merge-Sort/">Merge Sort</a></div><div class="post-nav"><a href="/2014-10-26-kruscal-and-prim/" class="pre">«最小生成树（Kruscal &amp; Prim）</a><a href="/2014-10-25-noip2011-day2-coefficient-calculate/" class="next">NOIP2011 Day2 计算系数：快速求组合数»</a></div><div id="disqus_thread"><div id="no-comment"> <h2>OOPS! </h2><span>A comment box should be right here...</span><span>But it was gone due to network issues :-(</span><span>If you want to leave comments, make sure you have access to <a target="_blank" rel="noopener" href="https://disqus.com">disqus.com</a>.</span></div><script>var disqus_shortname = 'hsfzxjy';
 var disqus_identifier = '2014-10-26-noip2013-day1-matches/';
 var disqus_title = 'NOIP2013 Day1 火柴排队：快速求逆序对';
 var disqus_url = 'http://i.hsfzxjy.site/2014-10-26-noip2013-day1-matches/';
