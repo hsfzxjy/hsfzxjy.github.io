@@ -1,0 +1,336 @@
+<!DOCTYPE html><html lang="en"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="Creation and blogs by hsfzxjy."><title>Diving from the CUDA Error 804 into a bug of libnvidia-container</title><link rel="stylesheet" type="text/css" href="/dist/css/style.css"><script src="/dist/js/endec.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><meta name="generator" content="Hexo 7.0.0-rc1"></head><body><div class="body_container"><span id="rocket" href="#top" class="show"></span><script>if (/micromessenger/.test(navigator.userAgent.toLowerCase())) {
+  var style = document.createElement("style");
+  style.type = "text/css";
+  var text = "#header.hide-wx { display: none!important; }";
+  style.appendChild(document.createTextNode(text));
+
+  document.head.appendChild(style);
+}
+</script><nav id="header" class="hide-wx"><div class="site-name"><a id="logo" href="/">#hsfzxjy#</a></div><span class="github-btn"><a href="#" rel="noopener noreferrer" target="_blank" class="gh-btn"><span class="gh-ico"></span><span class="gh-text"></span></a><a href="#" rel="noopener noreferrer" target="_blank" class="gh-count"></a></span><script>window.GH_BUTTON = { username: "hsfzxjy" };</script><div id="nav-menu"><span class="before"></span><div><a href="/"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Tech/" class="current"><i class="icon-embed2"></i><span>Tech</span></a><a href="/categories/Soliloquy/"><i class="icon-android"></i><span>Soliloquy</span></a><a href="/categories/Life/"><i class="icon-leaf"></i><span>Life</span></a><a href="/categories/Memo/"><i class="icon-bookmarks"></i><span>Memo</span></a><a href="/categories/Series/"><i class="icon-books"></i><span>Series</span></a><a href="/works/"><i class="icon-sigma"></i><span>Projects</span></a><a href="/about/"><i class="icon-wink"></i><span>Me</span></a></div><span class="after"></span></div></nav><div id="layout" class="pure-g"><main id="left-panel" class="pure-u-1"><div class="content_container"><div class="post post-page"><h1 class="post-title">Diving from the CUDA Error 804 into a bug of libnvidia-container</h1><div class="post-meta">2023-03-19 | <span class="categories"><a href="/categories/Tech/"> Tech</a></span></div><div lang="en" class="post-content "><p>Several users reported to encounter <code>&quot;Error 804: forward compatibility was attempted on non supported HW&quot;</code> during the usage of some customized PyTorch docker images on our GPU cluster.</p>
+<p>At first glance I recognized the culprit to be a version mismatch between installed driver on the host and required driver in the image. The corrupted images as they described were built targeting <code>CUDA == 11.3</code> with a corresponding driver version <code>== 465</code> 
+        <sup id="clfmakgh9003ngi0xelo63qin-fnref:1">
+            <a href="#clfmakgh9003ngi0xelo63qin-fn:1" rel="footnote"></a>
+        </sup>
+        <!-- empty span to defend against print only CSS -->
+        <span class="display: none"></span>
+        <span class="footnote" style="display: none" id="clfmakgh9003ngi0xelo63qin-fn:1"><a target="_blank" rel="noopener" href="https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html#id4">https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html#id4</a></span>, while some of our hosts are shipped with driver version <code>460</code>. As a solution I told them to downgrade the targeting CUDA version by choosing a base image such as <code>nvidia/cuda:11.2.0-devel-ubuntu18.04</code>, which indeed well solved the problem.</p>
+<p>But later on I suspected the above hypothesis being the real cause. An observed counterexample was that another line of docker images targeting even higher CUDA version would run normally on those hosts, for example, the latest <code>ghcr.io/pytorch/pytorch:2.0.0-devel</code> built for <code>CUDA == 11.7</code>. This won’t be the case if CUDA version mismatch truly matters.</p>
+<p>Afterwards I did a bit of research concerning the problem and learnt some interesting stuff which this post is going to share. In short, <strong>the recently released minor version compatibility allows applications built for newer CUDA to run on machines with some older drivers, but libnvidia-container doesn’t correcly handle it due to <a target="_blank" rel="noopener" href="https://github.com/NVIDIA/libnvidia-container/issues/138">a bug</a> and eventually leads to such an error</strong>.</p>
+<p>Towards thorough comprehension, this post will first introduce the constitution of CUDA components, following with the compatibility policy of different components, and finally unravel the bug and devise a workaround for it. But before diving deep, I’ll give two Dockerfile samples to illustrate the problem.</p>
+<a id="more"></a>
+
+<h1 id="Reproduction-Samples"><a href="#Reproduction-Samples" class="headerlink" title="Reproduction Samples"></a>Reproduction Samples</h1><p>The host reported as problematic has 8x GeForce RTX 3090 with driver version <code>460.67</code> and CUDA <code>11.2</code>. Here is an image with <code>torch == 1.12.1</code> built for CUDA <code>11.3</code> and fails on the host:</p>
+<figure class="highlight docker"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Dockerfile_bad</span></span><br><span class="line"><span class="keyword">FROM</span> nvidia/cuda:<span class="number">11.3</span>.<span class="number">0</span>-cudnn8-devel-ubuntu20.<span class="number">04</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt update -y &amp;&amp; apt install -y python3 python3-pip</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> pip install torch==1.12.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113</span></span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="bash"> [<span class="string">&quot;python&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;import torch; print(torch.rand(2, 3).cuda())&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p style="text-indent: 0; margin-top: 0;"> By contrast below is an image with <code>torch == 2.0.0</code> built for CUDA <code>11.7</code> and runs normally:</p>
+<figure class="highlight docker"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Dockerfile_good</span></span><br><span class="line"><span class="keyword">FROM</span> ghcr.io/pytorch/pytorch:<span class="number">2.0</span>.<span class="number">0</span>-devel</span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="bash"> [<span class="string">&quot;python&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;import torch; print(torch.rand(2, 3).cuda())&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<p style="text-indent: 0; margin-top: 0;"> For convenience I also write a <code>Makefile</code> to combine the process of building and running either image:</p>
+<figure class="highlight makefile"><table><tr><td class="code"><pre><span class="line"><span class="section">good:</span></span><br><span class="line">      docker build -t good -&lt; Dockerfile_good</span><br><span class="line">      docker run --gpus=&#x27;<span class="string">&quot;device=0&quot;</span>&#x27; --rm -it good</span><br><span class="line"><span class="section">bad:</span></span><br><span class="line">      docker build -t bad -&lt; Dockerfile_bad</span><br><span class="line">      docker run --gpus=&#x27;<span class="string">&quot;device=0&quot;</span>&#x27; --rm -it bad</span><br></pre></td></tr></table></figure>
+
+<p style="text-indent: 0; margin-top: 0;"> With the <code>Makefile</code> you can run <code>make good</code> or <code>make bad</code> to see respective results:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ make good</span><br><span class="line">tensor([[0.1245, 0.2403, 0.9967],</span><br><span class="line">        [0.5950, 0.1597, 0.1985]], device&#x3D;&#39;cuda:0&#39;)</span><br><span class="line">$ make bad</span><br><span class="line">&lt;string&gt;:1: UserWarning: Failed to initialize NumPy: numpy.core.multiarray failed to import (Triggered internally at  ..&#x2F;torch&#x2F;csrc&#x2F;utils&#x2F;tensor_numpy.cpp:68.)</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;</span><br><span class="line">  File &quot;&#x2F;usr&#x2F;local&#x2F;lib&#x2F;python3.8&#x2F;dist-packages&#x2F;torch&#x2F;cuda&#x2F;__init__.py&quot;, line 217, in _lazy_init</span><br><span class="line">    torch._C._cuda_init()</span><br><span class="line">RuntimeError: Unexpected error from cudaGetDeviceCount(). Did you run some cuda functions before calling NumCudaDevices() that might have already set an error? Error 804: forward compatibility was attempted on non supported HW</span><br><span class="line">make: *** [bad] Error 1</span><br></pre></td></tr></table></figure>
+
+<p>We start off touring from the constitution of CUDA.</p>
+<h1 id="Components-of-CUDA"><a href="#Components-of-CUDA" class="headerlink" title="Components of CUDA"></a>Components of CUDA</h1><p>When talked about the term “CUDA”, two concepts “CUDA Toolkit” and “NVIDIA Display Drivers” are usually mixed up. This figure 
+        <sup id="clfmakgh9003ngi0xelo63qin-fnref:2">
+            <a href="#clfmakgh9003ngi0xelo63qin-fn:2" rel="footnote"></a>
+        </sup>
+        <!-- empty span to defend against print only CSS -->
+        <span class="display: none"></span>
+        <span class="footnote" style="display: none" id="clfmakgh9003ngi0xelo63qin-fn:2"><a target="_blank" rel="noopener" href="https://docs.nvidia.com/deploy/cuda-compatibility">https://docs.nvidia.com/deploy/cuda-compatibility</a></span> illustrates their distinction as well as the cascading relationship:</p>
+<p style="text-indent: 0; margin-top: 0;"> <img src="https://docs.nvidia.com/deploy/cuda-compatibility/graphics/CUDA-components.png" alt="Components of CUDA"></p>
+<p style="text-indent: 0; margin-top: 0;"> The driver at low level bridges the communication between softwares and underlying NVIDIA hardwares. The toolkit instead lies at a higher level to provide convenience for easy GPU programming.</p>
+<p>If we take a closer look at the driver, we can see it decomposed into two secondary components “user-mode driver or UMD (<code>libcuda.so</code>)” and “kernel-mode driver or KMD (<code>nvidia.ko</code>)”. The KMD runs in OS kernel to do the most intimate contact with the hardware, while the UMD as an abstraction provides API to communicate with the kernel driver.</p>
+<p>Generally, the applications compiled by CUDA toolkit will dynamically search and link <code>libcuda.so</code> during starting, which under the hood dispatches user requests to the kernel as illustrated below:</p>
+<figure class="graphviz"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: %3 Pages: 1 -->
+<svg width="483pt" height="56pt"
+ viewBox="0.00 0.00 482.97 56.10" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 52.1)">
+<title>%3</title>
+<polygon fill="transparent" stroke="transparent" points="-4,4 -4,-52.1 478.97,-52.1 478.97,4 -4,4"/>
+<!-- app -->
+<g id="node1" class="node">
+<title>app</title>
+<polygon fill="seashell" stroke="#444444" points="50.18,-9.38 52.99,-9.46 55.77,-9.58 58.51,-9.74 61.2,-9.94 63.83,-10.18 66.38,-10.45 68.85,-10.77 71.23,-11.12 73.51,-11.5 75.68,-11.92 77.73,-12.38 79.66,-12.86 81.46,-13.38 83.13,-13.92 84.66,-14.49 86.04,-15.09 87.27,-15.72 88.36,-16.36 89.3,-17.03 90.09,-17.71 90.73,-18.42 91.22,-19.14 91.56,-19.87 91.75,-20.61 91.8,-21.37 91.72,-22.13 91.49,-22.9 91.14,-23.66 90.66,-24.44 90.06,-25.2 89.35,-25.97 88.53,-26.73 87.6,-27.49 86.58,-28.23 85.46,-28.96 84.26,-29.68 82.98,-30.38 81.63,-31.07 80.22,-31.74 78.74,-32.38 77.21,-33.01 75.63,-33.61 74,-34.18 72.33,-34.72 70.63,-35.24 68.9,-35.72 67.15,-36.18 65.37,-36.6 63.56,-36.98 61.75,-37.33 59.92,-37.64 58.07,-37.92 56.22,-38.16 54.36,-38.36 52.49,-38.52 50.62,-38.64 48.75,-38.72 46.87,-38.76 45,-38.76 43.12,-38.72 41.25,-38.64 39.38,-38.52 37.51,-38.36 35.65,-38.16 33.8,-37.92 31.95,-37.64 30.12,-37.33 28.3,-36.98 26.5,-36.6 24.72,-36.18 22.97,-35.72 21.24,-35.24 19.53,-34.72 17.87,-34.18 16.24,-33.61 14.66,-33.01 13.13,-32.38 11.65,-31.74 10.24,-31.07 8.89,-30.38 7.61,-29.68 6.41,-28.96 5.29,-28.23 4.27,-27.49 3.34,-26.73 2.52,-25.97 1.8,-25.2 1.21,-24.44 0.73,-23.66 0.37,-22.9 0.15,-22.13 0.07,-21.37 0.12,-20.61 0.31,-19.87 0.65,-19.14 1.14,-18.42 1.78,-17.71 2.57,-17.03 3.51,-16.36 4.59,-15.72 5.83,-15.09 7.21,-14.49 8.74,-13.92 10.4,-13.38 12.2,-12.86 14.13,-12.38 16.19,-11.92 18.36,-11.5 20.64,-11.12 23.02,-10.77 25.49,-10.45 28.04,-10.18 30.67,-9.94 33.36,-9.74 36.1,-9.58 38.88,-9.46 41.69,-9.38 44.52,-9.34 47.35,-9.34 50.18,-9.38"/>
+<text text-anchor="start" x="22.43" y="-21.35" font-family="Times,serif" class="bold" font-size="14.00" fill="#444444">binaries</text>
+</g>
+<!-- udrv -->
+<g id="node2" class="node">
+<title>udrv</title>
+<polygon fill="seashell" stroke="#444444" points="224.58,-0.02 228.31,-0.15 232.01,-0.35 235.66,-0.61 239.23,-0.93 242.73,-1.32 246.12,-1.78 249.41,-2.29 252.57,-2.86 255.6,-3.49 258.49,-4.18 261.22,-4.92 263.78,-5.72 266.18,-6.56 268.39,-7.45 270.42,-8.39 272.26,-9.37 273.9,-10.39 275.35,-11.45 276.6,-12.55 277.64,-13.67 278.49,-14.82 279.14,-16 279.6,-17.2 279.85,-18.42 279.92,-19.66 279.81,-20.9 279.51,-22.16 279.05,-23.42 278.41,-24.68 277.61,-25.94 276.66,-27.2 275.57,-28.44 274.34,-29.68 272.97,-30.9 271.49,-32.1 269.9,-33.28 268.2,-34.43 266.4,-35.55 264.52,-36.65 262.55,-37.7 260.52,-38.73 258.41,-39.71 256.25,-40.64 254.04,-41.54 251.78,-42.38 249.47,-43.18 247.14,-43.92 244.77,-44.61 242.38,-45.24 239.96,-45.81 237.53,-46.32 235.08,-46.78 232.61,-47.17 230.14,-47.49 227.66,-47.75 225.17,-47.95 222.68,-48.08 220.18,-48.15 217.69,-48.15 215.19,-48.08 212.7,-47.95 210.21,-47.75 207.73,-47.49 205.26,-47.17 202.79,-46.78 200.34,-46.32 197.91,-45.81 195.49,-45.24 193.1,-44.61 190.73,-43.92 188.39,-43.18 186.09,-42.38 183.83,-41.54 181.62,-40.64 179.46,-39.71 177.35,-38.73 175.32,-37.7 173.35,-36.65 171.47,-35.55 169.67,-34.43 167.97,-33.28 166.38,-32.1 164.9,-30.9 163.53,-29.68 162.3,-28.44 161.21,-27.2 160.26,-25.94 159.46,-24.68 158.82,-23.42 158.35,-22.16 158.06,-20.9 157.94,-19.66 158.01,-18.42 158.27,-17.2 158.73,-16 159.38,-14.82 160.22,-13.67 161.27,-12.55 162.52,-11.45 163.97,-10.39 165.61,-9.37 167.45,-8.39 169.48,-7.45 171.69,-6.56 174.09,-5.72 176.65,-4.92 179.38,-4.18 182.27,-3.49 185.3,-2.86 188.46,-2.29 191.75,-1.78 195.14,-1.32 198.64,-0.93 202.21,-0.61 205.86,-0.35 209.55,-0.15 213.29,-0.02 217.05,0.05 220.82,0.05 224.58,-0.02"/>
+<text text-anchor="start" x="189.43" y="-27.85" font-family="Times,serif" class="bold" font-size="14.00" fill="#444444">libcuda.so</text>
+<text text-anchor="start" x="185.43" y="-13.85" font-family="Times,serif" font-size="14.00" fill="#444444">[user&#45;mode]</text>
+</g>
+<!-- app&#45;&gt;udrv -->
+<g id="edge1" class="edge">
+<title>app&#45;&gt;udrv</title>
+<path fill="none" stroke="#444444" d="M90.94,-24.05C108.58,-24.05 129.25,-24.05 148.77,-24.05"/>
+<polygon fill="#444444" stroke="#444444" points="148.85,-27.55 158.85,-24.05 148.85,-20.55 148.85,-27.55"/>
+<text text-anchor="middle" x="124.9" y="-30.05" font-family="Times,serif" font-size="10.00" fill="#444444">link against</text>
+</g>
+<!-- kdrv -->
+<g id="node3" class="node">
+<title>kdrv</title>
+<polygon fill="seashell" stroke="#444444" points="411.42,-0.02 415.71,-0.15 419.96,-0.35 424.14,-0.61 428.25,-0.93 432.27,-1.32 436.17,-1.78 439.94,-2.29 443.58,-2.86 447.06,-3.49 450.37,-4.18 453.51,-4.92 456.46,-5.72 459.21,-6.56 461.75,-7.45 464.08,-8.39 466.19,-9.37 468.08,-10.39 469.74,-11.45 471.17,-12.55 472.38,-13.67 473.35,-14.82 474.1,-16 474.62,-17.2 474.92,-18.42 475,-19.66 474.86,-20.9 474.53,-22.16 473.99,-23.42 473.26,-24.68 472.34,-25.94 471.25,-27.2 469.99,-28.44 468.58,-29.68 467.01,-30.9 465.31,-32.1 463.48,-33.28 461.52,-34.43 459.46,-35.55 457.3,-36.65 455.04,-37.7 452.7,-38.73 450.29,-39.71 447.8,-40.64 445.26,-41.54 442.66,-42.38 440.02,-43.18 437.33,-43.92 434.61,-44.61 431.86,-45.24 429.09,-45.81 426.29,-46.32 423.48,-46.78 420.65,-47.17 417.8,-47.49 414.95,-47.75 412.1,-47.95 409.23,-48.08 406.37,-48.15 403.5,-48.15 400.64,-48.08 397.77,-47.95 394.92,-47.75 392.06,-47.49 389.22,-47.17 386.39,-46.78 383.58,-46.32 380.78,-45.81 378,-45.24 375.26,-44.61 372.54,-43.92 369.85,-43.18 367.21,-42.38 364.61,-41.54 362.07,-40.64 359.58,-39.71 357.17,-38.73 354.83,-37.7 352.57,-36.65 350.41,-35.55 348.34,-34.43 346.39,-33.28 344.56,-32.1 342.86,-30.9 341.29,-29.68 339.88,-28.44 338.62,-27.2 337.53,-25.94 336.61,-24.68 335.88,-23.42 335.34,-22.16 335,-20.9 334.87,-19.66 334.95,-18.42 335.25,-17.2 335.77,-16 336.52,-14.82 337.49,-13.67 338.69,-12.55 340.13,-11.45 341.79,-10.39 343.68,-9.37 345.79,-8.39 348.12,-7.45 350.66,-6.56 353.41,-5.72 356.36,-4.92 359.5,-4.18 362.81,-3.49 366.29,-2.86 369.93,-2.29 373.7,-1.78 377.6,-1.32 381.62,-0.93 385.72,-0.61 389.91,-0.35 394.16,-0.15 398.45,-0.02 402.77,0.05 407.1,0.05 411.42,-0.02"/>
+<text text-anchor="start" x="377.43" y="-27.85" font-family="Times,serif" class="bold" font-size="14.00" fill="#444444">nvidia.ko</text>
+<text text-anchor="start" x="365.43" y="-13.85" font-family="Times,serif" font-size="14.00" fill="#444444">[kernel&#45;mode]</text>
+</g>
+<!-- udrv&#45;&gt;kdrv -->
+<g id="edge2" class="edge">
+<title>udrv&#45;&gt;kdrv</title>
+<path fill="none" stroke="#444444" d="M278.81,-24.05C293.79,-24.05 310.1,-24.05 325.86,-24.05"/>
+<polygon fill="#444444" stroke="#444444" points="326.11,-27.55 336.11,-24.05 326.11,-20.55 326.11,-27.55"/>
+<text text-anchor="middle" x="307.42" y="-30.05" font-family="Times,serif" font-size="10.00" fill="#444444">talk with</text>
+</g>
+</g>
+</svg>
+</figure>
+
+<p style="margin-top: 0.5em;"> So far so good, if only the compiler in toolkit agrees on APIs with the targeting driver.</p>
+<p>Sadly, that is not the norm. In real world, developers compile the programs on one machine and dispatch them to run on others, expecting those programs compiled by a specific version of CUDA toolkit could run on a wide variety of hardwares, or otherwise users would complain about the corrupted binaries.</p>
+<p>Towards this guarantee, several compatibility policies are induced.</p>
+<h1 id="CUDA-Compatibility-Policies"><a href="#CUDA-Compatibility-Policies" class="headerlink" title="CUDA Compatibility Policies"></a>CUDA Compatibility Policies</h1><p>Before we introduce the policies, we should know about how the components are versioned. The CUDA toolkit and the drivers adopt different version schemes, with the toolkit versioned like <code>11.2</code> and drivers like <code>460.65</code>. Therefore, “driver 460.65” refers to the version of <code>libcuda.so</code> and <code>nvidia.ko</code>; similarly, when somebody says “CUDA 11.2”, it’s <em>the toolkit version</em> being mentioned.</p>
+<p>NVIDIA devises multiple rules to ensure user binaries would work on a wide range of driver-hardware combinations, which can be grouped into two categories, i.e., <strong>toolkit-driver compatibility</strong> and <strong>UMD-KMD compatibility</strong>.</p>
+<h2 id="Toolkit-driver-compatibility"><a href="#Toolkit-driver-compatibility" class="headerlink" title="Toolkit-driver compatibility"></a>Toolkit-driver compatibility</h2><p>These policies constrain that <strong>binaries compiled by a specific CUDA toolkit can run on what version of driver</strong>.</p>
+<p>Basically we have the <strong>“Backward Compatibility”</strong>. Each CUDA toolkit has a so-called toolkit driver version 
+        <sup id="clfmakgh9003ngi0xelo63qin-fnref:3">
+            <a href="#clfmakgh9003ngi0xelo63qin-fn:3" rel="footnote"></a>
+        </sup>
+        <!-- empty span to defend against print only CSS -->
+        <span class="display: none"></span>
+        <span class="footnote" style="display: none" id="clfmakgh9003ngi0xelo63qin-fn:3"><a target="_blank" rel="noopener" href="https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html#id4">https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html#id4</a></span>. Binaries compiled by that toolkit are guaranteed to run on drivers newer than the toolkit driver version. For example, the toolkit driver version of CUDA 11.2 is 460.27.03, which means binaries compiled by CUDA 11.2 should work on any driver &gt;= 460.27.03. This is the most fundamental and agelong policy.</p>
+<p>From CUDA 11 onwards, another policy named <a target="_blank" rel="noopener" href="https://docs.nvidia.com/deploy/cuda-compatibility/#minor-version-compatibility"><strong>“Minor Version Compatibility”</strong></a> 
+        <sup id="clfmakgh9003ngi0xelo63qin-fnref:4">
+            <a href="#clfmakgh9003ngi0xelo63qin-fn:4" rel="footnote"></a>
+        </sup>
+        <!-- empty span to defend against print only CSS -->
+        <span class="display: none"></span>
+        <span class="footnote" style="display: none" id="clfmakgh9003ngi0xelo63qin-fn:4">Sometimes called “Enhanced Compatibility” in old context.</span> was proposed. This policy allows binaries compiled by toolkits with the same major version to a the same driver version requirement. For example, binaries compiled by CUDA 11.0 would work on driver &gt;= 450.36.06. Since CUDA 11.2 has the same major version with CUDA 11.0, binaries compiled by CUDA 11.2 could also work on driver &gt;= 450.36.06 
+        <sup id="clfmakgh9003ngi0xelo63qin-fnref:5">
+            <a href="#clfmakgh9003ngi0xelo63qin-fn:5" rel="footnote"></a>
+        </sup>
+        <!-- empty span to defend against print only CSS -->
+        <span class="display: none"></span>
+        <span class="footnote" style="display: none" id="clfmakgh9003ngi0xelo63qin-fn:5">To be accurate, with <a target="_blank" rel="noopener" href="https://docs.nvidia.com/deploy/cuda-compatibility/#application-considerations">some limitations</a> but should be ignorable for machine learning scenario.</span>.</p>
+<p>The backward compatibility ensures compiled binaries would work on machines shipped with drivers of future version, while the minor version compatibility reduces the necessity of upgrading drivers to run some newly compiled binaries. Generally, a binary compiled by CUDA toolkit $X.Y$ should work with driver with version $M$, if either of the following satisfies:</p>
+<ol>
+<li>CUDA toolkit $X.Y$ has toolkit driver version $N$ and $M \geq N$;</li>
+<li>$X \geq 11$ and a CUDA toolkit $X.Y_2$ has toolkit driver version $N_2$ and $M \geq N_2$.
+
+</li>
+</ol>
+<p>However, the above policies only consider the relationship between CUDA toolkit and drivers. What if the user-mode and kernel-mode drivers have diverged version? This is where <strong>UMD-KMD compatibility</strong> applies.</p>
+<h2 id="UMD-KMD-compatibility"><a href="#UMD-KMD-compatibility" class="headerlink" title="UMD-KMD compatibility"></a>UMD-KMD compatibility</h2><p>In ideal case, kernel-mode driver should always work with user-mode driver with the same version. But upgrading kernel-mode drivers is sometimes tricky and troublesome, of which some users such as data center admins could not take the risk. Towards this consideration, NVIDIA devised the <a target="_blank" rel="noopener" href="https://docs.nvidia.com/deploy/cuda-compatibility/#forward-compatibility-title"><strong>“Forward Compatibility”</strong></a> to allow old-versioned KMD to cooperate with new-versioned UMD under some circumstance.</p>
+<p>Specifically, a kernel-mode driver would support all user-mode drivers releases during its lifetime. For instance, the driver 418.x has end of life (EOL) in March 2022, before which driver 460.x was released, then KMD 418.x would work with UMD 460.x. The compatibility does not involve anything at a higher level such as CUDA toolkit.</p>
+<p>It’s worth noting that, this policy <strong>does not apply to all GPU hardwares</strong> but only a fraction of them. NVIDIA has limited forward compatibility to be applicable for systems with NVIDIA Data Center GPUs (the Tesla branch) or <a target="_blank" rel="noopener" href="https://docs.nvidia.com/ngc/ngc-deploy-on-premises/ngc-ready-systems/index.html">NGC Server Ready</a> SKUs of RTX cards 
+        <sup id="clfmakgh9003ngi0xelo63qin-fnref:6">
+            <a href="#clfmakgh9003ngi0xelo63qin-fn:6" rel="footnote"></a>
+        </sup>
+        <!-- empty span to defend against print only CSS -->
+        <span class="display: none"></span>
+        <span class="footnote" style="display: none" id="clfmakgh9003ngi0xelo63qin-fn:6"><a target="_blank" rel="noopener" href="https://docs.nvidia.com/deploy/cuda-compatibility/#forward-compatible-upgrade:~:text=Forward%20Compatibility%20is%20applicable%20only%20for%20systems%20with%20NVIDIA%20Data%20Center%20GPUs%20or%20select%20NGC%20Server%20Ready%20SKUs%20of%20RTX%20cards">https://docs.nvidia.com/deploy/cuda-compatibility/#forward-compatible-upgrade:~:text=Forward%20Compatibility%20is%20applicable%20only%20for%20systems%20with%20NVIDIA%20Data%20Center%20GPUs%20or%20select%20NGC%20Server%20Ready%20SKUs%20of%20RTX%20cards</a>.</span>. If you own a GeForce RTX 3090, like in my scenario, you won’t enjoy this stuff.</p>
+<h2 id="Summary-of-Compatibility"><a href="#Summary-of-Compatibility" class="headerlink" title="Summary of Compatibility"></a>Summary of Compatibility</h2><p>Let’s make a quick review for the various types of compatibility policies. If you have a binary compiled by CUDA $X.Y$, a host with UMD (<code>libcuda.so</code>) versioned $M$ and KMD (<code>nvidia.ko</code>) versioned $M'$, then they would work fine if both of the two conditions hold:</p>
+<ol>
+<li>The UMD and KMD is compatible. Specifically, either<ol>
+<li>the GPU supports forward compatibility (Tesla branch or NGC ready), and driver $M$ comes before the EOL of driver $M'$ (<strong>the forward compatibility</strong>); or</li>
+<li>$M = M'$.</li>
+</ol>
+</li>
+<li>The CUDA toolkit and UMD is compatible. Specifically, either<ol>
+<li>CUDA toolkit $X.Y$ has toolkit driver version $N$ and $M \geq N$ (<strong>the backward compatibility</strong>); or</li>
+<li>major version $X \geq 11$ and there exists another toolkit $X.Y_2$ with toolkit driver version $N_2$ and $M \geq N_2$ (<strong>the minor version compatibility</strong>).</li>
+</ol>
+</li>
+</ol>
+<p style="text-indent: 0; margin-top: 0;"> Generally, validating the above conditions should help whenever you run in any compatibility problems.</p>
+<h1 id="Back-to-Our-Problem"><a href="#Back-to-Our-Problem" class="headerlink" title="Back to Our Problem"></a>Back to Our Problem</h1><p>So, what’s wrong with the docker image <code>bad</code>? With above rules in hands we can perform a simple analysis.</p>
+<p>Could it be a toolkit-driver incompatibility? Probably NO. According to Table. 1 <a target="_blank" rel="noopener" href="https://docs.nvidia.com/deploy/cuda-compatibility/#default-to-minor-version">here</a>, the minor version compatibility applies with CUDA 11.x and driver &gt;= 450.80.02, which our driver version 460 satisfies, let alone binary compiled by CUDA 11.7 working like a charm in the case of docker image <code>good</code>.</p>
+<p>It should be due to a KMD-UMD incompatibility, namely, the version of <code>libcuda.so</code> and <code>nvidia.ko</code> is incompatible. Since forward compatibility is not applicable for RTX 3090, we are expecting condition 1.2 holds, where <code>libcuda.so</code> and <code>nvidia.ko</code> should have the same version – this obviously was not the case.</p>
+<h2 id="How-nvidia-driver-works-with-docker"><a href="#How-nvidia-driver-works-with-docker" class="headerlink" title="How nvidia driver works with docker?"></a>How nvidia driver works with docker?</h2><p>A process in a container is technically a special process on the host, which shares the same model as other processes do to interact with GPU drivers. Since KMD runs in kernel and not interfered by user space, all programs regardless of on host or in containers are communicate with the same KMD.</p>
+<figure class="graphviz"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: %3 Pages: 1 -->
+<svg width="223pt" height="68pt"
+ viewBox="0.00 0.00 223.00 68.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 64)">
+<title>%3</title>
+<polygon fill="transparent" stroke="transparent" points="-4,4 -4,-64 219,-64 219,4 -4,4"/>
+<!-- bin1 -->
+<g id="node1" class="node">
+<title>bin1</title>
+<polygon fill="seashell" stroke="#444444" points="207,-60 113,-60 113,-39 207,-39 207,-60"/>
+<text text-anchor="start" x="120" y="-46.8" font-family="Times,serif" class="bold" font-size="14.00" fill="#444444">host program</text>
+</g>
+<!-- kmd -->
+<g id="node2" class="node">
+<title>kmd</title>
+<polygon fill="seashell" stroke="#444444" points="69,-40 0,-40 0,-19 69,-19 69,-40"/>
+<text text-anchor="start" x="7" y="-26.8" font-family="Times,serif" class="bold" font-size="14.00" fill="#444444">nvidia.ko</text>
+</g>
+<!-- bin1&#45;&gt;kmd -->
+<g id="edge1" class="edge">
+<title>bin1&#45;&gt;kmd</title>
+<path fill="none" stroke="#444444" d="M112.66,-42C101.77,-40.23 90.19,-38.36 79.41,-36.61"/>
+<polygon fill="#444444" stroke="#444444" points="79.8,-33.13 69.37,-34.98 78.68,-40.04 79.8,-33.13"/>
+</g>
+<!-- bin2 -->
+<g id="node3" class="node">
+<title>bin2</title>
+<polygon fill="seashell" stroke="#444444" points="215,-21 105,-21 105,0 215,0 215,-21"/>
+<text text-anchor="start" x="112" y="-7.8" font-family="Times,serif" class="bold" font-size="14.00" fill="#444444">docker program</text>
+</g>
+<!-- bin2&#45;&gt;kmd -->
+<g id="edge2" class="edge">
+<title>bin2&#45;&gt;kmd</title>
+<path fill="none" stroke="#444444" d="M104.83,-18.83C96.17,-20.17 87.3,-21.53 78.93,-22.82"/>
+<polygon fill="#444444" stroke="#444444" points="78.37,-19.36 69.02,-24.34 79.43,-26.28 78.37,-19.36"/>
+</g>
+</g>
+</svg>
+</figure>
+
+<p style="margin-top: 0.5em;"> By contrast, a program can flexibly choose which user-mode driver to link against. It can either link to the UMD installed along with the KMD on the host, or brings its own UMD during packaging and distribution.</p>
+<figure class="graphviz"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: %3 Pages: 1 -->
+<svg width="346pt" height="68pt"
+ viewBox="0.00 0.00 346.00 68.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 64)">
+<title>%3</title>
+<polygon fill="transparent" stroke="transparent" points="-4,4 -4,-64 342,-64 342,4 -4,4"/>
+<!-- bin1 -->
+<g id="node1" class="node">
+<title>bin1</title>
+<polygon fill="seashell" stroke="#444444" points="330,-60 236,-60 236,-39 330,-39 330,-60"/>
+<text text-anchor="start" x="243" y="-46.8" font-family="Times,serif" class="bold" font-size="14.00" fill="#444444">host program</text>
+</g>
+<!-- umd1 -->
+<g id="node2" class="node">
+<title>umd1</title>
+<polygon fill="seashell" stroke="#444444" points="192,-60 105,-60 105,-39 192,-39 192,-60"/>
+<text text-anchor="start" x="112" y="-46.8" font-family="Times,serif" class="bold" font-size="14.00" fill="#444444">libcuda.so.X</text>
+</g>
+<!-- bin1&#45;&gt;umd1 -->
+<g id="edge1" class="edge">
+<title>bin1&#45;&gt;umd1</title>
+<path fill="none" stroke="#444444" d="M235.66,-49.5C224.8,-49.5 213.16,-49.5 202.05,-49.5"/>
+<polygon fill="#444444" stroke="#444444" points="202.04,-46 192.04,-49.5 202.04,-53 202.04,-46"/>
+</g>
+<!-- kmd -->
+<g id="node3" class="node">
+<title>kmd</title>
+<polygon fill="seashell" stroke="#444444" points="69,-40 0,-40 0,-19 69,-19 69,-40"/>
+<text text-anchor="start" x="7" y="-26.8" font-family="Times,serif" class="bold" font-size="14.00" fill="#444444">nvidia.ko</text>
+</g>
+<!-- umd1&#45;&gt;kmd -->
+<g id="edge2" class="edge">
+<title>umd1&#45;&gt;kmd</title>
+<path fill="none" stroke="#444444" d="M104.84,-41.88C96.49,-40.39 87.72,-38.82 79.33,-37.33"/>
+<polygon fill="#444444" stroke="#444444" points="79.8,-33.86 69.34,-35.54 78.57,-40.75 79.8,-33.86"/>
+</g>
+<!-- bin2 -->
+<g id="node4" class="node">
+<title>bin2</title>
+<polygon fill="seashell" stroke="#444444" points="338,-21 228,-21 228,0 338,0 338,-21"/>
+<text text-anchor="start" x="235" y="-7.8" font-family="Times,serif" class="bold" font-size="14.00" fill="#444444">docker program</text>
+</g>
+<!-- umd2 -->
+<g id="node5" class="node">
+<title>umd2</title>
+<polygon fill="seashell" stroke="#444444" points="192,-21 105,-21 105,0 192,0 192,-21"/>
+<text text-anchor="start" x="112" y="-7.8" font-family="Times,serif" class="bold" font-size="14.00" fill="#444444">libcuda.so.Y</text>
+</g>
+<!-- bin2&#45;&gt;umd2 -->
+<g id="edge3" class="edge">
+<title>bin2&#45;&gt;umd2</title>
+<path fill="none" stroke="#444444" d="M227.72,-10.5C219.29,-10.5 210.59,-10.5 202.19,-10.5"/>
+<polygon fill="#444444" stroke="#444444" points="202.13,-7 192.13,-10.5 202.13,-14 202.13,-7"/>
+</g>
+<!-- umd2&#45;&gt;kmd -->
+<g id="edge4" class="edge">
+<title>umd2&#45;&gt;kmd</title>
+<path fill="none" stroke="#444444" d="M104.84,-17.74C96.49,-19.15 87.72,-20.64 79.33,-22.06"/>
+<polygon fill="#444444" stroke="#444444" points="78.62,-18.64 69.34,-23.76 79.79,-25.54 78.62,-18.64"/>
+</g>
+</g>
+</svg>
+</figure>
+
+<p style="margin-top: 0.5em;"> We can list out all the UMDs in a running <code>good</code> container with the command:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ docker run --gpus&#x3D;&#39;&quot;device&#x3D;0&quot;&#39; --rm -it --entrypoint&#x3D; good bash</span><br><span class="line">root@3a19f802a459:&#x2F;workspace# find &#x2F; -name &#39;libcuda.so*&#39; -exec bash -c &quot;echo &#123;&#125; -\&gt; \&#96;readlink &#123;&#125;\&#96;&quot; \; 2&gt;&#x2F;dev&#x2F;null</span><br><span class="line">&#x2F;usr&#x2F;lib&#x2F;x86_64-linux-gnu&#x2F;libcuda.so.1 -&gt; libcuda.so.460.67</span><br><span class="line">&#x2F;usr&#x2F;lib&#x2F;x86_64-linux-gnu&#x2F;libcuda.so -&gt; libcuda.so.1</span><br><span class="line">&#x2F;usr&#x2F;lib&#x2F;x86_64-linux-gnu&#x2F;libcuda.so.460.67 -&gt;</span><br></pre></td></tr></table></figure>
+
+<p style="margin-top: 0.5em;"> Looks like there is only one copy of <code>libcuda.so</code> that lies in <code>/usr/lib/x86_64-linux-gnu/</code> with version 460.67. However, such <code>libcuda.so</code> was not packed with the docker image from the beginning. The library disappears if you omit the <code>--gpus</code> argument:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ docker run --rm -it --entrypoint&#x3D; good bash</span><br><span class="line">root@3a19f802a459:&#x2F;workspace# find &#x2F; -name &#39;libcuda.so*&#39; -exec bash -c &quot;echo &#123;&#125; -\&gt; \&#96;readlink &#123;&#125;\&#96;&quot; \; 2&gt;&#x2F;dev&#x2F;null</span><br><span class="line">root@3a19f802a459:&#x2F;workspace#</span><br></pre></td></tr></table></figure>
+
+<p style="text-indent: 0; margin-top: 0;"> In fact, the library exists on the host and is injected into the container by docker runtime during the startup. <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/361545761">This post</a> demonstrates the injection process by viewing docker’s log. Mounting <code>libcuda.so</code> from the host will maximally ensures the KMD-UMD correspondence aligned.</p>
+<p>Now that the docker runtime would choose a native UMD, why did the image <code>bad</code> fail?</p>
+<h2 id="The-internal-of-image-bad"><a href="#The-internal-of-image-bad" class="headerlink" title="The internal of image bad"></a>The internal of image <code>bad</code></h2><p>We can likewise check the UMDs in a running <code>bad</code> container as belows:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ docker run --gpus&#x3D;&#39;&quot;device&#x3D;0&quot;&#39; --rm -it --entrypoint&#x3D; bad bash</span><br><span class="line">root@15f9b3c915b8:&#x2F;# find &#x2F; -name &#39;libcuda.so*&#39; -exec bash -c &quot;echo &#123;&#125; -\&gt; \&#96;readlink &#123;&#125;\&#96;&quot; \; 2&gt;&#x2F;dev&#x2F;null</span><br><span class="line">&#x2F;usr&#x2F;lib&#x2F;x86_64-linux-gnu&#x2F;libcuda.so.465.19.01 -&gt;</span><br><span class="line">&#x2F;usr&#x2F;lib&#x2F;x86_64-linux-gnu&#x2F;libcuda.so.1 -&gt; libcuda.so.465.19.01</span><br><span class="line">&#x2F;usr&#x2F;lib&#x2F;x86_64-linux-gnu&#x2F;libcuda.so -&gt; libcuda.so.1</span><br><span class="line">&#x2F;usr&#x2F;lib&#x2F;x86_64-linux-gnu&#x2F;libcuda.so.460.67 -&gt;</span><br><span class="line">&#x2F;usr&#x2F;local&#x2F;cuda-11.3&#x2F;compat&#x2F;libcuda.so.465.19.01 -&gt;</span><br><span class="line">&#x2F;usr&#x2F;local&#x2F;cuda-11.3&#x2F;compat&#x2F;libcuda.so.1 -&gt; libcuda.so.465.19.01</span><br><span class="line">&#x2F;usr&#x2F;local&#x2F;cuda-11.3&#x2F;compat&#x2F;libcuda.so -&gt; libcuda.so.1</span><br><span class="line">&#x2F;usr&#x2F;local&#x2F;cuda-11.3&#x2F;targets&#x2F;x86_64-linux&#x2F;lib&#x2F;stubs&#x2F;libcuda.so -&gt;</span><br></pre></td></tr></table></figure>
+
+<p style="text-indent: 0; margin-top: 0;"> OOPS!!! Looks like there’s big difference here. We could derive two observations from the result:</p>
+<ol>
+<li>There is already a <code>libcuda.so</code> bundled inside the image at <code>/usr/local/cuda-11.3/compat/libcuda.so.465.19.01</code>, with a higher version of <code>465.19.01</code>.</li>
+<li>During startup, both the native <code>libcuda.so.460.67</code> and the bundled <code>libcuda.so.465.19.01</code> are symlinked under <code>/usr/lib/x86_64-linux-gnu/</code>, and most importantly, <strong>it’s the bundled one being linked as <code>libcuda.so</code> and chosen by the program</strong>.</li>
+</ol>
+<p style="text-indent: 0; margin-top: 0;"> <strong>And that is the reason why the docker image <code>bad</code> violates KMD-UMD compatibility!</strong></p>
+<h1 id="The-bug-of-libnvidia-container"><a href="#The-bug-of-libnvidia-container" class="headerlink" title="The bug of libnvidia-container"></a>The bug of libnvidia-container</h1><p>Such misbehavior is a consequence of a bug of <code>libnvidia-container</code>. But before we talk about it, let’s take a step back to see what the directory <code>/usr/local/cuda-X/compat</code> does and why should it exist.</p>
+<p>Actually the <code>compat</code> directory is part of the CUDA compat package, according to the <a target="_blank" rel="noopener" href="https://docs.nvidia.com/deploy/cuda-compatibility/#installing-title">official docs</a>, which exists to support the forward compatibility 
+        <sup id="clfmakgh9003ngi0xelo63qin-fnref:7">
+            <a href="#clfmakgh9003ngi0xelo63qin-fn:7" rel="footnote"></a>
+        </sup>
+        <!-- empty span to defend against print only CSS -->
+        <span class="display: none"></span>
+        <span class="footnote" style="display: none" id="clfmakgh9003ngi0xelo63qin-fn:7">RECALL: it’s part of UMD-KMD compatibility</span>. The official base image <code>nvidia/cuda:11.3.0-cudnn8-devel-ubuntu20.04</code> had this package built in, which contains a higher version UMD <code>libcuda.so.465.19.01</code> in case of an older-versioned KMD running on the host. As aforementioned, to apply forward compatibility there exists requirement on the underlying hardware. When the requirement unsatisfied, such as for our RTX 3090 GPUs, the <code>libcuda.so</code> from compat package should hopefully not be linked against.</p>
+<p>Unfortunately, current release of nvidia-docker <strong>would roughly attempt to apply forward compatibility, regardless of whether the GPUs meet the limitation</strong>.</p>
+<p>The problem was encountered and studied by Gemfield who posted an article <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/361545761">PyTorch 的 CUDA 错误：Error 804: forward compatibility was attempted on non supported HW</a> as explanation. Gemfield observed nvidia-docker would simultaneously symlink both the native UMD on host and the compat UMD in docker image under <code>/usr/lib/x86_64-linux-gnu/</code>, and brutely choose the one with higher version as the <code>libcuda.so.1</code>, against which user programs would link.</p>
+<p>Obviously this behavior is neither in line with forward compatibility nor with minor version compatibility. Gemfield opened an issue <a target="_blank" rel="noopener" href="https://github.com/NVIDIA/nvidia-docker/issues/1515">NVIDIA/nvidia-docker#1515</a> for discussion, where the author <a target="_blank" rel="noopener" href="https://github.com/NVIDIA/nvidia-docker/issues/1515#issuecomment-872975880">guessed</a> it was a bug of libnvidia-container and another issue <a target="_blank" rel="noopener" href="https://github.com/NVIDIA/libnvidia-container/issues/138">NVIDIA/libnvidia-container#138</a> was referred. Both issues are not yet resolved up till now.</p>
+<p>The workaround is simple – if there’s no compat package, the compat UMD won’t be applied. We can either remove the compat package or brutely delete the <code>/usr/local/cuda-X/compat</code> directory to let it work:</p>
+<figure class="highlight docker"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Dockerfile_bad</span></span><br><span class="line"><span class="keyword">FROM</span> nvidia/cuda:<span class="number">11.3</span>.<span class="number">0</span>-cudnn8-devel-ubuntu20.<span class="number">04</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt update -y &amp;&amp; apt install -y python3 python3-pip</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> pip install torch==1.12.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113</span></span><br><div class="_hl"><span class="line"><span class="keyword">RUN</span><span class="bash"> apt purge cuda-compat-11-3 -y</span></span><br><span class="line"><span class="comment"># OR</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> rm -rfv /usr/<span class="built_in">local</span>/cuda-11.3/compat/</span></span><br></div><span class="line"><span class="keyword">ENTRYPOINT</span><span class="bash"> [<span class="string">&quot;python&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;import torch; print(torch.rand(2, 3).cuda())&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ make bad</span><br><span class="line">tensor([[0.0059, 0.6425, 0.2299],</span><br><span class="line">        [0.2306, 0.5954, 0.0226]], device&#x3D;&#39;cuda:0&#39;)</span><br></pre></td></tr></table></figure>
+
+<h1 id="Epilogue"><a href="#Epilogue" class="headerlink" title="Epilogue"></a>Epilogue</h1><p>This article elaborates the cause and workaround of CUDA Error 804 when NVIDIA GPUs working with docker. As preknowledge, I introduced the consistution of CUDA, the various categories of CUDA compatibility policies, and how the docker runtime deals with GPU driver. The culprit was discovered to be a bug or deficiency of libnvidia-container, which mishandled forward compatibility and minor version compatibility and was not yet resolved. As a workaround, one can remove the CUDA compat image inside the image to avoid forward compatibility being applied and light the minor version compatibility.</p>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/361545761">PyTorch 的 CUDA 错误：Error 804: forward compatibility was attempted on non supported HW</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.nvidia.com/deploy/cuda-compatibility/">CUDA Compatibility</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html#id4">Table 3. CUDA Toolkit and Corresponding Driver Versions</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.nvidia.com/cuda/cuda-runtime-api/driver-vs-runtime-api.html#driver-vs-runtime-api">Difference between the driver and runtime APIs</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.nvidia.com/datacenter/tesla/drivers/index.html#cuda-drivers">CUDA Driver Lifecycles</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/NVIDIA/nvidia-docker/issues/1515">The latest nvidia-container-toolkit caused inconsistent cuda version and 804 error. #1515</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/NVIDIA/libnvidia-container/issues/138">Invalid libcuda.so.1 symlink under CUDA Enhanced Compatibility #138</a></li>
+</ul>
+<script>(function () {
+  var cclink = document.querySelector("span.cc-link");
+  if (!cclink) return;
+  cclink.innerHTML = '<a href="' + location.href + '">' + location.href + "</a>";
+})();</script></div><div class="tags"><a href="/tags/CUDA/">CUDA</a><a href="/tags/Docker/">Docker</a></div><div class="post-nav"><a href="/gpg-and-github-interoperation/" class="next">Modern Cryptography, GPG and Integration with Git(hub)»</a></div><div id="disqus_thread"><div id="no-comment"> <h2>OOPS!</h2><span>A comment box should be right here...</span><span>But it was gone due to network issues :-(</span><span>If you want to leave comments, make sure you have access to&nbsp;<a target="_blank" rel="noopener" href="https://disqus.com">disqus.com</a>.</span></div><script>var disqus_shortname = "hsfzxjy";
+var disqus_identifier = "diving-from-the-cuda-error-804-into-a-bug-of-libnvidia-container/";
+var disqus_title = 'Diving from the CUDA Error 804 into a bug of libnvidia-container';
+var disqus_url = "https://i.hsfzxjy.site/diving-from-the-cuda-error-804-into-a-bug-of-libnvidia-container/";
+(function () {
+  var dsq = document.createElement("script");
+  dsq.type = "text/javascript";
+  dsq.async = true;
+  dsq.defer = true;
+  dsq.src = "https://" + disqus_shortname + ".disqus.com/embed.js";
+  (document.getElementsByTagName("body")[0] || document.getElementsByTagName("head")[0]).appendChild(dsq);
+  dsq.onerror = function () {
+    $("#no-comment").addClass("show");
+  };
+})();</script><script id="dsq-count-scr" src="//hsfzxjy.disqus.com/count.js" async defer></script></div><div id="toc"><div class="toc-toggler"></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Reproduction-Samples"><span class="toc-number">1.</span> <span class="toc-text">Reproduction Samples</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Components-of-CUDA"><span class="toc-number">2.</span> <span class="toc-text">Components of CUDA</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CUDA-Compatibility-Policies"><span class="toc-number">3.</span> <span class="toc-text">CUDA Compatibility Policies</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Toolkit-driver-compatibility"><span class="toc-number">3.1.</span> <span class="toc-text">Toolkit-driver compatibility</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UMD-KMD-compatibility"><span class="toc-number">3.2.</span> <span class="toc-text">UMD-KMD compatibility</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Summary-of-Compatibility"><span class="toc-number">3.3.</span> <span class="toc-text">Summary of Compatibility</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Back-to-Our-Problem"><span class="toc-number">4.</span> <span class="toc-text">Back to Our Problem</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#How-nvidia-driver-works-with-docker"><span class="toc-number">4.1.</span> <span class="toc-text">How nvidia driver works with docker?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-internal-of-image-bad"><span class="toc-number">4.2.</span> <span class="toc-text">The internal of image bad</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#The-bug-of-libnvidia-container"><span class="toc-number">5.</span> <span class="toc-text">The bug of libnvidia-container</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Epilogue"><span class="toc-number">6.</span> <span class="toc-text">Epilogue</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#References"><span class="toc-number">7.</span> <span class="toc-text">References</span></a></li></ol></div></div></div></div></main><nav id="right-panel" class="pure-u-1-4"><div id="sidebar"><div class="widget"><div class="widget-title">Navigations</div><ul><li><a href="/works/" class="widget-item"><i class="icon-sigma"></i><span>Publications &amp; Projects</span></a></li><li><a href="/archives/" class="widget-item"><i class="icon-clock2"></i><span>Archives</span></a></li><li><a href="/aggr/" class="widget-item"><i class="icon-history"></i><span>Index</span></a></li><li><a href="/blogroll/" class="widget-item"><i class="icon-earth"></i><span>Blog Roll</span></a></li><li><a href="/atom.xml" class="widget-item"><i class="icon-rss2"></i><span>RSS</span></a></li></ul></div><div class="widget"><div class="widget-title">Categories</div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Tech/">Tech</a><span class="category-list-count">75</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Soliloquy/">Soliloquy</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Series/">Series</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Memo/">Memo</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Life/">Life</a><span class="category-list-count">8</span></li></ul></div><div class="widget"><div class="widget-title">Recent Tags</div><div class="tagcloud"><a href="/tags/CUDA/" style="font-size: 0.9rem;">CUDA</a> <a href="/tags/Docker/" style="font-size: 0.9rem;">Docker</a> <a href="/tags/Git/" style="font-size: 0.9rem;">Git</a> <a href="/tags/Github/" style="font-size: 0.9rem;">Github</a> <a href="/tags/GPG/" style="font-size: 0.9rem;">GPG</a> <a href="/tags/Ubuntu/" style="font-size: 0.9rem;">Ubuntu</a> <a href="/tags/System-Maintainance/" style="font-size: 0.9rem;">System Maintainance</a> <a href="/tags/Methodology/" style="font-size: 0.9rem;">Methodology</a> <a href="/tags/Programming/" style="font-size: 0.9rem;">Programming</a> <a href="/tags/Go/" style="font-size: 0.9rem;">Go</a> <a href="/tags/Dart/" style="font-size: 0.9rem;">Dart</a> <a href="/tags/Best-Practice/" style="font-size: 0.9rem;">Best Practice</a> <a href="/tags/Naming/" style="font-size: 0.9rem;">Naming</a> <a href="/tags/Fiction/" style="font-size: 0.9rem;">Fiction</a> <a href="/tags/FFI/" style="font-size: 0.9rem;">FFI</a> <a href="/tags/Rust/" style="font-size: 0.9rem;">Rust</a> <a href="/tags/Compiler/" style="font-size: 0.9rem;">Compiler</a> <a href="/tags/Type-Theory/" style="font-size: 0.9rem;">Type Theory</a> <a href="/tags/Python/" style="font-size: 0.9rem;">Python</a> <a href="/tags/Multiprocessing/" style="font-size: 0.9rem;">Multiprocessing</a> <a href="/tags/Bash/" style="font-size: 0.9rem;">Bash</a> <a href="/tags/pickle/" style="font-size: 0.9rem;">pickle</a> <a href="/tags/docker/" style="font-size: 0.9rem;">docker</a> <a href="/tags/Bitwarden/" style="font-size: 0.9rem;">Bitwarden</a> <a href="/tags/NextCloud/" style="font-size: 0.9rem;">NextCloud</a> <a href="/tags/Determinism/" style="font-size: 0.9rem;">Determinism</a> <a href="/tags/Web/" style="font-size: 0.9rem;">Web</a> <a href="/tags/IndexedDB/" style="font-size: 0.9rem;">IndexedDB</a> <a href="/tags/Cython/" style="font-size: 0.9rem;">Cython</a> <a href="/tags/Linux/" style="font-size: 0.9rem;">Linux</a> <a href="/tags/Information-Theory/" style="font-size: 0.9rem;">Information Theory</a> <a href="/tags/Probability/" style="font-size: 0.9rem;">Probability</a> <a href="/tags/Math/" style="font-size: 0.9rem;">Math</a> <a href="/tags/Lifetime/" style="font-size: 0.9rem;">Lifetime</a> <a href="/tags/SS/" style="font-size: 0.9rem;">SS</a> <a href="/tags/proxychains/" style="font-size: 0.9rem;">proxychains</a> <a href="/tags/Haskell/" style="font-size: 0.9rem;">Haskell</a> <a href="/tags/Multi-Threading/" style="font-size: 0.9rem;">Multi-Threading</a> <a href="/tags/GIL/" style="font-size: 0.9rem;">GIL</a> <a href="/tags/POSIX/" style="font-size: 0.9rem;">POSIX</a></div></div><div class="widget"><div class="widget-title">Recent Articles</div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/diving-from-the-cuda-error-804-into-a-bug-of-libnvidia-container/">Diving from the CUDA Error 804 into a bug of libnvidia-container</a></li><li class="post-list-item"><a class="post-list-link" href="/gpg-and-github-interoperation/">Modern Cryptography, GPG and Integration with Git(hub)</a></li><li class="post-list-item"><a class="post-list-link" href="/move-ubuntu-root-partition/">Move the Root Partition of Ubuntu</a></li><li class="post-list-item"><a class="post-list-link" href="/a-new-programmer-kicks-a-roadblock/">A New Programmer Kicks a Roadblock</a></li><li class="post-list-item"><a class="post-list-link" href="/dart-go-git-package-spec/">Git-based Dependencies in Dart and Go</a></li><li class="post-list-item"><a class="post-list-link" href="/reversy-naming/">Reversy Naming</a></li><li class="post-list-item"><a class="post-list-link" href="/human-sucks/">人类一败涂地</a></li><li class="post-list-item"><a class="post-list-link" href="/invalid-pointer-will-bite-you/">Invalid Golang Pointers Can Bite You Even If You Don't Dereference</a></li><li class="post-list-item"><a class="post-list-link" href="/side-project/">Side Project（副业）</a></li><li class="post-list-item"><a class="post-list-link" href="/a-bug-of-promoting-complex-trait-bounds-in-rust/">A Flaw of Promoting Complex Trait Bounds in Rust</a></li></ul></div><div class="widget"><div class="widget-title">Recent Comments</div><div id="recent-comments"><script>document.write = function (code) {
+  document.getElementById("recent-comments").innerHTML = code;
+};</script><script type="text/javascript" src="//hsfzxjy.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1" async defer></script></div></div></div></nav><span class="toggle-menu"><svg viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg"><line x1="1" y1="11" x2="11" y2="1" stroke="#69737d" stroke-width="1"></line><line x1="1" y1="1" x2="11" y2="11" stroke="#69737d" stroke-width="1"></line></svg><span></span></span></div><div id="footer" style="text-align: center">© <a href="/" rel="nofollow">#hsfzxjy#.</a>&nbsp;Powered by&nbsp;<a rel="nofollow" target="_blank" href="https://hexo.io">Hexo.</a>&nbsp;<a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo">Theme</a>&nbsp;by&nbsp;<a rel="nofollow" target="_blank" href="https://github.com/pagecho">Cho</a>&nbsp;&amp;<a rel="nofollow" target="_blank" href="https://github.com/hsfzxjy">hsfzxjy.</a><div stype="width:300px;margin:0 auto; padding:20px 0;"><a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44011202001249" style="display: inline-block; text-decoration: none; height: 20px; line-height: 20px"><img src="/img/beian.png" style="float: left"><span style="float: left; height: 20px; line-height: 20px; margin: 0px 0px 0px 5px; color: #939393">粤公网安备44011202001249号</span></a><a target="_blank" style="display: inline-block; text-decoration: none; height: 20px; line-height: 20px" href="http://beian.miit.gov.cn/"><span style="float: left; height: 20px; line-height: 20px; margin: 0px 0px 0px 5px; color: #939393">粤ICP备2020075702号-1</span></a></div></div></div></body>
+<script src="/dist/js/main.js"></script>
+</html>

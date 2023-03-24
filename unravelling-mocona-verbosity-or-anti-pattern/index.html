@@ -1,0 +1,278 @@
+<!DOCTYPE html><html lang="en"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="Creation and blogs by hsfzxjy."><title>[Unravelling mocona] Part 1 - Verbosity or Anti-Pattern</title><link rel="stylesheet" type="text/css" href="/dist/css/style.css"><script src="/dist/js/endec.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"><meta name="generator" content="Hexo 7.0.0-rc1"></head><body><div class="body_container"><span id="rocket" href="#top" class="show"></span><script>if (/micromessenger/.test(navigator.userAgent.toLowerCase())) {
+  var style = document.createElement("style");
+  style.type = "text/css";
+  var text = "#header.hide-wx { display: none!important; }";
+  style.appendChild(document.createTextNode(text));
+
+  document.head.appendChild(style);
+}
+</script><nav id="header" class="hide-wx"><div class="site-name"><a id="logo" href="/">#hsfzxjy#</a></div><span class="github-btn"><a href="#" rel="noopener noreferrer" target="_blank" class="gh-btn"><span class="gh-ico"></span><span class="gh-text"></span></a><a href="#" rel="noopener noreferrer" target="_blank" class="gh-count"></a></span><script>window.GH_BUTTON = { username: "hsfzxjy" };</script><div id="nav-menu"><span class="before"></span><div><a href="/"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Tech/" class="current"><i class="icon-embed2"></i><span>Tech</span></a><a href="/categories/Soliloquy/"><i class="icon-android"></i><span>Soliloquy</span></a><a href="/categories/Life/"><i class="icon-leaf"></i><span>Life</span></a><a href="/categories/Memo/"><i class="icon-bookmarks"></i><span>Memo</span></a><a href="/categories/Series/"><i class="icon-books"></i><span>Series</span></a><a href="/works/"><i class="icon-sigma"></i><span>Projects</span></a><a href="/about/"><i class="icon-wink"></i><span>Me</span></a></div><span class="after"></span></div></nav><div id="layout" class="pure-g"><main id="left-panel" class="pure-u-1"><div class="content_container"><div class="post post-page"><h1 class="post-title">[Unravelling mocona] Part 1 - Verbosity or Anti-Pattern</h1><div class="post-meta">2021-09-16 | <span class="categories"><a href="/categories/Tech/"> Tech</a></span></div><div lang="en" class="post-content "><p>I was once working as an intern at MSRA around two years ago, at which I joined a research project and started developing upon a large codebase. It’s a practice in ML research fields to adopt an existing code repository as codebase, instead of crafting everything from scratch. Such codebases usually come with convenient “infrastructures” 
+        <sup id="clfmakgh20034gi0xdwmxbnhp-fnref:1">
+            <a href="#clfmakgh20034gi0xdwmxbnhp-fn:1" rel="footnote"></a>
+        </sup>
+        <!-- empty span to defend against print only CSS -->
+        <span class="display: none"></span>
+        <span class="footnote" style="display: none" id="clfmakgh20034gi0xdwmxbnhp-fn:1">Loaders and preprocessors for various datasets, training loop, and evaluation metrics, <em>etc.</em></span>, so researchers would not have to implement them once again, which could be time-wasting and error-prone. All we need is to write our models and losses, and put them into experiments.</p>
+<p>The flow works just fine if you are proposing minor improvement on algorithms. The codebase provides an easy approach to prove and iterate your idea. But things would get worse if your work goes beyond it, especially touching the encapsulated infrastructures. Those convenient parts would constraint you and enforce your code into spaghetti.</p>
+<a id="more"></a>
+
+<p>At that time we were working on a new algorithm for image segmentation problem. The algorithm proposed a pipeline that is totally different from previous ones. To match it we had to introduce new data preprocessor as well as training scheme. The codebase, however, was designed for previous algorithms and presumed a traditional pipeline. It was as solid as a rock and we could hardly put our customization in.</p>
+<p style="margin-top: 0.5em;"> We kept stuffing dozens of lines of code into the codebase. Most of them are badly-designed, repetitive and tightly coupled. We were at that time desperately catching up a conference deadline, applying every effort we had to figure out the optimal setting. Any irrelevant re-factoring would be considered time-consuming and risky. The development went on for months, and finally it grew up into a giant and terrifying monster. Here I would like to share two issues we’ve encountered.</p>
+<hr>
+<p>The first one happens in pairing a model with corresponding data loader. A traditional segmentation algorithm takes images (<code>img</code>) as input and is supervised by ground truth segmentation maps (<code>gtseg</code>). The data loader in codebase, therefore, default to yield a tuple of <code>(img, gtseg)</code> for each training iteration. Whereas in our method, the algorithm expects another two kinds of supervision <code>gtdist</code> and <code>gtoffset</code>, which requires totally different logic for loading and pre-processing.</p>
+<p style="margin-top: 0.5em;"> Okay. So now we have two kinds of data loader, one for traditional methods, another for our method. We reserve a configuration entry <code>loader_type</code> for selecting a specific loader. The configuration would be firstly passed to a class <code>Trainer</code>, then to a <code>DataLoaderBuilder</code> to instantiate the chosen loader.</p>
+<p style="margin-top: 0.5em;"> The class <code>Trainer</code> is fundamental in our program. It takes charge of all the instantiation for main components 
+        <sup id="clfmakgh20034gi0xdwmxbnhp-fnref:2">
+            <a href="#clfmakgh20034gi0xdwmxbnhp-fn:2" rel="footnote"></a>
+        </sup>
+        <!-- empty span to defend against print only CSS -->
+        <span class="display: none"></span>
+        <span class="footnote" style="display: none" id="clfmakgh20034gi0xdwmxbnhp-fn:2">Logger, data loader, model, evaluator, <em>etc.</em></span>, and maintains the logic of training loop and evaluation. The design presents a hierarchy like</p>
+<figure class="graphviz"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: %3 Pages: 1 -->
+<svg width="306pt" height="114pt"
+ viewBox="0.00 0.00 306.49 114.42" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 110.42)">
+<title>%3</title>
+<polygon fill="transparent" stroke="transparent" points="-4,4 -4,-110.42 302.49,-110.42 302.49,4 -4,4"/>
+<!-- user -->
+<!-- Trainer -->
+<g id="node3" class="node">
+<title>Trainer</title>
+<polygon fill="seashell" stroke="#444444" points="168.52,-76.89 171.02,-76.97 173.5,-77.09 175.94,-77.25 178.33,-77.45 180.67,-77.69 182.94,-77.97 185.14,-78.28 187.26,-78.63 189.29,-79.02 191.22,-79.44 193.05,-79.89 194.77,-80.37 196.37,-80.89 197.85,-81.43 199.21,-82.01 200.44,-82.6 201.54,-83.23 202.51,-83.87 203.34,-84.54 204.04,-85.23 204.61,-85.93 205.05,-86.65 205.35,-87.38 205.52,-88.13 205.57,-88.88 205.49,-89.64 205.3,-90.41 204.98,-91.18 204.56,-91.95 204.02,-92.72 203.39,-93.48 202.65,-94.24 201.83,-95 200.92,-95.74 199.93,-96.48 198.86,-97.19 197.72,-97.9 196.52,-98.58 195.26,-99.25 193.94,-99.9 192.58,-100.52 191.17,-101.12 189.72,-101.69 188.24,-102.24 186.73,-102.75 185.19,-103.24 183.62,-103.69 182.04,-104.11 180.44,-104.49 178.82,-104.84 177.19,-105.16 175.55,-105.43 173.9,-105.67 172.24,-105.87 170.58,-106.03 168.92,-106.15 167.25,-106.23 165.58,-106.27 163.91,-106.27 162.24,-106.23 160.57,-106.15 158.91,-106.03 157.24,-105.87 155.59,-105.67 153.94,-105.43 152.3,-105.16 150.67,-104.84 149.05,-104.49 147.45,-104.11 145.86,-103.69 144.3,-103.24 142.76,-102.75 141.25,-102.24 139.76,-101.69 138.32,-101.12 136.91,-100.52 135.54,-99.9 134.23,-99.25 132.97,-98.58 131.77,-97.9 130.63,-97.19 129.56,-96.48 128.57,-95.74 127.66,-95 126.83,-94.24 126.1,-93.48 125.46,-92.72 124.93,-91.95 124.5,-91.18 124.19,-90.41 123.99,-89.64 123.92,-88.88 123.96,-88.13 124.14,-87.38 124.44,-86.65 124.87,-85.93 125.44,-85.23 126.14,-84.54 126.98,-83.87 127.95,-83.23 129.05,-82.6 130.28,-82.01 131.64,-81.43 133.12,-80.89 134.72,-80.37 136.44,-79.89 138.27,-79.44 140.2,-79.02 142.23,-78.63 144.34,-78.28 146.54,-77.97 148.82,-77.69 151.16,-77.45 153.55,-77.25 155.99,-77.09 158.46,-76.97 160.97,-76.89 163.48,-76.85 166,-76.85 168.52,-76.89"/>
+<text text-anchor="middle" x="164.74" y="-87.86" font-family="Times,serif" font-size="14.00" fill="#444444">Trainer</text>
+</g>
+<!-- user&#45;&gt;Trainer -->
+<g id="edge1" class="edge">
+<title>user&#45;&gt;Trainer</title>
+<path fill="none" stroke="#444444" stroke-dasharray="5,2" d="M57.25,-91.56C73.83,-91.56 95.19,-91.56 114.49,-91.56"/>
+<polygon fill="#444444" stroke="#444444" points="114.67,-95.06 124.67,-91.56 114.67,-88.06 114.67,-95.06"/>
+<text text-anchor="middle" x="90.78" y="-97.56" font-family="Times,serif" font-size="10.00" fill="#444444">loader_type</text>
+</g>
+<!-- _ -->
+<!-- Trainer&#45;&gt;_ -->
+<!-- DataLoaderBuilder -->
+<g id="node4" class="node">
+<title>DataLoaderBuilder</title>
+<polygon fill="seashell" stroke="#444444" points="100.05,-0.18 105.54,-0.27 110.98,-0.39 116.34,-0.55 121.6,-0.75 126.74,-0.98 131.74,-1.26 136.57,-1.57 141.23,-1.92 145.68,-2.31 149.93,-2.73 153.94,-3.18 157.72,-3.66 161.24,-4.18 164.5,-4.73 167.48,-5.3 170.19,-5.9 172.61,-6.52 174.73,-7.17 176.57,-7.83 178.11,-8.52 179.36,-9.22 180.31,-9.94 180.98,-10.68 181.36,-11.42 181.46,-12.17 181.29,-12.93 180.86,-13.7 180.17,-14.47 179.23,-15.24 178.06,-16.01 176.66,-16.78 175.05,-17.54 173.24,-18.29 171.24,-19.03 169.06,-19.77 166.71,-20.49 164.21,-21.19 161.57,-21.88 158.8,-22.54 155.91,-23.19 152.91,-23.81 149.82,-24.41 146.64,-24.98 143.38,-25.53 140.06,-26.04 136.67,-26.53 133.23,-26.98 129.75,-27.4 126.23,-27.79 122.67,-28.14 119.09,-28.45 115.49,-28.73 111.86,-28.96 108.22,-29.16 104.57,-29.32 100.91,-29.44 97.25,-29.52 93.58,-29.56 89.91,-29.56 86.24,-29.52 82.57,-29.44 78.91,-29.32 75.26,-29.16 71.62,-28.96 68,-28.73 64.39,-28.45 60.81,-28.14 57.26,-27.79 53.74,-27.4 50.25,-26.98 46.82,-26.53 43.43,-26.04 40.11,-25.53 36.85,-24.98 33.67,-24.41 30.57,-23.81 27.58,-23.19 24.69,-22.54 21.92,-21.88 19.28,-21.19 16.78,-20.49 14.43,-19.77 12.25,-19.03 10.25,-18.29 8.43,-17.54 6.82,-16.78 5.42,-16.01 4.25,-15.24 3.32,-14.47 2.63,-13.7 2.19,-12.93 2.02,-12.17 2.13,-11.42 2.51,-10.68 3.17,-9.94 4.13,-9.22 5.38,-8.52 6.92,-7.83 8.75,-7.17 10.88,-6.52 13.3,-5.9 16,-5.3 18.99,-4.73 22.25,-4.18 25.77,-3.66 29.54,-3.18 33.56,-2.73 37.8,-2.31 42.26,-1.92 46.91,-1.57 51.75,-1.26 56.74,-0.98 61.88,-0.75 67.14,-0.55 72.5,-0.39 77.94,-0.27 83.44,-0.18 88.97,-0.14 94.51,-0.14 100.05,-0.18"/>
+<text text-anchor="middle" x="91.74" y="-11.15" font-family="Times,serif" font-size="14.00" fill="#444444">DataLoaderBuilder</text>
+</g>
+<!-- Trainer&#45;&gt;DataLoaderBuilder -->
+<g id="edge3" class="edge">
+<title>Trainer&#45;&gt;DataLoaderBuilder</title>
+<path fill="none" stroke="#444444" d="M151.69,-77.21C140.72,-65.98 124.85,-49.74 112.19,-36.78"/>
+<polygon fill="#444444" stroke="#444444" points="114.67,-34.31 105.18,-29.6 109.66,-39.2 114.67,-34.31"/>
+<text text-anchor="middle" x="157.24" y="-50.71" font-family="Times,serif" font-size="10.00" fill="#444444">loader_type</text>
+</g>
+<!-- Model -->
+<g id="node5" class="node">
+<title>Model</title>
+<polygon fill="seashell" stroke="#444444" points="241.29,-0.18 243.64,-0.27 245.96,-0.39 248.25,-0.55 250.49,-0.75 252.69,-0.98 254.82,-1.26 256.88,-1.57 258.87,-1.92 260.78,-2.31 262.59,-2.73 264.3,-3.18 265.91,-3.66 267.42,-4.18 268.81,-4.73 270.08,-5.3 271.24,-5.9 272.27,-6.52 273.18,-7.17 273.96,-7.83 274.62,-8.52 275.15,-9.22 275.56,-9.94 275.85,-10.68 276.01,-11.42 276.05,-12.17 275.98,-12.93 275.79,-13.7 275.5,-14.47 275.1,-15.24 274.6,-16.01 274,-16.78 273.32,-17.54 272.54,-18.29 271.69,-19.03 270.76,-19.77 269.75,-20.49 268.69,-21.19 267.56,-21.88 266.37,-22.54 265.14,-23.19 263.86,-23.81 262.54,-24.41 261.18,-24.98 259.79,-25.53 258.37,-26.04 256.93,-26.53 255.46,-26.98 253.97,-27.4 252.47,-27.79 250.95,-28.14 249.42,-28.45 247.88,-28.73 246.33,-28.96 244.78,-29.16 243.22,-29.32 241.66,-29.44 240.09,-29.52 238.53,-29.56 236.96,-29.56 235.39,-29.52 233.83,-29.44 232.27,-29.32 230.71,-29.16 229.15,-28.96 227.61,-28.73 226.07,-28.45 224.54,-28.14 223.02,-27.79 221.52,-27.4 220.03,-26.98 218.56,-26.53 217.12,-26.04 215.7,-25.53 214.3,-24.98 212.95,-24.41 211.63,-23.81 210.35,-23.19 209.11,-22.54 207.93,-21.88 206.8,-21.19 205.73,-20.49 204.73,-19.77 203.8,-19.03 202.95,-18.29 202.17,-17.54 201.48,-16.78 200.89,-16.01 200.39,-15.24 199.99,-14.47 199.69,-13.7 199.51,-12.93 199.43,-12.17 199.48,-11.42 199.64,-10.68 199.93,-9.94 200.33,-9.22 200.87,-8.52 201.52,-7.83 202.31,-7.17 203.22,-6.52 204.25,-5.9 205.4,-5.3 206.68,-4.73 208.07,-4.18 209.57,-3.66 211.18,-3.18 212.9,-2.73 214.71,-2.31 216.61,-1.92 218.6,-1.57 220.67,-1.26 222.8,-0.98 224.99,-0.75 227.24,-0.55 229.53,-0.39 231.85,-0.27 234.2,-0.18 236.56,-0.14 238.93,-0.14 241.29,-0.18"/>
+<text text-anchor="middle" x="237.74" y="-11.15" font-family="Times,serif" font-size="14.00" fill="#444444">Model</text>
+</g>
+<!-- Trainer&#45;&gt;Model -->
+<g id="edge4" class="edge">
+<title>Trainer&#45;&gt;Model</title>
+<path fill="none" stroke="#444444" d="M177.79,-77.21C189.04,-65.7 205.43,-48.92 218.24,-35.82"/>
+<polygon fill="#444444" stroke="#444444" points="220.81,-38.19 225.29,-28.6 215.8,-33.3 220.81,-38.19"/>
+</g>
+</g>
+</svg>
+</figure>
+
+<p style="margin-top: 0.5em;"> It should be alright when there’s only two kinds of loader. But things got complicated as the experiments proceed. During the months We’ve tried dozens of model designs for seeking an optimal one. Some of them should be fed with a combination of input that is different from the two before 
+        <sup id="clfmakgh20034gi0xdwmxbnhp-fnref:3">
+            <a href="#clfmakgh20034gi0xdwmxbnhp-fn:3" rel="footnote"></a>
+        </sup>
+        <!-- empty span to defend against print only CSS -->
+        <span class="display: none"></span>
+        <span class="footnote" style="display: none" id="clfmakgh20034gi0xdwmxbnhp-fn:3">e.g., taking <code>(img, offset)</code> as input and supervised by <code>(gtseg, gtoffset)</code></span>. More loaders popped out in support of those models. We began to mess up, since it was a tedious nightmare to keep <code>loader_type</code> in sync with the model in each configuration file.</p>
+<hr>
+<p>The second is a rather common problem in training models. Say you have designed a multi-stage training pipeline, where you would like the model to switch its behavior at some point. In the first X iterations, we disable a component A of model for warming up; while after that, it is enabled again for normal training. The catch is, how to make a deeply rooted component aware of the iteration number?</p>
+<p style="margin-top: 0.5em;"> Back to our codebase. We had a <code>Trainer</code> in charge of everything. It starts a training loop, in which the iteration number lies as a local variable. It also holds a reference to the model. The model has a hierachical structure, and component A hides deeply in some layers.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trainer</span>:</span></span><br><span class="line">    model: <span class="string">&quot;Model&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">train</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">for</span> iter_num, data_batch <span class="keyword">in</span> <span class="built_in">enumerate</span>(self.data_loader):</span><br><span class="line">            self.model.forward(data_batch)</span><br><span class="line">            ...</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Model</span>:</span></span><br><span class="line">    A: <span class="string">&quot;ComponentA&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, data_batch</span>):</span></span><br><span class="line">        ...</span><br><span class="line">        self.A.forward(data_batch)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ComponentA</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, data_batch</span>):</span></span><br><span class="line">        <span class="comment"># How can I access iter_num?</span></span><br></pre></td></tr></table></figure>
+
+<p style="text-indent: 0; margin-top: 0;"> The stuff was implemented in a rough way at that time – we add a second argument for both <code>Model.forward()</code> and <code>ComponentA.forward()</code>, and pass <code>iter_num</code> down along the path.</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trainer</span>:</span></span><br><span class="line">    model: <span class="string">&quot;Model&quot;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">train</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">for</span> iter_num, data_batch <span class="keyword">in</span> <span class="built_in">enumerate</span>(self.data_loader):</span><br><div class="_hl"><span class="line">            self.model.forward(data_batch, iter_num)</span><br></div><span class="line">            ...</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Model</span>:</span></span><br><span class="line">    A: <span class="string">&quot;ComponentA&quot;</span></span><br><div class="_hl"><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, data_batch, iter_num</span>):</span></span><br></div><span class="line">        ...</span><br><span class="line">        self.A.forward(data_batch, iter_num)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ComponentA</span>:</span></span><br><div class="_hl"><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, data_batch, iter_num</span>):</span></span><br></div><span class="line">        <span class="comment"># How can I access iter_num?</span></span><br></pre></td></tr></table></figure>
+
+<p style="margin-top: 0.5em;"> Jesus it is dirty. The argument passing “contaminates” all functions it goes through. Whether or not expecting, they have to accept an extra argument. What if more components would like to access the states? What if more states would be passed? Every single change would have to modify a large area of code. Nobody would like it. At least I won’t.</p>
+<hr>
+<p>Now let’s move to a higher level for some deeper thoughts. In the first example, we choose to initiate model and data loader separately. The crux is, <em>they are not uncorrelated components</em>. The choice of model decides what shape input data would be like, and further determines the type of loader. We in fact have a graph like</p>
+<figure class="graphviz"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: %3 Pages: 1 -->
+<svg width="331pt" height="114pt"
+ viewBox="0.00 0.00 331.01 114.42" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 110.42)">
+<title>%3</title>
+<polygon fill="transparent" stroke="transparent" points="-4,4 -4,-110.42 327.01,-110.42 327.01,4 -4,4"/>
+<!-- Trainer -->
+<g id="node1" class="node">
+<title>Trainer</title>
+<polygon fill="seashell" stroke="#444444" points="139.18,-76.89 141.68,-76.97 144.16,-77.09 146.6,-77.25 148.99,-77.45 151.33,-77.69 153.6,-77.97 155.8,-78.28 157.92,-78.63 159.95,-79.02 161.88,-79.44 163.71,-79.89 165.43,-80.37 167.03,-80.89 168.51,-81.43 169.87,-82.01 171.1,-82.6 172.2,-83.23 173.17,-83.87 174,-84.54 174.71,-85.23 175.27,-85.93 175.71,-86.65 176.01,-87.38 176.18,-88.13 176.23,-88.88 176.15,-89.64 175.96,-90.41 175.64,-91.18 175.22,-91.95 174.68,-92.72 174.05,-93.48 173.32,-94.24 172.49,-95 171.58,-95.74 170.59,-96.48 169.52,-97.19 168.38,-97.9 167.18,-98.58 165.92,-99.25 164.6,-99.9 163.24,-100.52 161.83,-101.12 160.38,-101.69 158.9,-102.24 157.39,-102.75 155.85,-103.24 154.28,-103.69 152.7,-104.11 151.1,-104.49 149.48,-104.84 147.85,-105.16 146.21,-105.43 144.56,-105.67 142.9,-105.87 141.24,-106.03 139.58,-106.15 137.91,-106.23 136.24,-106.27 134.57,-106.27 132.9,-106.23 131.23,-106.15 129.57,-106.03 127.9,-105.87 126.25,-105.67 124.6,-105.43 122.96,-105.16 121.33,-104.84 119.71,-104.49 118.11,-104.11 116.52,-103.69 114.96,-103.24 113.42,-102.75 111.91,-102.24 110.42,-101.69 108.98,-101.12 107.57,-100.52 106.21,-99.9 104.89,-99.25 103.63,-98.58 102.43,-97.9 101.29,-97.19 100.22,-96.48 99.23,-95.74 98.32,-95 97.49,-94.24 96.76,-93.48 96.12,-92.72 95.59,-91.95 95.17,-91.18 94.85,-90.41 94.65,-89.64 94.58,-88.88 94.62,-88.13 94.8,-87.38 95.1,-86.65 95.54,-85.93 96.1,-85.23 96.8,-84.54 97.64,-83.87 98.61,-83.23 99.71,-82.6 100.94,-82.01 102.3,-81.43 103.78,-80.89 105.38,-80.37 107.1,-79.89 108.93,-79.44 110.86,-79.02 112.89,-78.63 115,-78.28 117.2,-77.97 119.48,-77.69 121.82,-77.45 124.21,-77.25 126.65,-77.09 129.12,-76.97 131.63,-76.89 134.14,-76.85 136.67,-76.85 139.18,-76.89"/>
+<text text-anchor="middle" x="135.4" y="-87.86" font-family="Times,serif" font-size="14.00" fill="#444444">Trainer</text>
+</g>
+<!-- Model -->
+<g id="node2" class="node">
+<title>Model</title>
+<polygon fill="seashell" stroke="#444444" points="41.95,-0.18 44.3,-0.27 46.62,-0.39 48.91,-0.55 51.15,-0.75 53.35,-0.98 55.48,-1.26 57.55,-1.57 59.53,-1.92 61.44,-2.31 63.25,-2.73 64.96,-3.18 66.57,-3.66 68.08,-4.18 69.47,-4.73 70.74,-5.3 71.9,-5.9 72.93,-6.52 73.84,-7.17 74.62,-7.83 75.28,-8.52 75.81,-9.22 76.22,-9.94 76.51,-10.68 76.67,-11.42 76.71,-12.17 76.64,-12.93 76.46,-13.7 76.16,-14.47 75.76,-15.24 75.26,-16.01 74.66,-16.78 73.98,-17.54 73.2,-18.29 72.35,-19.03 71.42,-19.77 70.41,-20.49 69.35,-21.19 68.22,-21.88 67.04,-22.54 65.8,-23.19 64.52,-23.81 63.2,-24.41 61.84,-24.98 60.45,-25.53 59.03,-26.04 57.59,-26.53 56.12,-26.98 54.63,-27.4 53.13,-27.79 51.61,-28.14 50.08,-28.45 48.54,-28.73 47,-28.96 45.44,-29.16 43.88,-29.32 42.32,-29.44 40.75,-29.52 39.19,-29.56 37.62,-29.56 36.05,-29.52 34.49,-29.44 32.93,-29.32 31.37,-29.16 29.81,-28.96 28.27,-28.73 26.73,-28.45 25.2,-28.14 23.68,-27.79 22.18,-27.4 20.69,-26.98 19.22,-26.53 17.78,-26.04 16.36,-25.53 14.97,-24.98 13.61,-24.41 12.29,-23.81 11.01,-23.19 9.77,-22.54 8.59,-21.88 7.46,-21.19 6.39,-20.49 5.39,-19.77 4.46,-19.03 3.61,-18.29 2.83,-17.54 2.14,-16.78 1.55,-16.01 1.05,-15.24 0.65,-14.47 0.35,-13.7 0.17,-12.93 0.1,-12.17 0.14,-11.42 0.3,-10.68 0.59,-9.94 0.99,-9.22 1.53,-8.52 2.19,-7.83 2.97,-7.17 3.88,-6.52 4.91,-5.9 6.07,-5.3 7.34,-4.73 8.73,-4.18 10.23,-3.66 11.85,-3.18 13.56,-2.73 15.37,-2.31 17.28,-1.92 19.26,-1.57 21.33,-1.26 23.46,-0.98 25.65,-0.75 27.9,-0.55 30.19,-0.39 32.51,-0.27 34.86,-0.18 37.22,-0.14 39.59,-0.14 41.95,-0.18"/>
+<text text-anchor="middle" x="38.4" y="-11.15" font-family="Times,serif" font-size="14.00" fill="#444444">Model</text>
+</g>
+<!-- Trainer&#45;&gt;Model -->
+<g id="edge1" class="edge">
+<title>Trainer&#45;&gt;Model</title>
+<path fill="none" stroke="#444444" d="M118.51,-77.55C102.83,-65.48 79.36,-47.4 61.87,-33.93"/>
+<polygon fill="#444444" stroke="#444444" points="63.89,-31.06 53.83,-27.73 59.61,-36.61 63.89,-31.06"/>
+<text text-anchor="middle" x="108.4" y="-50.71" font-family="Times,serif" font-size="10.00" fill="#444444">initiate</text>
+</g>
+<!-- DataLoaderBuilder -->
+<g id="node3" class="node">
+<title>DataLoaderBuilder</title>
+<polygon fill="seashell" stroke="#444444" points="241.71,-0.18 247.2,-0.27 252.64,-0.39 258,-0.55 263.26,-0.75 268.4,-0.98 273.4,-1.26 278.23,-1.57 282.89,-1.92 287.35,-2.31 291.59,-2.73 295.61,-3.18 299.38,-3.66 302.9,-4.18 306.16,-4.73 309.14,-5.3 311.85,-5.9 314.27,-6.52 316.39,-7.17 318.23,-7.83 319.77,-8.52 321.02,-9.22 321.97,-9.94 322.64,-10.68 323.02,-11.42 323.12,-12.17 322.95,-12.93 322.52,-13.7 321.83,-14.47 320.89,-15.24 319.72,-16.01 318.33,-16.78 316.71,-17.54 314.9,-18.29 312.9,-19.03 310.72,-19.77 308.37,-20.49 305.87,-21.19 303.23,-21.88 300.46,-22.54 297.57,-23.19 294.57,-23.81 291.48,-24.41 288.3,-24.98 285.04,-25.53 281.72,-26.04 278.33,-26.53 274.89,-26.98 271.41,-27.4 267.89,-27.79 264.34,-28.14 260.75,-28.45 257.15,-28.73 253.52,-28.96 249.89,-29.16 246.23,-29.32 242.57,-29.44 238.91,-29.52 235.24,-29.56 231.57,-29.56 227.9,-29.52 224.23,-29.44 220.57,-29.32 216.92,-29.16 213.28,-28.96 209.66,-28.73 206.06,-28.45 202.47,-28.14 198.92,-27.79 195.4,-27.4 191.92,-26.98 188.48,-26.53 185.09,-26.04 181.77,-25.53 178.51,-24.98 175.33,-24.41 172.24,-23.81 169.24,-23.19 166.35,-22.54 163.58,-21.88 160.94,-21.19 158.44,-20.49 156.09,-19.77 153.91,-19.03 151.91,-18.29 150.09,-17.54 148.48,-16.78 147.09,-16.01 145.91,-15.24 144.98,-14.47 144.29,-13.7 143.85,-12.93 143.68,-12.17 143.79,-11.42 144.17,-10.68 144.84,-9.94 145.79,-9.22 147.04,-8.52 148.58,-7.83 150.41,-7.17 152.54,-6.52 154.96,-5.9 157.67,-5.3 160.65,-4.73 163.91,-4.18 167.43,-3.66 171.2,-3.18 175.22,-2.73 179.46,-2.31 183.92,-1.92 188.57,-1.57 193.41,-1.26 198.41,-0.98 203.54,-0.75 208.8,-0.55 214.17,-0.39 219.61,-0.27 225.1,-0.18 230.63,-0.14 236.18,-0.14 241.71,-0.18"/>
+<text text-anchor="middle" x="233.4" y="-11.15" font-family="Times,serif" font-size="14.00" fill="#444444">DataLoaderBuilder</text>
+</g>
+<!-- Trainer&#45;&gt;DataLoaderBuilder -->
+<g id="edge2" class="edge">
+<title>Trainer&#45;&gt;DataLoaderBuilder</title>
+<path fill="none" stroke="#444444" d="M152.47,-77.55C167.74,-65.91 190.34,-48.68 207.78,-35.39"/>
+<polygon fill="#444444" stroke="#444444" points="210.04,-38.07 215.87,-29.22 205.8,-32.5 210.04,-38.07"/>
+<text text-anchor="middle" x="204.4" y="-50.71" font-family="Times,serif" font-size="10.00" fill="#444444">initiate</text>
+</g>
+<!-- Model&#45;&gt;DataLoaderBuilder -->
+<g id="edge3" class="edge">
+<title>Model&#45;&gt;DataLoaderBuilder</title>
+<path fill="none" stroke="#444444" stroke-dasharray="5,2" d="M76,-14.85C93.1,-14.85 114.22,-14.85 135.37,-14.85"/>
+<polygon fill="#444444" stroke="#444444" points="135.41,-18.35 145.41,-14.85 135.41,-11.35 135.41,-18.35"/>
+<text text-anchor="middle" x="110.3" y="-20.85" font-family="Times,serif" font-size="10.00" fill="#444444">loader_type</text>
+</g>
+</g>
+</svg>
+</figure>
+
+<p style="text-indent: 0; margin-top: 0;"> Ideally, <code>DataLoaderBuilder</code> should “contact” with <code>Model</code> to obtain information required for building loader. But we couldn’t, due to the limitation from hierarchy. The only possible path for message passing is <code>Model</code> -&gt; <code>Trainer</code> -&gt; <code>DataLoaderBuilder</code>. It would however turns <code>Trainer</code> into a “god object”, passing messages around between its children. Having a god object is considered to be a bad practice 
+        <sup id="clfmakgh20034gi0xdwmxbnhp-fnref:4">
+            <a href="#clfmakgh20034gi0xdwmxbnhp-fn:4" rel="footnote"></a>
+        </sup>
+        <!-- empty span to defend against print only CSS -->
+        <span class="display: none"></span>
+        <span class="footnote" style="display: none" id="clfmakgh20034gi0xdwmxbnhp-fn:4"><a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/God_object">God Object - Wikipedia</a></span>. Components are tightly coupled to their parents, and maintenance becomes difficult. The second is similar, except we are making <code>Model</code> into the broker between <code>Trainer</code> and <code>ComponentA</code>.</p>
+<p>A more generalized version of the problem: In a system with tree-like hierarchical structure, how would the communication be made between two non-adjacent components?</p>
+<figure class="graphviz"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: %3 Pages: 1 -->
+<svg width="263pt" height="86pt"
+ viewBox="0.00 0.00 263.46 85.71" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 81.71)">
+<title>%3</title>
+<polygon fill="transparent" stroke="transparent" points="-4,4 -4,-81.71 259.46,-81.71 259.46,4 -4,4"/>
+<!-- A -->
+<g id="node1" class="node">
+<title>A</title>
+<polygon fill="seashell" stroke="#444444" points="31.43,-23.18 33.2,-23.27 34.96,-23.39 36.69,-23.55 38.39,-23.75 40.05,-23.98 41.67,-24.26 43.23,-24.57 44.73,-24.92 46.17,-25.31 47.54,-25.73 48.84,-26.18 50.06,-26.66 51.2,-27.18 52.25,-27.73 53.22,-28.3 54.09,-28.9 54.87,-29.52 55.56,-30.17 56.15,-30.83 56.65,-31.52 57.05,-32.22 57.36,-32.94 57.58,-33.68 57.7,-34.42 57.73,-35.17 57.68,-35.93 57.54,-36.7 57.31,-37.47 57.01,-38.24 56.63,-39.01 56.18,-39.78 55.66,-40.54 55.08,-41.29 54.43,-42.03 53.72,-42.77 52.97,-43.49 52.16,-44.19 51.3,-44.88 50.41,-45.54 49.48,-46.19 48.51,-46.81 47.51,-47.41 46.48,-47.98 45.43,-48.53 44.35,-49.04 43.26,-49.53 42.15,-49.98 41.02,-50.4 39.89,-50.79 38.74,-51.14 37.58,-51.45 36.42,-51.73 35.24,-51.96 34.07,-52.16 32.89,-52.32 31.71,-52.44 30.52,-52.52 29.34,-52.56 28.15,-52.56 26.96,-52.52 25.78,-52.44 24.6,-52.32 23.42,-52.16 22.24,-51.96 21.07,-51.73 19.91,-51.45 18.75,-51.14 17.6,-50.79 16.46,-50.4 15.34,-49.98 14.23,-49.53 13.13,-49.04 12.06,-48.53 11.01,-47.98 9.98,-47.41 8.98,-46.81 8.01,-46.19 7.08,-45.54 6.18,-44.88 5.33,-44.19 4.52,-43.49 3.76,-42.77 3.06,-42.03 2.41,-41.29 1.83,-40.54 1.3,-39.78 0.85,-39.01 0.47,-38.24 0.17,-37.47 -0.05,-36.7 -0.19,-35.93 -0.25,-35.17 -0.21,-34.42 -0.09,-33.68 0.13,-32.94 0.43,-32.22 0.84,-31.52 1.34,-30.83 1.93,-30.17 2.62,-29.52 3.4,-28.9 4.27,-28.3 5.24,-27.73 6.29,-27.18 7.43,-26.66 8.65,-26.18 9.94,-25.73 11.31,-25.31 12.75,-24.92 14.26,-24.57 15.82,-24.26 17.44,-23.98 19.1,-23.75 20.79,-23.55 22.53,-23.39 24.28,-23.27 26.06,-23.18 27.85,-23.14 29.64,-23.14 31.43,-23.18"/>
+<text text-anchor="middle" x="28.74" y="-34.15" font-family="Times,serif" font-size="14.00" fill="#444444">A</text>
+</g>
+<!-- B -->
+<g id="node2" class="node">
+<title>B</title>
+<polygon fill="seashell" stroke="#444444" points="125.91,-48.18 127.69,-48.27 129.45,-48.39 131.18,-48.55 132.88,-48.75 134.54,-48.98 136.15,-49.26 137.71,-49.57 139.22,-49.92 140.66,-50.31 142.03,-50.73 143.33,-51.18 144.55,-51.66 145.69,-52.18 146.74,-52.73 147.7,-53.3 148.58,-53.9 149.36,-54.52 150.04,-55.17 150.64,-55.83 151.14,-56.52 151.54,-57.22 151.85,-57.94 152.06,-58.68 152.19,-59.42 152.22,-60.17 152.16,-60.93 152.02,-61.7 151.8,-62.47 151.5,-63.24 151.12,-64.01 150.67,-64.78 150.15,-65.54 149.56,-66.29 148.92,-67.03 148.21,-67.77 147.45,-68.49 146.65,-69.19 145.79,-69.88 144.9,-70.54 143.96,-71.19 142.99,-71.81 141.99,-72.41 140.97,-72.98 139.91,-73.53 138.84,-74.04 137.75,-74.53 136.64,-74.98 135.51,-75.4 134.37,-75.79 133.22,-76.14 132.07,-76.45 130.9,-76.73 129.73,-76.96 128.56,-77.16 127.38,-77.32 126.19,-77.44 125.01,-77.52 123.82,-77.56 122.64,-77.56 121.45,-77.52 120.27,-77.44 119.08,-77.32 117.91,-77.16 116.73,-76.96 115.56,-76.73 114.39,-76.45 113.24,-76.14 112.09,-75.79 110.95,-75.4 109.82,-74.98 108.71,-74.53 107.62,-74.04 106.55,-73.53 105.49,-72.98 104.47,-72.41 103.47,-71.81 102.5,-71.19 101.56,-70.54 100.67,-69.88 99.82,-69.19 99.01,-68.49 98.25,-67.77 97.55,-67.03 96.9,-66.29 96.31,-65.54 95.79,-64.78 95.34,-64.01 94.96,-63.24 94.66,-62.47 94.44,-61.7 94.3,-60.93 94.24,-60.17 94.27,-59.42 94.4,-58.68 94.61,-57.94 94.92,-57.22 95.32,-56.52 95.82,-55.83 96.42,-55.17 97.1,-54.52 97.88,-53.9 98.76,-53.3 99.72,-52.73 100.78,-52.18 101.91,-51.66 103.13,-51.18 104.43,-50.73 105.8,-50.31 107.24,-49.92 108.75,-49.57 110.31,-49.26 111.92,-48.98 113.58,-48.75 115.28,-48.55 117.01,-48.39 118.77,-48.27 120.55,-48.18 122.33,-48.14 124.13,-48.14 125.91,-48.18"/>
+<text text-anchor="middle" x="123.23" y="-59.15" font-family="Times,serif" font-size="14.00" fill="#444444">B</text>
+</g>
+<!-- A&#45;&gt;B -->
+<g id="edge1" class="edge">
+<title>A&#45;&gt;B</title>
+<path fill="none" stroke="#444444" d="M52.61,-44.03C62.6,-46.74 74.57,-49.97 85.74,-52.99"/>
+<polygon fill="#444444" stroke="#444444" points="85.13,-56.45 95.7,-55.68 86.96,-49.69 85.13,-56.45"/>
+</g>
+<!-- C -->
+<g id="node3" class="node">
+<title>C</title>
+<polygon fill="seashell" stroke="#444444" points="125.91,-0.18 127.69,-0.27 129.45,-0.39 131.18,-0.55 132.88,-0.75 134.54,-0.98 136.15,-1.26 137.71,-1.57 139.22,-1.92 140.66,-2.31 142.03,-2.73 143.33,-3.18 144.55,-3.66 145.69,-4.18 146.74,-4.73 147.7,-5.3 148.58,-5.9 149.36,-6.52 150.04,-7.17 150.64,-7.83 151.14,-8.52 151.54,-9.22 151.85,-9.94 152.06,-10.68 152.19,-11.42 152.22,-12.17 152.16,-12.93 152.02,-13.7 151.8,-14.47 151.5,-15.24 151.12,-16.01 150.67,-16.78 150.15,-17.54 149.56,-18.29 148.92,-19.03 148.21,-19.77 147.45,-20.49 146.65,-21.19 145.79,-21.88 144.9,-22.54 143.96,-23.19 142.99,-23.81 141.99,-24.41 140.97,-24.98 139.91,-25.53 138.84,-26.04 137.75,-26.53 136.64,-26.98 135.51,-27.4 134.37,-27.79 133.22,-28.14 132.07,-28.45 130.9,-28.73 129.73,-28.96 128.56,-29.16 127.38,-29.32 126.19,-29.44 125.01,-29.52 123.82,-29.56 122.64,-29.56 121.45,-29.52 120.27,-29.44 119.08,-29.32 117.91,-29.16 116.73,-28.96 115.56,-28.73 114.39,-28.45 113.24,-28.14 112.09,-27.79 110.95,-27.4 109.82,-26.98 108.71,-26.53 107.62,-26.04 106.55,-25.53 105.49,-24.98 104.47,-24.41 103.47,-23.81 102.5,-23.19 101.56,-22.54 100.67,-21.88 99.82,-21.19 99.01,-20.49 98.25,-19.77 97.55,-19.03 96.9,-18.29 96.31,-17.54 95.79,-16.78 95.34,-16.01 94.96,-15.24 94.66,-14.47 94.44,-13.7 94.3,-12.93 94.24,-12.17 94.27,-11.42 94.4,-10.68 94.61,-9.94 94.92,-9.22 95.32,-8.52 95.82,-7.83 96.42,-7.17 97.1,-6.52 97.88,-5.9 98.76,-5.3 99.72,-4.73 100.78,-4.18 101.91,-3.66 103.13,-3.18 104.43,-2.73 105.8,-2.31 107.24,-1.92 108.75,-1.57 110.31,-1.26 111.92,-0.98 113.58,-0.75 115.28,-0.55 117.01,-0.39 118.77,-0.27 120.55,-0.18 122.33,-0.14 124.13,-0.14 125.91,-0.18"/>
+<text text-anchor="middle" x="123.23" y="-11.15" font-family="Times,serif" font-size="14.00" fill="#444444">C</text>
+</g>
+<!-- A&#45;&gt;C -->
+<g id="edge2" class="edge">
+<title>A&#45;&gt;C</title>
+<path fill="none" stroke="#444444" d="M56.49,-31.2C66.68,-28.67 78.42,-25.75 89.12,-23.09"/>
+<polygon fill="#444444" stroke="#444444" points="90.13,-26.44 98.99,-20.63 88.44,-19.65 90.13,-26.44"/>
+</g>
+<!-- D -->
+<g id="node4" class="node">
+<title>D</title>
+<polygon fill="seashell" stroke="#444444" points="229.4,-0.18 231.18,-0.27 232.93,-0.39 234.67,-0.55 236.37,-0.75 238.03,-0.98 239.64,-1.26 241.2,-1.57 242.71,-1.92 244.15,-2.31 245.52,-2.73 246.81,-3.18 248.03,-3.66 249.17,-4.18 250.22,-4.73 251.19,-5.3 252.06,-5.9 252.84,-6.52 253.53,-7.17 254.12,-7.83 254.62,-8.52 255.03,-9.22 255.33,-9.94 255.55,-10.68 255.67,-11.42 255.71,-12.17 255.65,-12.93 255.51,-13.7 255.29,-14.47 254.99,-15.24 254.61,-16.01 254.16,-16.78 253.64,-17.54 253.05,-18.29 252.4,-19.03 251.7,-19.77 250.94,-20.49 250.13,-21.19 249.28,-21.88 248.38,-22.54 247.45,-23.19 246.48,-23.81 245.48,-24.41 244.45,-24.98 243.4,-25.53 242.33,-26.04 241.23,-26.53 240.12,-26.98 239,-27.4 237.86,-27.79 236.71,-28.14 235.55,-28.45 234.39,-28.73 233.22,-28.96 232.04,-29.16 230.86,-29.32 229.68,-29.44 228.5,-29.52 227.31,-29.56 226.12,-29.56 224.94,-29.52 223.75,-29.44 222.57,-29.32 221.39,-29.16 220.22,-28.96 219.05,-28.73 217.88,-28.45 216.72,-28.14 215.57,-27.79 214.44,-27.4 213.31,-26.98 212.2,-26.53 211.11,-26.04 210.03,-25.53 208.98,-24.98 207.95,-24.41 206.95,-23.81 205.98,-23.19 205.05,-22.54 204.16,-21.88 203.3,-21.19 202.49,-20.49 201.74,-19.77 201.03,-19.03 200.38,-18.29 199.8,-17.54 199.28,-16.78 198.83,-16.01 198.45,-15.24 198.15,-14.47 197.92,-13.7 197.78,-12.93 197.73,-12.17 197.76,-11.42 197.88,-10.68 198.1,-9.94 198.41,-9.22 198.81,-8.52 199.31,-7.83 199.9,-7.17 200.59,-6.52 201.37,-5.9 202.25,-5.3 203.21,-4.73 204.26,-4.18 205.4,-3.66 206.62,-3.18 207.92,-2.73 209.29,-2.31 210.73,-1.92 212.23,-1.57 213.79,-1.26 215.41,-0.98 217.07,-0.75 218.77,-0.55 220.5,-0.39 222.26,-0.27 224.03,-0.18 225.82,-0.14 227.61,-0.14 229.4,-0.18"/>
+<text text-anchor="middle" x="226.72" y="-11.15" font-family="Times,serif" font-size="14.00" fill="#444444">D</text>
+</g>
+<!-- B&#45;&gt;D -->
+<g id="edge4" class="edge">
+<title>B&#45;&gt;D</title>
+<path fill="none" stroke="#444444" stroke-dasharray="5,2" d="M155.66,-47.99C169.01,-41.68 184.45,-34.37 197.43,-28.23"/>
+<polygon fill="#444444" stroke="#444444" points="153.79,-45 146.25,-52.44 156.79,-51.33 153.79,-45"/>
+<polygon fill="#444444" stroke="#444444" points="199.27,-31.24 206.81,-23.8 196.27,-24.91 199.27,-31.24"/>
+<text text-anchor="middle" x="174.97" y="-43.85" font-family="Times,serif" font-size="10.00" fill="#444444">??</text>
+</g>
+<!-- C&#45;&gt;D -->
+<g id="edge3" class="edge">
+<title>C&#45;&gt;D</title>
+<path fill="none" stroke="#444444" d="M151.69,-14.85C162.86,-14.85 175.95,-14.85 187.99,-14.85"/>
+<polygon fill="#444444" stroke="#444444" points="188.23,-18.35 198.23,-14.85 188.23,-11.35 188.23,-18.35"/>
+</g>
+</g>
+</svg>
+</figure>
+
+<p style="margin-top: 0.5em;"> It is not some kind of novel research problem, but one already addressed in practical scenes. Following the single-responsibility principle, we can use a standalone service responsible for managing the communication. Such would be much common in modern Web development, since web components are usually organized in a tree and pass messages more frequently. Mature and production-ready solutions exist like <em>Event-Bus pattern</em> or <em>centralized state management</em> 
+        <sup id="clfmakgh20034gi0xdwmxbnhp-fnref:5">
+            <a href="#clfmakgh20034gi0xdwmxbnhp-fn:5" rel="footnote"></a>
+        </sup>
+        <!-- empty span to defend against print only CSS -->
+        <span class="display: none"></span>
+        <span class="footnote" style="display: none" id="clfmakgh20034gi0xdwmxbnhp-fn:5">such as <a target="_blank" rel="noopener" href="https://redux.js.org/">Redux</a> for React.js</span>, which are all instances of the design pattern. Instead of relying on the target (or the path to the target), the components now depend only on the service object, and the system becomes less coupled.</p>
+<p>So why won’t we use the techniques? Well, if some libaries integrate the stuff, we are glad to try; if not, we have to implement by ourselves, but sorry, we are running out of time.</p>
+<p style="margin-top: 0.5em;"> For programmers in production group, they care more about coupling, otherwise the maintenance is getting painful. They would apply every best practice and design patterns that could be found from textbooks or from some blog posts.</p>
+<p style="margin-top: 0.5em;"> But as researchers, we might have taken the course of software engineering, but we seldom do this. I’ve skimmed so much released code for papers on Github, most of which have their logic for building model, loading data and training tightly coupled, fragile and with mere flexibility for extending. They might be enough to showcase the papers, but are far from a good codebase. But sometimes we have no choice 
+        <sup id="clfmakgh20034gi0xdwmxbnhp-fnref:6">
+            <a href="#clfmakgh20034gi0xdwmxbnhp-fn:6" rel="footnote"></a>
+        </sup>
+        <!-- empty span to defend against print only CSS -->
+        <span class="display: none"></span>
+        <span class="footnote" style="display: none" id="clfmakgh20034gi0xdwmxbnhp-fn:6">you would like to improve the method and that’s the only reliable way to reproduce it</span> but to extend upon it. There are indeed someone paying efforts to make well-designed and easy-to-extend codebases 
+        <sup id="clfmakgh20034gi0xdwmxbnhp-fnref:7">
+            <a href="#clfmakgh20034gi0xdwmxbnhp-fn:7" rel="footnote"></a>
+        </sup>
+        <!-- empty span to defend against print only CSS -->
+        <span class="display: none"></span>
+        <span class="footnote" style="display: none" id="clfmakgh20034gi0xdwmxbnhp-fn:7">We thank projects like <a target="_blank" rel="noopener" href="https://github.com/facebookresearch/detectron2">Detectron2</a> and series of <a target="_blank" rel="noopener" href="https://github.com/open-mmlab">OpenMMLab</a>.</span>, but apparently they could not cover all extension demand from developers. We are from time to time being limited by our codebase, badly-designed or over-designed. What’s worse, we have a deadline ahead, and to rush out the idea, we are practicing so many anti-patterns – communicating via global variables or god object, duplicating the logic here and there, or writing meaningless boilerplate codes. The codebase would finally grow into spaghetti. Badly-cooked spaghetti.</p>
+<p>It was then I began to think about why practices for production could hardly apply to a research project. The answer is that a research project is not production-ready, but evolving and iterating rapidly with aimless target, rather like a prototype. A prototype might grow into a production, but research project won’t, mostly ending after some paper deadlines. The dogmatism of design patterns are too verbose, and sometimes complicated. Researchers seldom use them, but run for some easy-to-use-but-dirty hacking or tricks.</p>
+<p>And that’s the background of <a target="_blank" rel="noopener" href="https://github.com/hsfzxjy/mocona">hsfzxjy/mocona</a>. It implements some patterns like <em>Dependency Injection</em> and <em>Event Emitter</em>, in addressing the problem of communication between components. The library is deliberately designed to be “magical”, that is, do most of the heavy work behind the scene, but expose a very simple interface or (self-made) “syntax” for users. It is evil and an anti-pattern to be implicit and magical in Python. But there’re people tired or more afraid of verbosity, for which they are willing to write even worse code. If the library could help, they would be glad to make a trade-off between verbosity and anti-pattern.</p>
+<script>(function () {
+  var cclink = document.querySelector("span.cc-link");
+  if (!cclink) return;
+  cclink.innerHTML = '<a href="' + location.href + '">' + location.href + "</a>";
+})();</script></div><div class="tags"></div><div class="post-nav"><a href="/a-trick-to-retrieve-web-contents-without-curl-or-wget/" class="pre">«Retrieve Contents over HTTP without curl or wget</a><a href="/unravelling-mocona-preface/" class="next">[Unravelling mocona] Part 0 - Preface»</a></div><div id="disqus_thread"><div id="no-comment"> <h2>OOPS!</h2><span>A comment box should be right here...</span><span>But it was gone due to network issues :-(</span><span>If you want to leave comments, make sure you have access to&nbsp;<a target="_blank" rel="noopener" href="https://disqus.com">disqus.com</a>.</span></div><script>var disqus_shortname = "hsfzxjy";
+var disqus_identifier = "unravelling-mocona-verbosity-or-anti-pattern/";
+var disqus_title = '[Unravelling mocona] Part 1 - Verbosity or Anti-Pattern';
+var disqus_url = "https://i.hsfzxjy.site/unravelling-mocona-verbosity-or-anti-pattern/";
+(function () {
+  var dsq = document.createElement("script");
+  dsq.type = "text/javascript";
+  dsq.async = true;
+  dsq.defer = true;
+  dsq.src = "https://" + disqus_shortname + ".disqus.com/embed.js";
+  (document.getElementsByTagName("body")[0] || document.getElementsByTagName("head")[0]).appendChild(dsq);
+  dsq.onerror = function () {
+    $("#no-comment").addClass("show");
+  };
+})();</script><script id="dsq-count-scr" src="//hsfzxjy.disqus.com/count.js" async defer></script></div></div></div></main><nav id="right-panel" class="pure-u-1-4"><div id="sidebar"><div class="widget"><div class="widget-title">Navigations</div><ul><li><a href="/works/" class="widget-item"><i class="icon-sigma"></i><span>Publications &amp; Projects</span></a></li><li><a href="/archives/" class="widget-item"><i class="icon-clock2"></i><span>Archives</span></a></li><li><a href="/aggr/" class="widget-item"><i class="icon-history"></i><span>Index</span></a></li><li><a href="/blogroll/" class="widget-item"><i class="icon-earth"></i><span>Blog Roll</span></a></li><li><a href="/atom.xml" class="widget-item"><i class="icon-rss2"></i><span>RSS</span></a></li></ul></div><div class="widget"><div class="widget-title">Categories</div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Tech/">Tech</a><span class="category-list-count">75</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Soliloquy/">Soliloquy</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Series/">Series</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Memo/">Memo</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Life/">Life</a><span class="category-list-count">8</span></li></ul></div><div class="widget"><div class="widget-title">Recent Tags</div><div class="tagcloud"><a href="/tags/CUDA/" style="font-size: 0.9rem;">CUDA</a> <a href="/tags/Docker/" style="font-size: 0.9rem;">Docker</a> <a href="/tags/Git/" style="font-size: 0.9rem;">Git</a> <a href="/tags/Github/" style="font-size: 0.9rem;">Github</a> <a href="/tags/GPG/" style="font-size: 0.9rem;">GPG</a> <a href="/tags/Ubuntu/" style="font-size: 0.9rem;">Ubuntu</a> <a href="/tags/System-Maintainance/" style="font-size: 0.9rem;">System Maintainance</a> <a href="/tags/Methodology/" style="font-size: 0.9rem;">Methodology</a> <a href="/tags/Programming/" style="font-size: 0.9rem;">Programming</a> <a href="/tags/Go/" style="font-size: 0.9rem;">Go</a> <a href="/tags/Dart/" style="font-size: 0.9rem;">Dart</a> <a href="/tags/Best-Practice/" style="font-size: 0.9rem;">Best Practice</a> <a href="/tags/Naming/" style="font-size: 0.9rem;">Naming</a> <a href="/tags/Fiction/" style="font-size: 0.9rem;">Fiction</a> <a href="/tags/FFI/" style="font-size: 0.9rem;">FFI</a> <a href="/tags/Rust/" style="font-size: 0.9rem;">Rust</a> <a href="/tags/Compiler/" style="font-size: 0.9rem;">Compiler</a> <a href="/tags/Type-Theory/" style="font-size: 0.9rem;">Type Theory</a> <a href="/tags/Python/" style="font-size: 0.9rem;">Python</a> <a href="/tags/Multiprocessing/" style="font-size: 0.9rem;">Multiprocessing</a> <a href="/tags/Bash/" style="font-size: 0.9rem;">Bash</a> <a href="/tags/pickle/" style="font-size: 0.9rem;">pickle</a> <a href="/tags/docker/" style="font-size: 0.9rem;">docker</a> <a href="/tags/Bitwarden/" style="font-size: 0.9rem;">Bitwarden</a> <a href="/tags/NextCloud/" style="font-size: 0.9rem;">NextCloud</a> <a href="/tags/Determinism/" style="font-size: 0.9rem;">Determinism</a> <a href="/tags/Web/" style="font-size: 0.9rem;">Web</a> <a href="/tags/IndexedDB/" style="font-size: 0.9rem;">IndexedDB</a> <a href="/tags/Cython/" style="font-size: 0.9rem;">Cython</a> <a href="/tags/Linux/" style="font-size: 0.9rem;">Linux</a> <a href="/tags/Information-Theory/" style="font-size: 0.9rem;">Information Theory</a> <a href="/tags/Probability/" style="font-size: 0.9rem;">Probability</a> <a href="/tags/Math/" style="font-size: 0.9rem;">Math</a> <a href="/tags/Lifetime/" style="font-size: 0.9rem;">Lifetime</a> <a href="/tags/SS/" style="font-size: 0.9rem;">SS</a> <a href="/tags/proxychains/" style="font-size: 0.9rem;">proxychains</a> <a href="/tags/Haskell/" style="font-size: 0.9rem;">Haskell</a> <a href="/tags/Multi-Threading/" style="font-size: 0.9rem;">Multi-Threading</a> <a href="/tags/GIL/" style="font-size: 0.9rem;">GIL</a> <a href="/tags/POSIX/" style="font-size: 0.9rem;">POSIX</a></div></div><div class="widget"><div class="widget-title">Recent Articles</div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/diving-from-the-cuda-error-804-into-a-bug-of-libnvidia-container/">Diving from the CUDA Error 804 into a bug of libnvidia-container</a></li><li class="post-list-item"><a class="post-list-link" href="/gpg-and-github-interoperation/">Modern Cryptography, GPG and Integration with Git(hub)</a></li><li class="post-list-item"><a class="post-list-link" href="/move-ubuntu-root-partition/">Move the Root Partition of Ubuntu</a></li><li class="post-list-item"><a class="post-list-link" href="/a-new-programmer-kicks-a-roadblock/">A New Programmer Kicks a Roadblock</a></li><li class="post-list-item"><a class="post-list-link" href="/dart-go-git-package-spec/">Git-based Dependencies in Dart and Go</a></li><li class="post-list-item"><a class="post-list-link" href="/reversy-naming/">Reversy Naming</a></li><li class="post-list-item"><a class="post-list-link" href="/human-sucks/">人类一败涂地</a></li><li class="post-list-item"><a class="post-list-link" href="/invalid-pointer-will-bite-you/">Invalid Golang Pointers Can Bite You Even If You Don't Dereference</a></li><li class="post-list-item"><a class="post-list-link" href="/side-project/">Side Project（副业）</a></li><li class="post-list-item"><a class="post-list-link" href="/a-bug-of-promoting-complex-trait-bounds-in-rust/">A Flaw of Promoting Complex Trait Bounds in Rust</a></li></ul></div><div class="widget"><div class="widget-title">Recent Comments</div><div id="recent-comments"><script>document.write = function (code) {
+  document.getElementById("recent-comments").innerHTML = code;
+};</script><script type="text/javascript" src="//hsfzxjy.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1" async defer></script></div></div></div></nav><span class="toggle-menu"><svg viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg"><line x1="1" y1="11" x2="11" y2="1" stroke="#69737d" stroke-width="1"></line><line x1="1" y1="1" x2="11" y2="11" stroke="#69737d" stroke-width="1"></line></svg><span></span></span></div><div id="footer" style="text-align: center">© <a href="/" rel="nofollow">#hsfzxjy#.</a>&nbsp;Powered by&nbsp;<a rel="nofollow" target="_blank" href="https://hexo.io">Hexo.</a>&nbsp;<a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo">Theme</a>&nbsp;by&nbsp;<a rel="nofollow" target="_blank" href="https://github.com/pagecho">Cho</a>&nbsp;&amp;<a rel="nofollow" target="_blank" href="https://github.com/hsfzxjy">hsfzxjy.</a><div stype="width:300px;margin:0 auto; padding:20px 0;"><a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44011202001249" style="display: inline-block; text-decoration: none; height: 20px; line-height: 20px"><img src="/img/beian.png" style="float: left"><span style="float: left; height: 20px; line-height: 20px; margin: 0px 0px 0px 5px; color: #939393">粤公网安备44011202001249号</span></a><a target="_blank" style="display: inline-block; text-decoration: none; height: 20px; line-height: 20px" href="http://beian.miit.gov.cn/"><span style="float: left; height: 20px; line-height: 20px; margin: 0px 0px 0px 5px; color: #939393">粤ICP备2020075702号-1</span></a></div></div></div></body>
+<script src="/dist/js/main.js"></script>
+</html>
