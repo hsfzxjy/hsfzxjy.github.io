@@ -8,31 +8,31 @@
 }
 </script><nav id="header" class="hide-wx"><div class="site-name"><a id="logo" href="/">#hsfzxjy#</a></div><span class="github-btn"><a href="#" rel="noopener noreferrer" target="_blank" class="gh-btn"><span class="gh-ico"></span><span class="gh-text"></span></a><a href="#" rel="noopener noreferrer" target="_blank" class="gh-count"></a></span><script>window.GH_BUTTON = { username: "hsfzxjy" };</script><div id="nav-menu"><span class="before"></span><div><a href="/" class="current"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Tech/"><i class="icon-embed2"></i><span>Tech</span></a><a href="/categories/Soliloquy/"><i class="icon-android"></i><span>Soliloquy</span></a><a href="/categories/Life/"><i class="icon-leaf"></i><span>Life</span></a><a href="/categories/Memo/"><i class="icon-bookmarks"></i><span>Memo</span></a><a href="/categories/Series/"><i class="icon-books"></i><span>Series</span></a><a href="/works/"><i class="icon-sigma"></i><span>Projects</span></a><a href="/about/"><i class="icon-wink"></i><span>Me</span></a></div><span class="after"></span></div></nav><div id="layout" class="pure-g"><main id="left-panel" class="pure-u-1"><div class="content_container"><div class="post"><h1 class="post-title"><a href="/initialize-pool-worker-with-individual-values/">Initialize Process Pool Worker with Individual Value</a></h1><div class="post-meta">2022-03-21</div><span data-disqus-identifier="initialize-pool-worker-with-individual-values/" class="disqus-comment-count"></span><div lang="en" class="post-content "><p>There could be scenes when you are using <code>multiprocessing.pool.Pool</code> and you want to perform some initialization for each worker before tasks are scheduled via <code>Pool.map()</code> or something alike. For example, you create a pool of 4 workers, each for one GPU, and expect tasks scheduled on Worker-i to precisely utilize GPU-i. In this case, Worker-i should be initialized with env var <code>CUDA_VISIBLE_DEVICES=&lt;i&gt;</code> set.</p>
 <p>To initialize spawned workers, the constructor of <code>Pool</code> provides two arguments concerning the job 
-        <sup id="clfmceq39009z330x48gfhlt5-fnref:1">
-            <a href="#clfmceq39009z330x48gfhlt5-fn:1" rel="footnote"></a>
+        <sup id="clfmdz0p3009z1t0x63ri5ppf-fnref:1">
+            <a href="#clfmdz0p3009z1t0x63ri5ppf-fn:1" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq39009z330x48gfhlt5-fn:1"><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool">https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool</a></span> – <code>initializer</code> and <code>initargs</code>. <code>initializer</code> is expected to be a callable, and if specified, each worker process will call <code>initializer(*initargs)</code> when it starts.</p>
+        <span class="footnote" style="display: none" id="clfmdz0p3009z1t0x63ri5ppf-fn:1"><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool">https://docs.python.org/3/library/multiprocessing.html#multiprocessing.pool.Pool</a></span> – <code>initializer</code> and <code>initargs</code>. <code>initializer</code> is expected to be a callable, and if specified, each worker process will call <code>initializer(*initargs)</code> when it starts.</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> multiprocessing <span class="keyword">as</span> mp</span><br><span class="line"><span class="keyword">import</span> multiprocessing.pool <span class="keyword">as</span> mpp</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">worker</span>(<span class="params">arg1</span>):</span><br><span class="line">    <span class="built_in">print</span>(arg1)</span><br><span class="line"></span><br><span class="line">mpp.Pool(processes=<span class="number">2</span>, initializer=worker, initargs=(<span class="number">42</span>, ))</span><br><span class="line"><span class="comment"># 42</span></span><br><span class="line"><span class="comment"># 42</span></span><br></pre></td></tr></table></figure>
 
 <p style="text-indent: 0; margin-top: 0;"> This is, however, slightly away from what we expect. The <code>initializer</code> is called with same arguments in each worker, while in our case, the arguments are expected to be different, like value <code>1</code> for Worker-0 and value <code>1</code> for Worker-1. There are two approaches to do the tricks.</p>
 <h2 id="Use-a-Queue"><a href="#Use-a-Queue" class="headerlink" title="Use a Queue"></a>Use a Queue</h2><p><code>Queue</code> and <code>SimpleQueue</code> types in module <code>multiprocessing</code> 
-        <sup id="clfmceq39009z330x48gfhlt5-fnref:2">
-            <a href="#clfmceq39009z330x48gfhlt5-fn:2" rel="footnote"></a>
+        <sup id="clfmdz0p3009z1t0x63ri5ppf-fnref:2">
+            <a href="#clfmdz0p3009z1t0x63ri5ppf-fn:2" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq39009z330x48gfhlt5-fn:2"><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Queue">https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Queue</a></span> implement multi-producer, multi-consumer FIFO queues under the multi-processing scenario. We may create and share a queue among parent and worker processes, send individual values from parent processes and read them from workers. Since the sending and receiving operations are synchronized, we won’t run into any race conditions.</p>
+        <span class="footnote" style="display: none" id="clfmdz0p3009z1t0x63ri5ppf-fn:2"><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Queue">https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Queue</a></span> implement multi-producer, multi-consumer FIFO queues under the multi-processing scenario. We may create and share a queue among parent and worker processes, send individual values from parent processes and read them from workers. Since the sending and receiving operations are synchronized, we won’t run into any race conditions.</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">worker</span>(<span class="params">q</span>):</span><br><span class="line">    <span class="built_in">print</span>(q.get())</span><br><span class="line"></span><br><span class="line">q = mp.SimpleQueue()</span><br><span class="line">p = mpp.Pool(processes=<span class="number">2</span>, initializer=worker, initargs=(q,))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>):</span><br><span class="line">    q.put(i)</span><br><span class="line">p.close()</span><br><span class="line"><span class="comment"># 0</span></span><br><span class="line"><span class="comment"># 1</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="Use-a-Value"><a href="#Use-a-Value" class="headerlink" title="Use a Value"></a>Use a Value</h2><p>Alternatively, we may use a lighter shared object other than a queue. The <code>Value</code> type in module <code>multiprocessing</code> 
-        <sup id="clfmceq39009z330x48gfhlt5-fnref:3">
-            <a href="#clfmceq39009z330x48gfhlt5-fn:3" rel="footnote"></a>
+        <sup id="clfmdz0p3009z1t0x63ri5ppf-fnref:3">
+            <a href="#clfmdz0p3009z1t0x63ri5ppf-fn:3" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq39009z330x48gfhlt5-fn:3"><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Value">https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Value</a></span> allows sharing simple values across multiple processes. It can also synchronize accesses to values to avoid race conditions if necessary. We can use a <code>Value</code> object to allocate an individual id for each worker process.</p>
+        <span class="footnote" style="display: none" id="clfmdz0p3009z1t0x63ri5ppf-fn:3"><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Value">https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Value</a></span> allows sharing simple values across multiple processes. It can also synchronize accesses to values to avoid race conditions if necessary. We can use a <code>Value</code> object to allocate an individual id for each worker process.</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">worker</span>(<span class="params">v</span>):</span><br><span class="line">    <span class="keyword">with</span> v.get_lock():</span><br><span class="line">        val = v.value</span><br><span class="line">        v.value += <span class="number">1</span></span><br><span class="line">    <span class="built_in">print</span>(val)</span><br><span class="line"></span><br><span class="line">v = mp.Value(ctypes.c_int32, <span class="number">0</span>, lock=<span class="literal">True</span>)</span><br><span class="line">p = mpp.Pool(processes=<span class="number">2</span>, initializer=worker, initargs=(v,))</span><br><span class="line">p.close()</span><br><span class="line"><span class="comment"># 0</span></span><br><span class="line"><span class="comment"># 1</span></span><br></pre></td></tr></table></figure></div></div><div class="post"><hr><h1 class="post-title"><a href="/rust-python-ffi-from-scratch/">Rust - Python FFI From Scratch</a></h1><div class="post-meta">2022-03-12</div><span data-disqus-identifier="rust-python-ffi-from-scratch/" class="disqus-comment-count"></span><div lang="en" class="post-content "><p>I was recently working on a side project that involves communication between binaries written in Rust and web interfaces written in Python. Moving a part of my project onto a language like Rust is under several considerations: <em>1)</em> the logic is all about manipulating byte arrays, where Python has deficit and system language like Rust is superior; <em>2)</em> the logic happens to be complicated, I need a static type system to ensure the correctness, and also the <code>match</code> expression of Rust is found helpful in getting things concise; <em>3)</em> I was planning to develop CLI tools with Rust, which calls this fraction of functionality, and I don’t want to rewrite the stuff in the future.</p>
 <span id="more"></span>
 
@@ -120,46 +120,46 @@
 <p style="text-indent: 0; margin-top: 0;"> “byte array” here refers to an array of consecutively stored unsigned 8-bit integers, which is a language-agnostic term. Different languages may adopt their own types or representations for this term, <em>e.g.</em>, <code>bytearray</code> in Python, <code>Vec&lt;u8&gt;</code> in Rust or <code>Uint8Array</code> in Javascript.</p>
 </blockquote>
 <p>I have learned about <a target="_blank" rel="noopener" href="https://github.com/PyO3/pyo3">PyO3</a>, a fascinating framework for writing Python extensions in Rust. But this time I choose not to use it but build everything from scratch. The data passed around is in a basic representation of byte array, simple enough even without the help of PyO3. Besides, building from scratch will give me a better understanding of how the gear works, and how to accomplish in a memory-safe 
-        <sup id="clfmceq39009w330xdbdggmgc-fnref:1">
-            <a href="#clfmceq39009w330xdbdggmgc-fn:1" rel="footnote"></a>
+        <sup id="clfmdz0p2009w1t0xcqgvckns-fnref:1">
+            <a href="#clfmdz0p2009w1t0xcqgvckns-fn:1" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq39009w330xdbdggmgc-fn:1">no memory leaking, no double freeing</span> and efficient 
-        <sup id="clfmceq39009w330xdbdggmgc-fnref:2">
-            <a href="#clfmceq39009w330xdbdggmgc-fn:2" rel="footnote"></a>
+        <span class="footnote" style="display: none" id="clfmdz0p2009w1t0xcqgvckns-fn:1">no memory leaking, no double freeing</span> and efficient 
+        <sup id="clfmdz0p2009w1t0xcqgvckns-fnref:2">
+            <a href="#clfmdz0p2009w1t0xcqgvckns-fn:2" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq39009w330xdbdggmgc-fn:2">least memory copies possible</span> way.</p>
+        <span class="footnote" style="display: none" id="clfmdz0p2009w1t0xcqgvckns-fn:2">least memory copies possible</span> way.</p>
 <p>To this end, I was going to write a dynamic library in Rust, from which the Python code calls certain functions to do the job. The post is organized in three parts. The first part briefly introduces the fundamental of calling functions written by a different programming language, and the following parts show detailed implementation in both Rust and Python.</p>
 <h2 id="FFI-Fundamental"><a href="#FFI-Fundamental" class="headerlink" title="FFI Fundamental"></a>FFI Fundamental</h2><p>There’s technical term <strong>FFI</strong> 
-        <sup id="clfmceq39009w330xdbdggmgc-fnref:3">
-            <a href="#clfmceq39009w330xdbdggmgc-fn:3" rel="footnote"></a>
+        <sup id="clfmdz0p2009w1t0xcqgvckns-fnref:3">
+            <a href="#clfmdz0p2009w1t0xcqgvckns-fn:3" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq39009w330xdbdggmgc-fn:3"><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Foreign_function_interface">https://en.wikipedia.org/wiki/Foreign_function_interface</a></span> to describe the mechanism of calling functions from a different programming language. One of the common ways to do FFI is wrapping the functions written in one language in a dynamically linked library 
-        <sup id="clfmceq39009w330xdbdggmgc-fnref:4">
-            <a href="#clfmceq39009w330xdbdggmgc-fn:4" rel="footnote"></a>
+        <span class="footnote" style="display: none" id="clfmdz0p2009w1t0xcqgvckns-fn:3"><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Foreign_function_interface">https://en.wikipedia.org/wiki/Foreign_function_interface</a></span> to describe the mechanism of calling functions from a different programming language. One of the common ways to do FFI is wrapping the functions written in one language in a dynamically linked library 
+        <sup id="clfmdz0p2009w1t0xcqgvckns-fnref:4">
+            <a href="#clfmdz0p2009w1t0xcqgvckns-fn:4" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq39009w330xdbdggmgc-fn:4"><code>.so</code> files in Linux or <code>.dll</code> files in Windows</span>, which is then loaded from another language. However in practice, there’re tons of troubles to concern about and coding can get really cumbersome.</p>
+        <span class="footnote" style="display: none" id="clfmdz0p2009w1t0xcqgvckns-fn:4"><code>.so</code> files in Linux or <code>.dll</code> files in Windows</span>, which is then loaded from another language. However in practice, there’re tons of troubles to concern about and coding can get really cumbersome.</p>
 <p>One of the troubles is ABI compatibility. ABI here refers to <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Application_binary_interface">Application Binary Inteface</a>, an interface between two binary program modules. The term is less familiar to whom work at a higher level such as Python users, but it does exist everywhere in your computer.</p>
 <p style="margin-top: 0.5em;"> When a program calls functions from a library, they should conform the same conventions in various aspects, such as calling conventions 
-        <sup id="clfmceq39009w330xdbdggmgc-fnref:5">
-            <a href="#clfmceq39009w330xdbdggmgc-fn:5" rel="footnote"></a>
+        <sup id="clfmdz0p2009w1t0xcqgvckns-fnref:5">
+            <a href="#clfmdz0p2009w1t0xcqgvckns-fn:5" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq39009w330xdbdggmgc-fn:5">how to pass the arguments. by registers? by stack?</span>, memory layout 
-        <sup id="clfmceq39009w330xdbdggmgc-fnref:6">
-            <a href="#clfmceq39009w330xdbdggmgc-fn:6" rel="footnote"></a>
+        <span class="footnote" style="display: none" id="clfmdz0p2009w1t0xcqgvckns-fn:5">how to pass the arguments. by registers? by stack?</span>, memory layout 
+        <sup id="clfmdz0p2009w1t0xcqgvckns-fnref:6">
+            <a href="#clfmdz0p2009w1t0xcqgvckns-fn:6" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq39009w330xdbdggmgc-fn:6">how to order the fields of a struct? pad short fields or not?</span>, <em>etc.</em>. For example, C organizes struct fields in the order of their definition, while Rust by default does not guarantee. There’re also other details like name mangling, where Rust may give the function a different name when producing bianries. If not turned off, the functions can not be located from the Python side.</p>
+        <span class="footnote" style="display: none" id="clfmdz0p2009w1t0xcqgvckns-fn:6">how to order the fields of a struct? pad short fields or not?</span>, <em>etc.</em>. For example, C organizes struct fields in the order of their definition, while Rust by default does not guarantee. There’re also other details like name mangling, where Rust may give the function a different name when producing bianries. If not turned off, the functions can not be located from the Python side.</p>
 <p style="margin-top: 0.5em;"> Currently, most foreign code exposes a C ABI, <em>i.e.</em>, the ABI generated by the C compiler on your platform. While not standardized, the mechanism serves as a widely used ABI in many cases.</p>
 <p>Another concern is the implications of different languages that might cause undesired behavior on the other side. For example, in GC-based languages like Python, if you pass the pointer to an variable to a foreign function and then drop the variable, the variable might be recycled and the pointer becomes invalid at the other side:</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">func_getb</span>():</span><br><span class="line">    a = <span class="built_in">bytearray</span>(...)</span><br><span class="line">    b = ffi_atob(ptr_of(a))  <span class="comment"># b hold a reference to a</span></span><br><span class="line">    <span class="keyword">return</span> b</span><br><span class="line">    <span class="comment"># a dropped here!</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">func_btoc</span>(<span class="params">b</span>):</span><br><span class="line">    <span class="keyword">return</span> ffi_btoc(b)</span><br><span class="line"></span><br><span class="line">b = func_getb()   <span class="comment"># a might be recycled, which invalidates b</span></span><br><span class="line">c = func_btoc(b)  <span class="comment"># BOOM!</span></span><br></pre></td></tr></table></figure>
@@ -309,12 +309,12 @@
 
 <h3 id="Don’t-Panic"><a href="#Don’t-Panic" class="headerlink" title="Don’t Panic"></a>Don’t Panic</h3><p>As aforementioned, we have to care a bunch of implications of Rust, and panic is one of them. The Python interpreter have no idea of who it is interacting with, not even the alien mechanism of panic. It will goes “really panick” if such things cross the boundary, and it’s our duty to stop them just at Rust side.</p>
 <p style="margin-top: 0.5em;"> There’re many ways to avoid panics. For example, always do checking before <code>.wrap()</code> or something alike. In this story, I adopt a rather brutal one which is using <code>std::panic::catch_unwind()</code> 
-        <sup id="clfmceq39009w330xdbdggmgc-fnref:7">
-            <a href="#clfmceq39009w330xdbdggmgc-fn:7" rel="footnote"></a>
+        <sup id="clfmdz0p2009w1t0xcqgvckns-fnref:7">
+            <a href="#clfmdz0p2009w1t0xcqgvckns-fn:7" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq39009w330xdbdggmgc-fn:7"><a target="_blank" rel="noopener" href="https://doc.rust-lang.org/std/panic/fn.catch_unwind.html">https://doc.rust-lang.org/std/panic/fn.catch_unwind.html</a></span>. This guy behaves as a top level try-catch in other languages that invokes a closure and blocks potential panics from leaking. More information on this function can be found in the doc.</p>
+        <span class="footnote" style="display: none" id="clfmdz0p2009w1t0xcqgvckns-fn:7"><a target="_blank" rel="noopener" href="https://doc.rust-lang.org/std/panic/fn.catch_unwind.html">https://doc.rust-lang.org/std/panic/fn.catch_unwind.html</a></span>. This guy behaves as a top level try-catch in other languages that invokes a closure and blocks potential panics from leaking. More information on this function can be found in the doc.</p>
 <p style="text-indent: 0;"> Now put them together, we finish the part of code to bridge the FFI gap at Rust side</p>
 <figure class="highlight rust"><table><tr><td class="code"><pre><span class="line"><span class="meta">#[repr(C)]</span></span><br><span class="line"><span class="meta">#[derive(Debug)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">struct</span> <span class="title class_">FFIVec</span> &#123;</span><br><span class="line">    len: <span class="type">usize</span>,</span><br><span class="line">    data: *<span class="keyword">const</span> <span class="type">u8</span>,</span><br><span class="line">    storage: *<span class="keyword">mut</span> <span class="type">Vec</span>&lt;<span class="type">u8</span>&gt;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">impl</span> <span class="title class_">FFIVec</span> &#123;</span><br><span class="line">    <span class="keyword">unsafe</span> <span class="keyword">fn</span> <span class="title function_">raw_to_slice</span>&lt;<span class="symbol">&#x27;a</span>&gt;(ptr: *<span class="keyword">mut</span> <span class="keyword">Self</span>) <span class="punctuation">-&gt;</span> &amp;<span class="symbol">&#x27;a</span> [<span class="type">u8</span>] &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">v</span> = <span class="type">Box</span>::<span class="title function_ invoke__">from_raw</span>(ptr);</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">slice</span> = core::slice::<span class="title function_ invoke__">from_raw_parts</span>(v.data, v.len);</span><br><span class="line">        std::mem::<span class="title function_ invoke__">forget</span>(v);</span><br><span class="line">        slice</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">fn</span> <span class="title function_">from_vec</span>(vec: <span class="type">Vec</span>&lt;<span class="type">u8</span>&gt;) <span class="punctuation">-&gt;</span> *<span class="keyword">mut</span> <span class="keyword">Self</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">vec</span> = <span class="type">Box</span>::<span class="title function_ invoke__">new</span>(vec);</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">v</span> = <span class="type">Box</span>::<span class="title function_ invoke__">new</span>(<span class="keyword">Self</span> &#123;</span><br><span class="line">            len: vec.<span class="title function_ invoke__">len</span>(),</span><br><span class="line">            data: vec.<span class="title function_ invoke__">as_ptr</span>(),</span><br><span class="line">            storage: <span class="type">Box</span>::<span class="title function_ invoke__">into_raw</span>(vec),</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="type">Box</span>::<span class="title function_ invoke__">into_raw</span>(v)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[no_mangle]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> <span class="keyword">fn</span> <span class="title function_">free_ffi_vec</span>(v: *<span class="keyword">mut</span> FFIVec) &#123;</span><br><span class="line">    <span class="keyword">if</span> v != <span class="number">0</span> <span class="keyword">as</span> *<span class="keyword">mut</span> FFIVec &#123;</span><br><span class="line">        <span class="keyword">unsafe</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="variable">v</span> = <span class="type">Box</span>::<span class="title function_ invoke__">from_raw</span>(v);</span><br><span class="line">            <span class="title function_ invoke__">drop</span>(<span class="type">Box</span>::<span class="title function_ invoke__">from_raw</span>(v.storage));</span><br><span class="line">            <span class="title function_ invoke__">drop</span>(v)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[no_mangle]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">unsafe</span> <span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> <span class="keyword">fn</span> <span class="title function_">mod_widgets</span>(widgets: *<span class="keyword">mut</span> FFIVec, mods: *<span class="keyword">mut</span> FFIVec) <span class="punctuation">-&gt;</span> *<span class="keyword">const</span> FFIVec &#123;</span><br><span class="line">    std::panic::<span class="title function_ invoke__">catch_unwind</span>(|| &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">widgets</span>: &amp;[<span class="type">u8</span>] = FFIVec::<span class="title function_ invoke__">raw_to_slice</span>(widgets);</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">mods</span>: &amp;[<span class="type">u8</span>] = FFIVec::<span class="title function_ invoke__">raw_to_slice</span>(mods);</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">new_widgets</span>: <span class="type">Vec</span>&lt;<span class="type">u8</span>&gt; = <span class="title function_ invoke__">play_with</span>(widgets, mods);</span><br><span class="line">        FFIVec::<span class="title function_ invoke__">from_vec</span>(new_widgets)</span><br><span class="line">    &#125;)</span><br><span class="line">        <span class="comment">// returns NULL on panic</span></span><br><span class="line">        .<span class="title function_ invoke__">unwrap_or</span>(<span class="number">0</span> <span class="keyword">as</span> *<span class="keyword">const</span> FFIVec)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -339,12 +339,12 @@
 
 <blockquote>
 <p style="text-indent: 0; margin-top: 0;"> In the above code, we also specify the argument and return types of the foreign functions. This is not required 
-        <sup id="clfmceq39009w330xdbdggmgc-fnref:8">
-            <a href="#clfmceq39009w330xdbdggmgc-fn:8" rel="footnote"></a>
+        <sup id="clfmdz0p2009w1t0xcqgvckns-fnref:8">
+            <a href="#clfmdz0p2009w1t0xcqgvckns-fn:8" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq39009w330xdbdggmgc-fn:8"><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/ctypes.html#specifying-the-required-argument-types-function-prototypes">https://docs.python.org/3/library/ctypes.html#specifying-the-required-argument-types-function-prototypes</a></span>, but I recommend to do so whenever possible. Specifying the types can avoid data being incorrectly coerced by <code>ctypes</code>.</p>
+        <span class="footnote" style="display: none" id="clfmdz0p2009w1t0xcqgvckns-fn:8"><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/ctypes.html#specifying-the-required-argument-types-function-prototypes">https://docs.python.org/3/library/ctypes.html#specifying-the-required-argument-types-function-prototypes</a></span>, but I recommend to do so whenever possible. Specifying the types can avoid data being incorrectly coerced by <code>ctypes</code>.</p>
 </blockquote>
 <p style="margin-top: 0.5em;"> That’s it! The functions <code>mod_widgets</code> and <code>free_ffi_vec</code> can now be called just like ordinary Python functions</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">old_widgets = <span class="built_in">bytearray</span>(...)</span><br><span class="line">mods = <span class="built_in">bytearray</span>(...)</span><br><span class="line">new_widgets = mod_widgets(</span><br><span class="line">    FFIVec.from_bytes(old_widgets),</span><br><span class="line">    FFIVec.from_bytes(mods),</span><br><span class="line">).contents  <span class="comment"># .contents dereferences the pointer</span></span><br><span class="line"></span><br><span class="line">new_widgets_bytes = new_widgets.to_bytes()  <span class="comment"># copy out as bytes</span></span><br><span class="line">free_ffi_vec(new_widgets)  <span class="comment"># de-allocate at Rust side</span></span><br></pre></td></tr></table></figure>
@@ -417,19 +417,19 @@
 
 <p>十几年前的我们是怎么描绘互联网的呢？一个很有年代感的说法是「互联网让世界变成地球村」。我们相信，互联网最终能将世界上所有人连接在一起。人们可以便捷地让自己的想法为世人所知，人们也可以便捷地获取别人发表的想法。那也是博客和搜索引擎兴起的时代。人们借博客发出自己的声音，利用搜索引擎探索被的站点，从而听到他人的声音。在那个时代，网络是开放、交流、求知的代名词。</p>
 <p>搜索引擎无疑是一个伟大的发明。他就像一个近乎全知的守门人，守着世界上最大的书库。无论是谁有任何疑问，搜索引擎都能将其引导到对应的书前，为其解答。但现代人大多很少使用搜索引擎了。为了了解一件新鲜事，或是求解一个问题，他们首先会想到在应用里搜索，而不是去求助搜索引擎。这一方面是智能手机时代培养起的习惯，另一方面也是被逼无奈——书库的书正在减少，或者在腐烂。互联网巨头们纷纷筑起壁垒，将优质的内容限制在自己的范围内，再加上诸如内容农场
-        <sup id="clfmceq36009n330x332n91za-fnref:1">
-            <a href="#clfmceq36009n330x332n91za-fn:1" rel="footnote"></a>
+        <sup id="clfmdz0oz009n1t0x9stefxsz-fnref:1">
+            <a href="#clfmdz0oz009n1t0x9stefxsz-fn:1" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq36009n330x332n91za-fn:1"><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Content_farm">Content Farm</a></span>一类的东西在作祟,公网上的有效信息越来越少。从全局来看，互联网正在走向割据与封闭。</p>
+        <span class="footnote" style="display: none" id="clfmdz0oz009n1t0x9stefxsz-fn:1"><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Content_farm">Content Farm</a></span>一类的东西在作祟,公网上的有效信息越来越少。从全局来看，互联网正在走向割据与封闭。</p>
 <p>上古时代的人们对互联网有着乌托邦般的幻想。他们倡导的是一种去中心化的虚拟空间
-        <sup id="clfmceq36009n330x332n91za-fnref:2">
-            <a href="#clfmceq36009n330x332n91za-fn:2" rel="footnote"></a>
+        <sup id="clfmdz0oz009n1t0x9stefxsz-fnref:2">
+            <a href="#clfmdz0oz009n1t0x9stefxsz-fn:2" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq36009n330x332n91za-fn:2">如果想了解他们的相关努力，可以参见<a href="'https://en.wikipedia.org/wiki/Solid_(web_decentralization_project)'">Solid (web decentralization project)</a></span>，被称为「互联网原教旨主义者」。这些人的构想源于他们的现实身份。互联网早期的用户多是有技术背景的 Geeks，或是有意愿探索新事物的人。他们都秉承着所谓的自由意志，是互联网上的住民，也是互联网内容的积极制造者。</p>
+        <span class="footnote" style="display: none" id="clfmdz0oz009n1t0x9stefxsz-fn:2">如果想了解他们的相关努力，可以参见<a href="'https://en.wikipedia.org/wiki/Solid_(web_decentralization_project)'">Solid (web decentralization project)</a></span>，被称为「互联网原教旨主义者」。这些人的构想源于他们的现实身份。互联网早期的用户多是有技术背景的 Geeks，或是有意愿探索新事物的人。他们都秉承着所谓的自由意志，是互联网上的住民，也是互联网内容的积极制造者。</p>
 <p style="margin-top: 0.5em;"> 但随后资本的入场改变了一切。他们最初和原住民一样，在互联网的蛮荒之原上平起平坐。但随后，他们建立起了庞大的帝国，越来越多的人来到了互联网的世界。帝国之所以为帝国，与原住民的城邦有着本质的区别。他们的背后是资本家，为了最大化利益，他们发明了推荐算法，并封锁了边境。壁垒的形成使公网重新趋于荒芜，而推荐算法的出现则让帝国内的臣民失去自由意志。这些都让原教旨主义者们很是失望。</p>
 <p style="margin-top: 0.5em;"> 互联网巨头的登场不是一件容易评价的事。他们的确做到了原教旨主义意志中的一部分，即让更多的人接触互联网，并降低了彼此交流的成本。这甚至深刻改变了商业、社会甚至国家的运作方式。但另一方面，维持这一切的运转需要巨大的能量。他们需要钱，从而发明了一些令人讨厌的东西。这些东西起初是为了最大化利益，但潜移默化改变了人们的生活方式乃至思维方式。</p>
 <p>我不禁好奇，如果推动互联网发展的不是这些巨头，而是原教旨主义者会怎么样。他们缺乏巨大的能量，因此会发展得非常缓慢。但互联网能否始终保持开放的面貌？这也是存疑的。对于现如今发展成熟的互联网，有一描述是「网络是现实的投射和延伸」。随着越来越多的用户加入，互联网日渐壮大，成为一个不可忽视的实体，现实社会则开始投射其中。现实中的政治实体会介入，现实中的矛盾会在其中蔓延。互联网可能会再次变得中心化，或是有其他形式的缺陷。无论互联网是以何初衷创立，只要现实生产力不足以支持一个乌托邦的出现，那它永远不会成为一个乌托邦。</p>
@@ -440,22 +440,22 @@
 <p style="text-indent: 0;"> 经历过这段美好岁月的老人像反刍动物似的不断把那段记忆吐出来，甜蜜地咀嚼，最后总是加上一句：“唉，那时咋就不懂得珍惜呢？”<br><cite>——《三体 2》</cite></p>
 </blockquote>
 <p style="margin-top: 0.5em;"> 原教旨主义者对如今的互联网感到失望，但出生在那之后的数字原住民
-        <sup id="clfmceq36009n330x332n91za-fnref:3">
-            <a href="#clfmceq36009n330x332n91za-fn:3" rel="footnote"></a>
+        <sup id="clfmdz0oz009n1t0x9stefxsz-fnref:3">
+            <a href="#clfmdz0oz009n1t0x9stefxsz-fn:3" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq36009n330x332n91za-fn:3"><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Digital_native">Digital Native</a></span>会觉得这是互联网本来的面貌，并认为理所当然。原教旨主义者终将黯去，或许再没人讨论他们的历史，他们的努力，他们所秉承的信念。到那时，第一批互联网用户所构想的美好世界也便真正死去。</p>
+        <span class="footnote" style="display: none" id="clfmdz0oz009n1t0x9stefxsz-fn:3"><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Digital_native">Digital Native</a></span>会觉得这是互联网本来的面貌，并认为理所当然。原教旨主义者终将黯去，或许再没人讨论他们的历史，他们的努力，他们所秉承的信念。到那时，第一批互联网用户所构想的美好世界也便真正死去。</p>
 <h3 id="相关阅读"><a href="#相关阅读" class="headerlink" title="相关阅读"></a>相关阅读</h3><ul>
 <li><a target="_blank" rel="noopener" href="https://www.thecodedmessage.com/posts/web/">Open Internet, Closed Web</a></li>
 </ul>
 </div></div><div class="post"><hr><h1 class="post-title"><a href="/a-trick-to-retrieve-web-contents-without-curl-or-wget/">Retrieve Contents over HTTP without curl or wget</a></h1><div class="post-meta">2021-10-30</div><span data-disqus-identifier="a-trick-to-retrieve-web-contents-without-curl-or-wget/" class="disqus-comment-count"></span><div lang="en" class="post-content "><p>I came across a piece of interesting vulnerable script from a post on V2EX 
-        <sup id="clfmceq36009l330x1uuthpdj-fnref:1">
-            <a href="#clfmceq36009l330x1uuthpdj-fn:1" rel="footnote"></a>
+        <sup id="clfmdz0oy009l1t0xch7768b3-fnref:1">
+            <a href="#clfmdz0oy009l1t0xch7768b3-fn:1" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq36009l330x1uuthpdj-fn:1"><a target="_blank" rel="noopener" href="https://www.v2ex.com/t/811424">收到条阿里云的告警，看不懂是做什么用的，请教一下 - V2EX</a></span> on V2EX. A bash function named <code>__curl</code> inside the file retrieves contents over HTTP as a simple alternative for command <code>curl</code> or <code>wget</code>, in scenarios where no such utilities available.</p>
+        <span class="footnote" style="display: none" id="clfmdz0oy009l1t0xch7768b3-fn:1"><a target="_blank" rel="noopener" href="https://www.v2ex.com/t/811424">收到条阿里云的告警，看不懂是做什么用的，请教一下 - V2EX</a></span> on V2EX. A bash function named <code>__curl</code> inside the file retrieves contents over HTTP as a simple alternative for command <code>curl</code> or <code>wget</code>, in scenarios where no such utilities available.</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">__curl</span></span>() &#123;</span><br><span class="line">  <span class="built_in">read</span> proto server path &lt;&lt;&lt;$(<span class="built_in">echo</span> <span class="variable">$&#123;1//// &#125;</span>)</span><br><span class="line">  DOC=/<span class="variable">$&#123;path// //&#125;</span></span><br><span class="line">  HOST=<span class="variable">$&#123;server//:*&#125;</span></span><br><span class="line">  PORT=<span class="variable">$&#123;server//*:&#125;</span></span><br><span class="line">  [[ x<span class="string">&quot;<span class="variable">$&#123;HOST&#125;</span>&quot;</span> == x<span class="string">&quot;<span class="variable">$&#123;PORT&#125;</span>&quot;</span> ]] &amp;&amp; PORT=80</span><br><span class="line"></span><br><span class="line">  <span class="built_in">exec</span> 3&lt;&gt;/dev/tcp/<span class="variable">$&#123;HOST&#125;</span>/<span class="variable">$PORT</span></span><br><span class="line">  <span class="built_in">echo</span> -en <span class="string">&quot;GET <span class="variable">$&#123;DOC&#125;</span> HTTP/1.0\r\nHost: <span class="variable">$&#123;HOST&#125;</span>\r\n\r\n&quot;</span> &gt;&amp;3</span><br><span class="line">  (<span class="keyword">while</span> <span class="built_in">read</span> line; <span class="keyword">do</span></span><br><span class="line">   [[ <span class="string">&quot;<span class="variable">$line</span>&quot;</span> == $<span class="string">&#x27;\r&#x27;</span> ]] &amp;&amp; <span class="built_in">break</span></span><br><span class="line">  <span class="keyword">done</span> &amp;&amp; <span class="built_in">cat</span>) &lt;&amp;3</span><br><span class="line">  <span class="built_in">exec</span> 3&gt;&amp;-</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p style="text-indent: 0; margin-top: 0;"> The function makes use of certain less known features of Linux and the Bash language.</p>
@@ -466,12 +466,12 @@
 <li><a target="_blank" rel="noopener" href="https://tldp.org/LDP/abs/html/parameter-substitution.html">Parameter Substitution</a></li>
 </ol>
 </div></div><div class="post"><hr><h1 class="post-title"><a href="/unravelling-mocona-verbosity-or-anti-pattern/">[Unravelling mocona] Part 1 - Verbosity or Anti-Pattern</a></h1><div class="post-meta">2021-09-16</div><span data-disqus-identifier="unravelling-mocona-verbosity-or-anti-pattern/" class="disqus-comment-count"></span><div lang="en" class="post-content "><p>I was once working as an intern at MSRA around two years ago, at which I joined a research project and started developing upon a large codebase. It’s a practice in ML research fields to adopt an existing code repository as codebase, instead of crafting everything from scratch. Such codebases usually come with convenient “infrastructures” 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:1">
-            <a href="#clfmceq34009g330xanikc3rs-fn:1" rel="footnote"></a>
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:1">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:1" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:1">Loaders and preprocessors for various datasets, training loop, and evaluation metrics, <em>etc.</em></span>, so researchers would not have to implement them once again, which could be time-wasting and error-prone. All we need is to write our models and losses, and put them into experiments.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:1">Loaders and preprocessors for various datasets, training loop, and evaluation metrics, <em>etc.</em></span>, so researchers would not have to implement them once again, which could be time-wasting and error-prone. All we need is to write our models and losses, and put them into experiments.</p>
 <p>The flow works just fine if you are proposing minor improvement on algorithms. The codebase provides an easy approach to prove and iterate your idea. But things would get worse if your work goes beyond it, especially touching the encapsulated infrastructures. Those convenient parts would constraint you and enforce your code into spaghetti.</p>
 <span id="more"></span>
 
@@ -481,12 +481,12 @@
 <p>The first one happens in pairing a model with corresponding data loader. A traditional segmentation algorithm takes images (<code>img</code>) as input and is supervised by ground truth segmentation maps (<code>gtseg</code>). The data loader in codebase, therefore, default to yield a tuple of <code>(img, gtseg)</code> for each training iteration. Whereas in our method, the algorithm expects another two kinds of supervision <code>gtdist</code> and <code>gtoffset</code>, which requires totally different logic for loading and pre-processing.</p>
 <p style="margin-top: 0.5em;"> Okay. So now we have two kinds of data loader, one for traditional methods, another for our method. We reserve a configuration entry <code>loader_type</code> for selecting a specific loader. The configuration would be firstly passed to a class <code>Trainer</code>, then to a <code>DataLoaderBuilder</code> to instantiate the chosen loader.</p>
 <p style="margin-top: 0.5em;"> The class <code>Trainer</code> is fundamental in our program. It takes charge of all the instantiation for main components 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:2">
-            <a href="#clfmceq34009g330xanikc3rs-fn:2" rel="footnote"></a>
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:2">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:2" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:2">Logger, data loader, model, evaluator, <em>etc.</em></span>, and maintains the logic of training loop and evaluation. The design presents a hierarchy like</p>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:2">Logger, data loader, model, evaluator, <em>etc.</em></span>, and maintains the logic of training loop and evaluation. The design presents a hierarchy like</p>
 <figure class="graphviz"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
@@ -544,12 +544,12 @@
 </figure>
 
 <p style="margin-top: 0.5em;"> It should be alright when there’s only two kinds of loader. But things got complicated as the experiments proceed. During the months We’ve tried dozens of model designs for seeking an optimal one. Some of them should be fed with a combination of input that is different from the two before 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:3">
-            <a href="#clfmceq34009g330xanikc3rs-fn:3" rel="footnote"></a>
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:3">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:3" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:3">e.g., taking <code>(img, offset)</code> as input and supervised by <code>(gtseg, gtoffset)</code></span>. More loaders popped out in support of those models. We began to mess up, since it was a tedious nightmare to keep <code>loader_type</code> in sync with the model in each configuration file.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:3">e.g., taking <code>(img, offset)</code> as input and supervised by <code>(gtseg, gtoffset)</code></span>. More loaders popped out in support of those models. We began to mess up, since it was a tedious nightmare to keep <code>loader_type</code> in sync with the model in each configuration file.</p>
 <hr>
 <p>The second is a rather common problem in training models. Say you have designed a multi-stage training pipeline, where you would like the model to switch its behavior at some point. In the first X iterations, we disable a component A of model for warming up; while after that, it is enabled again for normal training. The catch is, how to make a deeply rooted component aware of the iteration number?</p>
 <p style="margin-top: 0.5em;"> Back to our codebase. We had a <code>Trainer</code> in charge of everything. It starts a training loop, in which the iteration number lies as a local variable. It also holds a reference to the model. The model has a hierachical structure, and component A hides deeply in some layers.</p>
@@ -616,12 +616,12 @@
 </figure>
 
 <p style="text-indent: 0; margin-top: 0;"> Ideally, <code>DataLoaderBuilder</code> should “contact” with <code>Model</code> to obtain information required for building loader. But we couldn’t, due to the limitation from hierarchy. The only possible path for message passing is <code>Model</code> -&gt; <code>Trainer</code> -&gt; <code>DataLoaderBuilder</code>. It would however turns <code>Trainer</code> into a “god object”, passing messages around between its children. Having a god object is considered to be a bad practice 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:4">
-            <a href="#clfmceq34009g330xanikc3rs-fn:4" rel="footnote"></a>
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:4">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:4" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:4"><a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/God_object">God Object - Wikipedia</a></span>. Components are tightly coupled to their parents, and maintenance becomes difficult. The second is similar, except we are making <code>Model</code> into the broker between <code>Trainer</code> and <code>ComponentA</code>.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:4"><a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/God_object">God Object - Wikipedia</a></span>. Components are tightly coupled to their parents, and maintenance becomes difficult. The second is similar, except we are making <code>Model</code> into the broker between <code>Trainer</code> and <code>ComponentA</code>.</p>
 <p>A more generalized version of the problem: In a system with tree-like hierarchical structure, how would the communication be made between two non-adjacent components?</p>
 <figure class="graphviz"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
@@ -689,27 +689,27 @@
 </figure>
 
 <p style="margin-top: 0.5em;"> It is not some kind of novel research problem, but one already addressed in practical scenes. Following the single-responsibility principle, we can use a standalone service responsible for managing the communication. Such would be much common in modern Web development, since web components are usually organized in a tree and pass messages more frequently. Mature and production-ready solutions exist like <em>Event-Bus pattern</em> or <em>centralized state management</em> 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:5">
-            <a href="#clfmceq34009g330xanikc3rs-fn:5" rel="footnote"></a>
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:5">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:5" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:5">such as <a target="_blank" rel="noopener" href="https://redux.js.org/">Redux</a> for React.js</span>, which are all instances of the design pattern. Instead of relying on the target (or the path to the target), the components now depend only on the service object, and the system becomes less coupled.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:5">such as <a target="_blank" rel="noopener" href="https://redux.js.org/">Redux</a> for React.js</span>, which are all instances of the design pattern. Instead of relying on the target (or the path to the target), the components now depend only on the service object, and the system becomes less coupled.</p>
 <p>So why won’t we use the techniques? Well, if some libaries integrate the stuff, we are glad to try; if not, we have to implement by ourselves, but sorry, we are running out of time.</p>
 <p style="margin-top: 0.5em;"> For programmers in production group, they care more about coupling, otherwise the maintenance is getting painful. They would apply every best practice and design patterns that could be found from textbooks or from some blog posts.</p>
 <p style="margin-top: 0.5em;"> But as researchers, we might have taken the course of software engineering, but we seldom do this. I’ve skimmed so much released code for papers on Github, most of which have their logic for building model, loading data and training tightly coupled, fragile and with mere flexibility for extending. They might be enough to showcase the papers, but are far from a good codebase. But sometimes we have no choice 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:6">
-            <a href="#clfmceq34009g330xanikc3rs-fn:6" rel="footnote"></a>
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:6">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:6" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:6">you would like to improve the method and that’s the only reliable way to reproduce it</span> but to extend upon it. There are indeed someone paying efforts to make well-designed and easy-to-extend codebases 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:7">
-            <a href="#clfmceq34009g330xanikc3rs-fn:7" rel="footnote"></a>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:6">you would like to improve the method and that’s the only reliable way to reproduce it</span> but to extend upon it. There are indeed someone paying efforts to make well-designed and easy-to-extend codebases 
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:7">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:7" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:7">We thank projects like <a target="_blank" rel="noopener" href="https://github.com/facebookresearch/detectron2">Detectron2</a> and series of <a target="_blank" rel="noopener" href="https://github.com/open-mmlab">OpenMMLab</a>.</span>, but apparently they could not cover all extension demand from developers. We are from time to time being limited by our codebase, badly-designed or over-designed. What’s worse, we have a deadline ahead, and to rush out the idea, we are practicing so many anti-patterns – communicating via global variables or god object, duplicating the logic here and there, or writing meaningless boilerplate codes. The codebase would finally grow into spaghetti. Badly-cooked spaghetti.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:7">We thank projects like <a target="_blank" rel="noopener" href="https://github.com/facebookresearch/detectron2">Detectron2</a> and series of <a target="_blank" rel="noopener" href="https://github.com/open-mmlab">OpenMMLab</a>.</span>, but apparently they could not cover all extension demand from developers. We are from time to time being limited by our codebase, badly-designed or over-designed. What’s worse, we have a deadline ahead, and to rush out the idea, we are practicing so many anti-patterns – communicating via global variables or god object, duplicating the logic here and there, or writing meaningless boilerplate codes. The codebase would finally grow into spaghetti. Badly-cooked spaghetti.</p>
 <p>It was then I began to think about why practices for production could hardly apply to a research project. The answer is that a research project is not production-ready, but evolving and iterating rapidly with aimless target, rather like a prototype. A prototype might grow into a production, but research project won’t, mostly ending after some paper deadlines. The dogmatism of design patterns are too verbose, and sometimes complicated. Researchers seldom use them, but run for some easy-to-use-but-dirty hacking or tricks.</p>
 <p>And that’s the background of <a target="_blank" rel="noopener" href="https://github.com/hsfzxjy/mocona">hsfzxjy&#x2F;mocona</a>. It implements some patterns like <em>Dependency Injection</em> and <em>Event Emitter</em>, in addressing the problem of communication between components. The library is deliberately designed to be “magical”, that is, do most of the heavy work behind the scene, but expose a very simple interface or (self-made) “syntax” for users. It is evil and an anti-pattern to be implicit and magical in Python. But there’re people tired or more afraid of verbosity, for which they are willing to write even worse code. If the library could help, they would be glad to make a trade-off between verbosity and anti-pattern.</p>
 </div></div><div class="post"><hr><h1 class="post-title"><a href="/unravelling-mocona-preface/">[Unravelling mocona] Part 0 - Preface</a></h1><div class="post-meta">2021-09-12</div><span data-disqus-identifier="unravelling-mocona-preface/" class="disqus-comment-count"></span><div lang="en" class="post-content "><p>The early idea of <a target="_blank" rel="noopener" href="https://github.com/hsfzxjy/mocona">hsfzxjy&#x2F;mocona</a> was come up with in late April. It was not until July that I figure out a reasonable design for the project. I finished most of my idea and released the first version approaching August. Nevertheless, there’s no chance for me to share the story behind the library. Now another month gone, it’s time to do some writing.</p>
@@ -733,24 +733,24 @@
 <li>Objects holding external resources (<code>open()</code>, <code>socket.socket()</code>, <em>etc.</em>) are usually NOT picklable.</li>
 </ol>
 <p style="text-indent: 0; margin-top: 0;"> Principle 1 and 2 ensures that we can easily pickle built-in types 
-        <sup id="clfmceq32009b330x65wz2npv-fnref:1">
-            <a href="#clfmceq32009b330x65wz2npv-fn:1" rel="footnote"></a>
+        <sup id="clfmdz0ou009b1t0x5bkm3u77-fnref:1">
+            <a href="#clfmdz0ou009b1t0x5bkm3u77-fn:1" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq32009b330x65wz2npv-fn:1"><code>int</code>, <code>str</code>, <em>etc.</em></span>, values 
-        <sup id="clfmceq32009b330x65wz2npv-fnref:2">
-            <a href="#clfmceq32009b330x65wz2npv-fn:2" rel="footnote"></a>
+        <span class="footnote" style="display: none" id="clfmdz0ou009b1t0x5bkm3u77-fn:1"><code>int</code>, <code>str</code>, <em>etc.</em></span>, values 
+        <sup id="clfmdz0ou009b1t0x5bkm3u77-fnref:2">
+            <a href="#clfmdz0ou009b1t0x5bkm3u77-fn:2" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq32009b330x65wz2npv-fn:2"><code>42</code>, <code>&quot;foobar&quot;</code>, <em>etc.</em></span> and their composition 
-        <sup id="clfmceq32009b330x65wz2npv-fnref:3">
-            <a href="#clfmceq32009b330x65wz2npv-fn:3" rel="footnote"></a>
+        <span class="footnote" style="display: none" id="clfmdz0ou009b1t0x5bkm3u77-fn:2"><code>42</code>, <code>&quot;foobar&quot;</code>, <em>etc.</em></span> and their composition 
+        <sup id="clfmdz0ou009b1t0x5bkm3u77-fnref:3">
+            <a href="#clfmdz0ou009b1t0x5bkm3u77-fn:3" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq32009b330x65wz2npv-fn:3">such as <code>[int, &#123;42: &quot;foobar&quot;&#125;]</code></span>, which covers a large variety of daily-used objects.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ou009b1t0x5bkm3u77-fn:3">such as <code>[int, &#123;42: &quot;foobar&quot;&#125;]</code></span>, which covers a large variety of daily-used objects.</p>
 <p style="margin-top: 0.5em;"> If you want to pickle custom objects, Principle 3 and 4 come into play. If you define your class at the top-level of a module (and usually you should), the class is automatically picklable. An object instantiated from that class, if holding only picklable attributes (stored in <code>__dict__</code>), is also picklable.</p>
 <p style="margin-top: 0.5em;"> How convenient! Nothing is needed but a simple <code>pickle.load</code> or <code>pickle.dump</code> to enjoy pickle services .</p>
 <p>Principle 3 comes with a remark <em>“if configured properly”</em>. Technically, module-level values are picklable if they have the correct <code>__qualname__</code>. <code>__qualname__</code> dictates the name of variable that holds the value. This is automatically done if the value is a class or function:</p>
@@ -772,12 +772,12 @@
 <p>If a string returned, it should be the name of a local variable relative to the object’s module. Remember the <code>__qualname__</code> trick above? They do the same job. <code>pickle</code> treats the returned string as <code>__qualname__</code> of the object, storing it along with the module name <code>__module__</code> at serialization. The de-serializer afterwards would look up an attribute in the module with that string as name, and retrieve the object directly without creating from scratch.</p>
 <p style="margin-top: 0.5em;"> It is useful for singleton object, i.e., object that be instantiated once and survives the whole program lifetime, for example, a database connection pool. We thus would not struggle on how to record the internal states for these objects.</p>
 <p>When a tuple returned, well, it’s being a bit complicated. The tuple should contain 2~6 elements 
-        <sup id="clfmceq32009b330x65wz2npv-fnref:4">
-            <a href="#clfmceq32009b330x65wz2npv-fn:4" rel="footnote"></a>
+        <sup id="clfmdz0ou009b1t0x5bkm3u77-fnref:4">
+            <a href="#clfmdz0ou009b1t0x5bkm3u77-fn:4" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq32009b330x65wz2npv-fn:4">in Python with version lower than 3.8, this would be 2~5 elements</span>. The meaning of the elements would be described after, but before which, let’s get some understanding of how an object is created.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ou009b1t0x5bkm3u77-fn:4">in Python with version lower than 3.8, this would be 2~5 elements</span>. The meaning of the elements would be described after, but before which, let’s get some understanding of how an object is created.</p>
 <p style="margin-top: 0.5em;"> In the assumption of <code>pickle</code> module, an object is made up of a <em>skeleton</em>, and <em>states</em>. A skeleton is an initial version of an object, which is returned by a callable named <em>“constructor”</em>. Usually the constructor is the object’s <code>__new__()</code> method, but not necessarily. It could also be some factory function. States refer to all other attributes or elements that the object holds, which could be simple Python objects or external resources. At de-serialization, <code>pickle</code> would first set up a skeleton by calling constructor, then filling up the states. Either step can be customized to accord with your application logic.</p>
 <p style="margin-top: 0.5em;"> Now we could talk about the scheme of returned tuple. </p>
 <p style="margin-top: 0.5em;"> The 1-st and 2-nd elements describe how to set up a skeleton. The 1-st element is the constructor callable, and the 2-nd be a tuple of positional arguments, which the constructor takes. The two elements are both required. If no argument is needed, one should leave an empty tuple.</p>

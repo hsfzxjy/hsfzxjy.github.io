@@ -7,12 +7,12 @@
   document.head.appendChild(style);
 }
 </script><nav id="header" class="hide-wx"><div class="site-name"><a id="logo" href="/">#hsfzxjy#</a></div><span class="github-btn"><a href="#" rel="noopener noreferrer" target="_blank" class="gh-btn"><span class="gh-ico"></span><span class="gh-text"></span></a><a href="#" rel="noopener noreferrer" target="_blank" class="gh-count"></a></span><script>window.GH_BUTTON = { username: "hsfzxjy" };</script><div id="nav-menu"><span class="before"></span><div><a href="/"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Tech/" class="current"><i class="icon-embed2"></i><span>Tech</span></a><a href="/categories/Soliloquy/"><i class="icon-android"></i><span>Soliloquy</span></a><a href="/categories/Life/"><i class="icon-leaf"></i><span>Life</span></a><a href="/categories/Memo/"><i class="icon-bookmarks"></i><span>Memo</span></a><a href="/categories/Series/"><i class="icon-books"></i><span>Series</span></a><a href="/works/"><i class="icon-sigma"></i><span>Projects</span></a><a href="/about/"><i class="icon-wink"></i><span>Me</span></a></div><span class="after"></span></div></nav><div id="layout" class="pure-g"><main id="left-panel" class="pure-u-1"><div class="content_container"><div class="post post-page"><h1 class="post-title">Cython and Threads</h1><div class="post-meta">2021-05-07 | <span class="categories"><a href="/categories/Tech/"> Tech</a></span></div><div lang="en" class="post-content "><p>Pure Python <em>sucks</em> in the scene of parallel computing, due to the existence of the Global Interpreter Lock (aka GIL). GIL prevents accessing or manipulating interpreter from different threads concurrently. The mechanism alleviates the risk of race condition, but sequentializes multi-threading program 
-        <sup id="clfmceq2w008s330x9q6q2h9e-fnref:1">
-            <a href="#clfmceq2w008s330x9q6q2h9e-fn:1" rel="footnote"></a>
+        <sup id="clfmdz0oo008s1t0xab8ge37j-fnref:1">
+            <a href="#clfmdz0oo008s1t0xab8ge37j-fn:1" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq2w008s330x9q6q2h9e-fn:1">so that it behaves just like a single-threading version</span> as well. Sadly, there’s no way to release the lock from pure Python.</p>
+        <span class="footnote" style="display: none" id="clfmdz0oo008s1t0xab8ge37j-fn:1">so that it behaves just like a single-threading version</span> as well. Sadly, there’s no way to release the lock from pure Python.</p>
 <p>Alright. So what about beyond pure Python? Shall we bypass the mechanism within an extension? The answer is yes, and that’s what most of scientific computing libaries do.</p>
 <p>Cython is a good choice for writing extensions, less verbose, and more similar to Python syntactically. In Cython, one can release GIL temporarily for a code block using the <code>with nogil:</code> syntax. Will it release the true power of multi-core CPU? We should have a try.</p>
 <span id="more"></span>
@@ -110,12 +110,12 @@
 </tbody></table>
 <p>We can see that <code>prange</code> brings an amazing boost in performance! <code>_matmul_p</code> is 3~4x faster in single-threading setting. The number might vary across different hardwares, depending on the number of CPU cores. In the setting of two threads, the running time doubles, which indicates that <code>prange</code> <em>does</em> efficiently use up all available CPU resources.</p>
 <p>We can also notice that, whether to release GIL or not seemingly does not affect <code>prange</code> 
-        <sup id="clfmceq2w008s330x9q6q2h9e-fnref:2">
-            <a href="#clfmceq2w008s330x9q6q2h9e-fn:2" rel="footnote"></a>
+        <sup id="clfmdz0oo008s1t0xab8ge37j-fnref:2">
+            <a href="#clfmdz0oo008s1t0xab8ge37j-fn:2" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq2w008s330x9q6q2h9e-fn:2">0.82s vs 0.89s</span>. The reason is <code>prange</code> requires GIL to be released, which is automatically done by default.</p>
+        <span class="footnote" style="display: none" id="clfmdz0oo008s1t0xab8ge37j-fn:2">0.82s vs 0.89s</span>. The reason is <code>prange</code> requires GIL to be released, which is automatically done by default.</p>
 <p style="text-indent: 0;"></p>
 <blockquote>
 <p style="text-indent: 0;"> Cython supports native parallelism through the cython.parallel module. To use this kind of parallelism, the GIL must be released (see Releasing the GIL). It currently supports OpenMP, but later on more backends might be supported. – <em><a target="_blank" rel="noopener" href="https://cython.readthedocs.io/en/latest/src/userguide/parallelism.html">Using Parallelism</a></em></p>
@@ -123,12 +123,12 @@
 <h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p><strong>If there’s no need to hold GIL, just release it.</strong> This happens when you are manipulating some C data structures, and not attempting to disturb the interpreter.</p>
 <p style="margin-top: 0.5em;"> <strong>If there’s massive looping in your Cython code, feel free to accelerate it with <code>prange</code>.</strong> <code>prange</code> will effeciently schedule the computation onto all CPU resources.</p>
 <p style="margin-top: 0.5em;"> <strong>If there’s some macro tasks 
-        <sup id="clfmceq2w008s330x9q6q2h9e-fnref:3">
-            <a href="#clfmceq2w008s330x9q6q2h9e-fn:3" rel="footnote"></a>
+        <sup id="clfmdz0oo008s1t0xab8ge37j-fnref:3">
+            <a href="#clfmdz0oo008s1t0xab8ge37j-fn:3" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq2w008s330x9q6q2h9e-fn:3">routines consisting of large pieces of logic</span> which could not be easily parallelized in Cython, schedule them via <code>threading</code> module.</strong> <code>threading</code> sucks for most of the time, but if the tasks not always acquiring GIL, it should be fine just like threads in other languages.</p>
+        <span class="footnote" style="display: none" id="clfmdz0oo008s1t0xab8ge37j-fn:3">routines consisting of large pieces of logic</span> which could not be easily parallelized in Cython, schedule them via <code>threading</code> module.</strong> <code>threading</code> sucks for most of the time, but if the tasks not always acquiring GIL, it should be fine just like threads in other languages.</p>
 <script>(function () {
   var cclink = document.querySelector("span.cc-link");
   if (!cclink) return;

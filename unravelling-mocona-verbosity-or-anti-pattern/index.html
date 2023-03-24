@@ -7,12 +7,12 @@
   document.head.appendChild(style);
 }
 </script><nav id="header" class="hide-wx"><div class="site-name"><a id="logo" href="/">#hsfzxjy#</a></div><span class="github-btn"><a href="#" rel="noopener noreferrer" target="_blank" class="gh-btn"><span class="gh-ico"></span><span class="gh-text"></span></a><a href="#" rel="noopener noreferrer" target="_blank" class="gh-count"></a></span><script>window.GH_BUTTON = { username: "hsfzxjy" };</script><div id="nav-menu"><span class="before"></span><div><a href="/"><i class="icon-home"></i><span>Home</span></a><a href="/categories/Tech/" class="current"><i class="icon-embed2"></i><span>Tech</span></a><a href="/categories/Soliloquy/"><i class="icon-android"></i><span>Soliloquy</span></a><a href="/categories/Life/"><i class="icon-leaf"></i><span>Life</span></a><a href="/categories/Memo/"><i class="icon-bookmarks"></i><span>Memo</span></a><a href="/categories/Series/"><i class="icon-books"></i><span>Series</span></a><a href="/works/"><i class="icon-sigma"></i><span>Projects</span></a><a href="/about/"><i class="icon-wink"></i><span>Me</span></a></div><span class="after"></span></div></nav><div id="layout" class="pure-g"><main id="left-panel" class="pure-u-1"><div class="content_container"><div class="post post-page"><h1 class="post-title">[Unravelling mocona] Part 1 - Verbosity or Anti-Pattern</h1><div class="post-meta">2021-09-16 | <span class="categories"><a href="/categories/Tech/"> Tech</a></span></div><div lang="en" class="post-content "><p>I was once working as an intern at MSRA around two years ago, at which I joined a research project and started developing upon a large codebase. It’s a practice in ML research fields to adopt an existing code repository as codebase, instead of crafting everything from scratch. Such codebases usually come with convenient “infrastructures” 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:1">
-            <a href="#clfmceq34009g330xanikc3rs-fn:1" rel="footnote"></a>
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:1">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:1" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:1">Loaders and preprocessors for various datasets, training loop, and evaluation metrics, <em>etc.</em></span>, so researchers would not have to implement them once again, which could be time-wasting and error-prone. All we need is to write our models and losses, and put them into experiments.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:1">Loaders and preprocessors for various datasets, training loop, and evaluation metrics, <em>etc.</em></span>, so researchers would not have to implement them once again, which could be time-wasting and error-prone. All we need is to write our models and losses, and put them into experiments.</p>
 <p>The flow works just fine if you are proposing minor improvement on algorithms. The codebase provides an easy approach to prove and iterate your idea. But things would get worse if your work goes beyond it, especially touching the encapsulated infrastructures. Those convenient parts would constraint you and enforce your code into spaghetti.</p>
 <span id="more"></span>
 
@@ -22,12 +22,12 @@
 <p>The first one happens in pairing a model with corresponding data loader. A traditional segmentation algorithm takes images (<code>img</code>) as input and is supervised by ground truth segmentation maps (<code>gtseg</code>). The data loader in codebase, therefore, default to yield a tuple of <code>(img, gtseg)</code> for each training iteration. Whereas in our method, the algorithm expects another two kinds of supervision <code>gtdist</code> and <code>gtoffset</code>, which requires totally different logic for loading and pre-processing.</p>
 <p style="margin-top: 0.5em;"> Okay. So now we have two kinds of data loader, one for traditional methods, another for our method. We reserve a configuration entry <code>loader_type</code> for selecting a specific loader. The configuration would be firstly passed to a class <code>Trainer</code>, then to a <code>DataLoaderBuilder</code> to instantiate the chosen loader.</p>
 <p style="margin-top: 0.5em;"> The class <code>Trainer</code> is fundamental in our program. It takes charge of all the instantiation for main components 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:2">
-            <a href="#clfmceq34009g330xanikc3rs-fn:2" rel="footnote"></a>
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:2">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:2" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:2">Logger, data loader, model, evaluator, <em>etc.</em></span>, and maintains the logic of training loop and evaluation. The design presents a hierarchy like</p>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:2">Logger, data loader, model, evaluator, <em>etc.</em></span>, and maintains the logic of training loop and evaluation. The design presents a hierarchy like</p>
 <figure class="graphviz"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
@@ -85,12 +85,12 @@
 </figure>
 
 <p style="margin-top: 0.5em;"> It should be alright when there’s only two kinds of loader. But things got complicated as the experiments proceed. During the months We’ve tried dozens of model designs for seeking an optimal one. Some of them should be fed with a combination of input that is different from the two before 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:3">
-            <a href="#clfmceq34009g330xanikc3rs-fn:3" rel="footnote"></a>
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:3">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:3" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:3">e.g., taking <code>(img, offset)</code> as input and supervised by <code>(gtseg, gtoffset)</code></span>. More loaders popped out in support of those models. We began to mess up, since it was a tedious nightmare to keep <code>loader_type</code> in sync with the model in each configuration file.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:3">e.g., taking <code>(img, offset)</code> as input and supervised by <code>(gtseg, gtoffset)</code></span>. More loaders popped out in support of those models. We began to mess up, since it was a tedious nightmare to keep <code>loader_type</code> in sync with the model in each configuration file.</p>
 <hr>
 <p>The second is a rather common problem in training models. Say you have designed a multi-stage training pipeline, where you would like the model to switch its behavior at some point. In the first X iterations, we disable a component A of model for warming up; while after that, it is enabled again for normal training. The catch is, how to make a deeply rooted component aware of the iteration number?</p>
 <p style="margin-top: 0.5em;"> Back to our codebase. We had a <code>Trainer</code> in charge of everything. It starts a training loop, in which the iteration number lies as a local variable. It also holds a reference to the model. The model has a hierachical structure, and component A hides deeply in some layers.</p>
@@ -157,12 +157,12 @@
 </figure>
 
 <p style="text-indent: 0; margin-top: 0;"> Ideally, <code>DataLoaderBuilder</code> should “contact” with <code>Model</code> to obtain information required for building loader. But we couldn’t, due to the limitation from hierarchy. The only possible path for message passing is <code>Model</code> -&gt; <code>Trainer</code> -&gt; <code>DataLoaderBuilder</code>. It would however turns <code>Trainer</code> into a “god object”, passing messages around between its children. Having a god object is considered to be a bad practice 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:4">
-            <a href="#clfmceq34009g330xanikc3rs-fn:4" rel="footnote"></a>
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:4">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:4" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:4"><a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/God_object">God Object - Wikipedia</a></span>. Components are tightly coupled to their parents, and maintenance becomes difficult. The second is similar, except we are making <code>Model</code> into the broker between <code>Trainer</code> and <code>ComponentA</code>.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:4"><a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/God_object">God Object - Wikipedia</a></span>. Components are tightly coupled to their parents, and maintenance becomes difficult. The second is similar, except we are making <code>Model</code> into the broker between <code>Trainer</code> and <code>ComponentA</code>.</p>
 <p>A more generalized version of the problem: In a system with tree-like hierarchical structure, how would the communication be made between two non-adjacent components?</p>
 <figure class="graphviz"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
@@ -230,27 +230,27 @@
 </figure>
 
 <p style="margin-top: 0.5em;"> It is not some kind of novel research problem, but one already addressed in practical scenes. Following the single-responsibility principle, we can use a standalone service responsible for managing the communication. Such would be much common in modern Web development, since web components are usually organized in a tree and pass messages more frequently. Mature and production-ready solutions exist like <em>Event-Bus pattern</em> or <em>centralized state management</em> 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:5">
-            <a href="#clfmceq34009g330xanikc3rs-fn:5" rel="footnote"></a>
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:5">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:5" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:5">such as <a target="_blank" rel="noopener" href="https://redux.js.org/">Redux</a> for React.js</span>, which are all instances of the design pattern. Instead of relying on the target (or the path to the target), the components now depend only on the service object, and the system becomes less coupled.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:5">such as <a target="_blank" rel="noopener" href="https://redux.js.org/">Redux</a> for React.js</span>, which are all instances of the design pattern. Instead of relying on the target (or the path to the target), the components now depend only on the service object, and the system becomes less coupled.</p>
 <p>So why won’t we use the techniques? Well, if some libaries integrate the stuff, we are glad to try; if not, we have to implement by ourselves, but sorry, we are running out of time.</p>
 <p style="margin-top: 0.5em;"> For programmers in production group, they care more about coupling, otherwise the maintenance is getting painful. They would apply every best practice and design patterns that could be found from textbooks or from some blog posts.</p>
 <p style="margin-top: 0.5em;"> But as researchers, we might have taken the course of software engineering, but we seldom do this. I’ve skimmed so much released code for papers on Github, most of which have their logic for building model, loading data and training tightly coupled, fragile and with mere flexibility for extending. They might be enough to showcase the papers, but are far from a good codebase. But sometimes we have no choice 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:6">
-            <a href="#clfmceq34009g330xanikc3rs-fn:6" rel="footnote"></a>
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:6">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:6" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:6">you would like to improve the method and that’s the only reliable way to reproduce it</span> but to extend upon it. There are indeed someone paying efforts to make well-designed and easy-to-extend codebases 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:7">
-            <a href="#clfmceq34009g330xanikc3rs-fn:7" rel="footnote"></a>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:6">you would like to improve the method and that’s the only reliable way to reproduce it</span> but to extend upon it. There are indeed someone paying efforts to make well-designed and easy-to-extend codebases 
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:7">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:7" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:7">We thank projects like <a target="_blank" rel="noopener" href="https://github.com/facebookresearch/detectron2">Detectron2</a> and series of <a target="_blank" rel="noopener" href="https://github.com/open-mmlab">OpenMMLab</a>.</span>, but apparently they could not cover all extension demand from developers. We are from time to time being limited by our codebase, badly-designed or over-designed. What’s worse, we have a deadline ahead, and to rush out the idea, we are practicing so many anti-patterns – communicating via global variables or god object, duplicating the logic here and there, or writing meaningless boilerplate codes. The codebase would finally grow into spaghetti. Badly-cooked spaghetti.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:7">We thank projects like <a target="_blank" rel="noopener" href="https://github.com/facebookresearch/detectron2">Detectron2</a> and series of <a target="_blank" rel="noopener" href="https://github.com/open-mmlab">OpenMMLab</a>.</span>, but apparently they could not cover all extension demand from developers. We are from time to time being limited by our codebase, badly-designed or over-designed. What’s worse, we have a deadline ahead, and to rush out the idea, we are practicing so many anti-patterns – communicating via global variables or god object, duplicating the logic here and there, or writing meaningless boilerplate codes. The codebase would finally grow into spaghetti. Badly-cooked spaghetti.</p>
 <p>It was then I began to think about why practices for production could hardly apply to a research project. The answer is that a research project is not production-ready, but evolving and iterating rapidly with aimless target, rather like a prototype. A prototype might grow into a production, but research project won’t, mostly ending after some paper deadlines. The dogmatism of design patterns are too verbose, and sometimes complicated. Researchers seldom use them, but run for some easy-to-use-but-dirty hacking or tricks.</p>
 <p>And that’s the background of <a target="_blank" rel="noopener" href="https://github.com/hsfzxjy/mocona">hsfzxjy&#x2F;mocona</a>. It implements some patterns like <em>Dependency Injection</em> and <em>Event Emitter</em>, in addressing the problem of communication between components. The library is deliberately designed to be “magical”, that is, do most of the heavy work behind the scene, but expose a very simple interface or (self-made) “syntax” for users. It is evil and an anti-pattern to be implicit and magical in Python. But there’re people tired or more afraid of verbosity, for which they are willing to write even worse code. If the library could help, they would be glad to make a trade-off between verbosity and anti-pattern.</p>
 <script>(function () {

@@ -20,12 +20,12 @@
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">State        Recv-Q   Send-Q                               Local Address:Port                              Peer Address:Port               Process</span><br><span class="line">ESTAB        0        0                                        127.0.0.1:45342                                127.0.0.1:1081</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <p style="text-indent: 0; margin-top: 0;"> Argument <code>-Htan</code> controls the printing style of <code>ss</code>. <code>-H</code> removes table header; <code>-t</code> lists only TCP ports; <code>-a</code> lists all ports, including listening and unlistening ones; <code>-n</code> enforces ports to be printed numerically 
-        <sup id="clfmceq2v008p330xcic2hcxl-fnref:1">
-            <a href="#clfmceq2v008p330xcic2hcxl-fn:1" rel="footnote"></a>
+        <sup id="clfmdz0on008p1t0xd8ny0mf8-fnref:1">
+            <a href="#clfmdz0on008p1t0xd8ny0mf8-fn:1" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq2v008p330xcic2hcxl-fn:1">Otherwise, some ports would be resolved into their service names, such as <code>80</code> into <code>http</code></span>. The command produces an output like:</p>
+        <span class="footnote" style="display: none" id="clfmdz0on008p1t0xd8ny0mf8-fn:1">Otherwise, some ports would be resolved into their service names, such as <code>80</code> into <code>http</code></span>. The command produces an output like:</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">LISTEN       0        128                                        0.0.0.0:17500                                            0.0.0.0:*</span><br><span class="line">LISTEN       0        128                                      127.0.0.1:17600                                            0.0.0.0:*</span><br></pre></td></tr></table></figure>
 
 <p style="text-indent: 0; margin-top: 0;"> We then use some string manipulation tools to extract the port numbers:</p>

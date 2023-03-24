@@ -47,12 +47,12 @@
 <p>I’ve tried to figure out why newer images just works well. They won’t trigger the JIT caching, which suggests pre-compiled fat binaries are compatible with the current arch. I compared the binaries by dumping information using <code>cuobjdump</code>, but noticed nothing (or just I am not familiar with the stuff). Or maybe I should start by comparing the compilation flags of the two PyTorch versions. I don’t have the time, so I give up.</p>
 <p>Oh, and lastly, <code>strace</code> is always our friend.</p>
 </div></div><div class="post"><hr><h1 class="post-title"><a href="/unravelling-mocona-verbosity-or-anti-pattern/">[Unravelling mocona] Part 1 - Verbosity or Anti-Pattern</a></h1><div class="post-meta">2021-09-16</div><span data-disqus-identifier="unravelling-mocona-verbosity-or-anti-pattern/" class="disqus-comment-count"></span><div lang="en" class="post-content "><p>I was once working as an intern at MSRA around two years ago, at which I joined a research project and started developing upon a large codebase. It’s a practice in ML research fields to adopt an existing code repository as codebase, instead of crafting everything from scratch. Such codebases usually come with convenient “infrastructures” 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:1">
-            <a href="#clfmceq34009g330xanikc3rs-fn:1" rel="footnote"></a>
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:1">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:1" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:1">Loaders and preprocessors for various datasets, training loop, and evaluation metrics, <em>etc.</em></span>, so researchers would not have to implement them once again, which could be time-wasting and error-prone. All we need is to write our models and losses, and put them into experiments.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:1">Loaders and preprocessors for various datasets, training loop, and evaluation metrics, <em>etc.</em></span>, so researchers would not have to implement them once again, which could be time-wasting and error-prone. All we need is to write our models and losses, and put them into experiments.</p>
 <p>The flow works just fine if you are proposing minor improvement on algorithms. The codebase provides an easy approach to prove and iterate your idea. But things would get worse if your work goes beyond it, especially touching the encapsulated infrastructures. Those convenient parts would constraint you and enforce your code into spaghetti.</p>
 <span id="more"></span>
 
@@ -62,12 +62,12 @@
 <p>The first one happens in pairing a model with corresponding data loader. A traditional segmentation algorithm takes images (<code>img</code>) as input and is supervised by ground truth segmentation maps (<code>gtseg</code>). The data loader in codebase, therefore, default to yield a tuple of <code>(img, gtseg)</code> for each training iteration. Whereas in our method, the algorithm expects another two kinds of supervision <code>gtdist</code> and <code>gtoffset</code>, which requires totally different logic for loading and pre-processing.</p>
 <p style="margin-top: 0.5em;"> Okay. So now we have two kinds of data loader, one for traditional methods, another for our method. We reserve a configuration entry <code>loader_type</code> for selecting a specific loader. The configuration would be firstly passed to a class <code>Trainer</code>, then to a <code>DataLoaderBuilder</code> to instantiate the chosen loader.</p>
 <p style="margin-top: 0.5em;"> The class <code>Trainer</code> is fundamental in our program. It takes charge of all the instantiation for main components 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:2">
-            <a href="#clfmceq34009g330xanikc3rs-fn:2" rel="footnote"></a>
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:2">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:2" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:2">Logger, data loader, model, evaluator, <em>etc.</em></span>, and maintains the logic of training loop and evaluation. The design presents a hierarchy like</p>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:2">Logger, data loader, model, evaluator, <em>etc.</em></span>, and maintains the logic of training loop and evaluation. The design presents a hierarchy like</p>
 <figure class="graphviz"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
@@ -125,12 +125,12 @@
 </figure>
 
 <p style="margin-top: 0.5em;"> It should be alright when there’s only two kinds of loader. But things got complicated as the experiments proceed. During the months We’ve tried dozens of model designs for seeking an optimal one. Some of them should be fed with a combination of input that is different from the two before 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:3">
-            <a href="#clfmceq34009g330xanikc3rs-fn:3" rel="footnote"></a>
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:3">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:3" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:3">e.g., taking <code>(img, offset)</code> as input and supervised by <code>(gtseg, gtoffset)</code></span>. More loaders popped out in support of those models. We began to mess up, since it was a tedious nightmare to keep <code>loader_type</code> in sync with the model in each configuration file.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:3">e.g., taking <code>(img, offset)</code> as input and supervised by <code>(gtseg, gtoffset)</code></span>. More loaders popped out in support of those models. We began to mess up, since it was a tedious nightmare to keep <code>loader_type</code> in sync with the model in each configuration file.</p>
 <hr>
 <p>The second is a rather common problem in training models. Say you have designed a multi-stage training pipeline, where you would like the model to switch its behavior at some point. In the first X iterations, we disable a component A of model for warming up; while after that, it is enabled again for normal training. The catch is, how to make a deeply rooted component aware of the iteration number?</p>
 <p style="margin-top: 0.5em;"> Back to our codebase. We had a <code>Trainer</code> in charge of everything. It starts a training loop, in which the iteration number lies as a local variable. It also holds a reference to the model. The model has a hierachical structure, and component A hides deeply in some layers.</p>
@@ -197,12 +197,12 @@
 </figure>
 
 <p style="text-indent: 0; margin-top: 0;"> Ideally, <code>DataLoaderBuilder</code> should “contact” with <code>Model</code> to obtain information required for building loader. But we couldn’t, due to the limitation from hierarchy. The only possible path for message passing is <code>Model</code> -&gt; <code>Trainer</code> -&gt; <code>DataLoaderBuilder</code>. It would however turns <code>Trainer</code> into a “god object”, passing messages around between its children. Having a god object is considered to be a bad practice 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:4">
-            <a href="#clfmceq34009g330xanikc3rs-fn:4" rel="footnote"></a>
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:4">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:4" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:4"><a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/God_object">God Object - Wikipedia</a></span>. Components are tightly coupled to their parents, and maintenance becomes difficult. The second is similar, except we are making <code>Model</code> into the broker between <code>Trainer</code> and <code>ComponentA</code>.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:4"><a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/God_object">God Object - Wikipedia</a></span>. Components are tightly coupled to their parents, and maintenance becomes difficult. The second is similar, except we are making <code>Model</code> into the broker between <code>Trainer</code> and <code>ComponentA</code>.</p>
 <p>A more generalized version of the problem: In a system with tree-like hierarchical structure, how would the communication be made between two non-adjacent components?</p>
 <figure class="graphviz"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
@@ -270,27 +270,27 @@
 </figure>
 
 <p style="margin-top: 0.5em;"> It is not some kind of novel research problem, but one already addressed in practical scenes. Following the single-responsibility principle, we can use a standalone service responsible for managing the communication. Such would be much common in modern Web development, since web components are usually organized in a tree and pass messages more frequently. Mature and production-ready solutions exist like <em>Event-Bus pattern</em> or <em>centralized state management</em> 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:5">
-            <a href="#clfmceq34009g330xanikc3rs-fn:5" rel="footnote"></a>
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:5">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:5" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:5">such as <a target="_blank" rel="noopener" href="https://redux.js.org/">Redux</a> for React.js</span>, which are all instances of the design pattern. Instead of relying on the target (or the path to the target), the components now depend only on the service object, and the system becomes less coupled.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:5">such as <a target="_blank" rel="noopener" href="https://redux.js.org/">Redux</a> for React.js</span>, which are all instances of the design pattern. Instead of relying on the target (or the path to the target), the components now depend only on the service object, and the system becomes less coupled.</p>
 <p>So why won’t we use the techniques? Well, if some libaries integrate the stuff, we are glad to try; if not, we have to implement by ourselves, but sorry, we are running out of time.</p>
 <p style="margin-top: 0.5em;"> For programmers in production group, they care more about coupling, otherwise the maintenance is getting painful. They would apply every best practice and design patterns that could be found from textbooks or from some blog posts.</p>
 <p style="margin-top: 0.5em;"> But as researchers, we might have taken the course of software engineering, but we seldom do this. I’ve skimmed so much released code for papers on Github, most of which have their logic for building model, loading data and training tightly coupled, fragile and with mere flexibility for extending. They might be enough to showcase the papers, but are far from a good codebase. But sometimes we have no choice 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:6">
-            <a href="#clfmceq34009g330xanikc3rs-fn:6" rel="footnote"></a>
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:6">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:6" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:6">you would like to improve the method and that’s the only reliable way to reproduce it</span> but to extend upon it. There are indeed someone paying efforts to make well-designed and easy-to-extend codebases 
-        <sup id="clfmceq34009g330xanikc3rs-fnref:7">
-            <a href="#clfmceq34009g330xanikc3rs-fn:7" rel="footnote"></a>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:6">you would like to improve the method and that’s the only reliable way to reproduce it</span> but to extend upon it. There are indeed someone paying efforts to make well-designed and easy-to-extend codebases 
+        <sup id="clfmdz0ow009g1t0x8wjlaoqc-fnref:7">
+            <a href="#clfmdz0ow009g1t0x8wjlaoqc-fn:7" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq34009g330xanikc3rs-fn:7">We thank projects like <a target="_blank" rel="noopener" href="https://github.com/facebookresearch/detectron2">Detectron2</a> and series of <a target="_blank" rel="noopener" href="https://github.com/open-mmlab">OpenMMLab</a>.</span>, but apparently they could not cover all extension demand from developers. We are from time to time being limited by our codebase, badly-designed or over-designed. What’s worse, we have a deadline ahead, and to rush out the idea, we are practicing so many anti-patterns – communicating via global variables or god object, duplicating the logic here and there, or writing meaningless boilerplate codes. The codebase would finally grow into spaghetti. Badly-cooked spaghetti.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ow009g1t0x8wjlaoqc-fn:7">We thank projects like <a target="_blank" rel="noopener" href="https://github.com/facebookresearch/detectron2">Detectron2</a> and series of <a target="_blank" rel="noopener" href="https://github.com/open-mmlab">OpenMMLab</a>.</span>, but apparently they could not cover all extension demand from developers. We are from time to time being limited by our codebase, badly-designed or over-designed. What’s worse, we have a deadline ahead, and to rush out the idea, we are practicing so many anti-patterns – communicating via global variables or god object, duplicating the logic here and there, or writing meaningless boilerplate codes. The codebase would finally grow into spaghetti. Badly-cooked spaghetti.</p>
 <p>It was then I began to think about why practices for production could hardly apply to a research project. The answer is that a research project is not production-ready, but evolving and iterating rapidly with aimless target, rather like a prototype. A prototype might grow into a production, but research project won’t, mostly ending after some paper deadlines. The dogmatism of design patterns are too verbose, and sometimes complicated. Researchers seldom use them, but run for some easy-to-use-but-dirty hacking or tricks.</p>
 <p>And that’s the background of <a target="_blank" rel="noopener" href="https://github.com/hsfzxjy/mocona">hsfzxjy&#x2F;mocona</a>. It implements some patterns like <em>Dependency Injection</em> and <em>Event Emitter</em>, in addressing the problem of communication between components. The library is deliberately designed to be “magical”, that is, do most of the heavy work behind the scene, but expose a very simple interface or (self-made) “syntax” for users. It is evil and an anti-pattern to be implicit and magical in Python. But there’re people tired or more afraid of verbosity, for which they are willing to write even worse code. If the library could help, they would be glad to make a trade-off between verbosity and anti-pattern.</p>
 </div></div><div class="post"><hr><h1 class="post-title"><a href="/clarifying-pickle-in-python/">Understanding pickle in Python</a></h1><div class="post-meta">2021-08-14</div><span data-disqus-identifier="clarifying-pickle-in-python/" class="disqus-comment-count"></span><div lang="en" class="post-content "><p>The module <code>pickle</code> shipped in Python could be used for generic-purpose object serialization and de-serialization. It’s been widely adopted or recommended as backend in scenarios like persisting states or IPC.</p>
@@ -309,24 +309,24 @@
 <li>Objects holding external resources (<code>open()</code>, <code>socket.socket()</code>, <em>etc.</em>) are usually NOT picklable.</li>
 </ol>
 <p style="text-indent: 0; margin-top: 0;"> Principle 1 and 2 ensures that we can easily pickle built-in types 
-        <sup id="clfmceq32009b330x65wz2npv-fnref:1">
-            <a href="#clfmceq32009b330x65wz2npv-fn:1" rel="footnote"></a>
+        <sup id="clfmdz0ou009b1t0x5bkm3u77-fnref:1">
+            <a href="#clfmdz0ou009b1t0x5bkm3u77-fn:1" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq32009b330x65wz2npv-fn:1"><code>int</code>, <code>str</code>, <em>etc.</em></span>, values 
-        <sup id="clfmceq32009b330x65wz2npv-fnref:2">
-            <a href="#clfmceq32009b330x65wz2npv-fn:2" rel="footnote"></a>
+        <span class="footnote" style="display: none" id="clfmdz0ou009b1t0x5bkm3u77-fn:1"><code>int</code>, <code>str</code>, <em>etc.</em></span>, values 
+        <sup id="clfmdz0ou009b1t0x5bkm3u77-fnref:2">
+            <a href="#clfmdz0ou009b1t0x5bkm3u77-fn:2" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq32009b330x65wz2npv-fn:2"><code>42</code>, <code>&quot;foobar&quot;</code>, <em>etc.</em></span> and their composition 
-        <sup id="clfmceq32009b330x65wz2npv-fnref:3">
-            <a href="#clfmceq32009b330x65wz2npv-fn:3" rel="footnote"></a>
+        <span class="footnote" style="display: none" id="clfmdz0ou009b1t0x5bkm3u77-fn:2"><code>42</code>, <code>&quot;foobar&quot;</code>, <em>etc.</em></span> and their composition 
+        <sup id="clfmdz0ou009b1t0x5bkm3u77-fnref:3">
+            <a href="#clfmdz0ou009b1t0x5bkm3u77-fn:3" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq32009b330x65wz2npv-fn:3">such as <code>[int, &#123;42: &quot;foobar&quot;&#125;]</code></span>, which covers a large variety of daily-used objects.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ou009b1t0x5bkm3u77-fn:3">such as <code>[int, &#123;42: &quot;foobar&quot;&#125;]</code></span>, which covers a large variety of daily-used objects.</p>
 <p style="margin-top: 0.5em;"> If you want to pickle custom objects, Principle 3 and 4 come into play. If you define your class at the top-level of a module (and usually you should), the class is automatically picklable. An object instantiated from that class, if holding only picklable attributes (stored in <code>__dict__</code>), is also picklable.</p>
 <p style="margin-top: 0.5em;"> How convenient! Nothing is needed but a simple <code>pickle.load</code> or <code>pickle.dump</code> to enjoy pickle services .</p>
 <p>Principle 3 comes with a remark <em>“if configured properly”</em>. Technically, module-level values are picklable if they have the correct <code>__qualname__</code>. <code>__qualname__</code> dictates the name of variable that holds the value. This is automatically done if the value is a class or function:</p>
@@ -348,12 +348,12 @@
 <p>If a string returned, it should be the name of a local variable relative to the object’s module. Remember the <code>__qualname__</code> trick above? They do the same job. <code>pickle</code> treats the returned string as <code>__qualname__</code> of the object, storing it along with the module name <code>__module__</code> at serialization. The de-serializer afterwards would look up an attribute in the module with that string as name, and retrieve the object directly without creating from scratch.</p>
 <p style="margin-top: 0.5em;"> It is useful for singleton object, i.e., object that be instantiated once and survives the whole program lifetime, for example, a database connection pool. We thus would not struggle on how to record the internal states for these objects.</p>
 <p>When a tuple returned, well, it’s being a bit complicated. The tuple should contain 2~6 elements 
-        <sup id="clfmceq32009b330x65wz2npv-fnref:4">
-            <a href="#clfmceq32009b330x65wz2npv-fn:4" rel="footnote"></a>
+        <sup id="clfmdz0ou009b1t0x5bkm3u77-fnref:4">
+            <a href="#clfmdz0ou009b1t0x5bkm3u77-fn:4" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq32009b330x65wz2npv-fn:4">in Python with version lower than 3.8, this would be 2~5 elements</span>. The meaning of the elements would be described after, but before which, let’s get some understanding of how an object is created.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ou009b1t0x5bkm3u77-fn:4">in Python with version lower than 3.8, this would be 2~5 elements</span>. The meaning of the elements would be described after, but before which, let’s get some understanding of how an object is created.</p>
 <p style="margin-top: 0.5em;"> In the assumption of <code>pickle</code> module, an object is made up of a <em>skeleton</em>, and <em>states</em>. A skeleton is an initial version of an object, which is returned by a callable named <em>“constructor”</em>. Usually the constructor is the object’s <code>__new__()</code> method, but not necessarily. It could also be some factory function. States refer to all other attributes or elements that the object holds, which could be simple Python objects or external resources. At de-serialization, <code>pickle</code> would first set up a skeleton by calling constructor, then filling up the states. Either step can be customized to accord with your application logic.</p>
 <p style="margin-top: 0.5em;"> Now we could talk about the scheme of returned tuple. </p>
 <p style="margin-top: 0.5em;"> The 1-st and 2-nd elements describe how to set up a skeleton. The 1-st element is the constructor callable, and the 2-nd be a tuple of positional arguments, which the constructor takes. The two elements are both required. If no argument is needed, one should leave an empty tuple.</p>
@@ -434,12 +434,12 @@ $$
 <p>So here’s the answer. When running parallelized routines, GPUs have some innate randomness which comes from non-deterministic execution order. If a program consists of order-dependent operations, it will give non-deterministic output. Floating-point arithemtics, used widely in CUDA algorithms, are also such kind of operations, though less known by people. Atomic arithemtics solve the race condition problem, but do not guarantee the order.</p>
 <p>If one requires determinism, the program should sequentialize the operations by using single thread or special synchronization, which will lead to a performance degrade. There is always a trade-off between determinism and performance.</p>
 </div></div><div class="post"><hr><h1 class="post-title"><a href="/indexeddb-performant-bulk-mutations/">Performant Bulk Mutations in IndexedDB</a></h1><div class="post-meta">2021-05-30</div><span data-disqus-identifier="indexeddb-performant-bulk-mutations/" class="disqus-comment-count"></span><div lang="en" class="post-content "><p>IndexedDB seems to be inefficient when working on bulk mutations, such as dumping a huge list of items into an object store – at least I think so at the first sight on the MDN docs. It provides no explicit API for the job as SQL does 
-        <sup id="clfmceq2y008z330x3hvch7k8-fnref:1">
-            <a href="#clfmceq2y008z330x3hvch7k8-fn:1" rel="footnote"></a>
+        <sup id="clfmdz0oq008z1t0x8e0ig5ed-fnref:1">
+            <a href="#clfmdz0oq008z1t0x8e0ig5ed-fn:1" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq2y008z330x3hvch7k8-fn:1">you may add as many records after the <code>INSERT INTO ... VALUES</code> clause</span>, so all we can do is to loop from client side, which cannot benefit from database internal optimization (if there’s any). The mutation requests, in addition, appear to be spawned sequentially – the tutorial recommends a paradigm to raise a request within the <code>success</code> event callback of the previous request, which is in fact a sequential execution. Such code will be definitely slow.</p>
+        <span class="footnote" style="display: none" id="clfmdz0oq008z1t0x8e0ig5ed-fn:1">you may add as many records after the <code>INSERT INTO ... VALUES</code> clause</span>, so all we can do is to loop from client side, which cannot benefit from database internal optimization (if there’s any). The mutation requests, in addition, appear to be spawned sequentially – the tutorial recommends a paradigm to raise a request within the <code>success</code> event callback of the previous request, which is in fact a sequential execution. Such code will be definitely slow.</p>
 <p>We may conduct a quick benchmark on the above approach:</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">;(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">await</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> r = indexedDB.<span class="title function_">deleteDatabase</span>(<span class="string">&quot;test&quot;</span>)</span><br><span class="line">        r.<span class="property">onsuccess</span> = r.<span class="property">onerror</span> = resolve</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">const</span> items = <span class="title class_">Array</span>.<span class="title function_">from</span>(&#123; <span class="attr">length</span>: <span class="number">100000</span> &#125;, <span class="function">(<span class="params">_, i</span>) =&gt;</span> (&#123; <span class="attr">id</span>: i &#125;))</span><br><span class="line">    <span class="keyword">const</span> store = <span class="keyword">await</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve</span>) =&gt;</span> &#123;</span><br><span class="line">        indexedDB.<span class="title function_">open</span>(<span class="string">&quot;test&quot;</span>, <span class="number">1</span>).<span class="property">onupgradeneeded</span> = <span class="function">(<span class="params">event</span>) =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">const</span> db = event.<span class="property">target</span>.<span class="property">result</span></span><br><span class="line">            <span class="keyword">const</span> store = db.<span class="title function_">createObjectStore</span>(<span class="string">&quot;store&quot;</span>, &#123; <span class="attr">keyPath</span>: <span class="string">&quot;id&quot;</span> &#125;)</span><br><span class="line">            store.<span class="title function_">createIndex</span>(<span class="string">&quot;id&quot;</span>, <span class="string">&quot;id&quot;</span>)</span><br><span class="line">            <span class="title function_">resolve</span>(store)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">time</span>(<span class="string">&quot;bulkAdd&quot;</span>)</span><br><span class="line">    <span class="keyword">await</span> <span class="title function_">bulkAdd</span>(store, items)</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">timeEnd</span>(<span class="string">&quot;bulkAdd&quot;</span>)</span><br><span class="line">&#125;)()</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">bulkAdd</span>(<span class="params">store, items</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> failures = []</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">function</span> <span class="title function_">_perform</span>(<span class="params">idx</span>) &#123;</span><br><span class="line">            <span class="keyword">const</span> req = store.<span class="title function_">add</span>(items[idx])</span><br><span class="line">            req.<span class="property">onsuccess</span> = <span class="function">(<span class="params">event</span>) =&gt;</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (idx === items.<span class="property">length</span> - <span class="number">1</span>) <span class="title function_">resolve</span>(failures)</span><br><span class="line">                <span class="keyword">else</span> <span class="title function_">_perform</span>(idx + <span class="number">1</span>)</span><br><span class="line">            &#125;</span><br><span class="line">            req.<span class="property">onerror</span> = <span class="function">(<span class="params">event</span>) =&gt;</span> &#123;</span><br><span class="line">                failures.<span class="title function_">push</span>(items[idx].<span class="property">id</span>)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="title function_">_perform</span>(<span class="number">0</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -463,19 +463,19 @@ $$
 <p>We may expect the callbacks be executed in the order they are raised. They do actually. But weirdly, the MDN docs does not advertise such point, and we have to dive into the <a target="_blank" rel="noopener" href="https://www.w3.org/TR/IndexedDB-3/">IndexedDB Specification</a> to seek the clues. After struggling against the verbose documentation, I catch something at section <a target="_blank" rel="noopener" href="https://www.w3.org/TR/IndexedDB-3/#async-execute-request">Asynchronously executing a request</a>. Briefly speaking,</p>
 <ul>
 <li>A request won’t be processed before previous requests’ <code>processed</code> flags be set. 
-        <sup id="clfmceq2y008z330x3hvch7k8-fnref:2">
-            <a href="#clfmceq2y008z330x3hvch7k8-fn:2" rel="footnote"></a>
+        <sup id="clfmdz0oq008z1t0x8e0ig5ed-fnref:2">
+            <a href="#clfmdz0oq008z1t0x8e0ig5ed-fn:2" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq2y008z330x3hvch7k8-fn:2">See <em>5.6.5.1 Wait until request is the first item in transaction’s request list that is not processed.</em></span></li>
+        <span class="footnote" style="display: none" id="clfmdz0oq008z1t0x8e0ig5ed-fn:2">See <em>5.6.5.1 Wait until request is the first item in transaction’s request list that is not processed.</em></span></li>
 <li>A request will immediately queue a task after its <code>processed</code> flag set, within which the callbacks are invoked. 
-        <sup id="clfmceq2y008z330x3hvch7k8-fnref:3">
-            <a href="#clfmceq2y008z330x3hvch7k8-fn:3" rel="footnote"></a>
+        <sup id="clfmdz0oq008z1t0x8e0ig5ed-fnref:3">
+            <a href="#clfmdz0oq008z1t0x8e0ig5ed-fn:3" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq2y008z330x3hvch7k8-fn:3">See <em>5.6.5.6: Queue a task to run these steps</em></span></li>
+        <span class="footnote" style="display: none" id="clfmdz0oq008z1t0x8e0ig5ed-fn:3">See <em>5.6.5.6: Queue a task to run these steps</em></span></li>
 </ul>
 <p style="text-indent: 0; margin-top: 0;"> which means, the tasks firing events will be ordered as their corresponding requests. Consequently, we might be able to know the timing of all completions, by only listening to the <code>success</code>&#x2F;<code>error</code> events of the last request:</p>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">bulkAdd</span>(<span class="params">store, items</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> failures = []</span><br><span class="line">        <span class="keyword">let</span> req, item</span><br><span class="line">        <span class="keyword">for</span> (item <span class="keyword">of</span> items) &#123;</span><br><span class="line">            req = store.<span class="title function_">add</span>(item)</span><br><span class="line">            req.<span class="property">onerror</span> = <span class="function">() =&gt;</span> failures.<span class="title function_">push</span>(item.<span class="property">id</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        req.<span class="property">onsuccess</span> = <span class="function">() =&gt;</span> <span class="title function_">resolve</span>(failures)</span><br><span class="line">        req.<span class="property">onerror</span> = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">            failures.<span class="title function_">push</span>(item.<span class="property">id</span>)</span><br><span class="line">            <span class="title function_">resolve</span>(failures)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -533,12 +533,12 @@ $$
 <li><a target="_blank" rel="noopener" href="https://cython.readthedocs.io/en/latest/src/userguide/source_files_and_compilation.html#compiling-with-pyximport">https://cython.readthedocs.io/en/latest/src/userguide/source_files_and_compilation.html#compiling-with-pyximport</a></li>
 </ul>
 </div></div><div class="post"><hr><h1 class="post-title"><a href="/cython-and-threads/">Cython and Threads</a></h1><div class="post-meta">2021-05-07</div><span data-disqus-identifier="cython-and-threads/" class="disqus-comment-count"></span><div lang="en" class="post-content "><p>Pure Python <em>sucks</em> in the scene of parallel computing, due to the existence of the Global Interpreter Lock (aka GIL). GIL prevents accessing or manipulating interpreter from different threads concurrently. The mechanism alleviates the risk of race condition, but sequentializes multi-threading program 
-        <sup id="clfmceq2w008s330x9q6q2h9e-fnref:1">
-            <a href="#clfmceq2w008s330x9q6q2h9e-fn:1" rel="footnote"></a>
+        <sup id="clfmdz0oo008s1t0xab8ge37j-fnref:1">
+            <a href="#clfmdz0oo008s1t0xab8ge37j-fn:1" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq2w008s330x9q6q2h9e-fn:1">so that it behaves just like a single-threading version</span> as well. Sadly, there’s no way to release the lock from pure Python.</p>
+        <span class="footnote" style="display: none" id="clfmdz0oo008s1t0xab8ge37j-fn:1">so that it behaves just like a single-threading version</span> as well. Sadly, there’s no way to release the lock from pure Python.</p>
 <p>Alright. So what about beyond pure Python? Shall we bypass the mechanism within an extension? The answer is yes, and that’s what most of scientific computing libaries do.</p>
 <p>Cython is a good choice for writing extensions, less verbose, and more similar to Python syntactically. In Cython, one can release GIL temporarily for a code block using the <code>with nogil:</code> syntax. Will it release the true power of multi-core CPU? We should have a try.</p>
 <span id="more"></span>
@@ -636,12 +636,12 @@ $$
 </tbody></table>
 <p>We can see that <code>prange</code> brings an amazing boost in performance! <code>_matmul_p</code> is 3~4x faster in single-threading setting. The number might vary across different hardwares, depending on the number of CPU cores. In the setting of two threads, the running time doubles, which indicates that <code>prange</code> <em>does</em> efficiently use up all available CPU resources.</p>
 <p>We can also notice that, whether to release GIL or not seemingly does not affect <code>prange</code> 
-        <sup id="clfmceq2w008s330x9q6q2h9e-fnref:2">
-            <a href="#clfmceq2w008s330x9q6q2h9e-fn:2" rel="footnote"></a>
+        <sup id="clfmdz0oo008s1t0xab8ge37j-fnref:2">
+            <a href="#clfmdz0oo008s1t0xab8ge37j-fn:2" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq2w008s330x9q6q2h9e-fn:2">0.82s vs 0.89s</span>. The reason is <code>prange</code> requires GIL to be released, which is automatically done by default.</p>
+        <span class="footnote" style="display: none" id="clfmdz0oo008s1t0xab8ge37j-fn:2">0.82s vs 0.89s</span>. The reason is <code>prange</code> requires GIL to be released, which is automatically done by default.</p>
 <p style="text-indent: 0;"></p>
 <blockquote>
 <p style="text-indent: 0;"> Cython supports native parallelism through the cython.parallel module. To use this kind of parallelism, the GIL must be released (see Releasing the GIL). It currently supports OpenMP, but later on more backends might be supported. – <em><a target="_blank" rel="noopener" href="https://cython.readthedocs.io/en/latest/src/userguide/parallelism.html">Using Parallelism</a></em></p>
@@ -649,12 +649,12 @@ $$
 <h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p><strong>If there’s no need to hold GIL, just release it.</strong> This happens when you are manipulating some C data structures, and not attempting to disturb the interpreter.</p>
 <p style="margin-top: 0.5em;"> <strong>If there’s massive looping in your Cython code, feel free to accelerate it with <code>prange</code>.</strong> <code>prange</code> will effeciently schedule the computation onto all CPU resources.</p>
 <p style="margin-top: 0.5em;"> <strong>If there’s some macro tasks 
-        <sup id="clfmceq2w008s330x9q6q2h9e-fnref:3">
-            <a href="#clfmceq2w008s330x9q6q2h9e-fn:3" rel="footnote"></a>
+        <sup id="clfmdz0oo008s1t0xab8ge37j-fnref:3">
+            <a href="#clfmdz0oo008s1t0xab8ge37j-fn:3" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq2w008s330x9q6q2h9e-fn:3">routines consisting of large pieces of logic</span> which could not be easily parallelized in Cython, schedule them via <code>threading</code> module.</strong> <code>threading</code> sucks for most of the time, but if the tasks not always acquiring GIL, it should be fine just like threads in other languages.</p>
+        <span class="footnote" style="display: none" id="clfmdz0oo008s1t0xab8ge37j-fn:3">routines consisting of large pieces of logic</span> which could not be easily parallelized in Cython, schedule them via <code>threading</code> module.</strong> <code>threading</code> sucks for most of the time, but if the tasks not always acquiring GIL, it should be fine just like threads in other languages.</p>
 </div></div><div class="post"><hr><h1 class="post-title"><a href="/obtain-a-random-unused-tcp-port-with-bash/">Obtain a Random Available TCP Port with Bash</a></h1><div class="post-meta">2021-03-10</div><span data-disqus-identifier="obtain-a-random-unused-tcp-port-with-bash/" class="disqus-comment-count"></span><div lang="en" class="post-content "><p>On Linux, we might sometimes want to choose an unused TCP port randomly. This occurs from time to time on a server, when the administrator wants to expose an HTTP port for a user. Or, you just need an available port for IPC. Let’s make it happen with pure bash scripting.</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">unused_port</span></span>() &#123;</span><br><span class="line">    N=<span class="variable">$&#123;1:-1&#125;</span></span><br><span class="line">    <span class="built_in">comm</span> -23 \</span><br><span class="line">        &lt;(<span class="built_in">seq</span> <span class="string">&quot;1025&quot;</span> <span class="string">&quot;65535&quot;</span> | <span class="built_in">sort</span>) \</span><br><span class="line">        &lt;(ss -Htan |</span><br><span class="line">            awk <span class="string">&#x27;&#123;print $4&#125;&#x27;</span> |</span><br><span class="line">            <span class="built_in">cut</span> -d<span class="string">&#x27;:&#x27;</span> -f2 |</span><br><span class="line">            <span class="built_in">sort</span> -u) |</span><br><span class="line">        <span class="built_in">shuf</span> |</span><br><span class="line">        <span class="built_in">head</span> -n <span class="string">&quot;<span class="variable">$N</span>&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -669,12 +669,12 @@ $$
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">State        Recv-Q   Send-Q                               Local Address:Port                              Peer Address:Port               Process</span><br><span class="line">ESTAB        0        0                                        127.0.0.1:45342                                127.0.0.1:1081</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 
 <p style="text-indent: 0; margin-top: 0;"> Argument <code>-Htan</code> controls the printing style of <code>ss</code>. <code>-H</code> removes table header; <code>-t</code> lists only TCP ports; <code>-a</code> lists all ports, including listening and unlistening ones; <code>-n</code> enforces ports to be printed numerically 
-        <sup id="clfmceq2v008p330xcic2hcxl-fnref:1">
-            <a href="#clfmceq2v008p330xcic2hcxl-fn:1" rel="footnote"></a>
+        <sup id="clfmdz0on008p1t0xd8ny0mf8-fnref:1">
+            <a href="#clfmdz0on008p1t0xd8ny0mf8-fn:1" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq2v008p330xcic2hcxl-fn:1">Otherwise, some ports would be resolved into their service names, such as <code>80</code> into <code>http</code></span>. The command produces an output like:</p>
+        <span class="footnote" style="display: none" id="clfmdz0on008p1t0xd8ny0mf8-fn:1">Otherwise, some ports would be resolved into their service names, such as <code>80</code> into <code>http</code></span>. The command produces an output like:</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">LISTEN       0        128                                        0.0.0.0:17500                                            0.0.0.0:*</span><br><span class="line">LISTEN       0        128                                      127.0.0.1:17600                                            0.0.0.0:*</span><br></pre></td></tr></table></figure>
 
 <p style="text-indent: 0; margin-top: 0;"> We then use some string manipulation tools to extract the port numbers:</p>

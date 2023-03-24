@@ -22,24 +22,24 @@
 <li>Objects holding external resources (<code>open()</code>, <code>socket.socket()</code>, <em>etc.</em>) are usually NOT picklable.</li>
 </ol>
 <p style="text-indent: 0; margin-top: 0;"> Principle 1 and 2 ensures that we can easily pickle built-in types 
-        <sup id="clfmceq32009b330x65wz2npv-fnref:1">
-            <a href="#clfmceq32009b330x65wz2npv-fn:1" rel="footnote"></a>
+        <sup id="clfmdz0ou009b1t0x5bkm3u77-fnref:1">
+            <a href="#clfmdz0ou009b1t0x5bkm3u77-fn:1" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq32009b330x65wz2npv-fn:1"><code>int</code>, <code>str</code>, <em>etc.</em></span>, values 
-        <sup id="clfmceq32009b330x65wz2npv-fnref:2">
-            <a href="#clfmceq32009b330x65wz2npv-fn:2" rel="footnote"></a>
+        <span class="footnote" style="display: none" id="clfmdz0ou009b1t0x5bkm3u77-fn:1"><code>int</code>, <code>str</code>, <em>etc.</em></span>, values 
+        <sup id="clfmdz0ou009b1t0x5bkm3u77-fnref:2">
+            <a href="#clfmdz0ou009b1t0x5bkm3u77-fn:2" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq32009b330x65wz2npv-fn:2"><code>42</code>, <code>&quot;foobar&quot;</code>, <em>etc.</em></span> and their composition 
-        <sup id="clfmceq32009b330x65wz2npv-fnref:3">
-            <a href="#clfmceq32009b330x65wz2npv-fn:3" rel="footnote"></a>
+        <span class="footnote" style="display: none" id="clfmdz0ou009b1t0x5bkm3u77-fn:2"><code>42</code>, <code>&quot;foobar&quot;</code>, <em>etc.</em></span> and their composition 
+        <sup id="clfmdz0ou009b1t0x5bkm3u77-fnref:3">
+            <a href="#clfmdz0ou009b1t0x5bkm3u77-fn:3" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq32009b330x65wz2npv-fn:3">such as <code>[int, &#123;42: &quot;foobar&quot;&#125;]</code></span>, which covers a large variety of daily-used objects.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ou009b1t0x5bkm3u77-fn:3">such as <code>[int, &#123;42: &quot;foobar&quot;&#125;]</code></span>, which covers a large variety of daily-used objects.</p>
 <p style="margin-top: 0.5em;"> If you want to pickle custom objects, Principle 3 and 4 come into play. If you define your class at the top-level of a module (and usually you should), the class is automatically picklable. An object instantiated from that class, if holding only picklable attributes (stored in <code>__dict__</code>), is also picklable.</p>
 <p style="margin-top: 0.5em;"> How convenient! Nothing is needed but a simple <code>pickle.load</code> or <code>pickle.dump</code> to enjoy pickle services .</p>
 <p>Principle 3 comes with a remark <em>“if configured properly”</em>. Technically, module-level values are picklable if they have the correct <code>__qualname__</code>. <code>__qualname__</code> dictates the name of variable that holds the value. This is automatically done if the value is a class or function:</p>
@@ -61,12 +61,12 @@
 <p>If a string returned, it should be the name of a local variable relative to the object’s module. Remember the <code>__qualname__</code> trick above? They do the same job. <code>pickle</code> treats the returned string as <code>__qualname__</code> of the object, storing it along with the module name <code>__module__</code> at serialization. The de-serializer afterwards would look up an attribute in the module with that string as name, and retrieve the object directly without creating from scratch.</p>
 <p style="margin-top: 0.5em;"> It is useful for singleton object, i.e., object that be instantiated once and survives the whole program lifetime, for example, a database connection pool. We thus would not struggle on how to record the internal states for these objects.</p>
 <p>When a tuple returned, well, it’s being a bit complicated. The tuple should contain 2~6 elements 
-        <sup id="clfmceq32009b330x65wz2npv-fnref:4">
-            <a href="#clfmceq32009b330x65wz2npv-fn:4" rel="footnote"></a>
+        <sup id="clfmdz0ou009b1t0x5bkm3u77-fnref:4">
+            <a href="#clfmdz0ou009b1t0x5bkm3u77-fn:4" rel="footnote"></a>
         </sup>
         <!-- empty span to defend against print only CSS -->
         <span class="display: none"></span>
-        <span class="footnote" style="display: none" id="clfmceq32009b330x65wz2npv-fn:4">in Python with version lower than 3.8, this would be 2~5 elements</span>. The meaning of the elements would be described after, but before which, let’s get some understanding of how an object is created.</p>
+        <span class="footnote" style="display: none" id="clfmdz0ou009b1t0x5bkm3u77-fn:4">in Python with version lower than 3.8, this would be 2~5 elements</span>. The meaning of the elements would be described after, but before which, let’s get some understanding of how an object is created.</p>
 <p style="margin-top: 0.5em;"> In the assumption of <code>pickle</code> module, an object is made up of a <em>skeleton</em>, and <em>states</em>. A skeleton is an initial version of an object, which is returned by a callable named <em>“constructor”</em>. Usually the constructor is the object’s <code>__new__()</code> method, but not necessarily. It could also be some factory function. States refer to all other attributes or elements that the object holds, which could be simple Python objects or external resources. At de-serialization, <code>pickle</code> would first set up a skeleton by calling constructor, then filling up the states. Either step can be customized to accord with your application logic.</p>
 <p style="margin-top: 0.5em;"> Now we could talk about the scheme of returned tuple. </p>
 <p style="margin-top: 0.5em;"> The 1-st and 2-nd elements describe how to set up a skeleton. The 1-st element is the constructor callable, and the 2-nd be a tuple of positional arguments, which the constructor takes. The two elements are both required. If no argument is needed, one should leave an empty tuple.</p>
