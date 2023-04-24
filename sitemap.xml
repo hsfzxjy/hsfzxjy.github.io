@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://i.hsfzxjy.site/links/index.html</loc>
+    
+    <lastmod>2023-04-24</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://i.hsfzxjy.site/disambiguate-feudalism/</loc>
     
     <lastmod>2023-04-21</lastmod>
@@ -1111,7 +1120,7 @@
 
   <url>
     <loc>https://i.hsfzxjy.site/</loc>
-    <lastmod>2023-04-21</lastmod>
+    <lastmod>2023-04-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
