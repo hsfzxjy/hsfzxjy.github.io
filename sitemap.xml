@@ -2,6 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://i.hsfzxjy.site/move-ubuntu-root-partition/</loc>
+    
+    <lastmod>2023-05-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://i.hsfzxjy.site/git-sparse-checkout-and-partial-clones-for-mega-repos/</loc>
+    
+    <lastmod>2023-05-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://i.hsfzxjy.site/about/index.html</loc>
     
     <lastmod>2023-04-24</lastmod>
@@ -77,15 +95,6 @@
     <loc>https://i.hsfzxjy.site/side-project/</loc>
     
     <lastmod>2022-12-26</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://i.hsfzxjy.site/move-ubuntu-root-partition/</loc>
-    
-    <lastmod>2022-12-18</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -1120,7 +1129,7 @@
 
   <url>
     <loc>https://i.hsfzxjy.site/</loc>
-    <lastmod>2023-04-30</lastmod>
+    <lastmod>2023-05-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
