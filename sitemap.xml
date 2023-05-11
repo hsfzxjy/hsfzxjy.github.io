@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://i.hsfzxjy.site/some-notes-on-kotlin-coroutines/</loc>
+    
+    <lastmod>2023-05-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://i.hsfzxjy.site/git-sparse-checkout-and-partial-clones-for-mega-repos/</loc>
     
     <lastmod>2023-05-10</lastmod>
@@ -1129,7 +1138,7 @@
 
   <url>
     <loc>https://i.hsfzxjy.site/</loc>
-    <lastmod>2023-05-10</lastmod>
+    <lastmod>2023-05-11</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
