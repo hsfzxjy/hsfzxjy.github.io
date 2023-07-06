@@ -1,13 +1,1 @@
-User-agent: Googlebot
-Disallow: /tags/
-Disallow: /categories/
-Disallow: /page/
-Disallow: /aggr/
-Disallow: /about/
-Disallow: /archives/
-Disallow: /works/
-
-User-agent: ia_archiver
-Disallow: /
-
 Sitemap: https://i.hsfzxjy.site/sitemap.xml
