@@ -1,3 +1,4 @@
+https://i.hsfzxjy.site/building-electron-memo/
 https://i.hsfzxjy.site/commutable-family-names-1/
 https://i.hsfzxjy.site/some-notes-on-kotlin-coroutines/
 https://i.hsfzxjy.site/git-sparse-checkout-and-partial-clones-for-mega-repos/

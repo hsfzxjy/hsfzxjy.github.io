@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://i.hsfzxjy.site/building-electron-memo/</loc>
+    
+    <lastmod>2023-07-08</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://i.hsfzxjy.site/commutable-family-names-1/</loc>
     
     <lastmod>2023-07-02</lastmod>
@@ -1147,7 +1156,7 @@
 
   <url>
     <loc>https://i.hsfzxjy.site/</loc>
-    <lastmod>2023-07-06</lastmod>
+    <lastmod>2023-07-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
