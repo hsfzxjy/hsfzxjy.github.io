@@ -1,3 +1,4 @@
+https://i.hsfzxjy.site/coding-ceremory/
 https://i.hsfzxjy.site/links/index.html
 https://i.hsfzxjy.site/works/index.html
 https://i.hsfzxjy.site/aggr/index.html
@@ -10,7 +11,6 @@ https://i.hsfzxjy.site/reversy-naming/
 https://i.hsfzxjy.site/obtain-a-random-unused-tcp-port-with-bash/
 https://i.hsfzxjy.site/invalid-pointer-will-bite-you/
 https://i.hsfzxjy.site/indexeddb-performant-bulk-mutations/
-https://i.hsfzxjy.site/coding-ceremory/
 https://i.hsfzxjy.site/extending-hexo-better-mathjax-rendering/
 https://i.hsfzxjy.site/tensor-cuda-hang/
 https://i.hsfzxjy.site/extending-hexo-preface/
