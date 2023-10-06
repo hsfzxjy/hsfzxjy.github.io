@@ -1,3 +1,6 @@
+https://i.hsfzxjy.site/rc-refcell-pattern/
+https://i.hsfzxjy.site/option-as_ref/
+https://i.hsfzxjy.site/proof-of-gumbel-max-trick/
 https://i.hsfzxjy.site/coding-ceremory/
 https://i.hsfzxjy.site/building-electron-memo/
 https://i.hsfzxjy.site/some-notes-on-kotlin-coroutines/
@@ -32,9 +35,6 @@ https://i.hsfzxjy.site/rough-notes-on-deploying-vaultwarden-and-nextcloud-bookma
 https://i.hsfzxjy.site/language-ethusiast-and-pragmatist/
 https://i.hsfzxjy.site/yakimono/
 https://i.hsfzxjy.site/xjx/
-https://i.hsfzxjy.site/proof-of-gumbel-max-trick/
-https://i.hsfzxjy.site/option-as_ref/
-https://i.hsfzxjy.site/rc-refcell-pattern/
 https://i.hsfzxjy.site/notitle-2019-03-10/
 https://i.hsfzxjy.site/correlation-matrix/
 https://i.hsfzxjy.site/notitle-2019-03-01/
