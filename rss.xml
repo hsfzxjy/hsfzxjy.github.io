@@ -9,8 +9,45 @@
     <atom:link href="https://i.hsfzxjy.site/rss.xml" rel="self" type="application/rss+xml"/>
     
     <description>Creation and blogs by hsfzxjy.</description>
-    <pubDate>Tue, 05 Dec 2023 09:48:36 GMT</pubDate>
+    <pubDate>Mon, 22 Jan 2024 09:28:52 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>Manacher 回文计数算法</title>
+      <link>https://i.hsfzxjy.site/Manacher-algorithm/</link>
+      <guid>https://i.hsfzxjy.site/Manacher-algorithm/</guid>
+      <pubDate>Mon, 15 Jan 2024 16:00:00 GMT</pubDate>
+      
+        
+        
+      <description>&lt;blockquote&gt;
+&lt;p &gt;以下假设字符串下标从 $0$ 开始，子串记号 $s[i..j]$ 左闭右闭。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p &gt;给定长度为 $n$ 的字符串 $s$，Manacher 算法可以在 $O(n)$ 的时间复杂度内找到 $s$ 的所有回文子串</description>
+        
+      
+      
+      
+      <content:encoded><![CDATA[<blockquote><p >以下假设字符串下标从 $0$ 开始，子串记号 $s[i..j]$ 左闭右闭。</p></blockquote><p >给定长度为 $n$ 的字符串 $s$，Manacher 算法可以在 $O(n)$ 的时间复杂度内找到 $s$ 的所有回文子串。</p><p >我们先以寻找长度为奇数的子串为例。首先需要明确的是，如果 $s$ 中以第 $i$ 个字符为中心的最长回文子串长度为 $d=2p+1$，则以下皆为 $s$ 的回文子串：</p><p  class="par"> $$s[i-(p-1)..i+(p-1)],\ldots, s[i-1..i+1], s[i..i]$$</p><p  class="par"> 因此，我们只需对所有下标 $i$ 求解出以 $s[i]$ 为中心的最长回文子串长度 $2p_i+1$，即可知道 $s$ 的所有回文子串。</p><p >Manacher 算法从左到右求解诸 $p_i$。在求解 $p_i$ 时，算法会保证诸 $p_0,\ldots,p_{i-1}$已经求解完毕，从而我们可以利用先前的信息合理减少计算。在这个过程中，我们将维护一个滚动的子串 $t=s[l..r]$，$t$ 是目前已探明的右端点最靠右的回文子串。如此一来，每次循环时，我们要考虑两种情况：</p><ol><li><strong>i 在子串 t 内</strong>，即 $l\leq i \leq r$。此时我们考虑 $i$ 在 $t$ 内的镜像点 $j = l+r-i$，则 $p_j$ 是之前已经求解过的。从而知道以 $j$ 为中心的最长子串长度为 $p_j$。但这一知识不能照搬到 $i$ 处，因为 $i+p_j$ 很可能会超过右端点 $r$。为此我们做一个截断，取 $p_i = min(p_j,r-i)$；</li><li><strong>i 不在子串 t 内</strong>，即 $i &gt; r$。此时我们取 $p_i=0$。</li></ol><p  class="par"> 以上得到的 $p_i$ 其实还不是真正的解，因为 $i + p_i$ 的右侧还有未探明的情况。因此我们还需循环自增 $p_i$，直到 $s[i-p_i]\neq s[i+p_i]$。注意到随着 $p_i$ 的扩进，$s[i-p_i..i+p_i]$ 成为了新的端点最右的子串，因此我们还要及时更新 $t$。用 Python 实现的算法如下：</p><div class="gk-code" data-gk-id="BLOCK1"><div class="gk-code-container"><div class="gk-code-display"><pre><span class="line"><span class="hljs-keyword">def</span> <span class="hljs-title function_">manacher_odd</span>(<span class="hljs-params">s</span>):</span><br><span class="line">    n = <span class="hljs-built_in">len</span>(s)</span><br><span class="gk-section gk-section" data-gk-sid="BLOCK1.SEC1" data-gk-type="section"data-gk-desc="在前后增加哨兵字符，简化边界情况处理"><span class="line">    s = <span class="hljs-string">&#x27;^&#x27;</span> + s + <span class="hljs-string">&#x27;$&#x27;</span></span><br></span><span class="line">    p = [<span class="hljs-number">0</span>] * n</span><br><span class="line">    i = l = <span class="hljs-number">1</span></span><br><span class="line">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, n + <span class="hljs-number">1</span>):</span><br><span class="gk-section gk-section" data-gk-sid="BLOCK1.SEC2" data-gk-type="section"data-gk-desc="此处将获得初始 p[i] 的两种情形合在一起了"><span class="line">        x = <span class="hljs-built_in">max</span>(<span class="hljs-number">0</span>, <span class="hljs-built_in">min</span>(r - i, p[l + r - i]))</span><br></span><span class="line">        <span class="hljs-keyword">while</span> s[i + x] == s[i - x]: x += <span class="hljs-number">1</span></span><br><span class="line">    p[i - <span class="hljs-number">1</span>] = x - <span class="hljs-number">1</span></span><br><span class="line">    <span class="hljs-keyword">if</span> i + x &gt; r:</span><br><span class="line">        l, r = i - x, i + x</span><br><span class="line">    <span class="hljs-keyword">return</span> p</span><br></pre></div></div></div><p >为什么 Manacher 算法复杂度是 $O(n)$ 呢？我们可以从 $r$ 端点的变化考虑。在每次循环中，$r$ 有两种情形：</p><ol><li><strong>r 不变</strong>，此时 $p_i$ 是直接从其镜像点 $p_j$ 拿到的值，从而第二层的 while 循环没有运行；</li><li><strong>r 增加</strong>，此时第二层的 while 循环执行了，将 $p_i$ 从 $r_\text{old}-i$ 增加到了 $r_\text{new} -i$。</li></ol><p  class="par"> 由此可见，第二层 while 循环的总次数等于 $r$ 从始至终的增量，为 $n$。因此整个算法的时间复杂度为 $O(n)$。</p><p >同样地，我们还能计数 $s$ 中长度为偶数的回文子串。以下为 Python 代码，原理类似：</p><div class="gk-code" data-gk-id="BLOCK2"><div class="gk-code-container"><div class="gk-code-display"><pre><span class="line"><span class="hljs-keyword">def</span> <span class="hljs-title function_">manacher_even</span>(<span class="hljs-params">s</span>):</span><br><span class="line">    <span class="hljs-comment"># p[i] 记录了以字符 s[i] 后面的“槽”为中心的最长回文子串的长度的一半。</span></span><br><span class="line">    <span class="hljs-comment"># 如：</span></span><br><span class="line">    <span class="hljs-comment"># s = &quot;aabbc&quot;</span></span><br><span class="line">    <span class="hljs-comment"># p = [1, 0, 1, 0]</span></span><br><span class="line">    n = <span class="hljs-built_in">len</span>(s)</span><br><span class="line">    s = <span class="hljs-string">&#x27;^&#x27;</span> + s + <span class="hljs-string">&#x27;$&#x27;</span></span><br><span class="line">    p = [<span class="hljs-number">0</span>] * (n - <span class="hljs-number">1</span>)</span><br><span class="line">    l = r = <span class="hljs-number">1</span></span><br><span class="line">    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, n):</span><br><span class="line">        j = <span class="hljs-built_in">max</span>(<span class="hljs-number">0</span>, <span class="hljs-built_in">min</span>(r - i - <span class="hljs-number">1</span>, p[l + r - i - <span class="hljs-number">3</span>]))</span><br><span class="line">        <span class="hljs-keyword">while</span> s[i + j + <span class="hljs-number">1</span>] == s[i - j]:</span><br><span class="line">            j += <span class="hljs-number">1</span></span><br><span class="line">        p[i - <span class="hljs-number">1</span>] = j</span><br><span class="line">        <span class="hljs-keyword">if</span> i + j + <span class="hljs-number">2</span> &gt; r:</span><br><span class="line">            l, r = i - j + <span class="hljs-number">1</span>, i + j + <span class="hljs-number">1</span></span><br><span class="line">    <span class="hljs-keyword">return</span> p</span><br></pre></div></div></div>]]></content:encoded>
+      
+      
+      <category domain="https://i.hsfzxjy.site/categories/Tech/">Tech</category>
+      
+      <category domain="https://i.hsfzxjy.site/categories/Tech/Memo/">Memo</category>
+      
+      
+      <category domain="https://i.hsfzxjy.site/tags/Python/">Python</category>
+      
+      <category domain="https://i.hsfzxjy.site/tags/LeetCode/">LeetCode</category>
+      
+      <category domain="https://i.hsfzxjy.site/tags/Algorithm/">Algorithm</category>
+      
+      <category domain="https://i.hsfzxjy.site/tags/String/">String</category>
+      
+      
+      <comments>https://i.hsfzxjy.site/Manacher-algorithm/#disqus_thread</comments>
+      
+    </item>
     
     <item>
       <title>硬卧</title>
