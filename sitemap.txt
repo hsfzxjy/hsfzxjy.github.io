@@ -1,3 +1,4 @@
+https://i.hsfzxjy.site/more-thinking-on-dijkstra-algorithm/
 https://i.hsfzxjy.site/Manacher-algorithm/
 https://i.hsfzxjy.site/links/index.html
 https://i.hsfzxjy.site/train-2023-11-18/
@@ -226,6 +227,7 @@ https://i.hsfzxjy.site/tags/Electron/
 https://i.hsfzxjy.site/tags/LeetCode/
 https://i.hsfzxjy.site/tags/Algorithm/
 https://i.hsfzxjy.site/tags/String/
+https://i.hsfzxjy.site/tags/Dijkstra/
 https://i.hsfzxjy.site/categories/Tech/
 https://i.hsfzxjy.site/categories/Life/
 https://i.hsfzxjy.site/categories/Soliloquy/
