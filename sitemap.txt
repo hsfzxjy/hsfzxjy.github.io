@@ -1,3 +1,4 @@
+https://i.hsfzxjy.site/rust-lifetime-transmute-unsoundness/
 https://i.hsfzxjy.site/coding-ceremory/
 https://i.hsfzxjy.site/some-notes-on-kotlin-coroutines/
 https://i.hsfzxjy.site/building-electron-memo/
