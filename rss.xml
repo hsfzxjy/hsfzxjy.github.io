@@ -39,6 +39,36 @@
     </item>
     
     <item>
+      <title>CSS 中为特定字符设置不同字体</title>
+      <link>https://i.hsfzxjy.site/css-font-punc-alternative/</link>
+      <guid>https://i.hsfzxjy.site/css-font-punc-alternative/</guid>
+      <pubDate>Sun, 14 Apr 2024 16:00:00 GMT</pubDate>
+      
+        
+        
+      <description>&lt;p &gt;为追求更好的阅读体验，本站的中文文章采用了混合字体的排版方式。例如在 Windows 环境中，中文字符以 &lt;code&gt;Microsoft Yahei&lt;/code&gt; 渲染，而英文字符则使用 &lt;code&gt;Open Sans&lt;/code&gt; 渲染。由于 &lt;code&gt;Microso</description>
+        
+      
+      
+      
+      <content:encoded><![CDATA[<p >为追求更好的阅读体验，本站的中文文章采用了混合字体的排版方式。例如在 Windows 环境中，中文字符以 <code>Microsoft Yahei</code> 渲染，而英文字符则使用 <code>Open Sans</code> 渲染。由于 <code>Microsoft Yahei</code> 中也包含英文字符的字形，其在 <code>font-family</code> 中的优先级需排在 <code>Open Sans</code> 后面，从而保证 <code>Open Sans</code> 能够正确渲染英文字符。大致的代码如下：</p><div class="gk-code hljs" data-gk-id="BLOCK1"><div class="gk-code-display"><pre><span class="line"><span class="hljs-selector-attr">[lang=<span class="hljs-string">&quot;zh&quot;</span>]</span> {</span><br><span class="line">  <span class="hljs-attribute">font-family</span>: <span class="hljs-string">&quot;Open Sans&quot;</span>, <span class="hljs-string">&quot;Microsoft Yahei&quot;</span>, <span class="hljs-built_in">var</span>(--font-fallback);</span><br><span class="line">}</span><br></pre></div></div><p >但这种方式有一个问题，即标点符号的字形比较难看。具体而言是弯引号 <code>U+201C</code> <code>“</code> 和 <code>U+201D</code> <code>”</code>，它们的字形无论在 <code>Microsoft Yahei</code> 或是 <code>Open Sans</code> 中都是半角宽度，且头部和尾部粗细区分不明显，难以辨别前后。反观宋体 <code>SimSun</code> 的呈现则更为清晰，更符合中文排版的习惯。</p><p >那是否可以在 CSS 中为特定字符设置不同字体呢？答案是肯定的。为此我们要在宋体的基础上“改进”出一种新字体，不妨命名为 <code>SimSun-Punc</code>。<code>SimSun-Punc</code> 只用于渲染 <code>U+201C</code> 和 <code>U+201D</code> 两个字符，其余字符则正常回落至 <code>Microsoft Yahei</code> 或 <code>Open Sans</code>：</p><div class="gk-code hljs" data-gk-id="BLOCK2"><div class="gk-code-display"><pre><span class="line"><span class="hljs-selector-attr">[lang=<span class="hljs-string">&quot;zh&quot;</span>]</span> {</span><br><span class="line">  <span class="hljs-attribute">font-family</span>: <span class="hljs-string">&quot;SimSun-Punc&quot;</span>, <span class="hljs-string">&quot;Open Sans&quot;</span>, <span class="hljs-string">&quot;Microsoft Yahei&quot;</span>, <span class="hljs-built_in">var</span>(--font-fallback);</span><br><span class="line">}</span><br></pre></div></div><p ><code>SimSun-Punc</code> 又该怎么定义呢？难道需要根据 <code>SimSun.ttf</code> Subset 出一个新字体文件吗？其实不然，我们可以使用 CSS 的 <code>@font-face</code> 规则，将 <code>SimSun</code> 作为基础字体，再通过 <code>unicode-range</code> 属性限定字符范围，从而实现“改进”字体的效果：</p><div class="gk-code hljs" data-gk-id="BLOCK3"><div class="gk-code-display"><pre><span class="line"><span class="hljs-keyword">@font-face</span> {</span><br><span class="line">  <span class="hljs-attribute">font-family</span>: <span class="hljs-string">&quot;SimSun-Punc&quot;</span>;</span><br><span class="line">  <span class="hljs-attribute">src</span>: <span class="hljs-built_in">local</span>(<span class="hljs-string">&quot;SimSun&quot;</span>);</span><br><span class="line">  unicode-range: U+<span class="hljs-number">201</span>C-<span class="hljs-number">201</span>D;</span><br><span class="line">}</span><br></pre></div></div><p ><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/unicode-range"><code>unicode-range</code></a> 属性可用于设置 <code>font-face</code> 所应用的 Unicode 字符范围，这里我们指定了 <code>U+201C</code> 和 <code>U+201D</code> 两个字符，如此一来便只有这两个字符会使用 <code>SimSun-Punc</code> 字体，从而达到预期的效果。</p>]]></content:encoded>
+      
+      
+      <category domain="https://i.hsfzxjy.site/categories/Tech/">Tech</category>
+      
+      
+      <category domain="https://i.hsfzxjy.site/tags/Font/">Font</category>
+      
+      <category domain="https://i.hsfzxjy.site/tags/CSS/">CSS</category>
+      
+      <category domain="https://i.hsfzxjy.site/tags/Typography/">Typography</category>
+      
+      
+      <comments>https://i.hsfzxjy.site/css-font-punc-alternative/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
       <title>Arbitary Lifetime Transmutation via Rust Unsoundness</title>
       <link>https://i.hsfzxjy.site/rust-lifetime-transmute-unsoundness/</link>
       <guid>https://i.hsfzxjy.site/rust-lifetime-transmute-unsoundness/</guid>
