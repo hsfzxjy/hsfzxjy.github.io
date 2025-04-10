@@ -451,7 +451,7 @@ html {
 body,
 .font__ui,
 h1, h2, h3, h4, h5, h6 {
-  font-family: "ByakUI-En", var(--ui-text-font-fallback);
+  font-family: var(--cn-font-ui), var(--ui-text-font-fallback);
 }
 
 :root {
@@ -459,15 +459,10 @@ h1, h2, h3, h4, h5, h6 {
   --cn-font-ui: "LXGWFasmartGothic";
 }
 
-@font-face {
-  font-family: "Segoe UI Fallback";
-  src: local(Tahoma);
-  advance-override: 1;
-}
 [lang=zh], [lang=zh].font__ui,
 [lang=zh] .font__ui,
 [lang=zh] h1, [lang=zh] h2, [lang=zh] h3, [lang=zh] h4, [lang=zh] h5, [lang=zh] h6 {
-  font-family: var(--cn-font-ui), "Segoe UI Fallback", var(--ui-text-font-fallback);
+  font-family: var(--cn-font-ui), var(--ui-text-font-fallback);
   overflow-wrap: break-word;
   word-wrap: break-word;
   hyphens: auto;
@@ -1077,7 +1072,6 @@ body {
   padding-left: 1em;
   max-width: var(--aside-width);
   overflow-y: auto;
-  background-color: #fff;
   transition: left 0.5s, right 0.5s;
 }
 .aside__left::-webkit-scrollbar {
