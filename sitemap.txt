@@ -1,3 +1,4 @@
+https://i.hsfzxjy.site/fixing-vscode-msvc-gibbrish/
 https://i.hsfzxjy.site/move-ubuntu-root-partition/
 https://i.hsfzxjy.site/deepseek-r1-158bit-on-3090/
 https://i.hsfzxjy.site/uncover-the-secret-of-fast-inverse-square-root-algorithm/
@@ -270,8 +271,13 @@ https://i.hsfzxjy.site/tags/DeepSeek/
 https://i.hsfzxjy.site/tags/Quantization/
 https://i.hsfzxjy.site/tags/RTX-3090/
 https://i.hsfzxjy.site/tags/llama-cpp/
+https://i.hsfzxjy.site/tags/Encoding/
+https://i.hsfzxjy.site/tags/MSVC/
+https://i.hsfzxjy.site/tags/CMake/
+https://i.hsfzxjy.site/tags/VSCode/
 https://i.hsfzxjy.site/categories/Tech/
 https://i.hsfzxjy.site/categories/Life/
 https://i.hsfzxjy.site/categories/Soliloquy/
 https://i.hsfzxjy.site/categories/Memo/
 https://i.hsfzxjy.site/categories/Series/
+https://i.hsfzxjy.site/categories/Notes/

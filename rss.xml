@@ -48,6 +48,40 @@
     </item>
     
     <item>
+      <title>解决 VSCode + CMake + MSVC 编译器信息乱码的问题</title>
+      <link>https://i.hsfzxjy.site/fixing-vscode-msvc-gibbrish/</link>
+      <guid>https://i.hsfzxjy.site/fixing-vscode-msvc-gibbrish/</guid>
+      <pubDate>Sat, 22 Feb 2025 08:27:00 GMT</pubDate>
+      
+        
+        
+      <description>&lt;p &gt;在 VSCode 中使用 &lt;a href=&quot;https://marketplace.visualstudio.com/items/?itemName=ms-vscode.cmake-tools&quot;&gt;CMake Tools&lt;/a&gt; 插件开发 C++ 时，如果选用 MSVC 编</description>
+        
+      
+      
+      
+      <content:encoded><![CDATA[<p >在 VSCode 中使用 <a href="https://marketplace.visualstudio.com/items/?itemName=ms-vscode.cmake-tools">CMake Tools</a> 插件开发 C++ 时，如果选用 MSVC 编译器，可能会遇到编译信息乱码的问题：</p><div class="gk-code hljs" data-gk-id="BLOCK1"><div class="gk-code-display"><pre><span class="line">warning C4267: 鈥滃弬鏁扳€�: 浠庘€渟ize_t鈥濊浆鎹㈠埌鈥淒WORD鈥濓紝鍙�鑳戒涪澶辨暟鎹�</span><br></pre></div></div><p >乱码的产生通常是由于文本的创建者和解析者之间存在编码差异。在本例中，MSVC 的编译器 <code>cl.exe</code> 以 UTF-8 编码输出中文信息，却被 CMake Tools 以错误的 GBK 编码解析，进而导致乱码。</p><p >基于此原理，有两个解决的方向：</p><ol><li>修复二者的编码差异</li><li>让 <code>cl.exe</code> 使用英文输出</li></ol><p >以下给出四种解决方案，推荐程度由高到低排序。</p><h2 id="方案一：让-cmake-tools-插件以-utf-8-解析信息">方案一：让 CMake Tools 插件以 UTF-8 解析信息</h2><p >在 VSCode 设置中修改 <code>cmake.outputLogEncoding</code> 为 <code>utf-8</code>。此方法提出于 <a href="https://github.com/microsoft/vscode-cmake-tools/issues/3632#issuecomment-2408228688">相关 Issue</a>。</p><h2 id="方案二：让-clexe-输出英文">方案二：让 cl.exe 输出英文</h2><p >增加一个新的全局环境变量 <code>VSLANG=1033</code>，禁用 MSVC 的本地化出书。其中 1033 是英语的语言代码，语言代码的列表详见 <a href="https://github.com/microsoft/vcpkg-tool/blob/main/docs/localization.md#selecting-a-language">vcpkg-tools/docs/localization.md</a>。</p><h2 id="方案三：删除-msvc-的本地化语言包">方案三：删除 MSVC 的本地化语言包</h2><blockquote><p ><strong>请谨慎使用本方法，确保明白其可能的后果。</strong></p></blockquote><p >如果当初 <a href="https://visualstudio.microsoft.com/downloads/?q=build+tools#build-tools-for-visual-studio-2022">MSVC 的安装程序</a> 还没删，可以再次打开它，反选其中的中文语言包，卸载。</p><p ><img loading="lazy" src="../assets/2025-04-19-fixing-vscode-msvc-gibbrish/image.png" alt=""></p><p >如果安装包已经找不到了，可以用以下 PowerShell 命令手动删除：</p><div class="gk-code hljs" data-gk-id="BLOCK2"><div class="gk-code-display"><pre><span class="line"><span class="hljs-built_in">cd</span> <span class="hljs-string">&quot;C:\Program Files (x86)\Microsoft Visual Studio\&quot;</span></span><br><span class="line"><span class="hljs-built_in">Get-ChildItem</span> <span class="hljs-literal">-Recurse</span> <span class="hljs-literal">-Force</span> <span class="hljs-literal">-Directory</span> <span class="hljs-literal">-Filter</span> <span class="hljs-string">&#x27;2052&#x27;</span> | <span class="hljs-built_in">ForEach-Object</span> {</span><br><span class="line">    <span class="hljs-variable">$newName</span> = <span class="hljs-string">&quot;<span class="hljs-variable">$</span>(<span class="hljs-variable">$_</span>.Parent.FullName)\2052_&quot;</span></span><br><span class="line">    <span class="hljs-built_in">Rename-Item</span> <span class="hljs-literal">-Path</span> <span class="hljs-variable">$_</span>.FullName <span class="hljs-literal">-NewName</span> <span class="hljs-variable">$newName</span></span><br><span class="line">}</span><br></pre></div></div><h2 id="方案四：更改系统全局代码页（不推荐）">方案四：更改系统全局代码页（不推荐）</h2><blockquote><p ><strong>请谨慎使用本方法。该方法可能使一些老旧程序乱码。</strong></p></blockquote><p >如 <a href="https://superuser.com/a/1435645/1184013">这个问答</a> 所述，可通过修改系统代码页为 65001 (UTF-8) 彻底解决问题。具体操作是：控制面板 -&gt; 时钟和区域 -&gt; 区域 -&gt; 管理 -&gt; 更改系统区域设置 -&gt; 勾选“Beta 版：使用 Unicode UTF-8 提供全球语言支持”。</p><p >需要注意的是，一些编写方式不正确的老旧程序可能会无视系统代码页的变化，从而乱码。该方法应作为最后手段使用。</p>]]></content:encoded>
+      
+      
+      <category domain="https://i.hsfzxjy.site/categories/Tech/">Tech</category>
+      
+      <category domain="https://i.hsfzxjy.site/categories/Notes/">Notes</category>
+      
+      
+      <category domain="https://i.hsfzxjy.site/tags/Encoding/">Encoding</category>
+      
+      <category domain="https://i.hsfzxjy.site/tags/MSVC/">MSVC</category>
+      
+      <category domain="https://i.hsfzxjy.site/tags/CMake/">CMake</category>
+      
+      <category domain="https://i.hsfzxjy.site/tags/VSCode/">VSCode</category>
+      
+      
+      <comments>https://i.hsfzxjy.site/fixing-vscode-msvc-gibbrish/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
       <title>如何在 VS Code DevContainer 中配置 HTTP 代理</title>
       <link>https://i.hsfzxjy.site/configure-http-proxy-in-devcontainer/</link>
       <guid>https://i.hsfzxjy.site/configure-http-proxy-in-devcontainer/</guid>
