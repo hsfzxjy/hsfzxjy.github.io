@@ -1,5 +1,6 @@
-https://i.hsfzxjy.site/rough-notes-on-deploying-vaultwarden-and-nextcloud-bookmarks/
+https://i.hsfzxjy.site/aarch64-gas-pic-syntax/
 https://i.hsfzxjy.site/fixing-vscode-msvc-gibbrish/
+https://i.hsfzxjy.site/rough-notes-on-deploying-vaultwarden-and-nextcloud-bookmarks/
 https://i.hsfzxjy.site/move-ubuntu-root-partition/
 https://i.hsfzxjy.site/deepseek-r1-158bit-on-3090/
 https://i.hsfzxjy.site/impression-for-delphi-OOP/
@@ -275,6 +276,9 @@ https://i.hsfzxjy.site/tags/Encoding/
 https://i.hsfzxjy.site/tags/MSVC/
 https://i.hsfzxjy.site/tags/CMake/
 https://i.hsfzxjy.site/tags/VSCode/
+https://i.hsfzxjy.site/tags/Arm64/
+https://i.hsfzxjy.site/tags/PIC/
+https://i.hsfzxjy.site/tags/Assembly/
 https://i.hsfzxjy.site/categories/Life/
 https://i.hsfzxjy.site/categories/Tech/
 https://i.hsfzxjy.site/categories/Soliloquy/
